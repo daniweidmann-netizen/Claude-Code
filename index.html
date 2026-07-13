@@ -1,0 +1,835 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Zufalls-Abenteuer 🎲</title>
+<style>
+  :root {
+    --ink-night: #14162a;
+    --ink-night-2: #1b1e3a;
+    --surface-1: #1e2142;
+    --surface-2: #262a52;
+    --surface-line: #3a3f6e;
+    --paper: #f1ede2;
+    --paper-shadow: #d8d2c1;
+    --ink-text: #ece8dd;
+    --ink-text-dim: #a9a7c4;
+    --ticket-ink: #221c2c;
+    --ticket-ink-dim: #6a6178;
+    --amber: #e8a33d;
+    --amber-strong: #f3b658;
+    --teal: #2f8f82;
+    --coral: #e2604b;
+
+    --font-display: 'Arial Narrow', 'Helvetica Neue Condensed', 'Roboto Condensed', system-ui, sans-serif;
+    --font-mono: 'JetBrains Mono', 'SFMono-Regular', Menlo, Consolas, 'Liberation Mono', monospace;
+    --font-body: 'Avenir Next', 'Segoe UI', system-ui, -apple-system, sans-serif;
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body {
+    margin: 0;
+    padding: 0;
+    background: radial-gradient(ellipse 120% 80% at 50% -10%, var(--ink-night-2), var(--ink-night) 60%);
+    color: var(--ink-text);
+    font-family: var(--font-body);
+    min-height: 100vh;
+  }
+
+  body {
+    overflow-x: hidden;
+  }
+
+  a { color: var(--amber-strong); }
+
+  .stage {
+    max-width: 1040px;
+    margin: 0 auto;
+    padding: clamp(24px, 5vw, 64px) clamp(16px, 4vw, 32px) 48px;
+  }
+
+  .masthead {
+    text-align: center;
+    margin-bottom: clamp(28px, 5vw, 44px);
+  }
+
+  .eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: var(--amber-strong);
+    padding: 6px 14px;
+    border: 1px solid rgba(232, 163, 61, 0.4);
+    border-radius: 999px;
+    background: rgba(232, 163, 61, 0.08);
+  }
+
+  h1.title {
+    font-family: var(--font-display);
+    font-weight: 800;
+    text-transform: uppercase;
+    font-size: clamp(1.6rem, 9vw, 4.6rem);
+    letter-spacing: 0.01em;
+    margin: 18px 0 10px;
+    line-height: 0.96;
+    text-wrap: balance;
+    overflow-wrap: anywhere;
+    color: var(--ink-text);
+  }
+
+  h1.title em {
+    font-style: normal;
+    color: var(--amber-strong);
+  }
+
+  .subtitle {
+    max-width: 46ch;
+    margin: 0 auto;
+    font-size: 1.02rem;
+    line-height: 1.55;
+    color: var(--ink-text-dim);
+  }
+
+  .machine {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr);
+    gap: clamp(18px, 3vw, 30px);
+    align-items: start;
+  }
+
+  @media (max-width: 780px) {
+    .machine { grid-template-columns: minmax(0, 1fr); }
+  }
+
+  /* ---------- Control panel ---------- */
+
+  .panel {
+    background: linear-gradient(180deg, var(--surface-1), var(--surface-2));
+    border: 1px solid var(--surface-line);
+    border-radius: 18px;
+    padding: clamp(18px, 3vw, 28px);
+    box-shadow: 0 30px 60px -30px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.04);
+  }
+
+  .panel h2 {
+    font-family: var(--font-display);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    font-size: 1.1rem;
+    margin: 0 0 4px;
+  }
+
+  .panel .panel-hint {
+    font-size: 0.86rem;
+    color: var(--ink-text-dim);
+    margin: 0 0 20px;
+  }
+
+  .field-group {
+    margin-bottom: 20px;
+  }
+
+  .field-label {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--ink-text-dim);
+    margin-bottom: 8px;
+  }
+
+  .field-label .selected-value {
+    color: var(--amber-strong);
+    letter-spacing: 0.02em;
+  }
+
+  .option-row {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 8px;
+  }
+
+  .option-btn {
+    appearance: none;
+    border: 1px solid var(--surface-line);
+    background: rgba(255,255,255,0.02);
+    color: var(--ink-text);
+    border-radius: 10px;
+    padding: 10px 4px 9px;
+    font-family: var(--font-body);
+    font-size: 0.78rem;
+    text-align: center;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+    min-width: 0;
+    transition: border-color 0.15s ease, background 0.15s ease, transform 0.1s ease;
+  }
+
+  .option-btn .opt-label,
+  .option-btn .opt-sub {
+    overflow-wrap: anywhere;
+  }
+
+  .option-btn .opt-icon {
+    font-size: 1.15rem;
+    line-height: 1;
+  }
+
+  .option-btn .opt-sub {
+    font-family: var(--font-mono);
+    font-size: 0.66rem;
+    color: var(--ink-text-dim);
+  }
+
+  .option-btn:hover {
+    border-color: var(--amber);
+    background: rgba(232, 163, 61, 0.08);
+  }
+
+  .option-btn:active { transform: scale(0.97); }
+
+  .option-btn[aria-pressed="true"] {
+    border-color: var(--amber-strong);
+    background: rgba(232, 163, 61, 0.16);
+    box-shadow: 0 0 0 1px var(--amber-strong) inset;
+  }
+
+  .option-btn[aria-pressed="true"] .opt-sub { color: var(--amber-strong); }
+
+  .option-btn:focus-visible {
+    outline: 2px solid var(--teal);
+    outline-offset: 2px;
+  }
+
+  .draw-btn {
+    width: 100%;
+    margin-top: 6px;
+    appearance: none;
+    border: none;
+    border-radius: 12px;
+    padding: 16px 18px;
+    background: linear-gradient(180deg, var(--amber-strong), var(--amber));
+    color: #221605;
+    font-family: var(--font-display);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    font-size: 1.05rem;
+    font-weight: 800;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    box-shadow: 0 14px 26px -12px rgba(232,163,61,0.55);
+    transition: transform 0.12s ease, box-shadow 0.12s ease;
+  }
+
+  .draw-btn:hover { transform: translateY(-1px); box-shadow: 0 18px 30px -12px rgba(232,163,61,0.65); }
+  .draw-btn:active { transform: translateY(1px) scale(0.99); }
+  .draw-btn:focus-visible { outline: 2px solid var(--teal); outline-offset: 3px; }
+
+  .draw-btn .die {
+    display: inline-block;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .draw-btn:active .die { animation: spin 0.4s ease; }
+  }
+
+  @keyframes spin {
+    to { transform: rotate(340deg); }
+  }
+
+  /* ---------- Ticket ---------- */
+
+  .ticket-slot {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    padding-top: 6px;
+    min-width: 0;
+  }
+
+  .ticket {
+    position: relative;
+    width: 100%;
+    max-width: 420px;
+    background: var(--paper);
+    color: var(--ticket-ink);
+    border-radius: 16px;
+    padding: 22px 22px 18px;
+    transform: rotate(-1.6deg);
+    box-shadow: 0 30px 55px -20px rgba(0,0,0,0.55), 0 2px 0 var(--paper-shadow);
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .ticket {
+      animation: ticket-print 0.5s cubic-bezier(.2,.8,.2,1);
+    }
+  }
+
+  @keyframes ticket-print {
+    from { opacity: 0; transform: rotate(-1.6deg) translateY(18px); }
+    to { opacity: 1; transform: rotate(-1.6deg) translateY(0); }
+  }
+
+  .ticket::before,
+  .ticket::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 14px;
+    background:
+      radial-gradient(circle at 8px 50%, transparent 6px, var(--paper) 6.5px) left / 20px 14px repeat-x;
+    pointer-events: none;
+  }
+
+  .ticket::before { top: 0; }
+  .ticket::after { bottom: 0; }
+
+  .ticket-top-row {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 10px;
+    border-bottom: 1px dashed var(--paper-shadow);
+    padding-bottom: 14px;
+    margin-bottom: 14px;
+  }
+
+  .ticket-eyebrow {
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--ticket-ink-dim);
+  }
+
+  .ticket-name {
+    font-family: var(--font-display);
+    text-transform: uppercase;
+    font-weight: 800;
+    font-size: 1.5rem;
+    letter-spacing: 0.01em;
+    margin-top: 2px;
+    line-height: 1.02;
+  }
+
+  .ticket-id {
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    color: var(--ticket-ink-dim);
+    text-align: right;
+    white-space: nowrap;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .stamp {
+    flex-shrink: 0;
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    border: 2px solid var(--coral);
+    color: var(--coral);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    transform: rotate(-8deg);
+    margin-left: 8px;
+  }
+
+  .conditions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 16px;
+  }
+
+  .chip {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    background: rgba(47,143,130,0.12);
+    color: #1f6a60;
+    border: 1px solid rgba(47,143,130,0.35);
+    border-radius: 999px;
+    padding: 3px 10px;
+  }
+
+  .route {
+    list-style: none;
+    margin: 0 0 16px;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .route-stop {
+    display: flex;
+    gap: 12px;
+    position: relative;
+  }
+
+  .route-stop .stop-marker {
+    flex-shrink: 0;
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background: var(--ink-night);
+    color: var(--paper);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.05rem;
+  }
+
+  .route-stop:not(:last-child)::after {
+    content: "";
+    position: absolute;
+    left: 17px;
+    top: 34px;
+    width: 1px;
+    height: calc(100% - 24px);
+    border-left: 1px dashed var(--paper-shadow);
+  }
+
+  .stop-body { padding-top: 2px; }
+
+  .stop-name {
+    font-weight: 700;
+    font-size: 1rem;
+    margin: 0 0 2px;
+  }
+
+  .stop-mission {
+    font-size: 0.86rem;
+    line-height: 1.4;
+    color: #423a4e;
+    margin: 0 0 4px;
+  }
+
+  .stop-meta {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    color: var(--ticket-ink-dim);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .ticket-totals {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    border-top: 1px dashed var(--paper-shadow);
+    padding-top: 12px;
+  }
+
+  .ticket-totals .total-item {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .ticket-totals .total-item:last-child { text-align: right; }
+
+  .ticket-totals .total-label {
+    font-family: var(--font-mono);
+    font-size: 0.66rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--ticket-ink-dim);
+  }
+
+  .ticket-totals .total-value {
+    font-family: var(--font-mono);
+    font-size: 0.9rem;
+    color: var(--ticket-ink);
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .ticket-fineprint {
+    text-align: center;
+    font-size: 0.68rem;
+    letter-spacing: 0.03em;
+    color: var(--ticket-ink-dim);
+    margin-top: 12px;
+  }
+
+  .reroll-row {
+    display: flex;
+    justify-content: center;
+    margin-top: 18px;
+  }
+
+  .reroll-btn {
+    appearance: none;
+    border: 1px solid var(--surface-line);
+    background: rgba(255,255,255,0.03);
+    color: var(--ink-text);
+    padding: 10px 18px;
+    border-radius: 999px;
+    font-family: var(--font-body);
+    font-size: 0.85rem;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: border-color 0.15s ease, background 0.15s ease;
+  }
+
+  .reroll-btn:hover { border-color: var(--teal); background: rgba(47,143,130,0.12); }
+  .reroll-btn:focus-visible { outline: 2px solid var(--teal); outline-offset: 2px; }
+
+  footer.note {
+    text-align: center;
+    margin-top: 40px;
+    font-size: 0.78rem;
+    color: var(--ink-text-dim);
+  }
+
+  .sr-only {
+    position: absolute;
+    width: 1px; height: 1px;
+    padding: 0; margin: -1px;
+    overflow: hidden;
+    clip: rect(0,0,0,0);
+    white-space: nowrap;
+    border: 0;
+  }
+</style>
+</head>
+<body>
+  <div class="stage">
+    <header class="masthead">
+      <span class="eyebrow">🎲 Ziehung Nr. <span id="drawCount">1</span></span>
+      <h1 class="title">Zieh dein<br /><em>Abenteuer&#8209;Los</em></h1>
+      <p class="subtitle">
+        Budget, Zeit, Verkehrsmittel rein — ein kleines Abenteuer raus.
+        Geheimcafé, Aussichtspunkt, Escape Room oder Sonnenuntergang: der Automat entscheidet.
+      </p>
+    </header>
+
+    <div class="machine">
+      <section class="panel" aria-label="Eingaben für die Ziehung">
+        <h2>Ticketautomat</h2>
+        <p class="panel-hint">Wähle deine Rahmenbedingungen und zieh ein Los.</p>
+
+        <div class="field-group" data-field="budget">
+          <div class="field-label"><span>Budget</span><span class="selected-value" data-role="budget-value"></span></div>
+          <div class="option-row" role="group" aria-label="Budget wählen" id="budgetOptions"></div>
+        </div>
+
+        <div class="field-group" data-field="zeit">
+          <div class="field-label"><span>Zeit</span><span class="selected-value" data-role="zeit-value"></span></div>
+          <div class="option-row" role="group" aria-label="Zeit wählen" id="zeitOptions"></div>
+        </div>
+
+        <div class="field-group" data-field="verkehr">
+          <div class="field-label"><span>Verkehrsmittel</span><span class="selected-value" data-role="verkehr-value"></span></div>
+          <div class="option-row" role="group" aria-label="Verkehrsmittel wählen" id="verkehrOptions"></div>
+        </div>
+
+        <button class="draw-btn" id="drawBtn" type="button">
+          <span class="die">🎲</span> Los-Nummer ziehen
+        </button>
+      </section>
+
+      <section class="ticket-slot" aria-live="polite" id="ticketSlot"></section>
+    </div>
+
+    <footer class="note">Rein zufällig erzeugt &middot; kein Anspruch auf Sonnenschein.</footer>
+  </div>
+
+<script>
+(function () {
+  "use strict";
+
+  var BUDGETS = [
+    { id: "gratis", label: "Gratis", sub: "0 €", icon: "🪙", cap: 0 },
+    { id: "sparfuchs", label: "Sparfuchs", sub: "bis 10 €", icon: "👛", cap: 10 },
+    { id: "locker", label: "Locker", sub: "bis 30 €", icon: "💶", cap: 30 },
+    { id: "alles", label: "Alles drin", sub: "30 €+", icon: "💎", cap: 9999 }
+  ];
+
+  var ZEITEN = [
+    { id: "kick", label: "Kurzer Kick", sub: "~1 Std.", icon: "⚡", cap: 60, stops: 1, ticketTitle: "Blitz-Abenteuer" },
+    { id: "nachmittag", label: "Nachmittag", sub: "2–3 Std.", icon: "🌤️", cap: 180, stops: 2, ticketTitle: "Nachmittags-Törn" },
+    { id: "halbtag", label: "Halber Tag", sub: "4–6 Std.", icon: "🕓", cap: 360, stops: 3, ticketTitle: "Halbtags-Expedition" },
+    { id: "ganztag", label: "Ganzer Tag", sub: "6+ Std.", icon: "🌓", cap: 900, stops: 3, ticketTitle: "Tages-Odyssee" }
+  ];
+
+  var VERKEHRSMITTEL = [
+    { id: "fuss", label: "Zu Fuß", sub: "lokal", icon: "🚶" },
+    { id: "rad", label: "Fahrrad", sub: "flexibel", icon: "🚲" },
+    { id: "oeffis", label: "Öffis", sub: "quer durch", icon: "🚋" },
+    { id: "auto", label: "Auto", sub: "grenzenlos", icon: "🚗" }
+  ];
+
+  var ACTIVITIES = [
+    { id: "geheimcafe", name: "Geheimcafé", icon: "☕", cost: 5, duration: 45, tag: "kulinarisch", fussOk: true,
+      mission: "Finde ein Café, in dem du noch nie warst, und bestell blind das Tagesgetränk." },
+    { id: "aussichtspunkt", name: "Aussichtspunkt", icon: "🗼", cost: 0, duration: 40, tag: "aussicht", fussOk: true,
+      mission: "Erklimm den höchsten erreichbaren Punkt in deiner Nähe und schau, wie klein alles wird." },
+    { id: "escaperoom", name: "Escape Room", icon: "🔐", cost: 25, duration: 75, tag: "abenteuer", fussOk: false,
+      mission: "Lasst euch einsperren und knackt den Raum, bevor die Zeit abläuft." },
+    { id: "sonnenuntergang", name: "Sonnenuntergang", icon: "🌅", cost: 0, duration: 30, tag: "abend", fussOk: true,
+      mission: "Sucht euch eine Dachterrasse, Brücke oder einen Hügel und schaut der Sonne beim Verschwinden zu." },
+    { id: "streetfood", name: "Streetfood-Markt", icon: "🥟", cost: 15, duration: 60, tag: "kulinarisch", fussOk: true,
+      mission: "Esst euch quer durch mindestens drei verschiedene Stände." },
+    { id: "flohmarkt", name: "Flohmarkt-Schatzsuche", icon: "🧭", cost: 5, duration: 60, tag: "entdecken", fussOk: true,
+      mission: "Kauft ein Objekt für unter 5 €, das eine gute Geschichte erzählen könnte." },
+    { id: "minigolf", name: "Minigolf-Duell", icon: "⛳", cost: 10, duration: 50, tag: "spiel", fussOk: false,
+      mission: "Spielt eine Runde Minigolf. Der Verlierer zahlt das nächste Eis." },
+    { id: "bootstour", name: "Bootstour", icon: "⛴️", cost: 12, duration: 60, tag: "aussicht", fussOk: false,
+      mission: "Nehmt die nächste Fähre oder Bootstour, egal wohin sie fährt." },
+    { id: "kletterpark", name: "Kletterpark", icon: "🧗", cost: 30, duration: 120, tag: "abenteuer", fussOk: false,
+      mission: "Klettert euch durch den nächsten Hochseilgarten – Höhenangst bleibt am Boden." },
+    { id: "stadtfuehrung", name: "Stadtführung auf eigene Faust", icon: "🗺️", cost: 0, duration: 90, tag: "entdecken", fussOk: true,
+      mission: "Folgt fünf Straßenschildern in eine Richtung, in die ihr noch nie gegangen seid." },
+    { id: "picknick", name: "Picknick im Park", icon: "🧺", cost: 8, duration: 60, tag: "entspannt", fussOk: true,
+      mission: "Deckt eine Picknickdecke im nächsten Park auf und teilt euch etwas Süßes." },
+    { id: "streetart", name: "Streetart-Tour", icon: "🎨", cost: 0, duration: 45, tag: "kultur", fussOk: true,
+      mission: "Sucht die drei größten Wandbilder eurer Stadt und wählt euer Lieblingsstück." },
+    { id: "bowling", name: "Bowling-Runde", icon: "🎳", cost: 15, duration: 60, tag: "spiel", fussOk: false,
+      mission: "Zwei Bahnen Bowling, Extrapunkte für die schlechteste Wurfform." },
+    { id: "planetarium", name: "Planetarium", icon: "🪐", cost: 12, duration: 60, tag: "abend", fussOk: false,
+      mission: "Lasst euch unter einem künstlichen Sternenhimmel den Kopf verdrehen." },
+    { id: "nachtwanderung", name: "Nachtwanderung", icon: "🌙", cost: 0, duration: 60, tag: "abend", fussOk: true,
+      mission: "Wartet, bis es dunkel wird, und erkundet eure Stadt mit neuen Augen." },
+    { id: "fotomission", name: "Foto-Mission", icon: "📸", cost: 0, duration: 40, tag: "kreativ", fussOk: true,
+      mission: "Findet fünf Motive in Komplementärfarben und haltet sie fest." }
+  ];
+
+  var state = {
+    budget: "sparfuchs",
+    zeit: "nachmittag",
+    verkehr: "rad",
+    drawCount: 0
+  };
+
+  function buildOptions(containerId, items, field) {
+    var container = document.getElementById(containerId);
+    container.innerHTML = "";
+    items.forEach(function (item) {
+      var btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "option-btn";
+      btn.setAttribute("aria-pressed", state[field] === item.id ? "true" : "false");
+      btn.dataset.id = item.id;
+      btn.innerHTML =
+        '<span class="opt-icon" aria-hidden="true">' + item.icon + '</span>' +
+        '<span class="opt-label">' + item.label + '</span>' +
+        '<span class="opt-sub">' + item.sub + '</span>';
+      btn.addEventListener("click", function () {
+        state[field] = item.id;
+        refreshOptionStates();
+      });
+      container.appendChild(btn);
+    });
+  }
+
+  function refreshOptionStates() {
+    document.querySelectorAll("#budgetOptions .option-btn").forEach(function (b) {
+      b.setAttribute("aria-pressed", b.dataset.id === state.budget ? "true" : "false");
+    });
+    document.querySelectorAll("#zeitOptions .option-btn").forEach(function (b) {
+      b.setAttribute("aria-pressed", b.dataset.id === state.zeit ? "true" : "false");
+    });
+    document.querySelectorAll("#verkehrOptions .option-btn").forEach(function (b) {
+      b.setAttribute("aria-pressed", b.dataset.id === state.verkehr ? "true" : "false");
+    });
+
+    document.querySelector('[data-role="budget-value"]').textContent =
+      findById(BUDGETS, state.budget).label;
+    document.querySelector('[data-role="zeit-value"]').textContent =
+      findById(ZEITEN, state.zeit).label;
+    document.querySelector('[data-role="verkehr-value"]').textContent =
+      findById(VERKEHRSMITTEL, state.verkehr).label;
+  }
+
+  function findById(list, id) {
+    for (var i = 0; i < list.length; i++) if (list[i].id === id) return list[i];
+    return list[0];
+  }
+
+  function shuffle(arr) {
+    var a = arr.slice();
+    for (var i = a.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1));
+      var tmp = a[i]; a[i] = a[j]; a[j] = tmp;
+    }
+    return a;
+  }
+
+  function pickRoute(budgetCap, timeCap, maxStops, fussOnly, guaranteeDusk) {
+    var pool = ACTIVITIES.filter(function (a) {
+      if (a.cost > budgetCap) return false;
+      if (fussOnly && !a.fussOk) return false;
+      return true;
+    });
+
+    var stops = [];
+    var usedTags = {};
+    var timeUsed = 0, costUsed = 0;
+    var greedyLimit = maxStops;
+
+    // Reserve one slot for a dusk finale on full-day adventures, if one fits at all.
+    var duskPick = null;
+    if (guaranteeDusk && maxStops > 1) {
+      var duskCandidates = shuffle(pool.filter(function (a) { return a.tag === "abend"; }));
+      for (var d = 0; d < duskCandidates.length; d++) {
+        if (duskCandidates[d].duration <= timeCap && duskCandidates[d].cost <= budgetCap) {
+          duskPick = duskCandidates[d];
+          break;
+        }
+      }
+      if (duskPick) greedyLimit = maxStops - 1;
+    }
+
+    var shuffled = shuffle(pool.filter(function (a) { return !duskPick || a.id !== duskPick.id; }));
+
+    for (var i = 0; i < shuffled.length && stops.length < greedyLimit; i++) {
+      var a = shuffled[i];
+      if (timeUsed + a.duration > timeCap) continue;
+      if (costUsed + a.cost > budgetCap) continue;
+      if (usedTags[a.tag] && stops.length > 0) continue;
+      stops.push(a);
+      usedTags[a.tag] = true;
+      timeUsed += a.duration;
+      costUsed += a.cost;
+    }
+
+    if (stops.length === 0 && !duskPick && pool.length > 0) {
+      var fallback = pool.slice().sort(function (a, b) {
+        return (a.duration - b.duration) || (a.cost - b.cost);
+      })[0];
+      stops.push(fallback);
+      timeUsed = fallback.duration;
+      costUsed = fallback.cost;
+    }
+
+    if (duskPick && timeUsed + duskPick.duration <= timeCap && costUsed + duskPick.cost <= budgetCap) {
+      stops.push(duskPick);
+      timeUsed += duskPick.duration;
+      costUsed += duskPick.cost;
+    }
+
+    return { stops: stops, timeUsed: timeUsed, costUsed: costUsed };
+  }
+
+  function formatDuration(min) {
+    if (min < 60) return min + " Min.";
+    var h = Math.floor(min / 60);
+    var rest = min % 60;
+    return rest === 0 ? h + " Std." : h + " Std. " + rest + " Min.";
+  }
+
+  function formatCost(eur) {
+    return eur === 0 ? "kostenlos" : "ca. " + eur + " €";
+  }
+
+  function ticketId() {
+    var letters = "ABCDEFGHJKLMNPQRSTUVWXYZ";
+    var l1 = letters[Math.floor(Math.random() * letters.length)];
+    var l2 = letters[Math.floor(Math.random() * letters.length)];
+    var num = Math.floor(1000 + Math.random() * 9000);
+    return l1 + l2 + "-" + num;
+  }
+
+  function todayLabel() {
+    var d = new Date();
+    return d.toLocaleDateString("de-DE", { day: "2-digit", month: "2-digit", year: "numeric" });
+  }
+
+  function render() {
+    state.drawCount++;
+    document.getElementById("drawCount").textContent = state.drawCount;
+
+    var budgetInfo = findById(BUDGETS, state.budget);
+    var zeitInfo = findById(ZEITEN, state.zeit);
+    var verkehrInfo = findById(VERKEHRSMITTEL, state.verkehr);
+
+    var result = pickRoute(
+      budgetInfo.cap,
+      zeitInfo.cap,
+      zeitInfo.stops,
+      state.verkehr === "fuss",
+      state.zeit === "ganztag"
+    );
+
+    var headline = result.stops.length > 1 ? zeitInfo.ticketTitle : result.stops[0].name;
+
+    var stopsHtml = result.stops.map(function (s, idx) {
+      return (
+        '<li class="route-stop">' +
+          '<span class="stop-marker" aria-hidden="true">' + s.icon + '</span>' +
+          '<div class="stop-body">' +
+            '<p class="stop-name">' + (result.stops.length > 1 ? (idx + 1) + ". " : "") + s.name + '</p>' +
+            '<p class="stop-mission">' + s.mission + '</p>' +
+            '<p class="stop-meta">' + formatDuration(s.duration) + ' &middot; ' + formatCost(s.cost) + '</p>' +
+          '</div>' +
+        '</li>'
+      );
+    }).join("");
+
+    var primaryIcon = result.stops[0].icon;
+
+    var html =
+      '<div class="ticket" role="group" aria-label="Dein Abenteuer-Los">' +
+        '<div class="ticket-top-row">' +
+          '<div>' +
+            '<div class="ticket-eyebrow">Abenteuer-Los</div>' +
+            '<div class="ticket-name">' + headline + '</div>' +
+          '</div>' +
+          '<div class="stamp" aria-hidden="true">' + primaryIcon + '</div>' +
+        '</div>' +
+        '<div class="ticket-id">Nr. ' + ticketId() + '<br />' + todayLabel() + '</div>' +
+        '<div class="conditions">' +
+          '<span class="chip">' + budgetInfo.icon + ' ' + budgetInfo.label + '</span>' +
+          '<span class="chip">' + zeitInfo.icon + ' ' + zeitInfo.label + '</span>' +
+          '<span class="chip">' + verkehrInfo.icon + ' ' + verkehrInfo.label + '</span>' +
+        '</div>' +
+        '<ol class="route">' + stopsHtml + '</ol>' +
+        '<div class="ticket-totals">' +
+          '<div class="total-item"><span class="total-label">Gesamtdauer</span><span class="total-value">' + formatDuration(result.timeUsed) + '</span></div>' +
+          '<div class="total-item"><span class="total-label">Gesamtkosten</span><span class="total-value">' + formatCost(result.costUsed) + '</span></div>' +
+        '</div>' +
+        '<p class="ticket-fineprint">Gültig für genau ein Abenteuer &middot; nicht umtauschbar &middot; 100&#37; zufällig</p>' +
+      '</div>' +
+      '<div class="reroll-row">' +
+        '<button class="reroll-btn" id="rerollBtn" type="button">🎲 Nochmal ziehen</button>' +
+      '</div>';
+
+    var slot = document.getElementById("ticketSlot");
+    slot.innerHTML = html;
+
+    document.getElementById("rerollBtn").addEventListener("click", render);
+  }
+
+  buildOptions("budgetOptions", BUDGETS, "budget");
+  buildOptions("zeitOptions", ZEITEN, "zeit");
+  buildOptions("verkehrOptions", VERKEHRSMITTEL, "verkehr");
+  refreshOptionStates();
+
+  document.getElementById("drawBtn").addEventListener("click", render);
+
+  render();
+})();
+</script>
+</body>
+</html>
