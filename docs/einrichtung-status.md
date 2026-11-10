@@ -37,3 +37,11 @@ und Stripe Tax / Steuerregistrierung vor dem Livegang prüfen.
 - Getestet: Registrierung, Profil, Serie/Video speichern, Limits, RLS, Login
 - Offen: Google-Login; nach dem Hosting Site-URL/Redirects auf die echte Domain umstellen
 - Anon-Key: Supabase Dashboard → Project Settings → API (öffentlich). Service-Role-Key: dort, **geheim**, nur beim Hoster eintragen.
+
+---
+
+# Pixabay (gratis Stockbilder)
+
+- `IMAGE_PROVIDER=pixabay` und `PIXABAY_API_KEY` (Schlüssel: pixabay.com/api/docs, nur beim Hoster eintragen – nicht ins Repo)
+- Getestet: Bilder werden beim Erstellen automatisch gesucht (~6 s für 6 Szenen), Quellenangabe pro Szene, bleibt nach Reload erhalten
+- Hinweis: Stockfotos passen nicht immer zur historischen Epoche → Bildbeschreibung anpassen oder „Bild“ neu suchen
