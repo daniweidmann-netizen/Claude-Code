@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { Play, Square, Check } from 'lucide-react';
 import { ART_STYLES, VOICES, LANGUAGES, CAPTION_STYLES, MUSIC_TRACKS, PLATFORMS, POST_FREQUENCIES } from '../config/catalog.js';
 import { renderArt } from '../video/art.js';
-import { speak, stopSpeaking, browserTTSAvailable } from '../video/tts.js';
+import { speak, stopSpeaking, browserTTSAvailable, hasHighQualityVoice } from '../video/tts.js';
 import { previewMusic, stopMusicPreview, unlockAudio } from '../video/audio.js';
 
 export function ArtThumb({ style, seed = 4242, motif = 'pyramid', className = '' }) {
@@ -67,9 +67,15 @@ export function VoicePicker({ language, voiceId, onChange }) {
         ))}
       </div>
       <p className="text-xs muted">
-        {browserTTSAvailable() ? 'Vorschau mit der Stimme deines Browsers. ' : 'Dein Browser bietet keine Vorschau-Stimme. '}
-        Im fertigen Video wird die gewählte KI-Stimme des verbundenen TTS-Anbieters verwendet.
+        {browserTTSAvailable() ? 'Vorschau mit der Stimme deines Geräts. ' : 'Dein Browser bietet keine Vorschau-Stimme. '}
+        Im fertigen Video wird die gewählte KI-Stimme des verbundenen Sprach-Anbieters verwendet.
       </p>
+      {browserTTSAvailable() && !hasHighQualityVoice(language) && (
+        <p className="text-xs muted">
+          Tipp für eine natürlichere Vorschau: iPhone → Einstellungen → Bedienungshilfen → Gesprochene Inhalte → Stimmen → Deutsch →
+          eine Stimme mit „Premium“ oder „Erweitert“ laden. Am Mac: Systemeinstellungen → Bedienungshilfen → Gesprochene Inhalte.
+        </p>
+      )}
     </div>
   );
 }

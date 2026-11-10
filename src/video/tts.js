@@ -4,18 +4,29 @@ import { api } from '../lib/api.js';
 
 export const browserTTSAvailable = () => typeof window !== 'undefined' && 'speechSynthesis' in window;
 
+// Qualitätsrangfolge: neuronale/Premium-Stimmen klingen deutlich natürlicher als die Standardstimmen
+const QUALITY = [/premium/i, /enhanced|erweitert|verbessert/i, /neural|natural|online/i, /google/i, /siri/i];
+const quality = (v) => { const i = QUALITY.findIndex((re) => re.test(v.name)); return i === -1 ? QUALITY.length : i; };
+const FEMALE = /female|frau|anna|helena|marie|amelie|petra|katja|leni|zira|samantha|victoria|karen|ava|allison|susan|serena|alice|paulina|mónica|monica|amélie|audrey|joana|sara|nora/i;
+
 function pickVoice(lang, preset) {
   const bcp = LANGUAGES.find((l) => l.id === lang)?.bcp47 || 'de-DE';
   const all = window.speechSynthesis.getVoices();
-  const sameLang = all.filter((v) => v.lang?.toLowerCase().startsWith(bcp.slice(0, 2).toLowerCase()));
-  const exact = sameLang.filter((v) => v.lang === bcp);
-  const pool = exact.length ? exact : sameLang;
+  const base = bcp.slice(0, 2).toLowerCase();
+  const pool = all.filter((v) => v.lang?.toLowerCase().replace('_', '-').startsWith(base));
   if (!pool.length) return null;
-  const femaleHints = /female|frau|anna|helena|marie|amelie|petra|zira|samantha|victoria|karen|google.*(de|fr|it|es)/i;
   const wantsFemale = preset?.gender === 'female';
-  const match = pool.find((v) => femaleHints.test(v.name) === wantsFemale);
-  return match || pool[VOICES.indexOf(preset) % pool.length] || pool[0];
+  const score = (v) => quality(v) * 10 + (v.lang === bcp ? 0 : 3) + (FEMALE.test(v.name) === wantsFemale ? 0 : 5);
+  return [...pool].sort((a, b) => score(a) - score(b))[0];
 }
+
+/** Liste der verfügbaren Stimmen einer Sprache (für Hinweise im UI) */
+export function availableVoices(lang) {
+  if (!browserTTSAvailable()) return [];
+  const base = (LANGUAGES.find((l) => l.id === lang)?.bcp47 || 'de-DE').slice(0, 2).toLowerCase();
+  return window.speechSynthesis.getVoices().filter((v) => v.lang?.toLowerCase().startsWith(base));
+}
+export const hasHighQualityVoice = (lang) => availableVoices(lang).some((v) => quality(v) < 3);
 
 export function speak(text, { lang = 'de', voiceId = 'calm-m', onEnd } = {}) {
   if (!browserTTSAvailable()) { onEnd?.(); return () => {}; }
