@@ -74,6 +74,7 @@ export async function webhookHandler(req, res) {
   try {
     event = stripe.webhooks.constructEvent(req.body, req.headers['stripe-signature'], config.stripeWebhookSecret);
   } catch (e) {
+    console.error('[stripe] Webhook-Signatur ungültig:', e.message.split('\n')[0]);
     return res.status(400).send(`Webhook-Fehler: ${e.message}`);
   }
   try {
@@ -93,8 +94,8 @@ export async function webhookHandler(req, res) {
     }
     res.json({ received: true });
   } catch (e) {
-    console.error('Webhook-Verarbeitung fehlgeschlagen', e);
-    res.status(500).send('Fehler');
+    console.error('[stripe] Webhook-Verarbeitung fehlgeschlagen', e);
+    res.status(500).send(`Verarbeitung fehlgeschlagen: ${e.message}`);
   }
 }
 

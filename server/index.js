@@ -33,6 +33,11 @@ app.get('/api/health', (_req, res) => {
     render: hasFfmpeg ? 'ffmpeg' : 'browser-only',
     stripe: stripeEnabled(),
     supabase: supabaseEnabled(),
+    // Nur Format-Diagnose, niemals Werte ausgeben
+    stripeWebhookSecret: !config.stripeWebhookSecret ? 'fehlt'
+      : config.stripeWebhookSecret !== config.stripeWebhookSecret.trim() ? 'enthaelt-leerzeichen'
+      : /^whsec_[A-Za-z0-9]{20,}$/.test(config.stripeWebhookSecret) ? 'ok-format' : 'falsches-format',
+    stripeKeyMode: config.stripeKey.startsWith('sk_test_') ? 'test' : config.stripeKey.startsWith('sk_live_') ? 'live' : 'unbekannt',
   });
 });
 
