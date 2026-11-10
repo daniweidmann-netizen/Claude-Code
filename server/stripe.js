@@ -118,6 +118,7 @@ async function syncSubscription(sub) {
     updated_at: new Date().toISOString(),
   });
   await admin.from('profiles').update({
+    stripe_customer_id: sub.customer,
     plan: active ? mapped.plan : 'free',
     billing_interval: active ? mapped.interval : null,
     subscription_status: sub.status,
