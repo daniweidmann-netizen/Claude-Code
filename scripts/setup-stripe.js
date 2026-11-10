@@ -79,5 +79,5 @@ if (appUrl.startsWith('https://')) {
   console.log('• Webhook übersprungen (APP_URL ist nicht öffentlich). Lokal: stripe listen --forward-to localhost:8787/api/stripe/webhook');
 }
 
-setEnv({ STRIPE_SECRET_KEY: key, ...env });
+setEnv({ ...(key.includes('proxy-injected') ? {} : { STRIPE_SECRET_KEY: key }), ...env });
 console.log('\n✓ IDs in .env geschrieben. Fertig.');
