@@ -87,6 +87,16 @@ app.use('/api/social', socialRouter);
 // Konto löschen (DSGVO Art. 17 / DSG Art. 32)
 app.delete('/api/account', authenticate, async (req, res) => {
   if (!admin) return res.json({ ok: true, demo: true });
+  // Dateien im Speicher (Bilder, Audio) zuerst entfernen – sie hängen nicht per FK am Nutzer
+  for (const folder of ['images', 'audio', 'music']) {
+    const prefix = `${req.user.id}/${folder}`;
+    for (;;) {
+      const { data: files } = await admin.storage.from('media').list(prefix, { limit: 100 });
+      if (!files?.length) break;
+      await admin.storage.from('media').remove(files.map((f) => `${prefix}/${f.name}`));
+      if (files.length < 100) break;
+    }
+  }
   const { error } = await admin.auth.admin.deleteUser(req.user.id); // Kaskadiert über FK auf alle Tabellen
   if (error) return res.status(500).json({ error: 'Löschen fehlgeschlagen' });
   res.json({ ok: true });
@@ -95,8 +105,14 @@ app.delete('/api/account', authenticate, async (req, res) => {
 // Produktion: gebautes Frontend ausliefern
 const dist = path.join(__dirname, '..', 'dist');
 if (fs.existsSync(dist)) {
-  app.use(express.static(dist));
-  app.get(/^\/(?!api\/).*/, (_req, res) => res.sendFile(path.join(dist, 'index.html')));
+  // Öffentliche Laufzeit-Konfiguration ins HTML einsetzen (nur öffentliche Werte!)
+  const publicConfig = JSON.stringify({ supabaseUrl: config.supabaseUrl, supabaseAnonKey: config.supabaseAnonKey }).replace(/</g, '\\u003c');
+  const html = fs.readFileSync(path.join(dist, 'index.html'), 'utf8')
+    .replace('<head>', `<head><script>window.__TRUEREEL_CONFIG__=${publicConfig}</script>`);
+  const sendIndex = (_req, res) => res.type('html').send(html);
+  app.get('/', sendIndex);
+  app.use(express.static(dist, { index: false, maxAge: '1h' }));
+  app.get(/^\/(?!api\/).*/, sendIndex);
 }
 
 app.listen(config.port, () => {

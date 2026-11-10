@@ -64,9 +64,16 @@ export async function deleteSeries(id) {
 
 // ── Videos ─────────────────────────────────────────────
 // status: draft | ready (gerendert) | pending_approval | scheduled | posted | failed
-export async function listVideos(userId, seriesId) {
+// Listen laden ohne das (grosse) Projekt-JSON – das braucht nur der Editor (getVideo).
+const VIDEO_LIST_COLUMNS = 'id,user_id,series_id,title,episode_key,status,platforms,scheduled_at,posted_at,created_at,updated_at';
+
+export async function listVideos(userId, seriesId, { full = false } = {}) {
   if (DEMO_MODE) return read(LS.videos).filter((v) => v.user_id === userId && (!seriesId || v.series_id === seriesId));
-  return sbList('videos', userId, seriesId ? (q) => q.eq('series_id', seriesId) : undefined);
+  let q = supabase.from('videos').select(full ? '*' : VIDEO_LIST_COLUMNS).eq('user_id', userId).order('created_at', { ascending: false });
+  if (seriesId) q = q.eq('series_id', seriesId);
+  const { data, error } = await q;
+  if (error) throw error;
+  return data;
 }
 
 export async function getVideo(id) {
@@ -91,4 +98,16 @@ export function clearDemoData() {
   Object.values(LS).forEach((k) => localStorage.removeItem(k));
   localStorage.removeItem('tr-demo-profile');
   localStorage.removeItem('tr-demo-connections');
+}
+
+// Bild/Audio (Data-URL) in Supabase Storage ablegen und öffentliche URL zurückgeben.
+// Im Demo-Modus bleibt es bei der Data-URL.
+export async function uploadMedia(userId, dataUrl, kind = 'images') {
+  if (DEMO_MODE || !dataUrl?.startsWith('data:')) return dataUrl;
+  const blob = await (await fetch(dataUrl)).blob();
+  const ext = { 'image/png': 'png', 'image/webp': 'webp', 'audio/mpeg': 'mp3', 'audio/wav': 'wav' }[blob.type] || 'jpg';
+  const path = `${userId}/${kind}/${uid()}.${ext}`;
+  const { error } = await supabase.storage.from('media').upload(path, blob, { contentType: blob.type, cacheControl: '31536000' });
+  if (error) { console.warn('Upload fehlgeschlagen, nutze Data-URL', error.message); return dataUrl; }
+  return supabase.storage.from('media').getPublicUrl(path).data.publicUrl;
 }

@@ -20,7 +20,7 @@ export async function createVideoForEpisode(user, series, episode, onStatus) {
     music: series.music,
   });
   onStatus?.('Bilder werden gesucht …');
-  const withImages = (await fillImages(project).catch(() => null))?.project || project;
+  const withImages = (await fillImages(project, user.id).catch(() => null))?.project || project;
   return saveVideo({
     user_id: user.id,
     series_id: series.id,

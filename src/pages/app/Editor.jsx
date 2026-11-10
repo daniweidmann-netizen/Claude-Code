@@ -5,7 +5,7 @@ import {
   Wand2, Upload, Undo2, ArrowLeft,
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext.jsx';
-import { getVideo, getSeries, saveVideo, deleteVideo, listVideos, uid } from '../../lib/store.js';
+import { getVideo, getSeries, saveVideo, deleteVideo, listVideos, uid, uploadMedia } from '../../lib/store.js';
 import { VOICES, CAPTION_FONTS, MUSIC_TRACKS } from '../../config/catalog.js';
 import { getPlan } from '../../config/plans.js';
 import Player from '../../video/Player.jsx';
@@ -121,7 +121,7 @@ export default function Editor() {
   const regenImage = async (scene) => {
     setBusy(`img-${scene.id}`);
     const seed = newSeed();
-    const r = await generateImage({ prompt: scene.visual || scene.text, style: project.artStyle, seed });
+    const r = await generateImage({ prompt: scene.visual || scene.text, style: project.artStyle, seed, userId: user.id });
     updateScene(scene.id, { seed, imageUrl: r.imageUrl || null, credit: r.credit || null });
     if (!r.imageUrl) setMsg({ tone: 'info', text: 'Kein Bild gefunden bzw. kein Bild-Modul verbunden – neue Platzhalter-Grafik erzeugt. Tipp: Bildbeschreibung (englisch) anpassen.' });
     setBusy(null);
@@ -132,7 +132,7 @@ export default function Editor() {
     const next = [];
     for (const s of scenes) {
       const seed = newSeed();
-      const r = await generateImage({ prompt: s.visual || s.text, style: project.artStyle, seed });
+      const r = await generateImage({ prompt: s.visual || s.text, style: project.artStyle, seed, userId: user.id });
       next.push({ ...s, seed, imageUrl: r.imageUrl || null, credit: r.credit || null });
     }
     updateProject({ scenes: next });
@@ -147,7 +147,7 @@ export default function Editor() {
     for (const s of scenes) {
       const r = await synthesize(s.text, { lang: project.language, voiceId: s.voiceId || project.voiceId });
       if (r) any = true;
-      next.push(r ? { ...s, audioUrl: r.audioUrl, audioDuration: r.duration } : s);
+      next.push(r ? { ...s, audioUrl: await uploadMedia(user.id, r.audioUrl, 'audio'), audioDuration: r.duration } : s);
     }
     updateProject({ scenes: next });
     setMsg(any

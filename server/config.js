@@ -2,8 +2,10 @@ import 'dotenv/config';
 
 export const config = {
   port: Number(process.env.PORT || 8787),
-  appUrl: process.env.APP_URL || 'http://localhost:5173',
+  // Render setzt RENDER_EXTERNAL_URL automatisch (z. B. https://truereel.onrender.com)
+  appUrl: process.env.APP_URL || process.env.RENDER_EXTERNAL_URL || 'http://localhost:5173',
   supabaseUrl: process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL || '',
+  supabaseAnonKey: process.env.SUPABASE_ANON_KEY || process.env.VITE_SUPABASE_ANON_KEY || '',
   supabaseServiceKey: process.env.SUPABASE_SERVICE_ROLE_KEY || '',
   stripeKey: process.env.STRIPE_SECRET_KEY || '',
   stripeWebhookSecret: process.env.STRIPE_WEBHOOK_SECRET || '',

@@ -45,3 +45,12 @@ und Stripe Tax / Steuerregistrierung vor dem Livegang prüfen.
 - `IMAGE_PROVIDER=pixabay` und `PIXABAY_API_KEY` (Schlüssel: pixabay.com/api/docs, nur beim Hoster eintragen – nicht ins Repo)
 - Getestet: Bilder werden beim Erstellen automatisch gesucht (~6 s für 6 Szenen), Quellenangabe pro Szene, bleibt nach Reload erhalten
 - Hinweis: Stockfotos passen nicht immer zur historischen Epoche → Bildbeschreibung anpassen oder „Bild“ neu suchen
+
+---
+
+# Hosting (Render, kostenlos)
+
+- `render.yaml` (Blueprint) + `Dockerfile` (inkl. FFmpeg); öffentliche Supabase-Werte setzt der Server zur Laufzeit ins HTML
+- Migration `0003_media_bucket.sql` eingespielt: Bilder/Audio liegen im Storage-Bucket `media` (Video-Datensatz 2 KB statt 2,6 MB)
+- Produktionsmodus lokal getestet: Registrierung, Speichern, Limits, Login, MP4-Export mit Storage-Bildern
+- Aufräumen: 6 Testbilder im Bucket `media` (Supabase → Storage → media) können gelöscht werden

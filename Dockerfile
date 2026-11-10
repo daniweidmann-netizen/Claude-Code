@@ -5,9 +5,7 @@ WORKDIR /app
 COPY package*.json ./
 RUN npm ci
 COPY . .
-# VITE_* Variablen werden beim Build ins Frontend eingebettet
-ARG VITE_SUPABASE_URL
-ARG VITE_SUPABASE_ANON_KEY
+# Öffentliche Supabase-Werte setzt der Server zur Laufzeit ein (keine Build-Variablen nötig)
 RUN npm run build && npm prune --omit=dev
 ENV NODE_ENV=production PORT=8787
 EXPOSE 8787

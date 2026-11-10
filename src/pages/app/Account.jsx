@@ -111,7 +111,7 @@ export default function Account() {
   };
 
   const exportData = async () => {
-    const data = { exported_at: new Date().toISOString(), profile, series: await listSeries(user.id), videos: await listVideos(user.id), social_connections: conns };
+    const data = { exported_at: new Date().toISOString(), profile, series: await listSeries(user.id), videos: await listVideos(user.id, null, { full: true }), social_connections: conns };
     const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
     const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'truereel-daten.json'; a.click();
   };

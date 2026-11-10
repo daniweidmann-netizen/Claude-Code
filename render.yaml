@@ -1,0 +1,50 @@
+# Render Blueprint – kostenloses Hosting für TrueReel (Frontend + API + FFmpeg in einem Container)
+# Einrichtung: render.com → New → Blueprint → dieses Repository wählen.
+# Werte mit "sync: false" fragt Render beim Anlegen ab (geheime Schlüssel – nie ins Repo).
+services:
+  - type: web
+    name: truereel
+    runtime: docker
+    plan: free
+    region: frankfurt
+    branch: claude/truereel-saas-webapp-v9szoj
+    healthCheckPath: /api/health
+    autoDeploy: true
+    envVars:
+      # ── Supabase ──────────────────────────────────────
+      - key: SUPABASE_URL
+        value: https://rocgdmpjiwytnsjgjpcj.supabase.co
+      - key: SUPABASE_ANON_KEY   # öffentlicher Schlüssel (steht ohnehin im Browser)
+        value: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJvY2dkbXBqaXd5dG5zamdqcGNqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTQzMDE2OTEsImV4cCI6MjEwOTg3NzY5MX0.QMZ7wEcWyahQE9o27x5kLc7H4hBS6mwgyAjxUV3huWA
+      - key: SUPABASE_SERVICE_ROLE_KEY   # GEHEIM: Supabase → Project Settings → API Keys → service_role
+        sync: false
+      # ── Stripe (Testmodus) ────────────────────────────
+      - key: STRIPE_SECRET_KEY   # GEHEIM: sk_test_…
+        sync: false
+      - key: STRIPE_WEBHOOK_SECRET   # GEHEIM: whsec_… (nach dem ersten Deploy)
+        sync: false
+      - key: STRIPE_PRICE_HOBBY_MONTHLY
+        value: price_1UaDvXCAr5FN2JA9BkjIw8tz
+      - key: STRIPE_PRICE_HOBBY_YEARLY
+        value: price_1UaDvYCAr5FN2JA9ljtChrXb
+      - key: STRIPE_PRICE_DAILY_MONTHLY
+        value: price_1UaDvYCAr5FN2JA9Bp56DdWH
+      - key: STRIPE_PRICE_DAILY_YEARLY
+        value: price_1UaDvZCAr5FN2JA9iuQXEdum
+      - key: STRIPE_PRICE_PRO_MONTHLY
+        value: price_1UaDvZCAr5FN2JA9Oa6Rlvtm
+      - key: STRIPE_PRICE_PRO_YEARLY
+        value: price_1UaDvaCAr5FN2JA9DFlpYuSn
+      - key: STRIPE_PORTAL_CONFIG
+        value: bpc_1UaDvaCAr5FN2JA9K2VPfAby
+      # ── Inhalte ───────────────────────────────────────
+      - key: LLM_PROVIDER
+        value: mock
+      - key: IMAGE_PROVIDER
+        value: pixabay
+      - key: PIXABAY_API_KEY   # pixabay.com/api/docs
+        sync: false
+      - key: TTS_PROVIDER
+        value: mock
+      - key: STATE_SECRET
+        generateValue: true
