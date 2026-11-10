@@ -11,11 +11,12 @@ const LANG_HINT = {
   es: 'Habla un español natural y claro.',
 };
 
+// Stil-Anweisungen auf Englisch (sprachneutral) – die Sprache selbst steuert LANG_HINT
 const STYLE = {
-  'calm-m': 'Ruhiger, warmer Erzähler wie in einer guten Dokumentation. Natürliche Pausen, nicht gehetzt.',
-  'warm-f': 'Warme, freundliche Erzählerin. Lebendig, aber nicht übertrieben.',
-  'story-m': 'Spannender Geschichtenerzähler, leicht geheimnisvoll, mit Betonung auf Schlüsselwörtern.',
-  'energy-f': 'Energiegeladen und motivierend wie ein Social-Media-Creator, aber gut verständlich.',
+  'calm-m': 'Calm, warm narrator like a good documentary. Natural pauses, never rushed.',
+  'warm-f': 'Warm, friendly female narrator. Lively but not exaggerated.',
+  'story-m': 'Gripping storyteller, slightly mysterious, emphasizing key words.',
+  'energy-f': 'Energetic and motivating like a social media creator, but easy to understand.',
 };
 
 export default {
@@ -29,7 +30,7 @@ export default {
         model: process.env.OPENAI_TTS_MODEL || 'gpt-4o-mini-tts',
         voice: preset.providerVoice.openai,
         input: text,
-        instructions: `${LANG_HINT[language] || LANG_HINT.de} ${STYLE[preset.id] || ''} Für ein kurzes Social-Media-Video im Hochformat.`,
+        instructions: `${LANG_HINT[language] || LANG_HINT.de} ${STYLE[preset.id] || ''} This is the voiceover for a short vertical social media video. Use the pronunciation of a native speaker of that language.`,
         response_format: 'mp3',
       }),
     });
