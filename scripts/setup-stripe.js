@@ -12,7 +12,8 @@ if (!key || /x{3}$/.test(key)) {
   console.error('Bitte STRIPE_SECRET_KEY setzen (Stripe Dashboard → Entwickler → API-Schlüssel).');
   process.exit(1);
 }
-const stripe = new Stripe(key);
+// Hinter einem HTTPS-Proxy (z. B. Cloud-Umgebung) den fetch-Client nutzen: NODE_USE_ENV_PROXY=1
+const stripe = new Stripe(key, process.env.NODE_USE_ENV_PROXY ? { httpClient: Stripe.createFetchHttpClient() } : {});
 const appUrl = process.env.APP_URL || 'http://localhost:5173';
 
 const PLANS = [
@@ -62,6 +63,7 @@ const portal = await stripe.billingPortal.configurations.create({
     subscription_update: { enabled: true, default_allowed_updates: ['price'], products: portalProducts, proration_behavior: 'create_prorations' },
   },
 });
+env.STRIPE_PORTAL_CONFIG = portal.id;
 console.log(`✓ Kundenportal konfiguriert (${portal.id})`);
 
 if (appUrl.startsWith('https://')) {

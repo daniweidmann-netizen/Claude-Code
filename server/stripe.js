@@ -3,7 +3,9 @@ import Stripe from 'stripe';
 import { config, stripeEnabled, planFromPrice } from './config.js';
 import { admin, authenticate, getProfile } from './supabaseAdmin.js';
 
-export const stripe = stripeEnabled() ? new Stripe(config.stripeKey) : null;
+export const stripe = stripeEnabled()
+  ? new Stripe(config.stripeKey, process.env.NODE_USE_ENV_PROXY ? { httpClient: Stripe.createFetchHttpClient() } : {})
+  : null;
 const router = express.Router();
 
 async function ensureCustomer(user) {
@@ -49,6 +51,7 @@ router.post('/portal', authenticate, async (req, res) => {
     const profile = await getProfile(req.user.id);
     if (!profile?.stripe_customer_id) return res.status(400).json({ error: 'Kein Abo vorhanden' });
     const params = { customer: profile.stripe_customer_id, return_url: `${config.appUrl}/app/account` };
+    if (config.stripePortalConfig) params.configuration = config.stripePortalConfig;
     if (req.body?.flow === 'cancel' && profile.stripe_subscription_id) {
       params.flow_data = {
         type: 'subscription_cancel',

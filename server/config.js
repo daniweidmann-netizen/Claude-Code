@@ -7,6 +7,7 @@ export const config = {
   supabaseServiceKey: process.env.SUPABASE_SERVICE_ROLE_KEY || '',
   stripeKey: process.env.STRIPE_SECRET_KEY || '',
   stripeWebhookSecret: process.env.STRIPE_WEBHOOK_SECRET || '',
+  stripePortalConfig: process.env.STRIPE_PORTAL_CONFIG || '',
   prices: {
     hobby: { monthly: process.env.STRIPE_PRICE_HOBBY_MONTHLY, yearly: process.env.STRIPE_PRICE_HOBBY_YEARLY },
     daily: { monthly: process.env.STRIPE_PRICE_DAILY_MONTHLY, yearly: process.env.STRIPE_PRICE_DAILY_YEARLY },

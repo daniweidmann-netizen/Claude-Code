@@ -1,0 +1,25 @@
+# Stripe – Testmodus (angelegt mit `npm run setup:stripe`)
+
+Diese IDs sind **nicht geheim** und gehören beim Hosting in die Umgebungsvariablen.
+Für den Livebetrieb das Skript mit dem Live-Schlüssel (`sk_live_…`) erneut ausführen – dort entstehen neue IDs.
+
+```
+STRIPE_PRICE_HOBBY_MONTHLY=price_1UaDvXCAr5FN2JA9BkjIw8tz
+STRIPE_PRICE_HOBBY_YEARLY=price_1UaDvYCAr5FN2JA9ljtChrXb
+STRIPE_PRICE_DAILY_MONTHLY=price_1UaDvYCAr5FN2JA9Bp56DdWH
+STRIPE_PRICE_DAILY_YEARLY=price_1UaDvZCAr5FN2JA9iuQXEdum
+STRIPE_PRICE_PRO_MONTHLY=price_1UaDvZCAr5FN2JA9Oa6Rlvtm
+STRIPE_PRICE_PRO_YEARLY=price_1UaDvaCAr5FN2JA9DFlpYuSn
+STRIPE_PORTAL_CONFIG=bpc_1UaDvaCAr5FN2JA9K2VPfAby
+```
+
+| Plan | Monatlich | Jährlich (−20 %) |
+|---|---|---|
+| Hobby | $17.00 | $163.20 |
+| Daily | $35.00 | $336.00 |
+| Pro | $62.00 | $595.20 |
+
+Kundenportal: Kündigung zum Periodenende, Planwechsel (anteilig), Zahlungsmethode, Rechnungen.
+
+Noch offen: Webhook (sobald die App eine öffentliche https-Adresse hat, Skript erneut ausführen)
+und Stripe Tax / Steuerregistrierung vor dem Livegang prüfen.
