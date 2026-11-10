@@ -28,6 +28,15 @@ export function provider(kind) {
   return mod;
 }
 
+// Diagnose ohne Werte: gewünschter Anbieter und ob der nötige Schlüssel gesetzt ist
+export function providerDiagnose() {
+  return Object.fromEntries(Object.keys(REGISTRY).map((k) => {
+    const wanted = config.providers[k];
+    const key = REQUIRED_KEYS[wanted];
+    return [k, { gewuenscht: wanted, bekannt: !!REGISTRY[k][wanted], schluessel: key ? (process.env[key] ? `${key} gesetzt` : `${key} FEHLT`) : 'nicht nötig' }];
+  }));
+}
+
 export function providerStatus() {
   return Object.fromEntries(Object.keys(REGISTRY).map((k) => [k, provider(k).name]));
 }

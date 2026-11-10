@@ -7,7 +7,7 @@ import os from 'node:os';
 import { fileURLToPath } from 'node:url';
 import { config, stripeEnabled, supabaseEnabled } from './config.js';
 import { authenticate, getProfile, admin } from './supabaseAdmin.js';
-import { provider, providerStatus } from './providers/index.js';
+import { provider, providerStatus, providerDiagnose } from './providers/index.js';
 import { ffmpegAvailable, transcodeToMp4 } from './providers/render.js';
 import stripeRouter, { webhookHandler } from './stripe.js';
 import socialRouter from './social/router.js';
@@ -30,6 +30,7 @@ app.get('/api/health', (_req, res) => {
   res.json({
     ok: true,
     providers: providerStatus(),
+    providerDiagnose: providerDiagnose(),
     render: hasFfmpeg ? 'ffmpeg' : 'browser-only',
     stripe: stripeEnabled(),
     supabase: supabaseEnabled(),
