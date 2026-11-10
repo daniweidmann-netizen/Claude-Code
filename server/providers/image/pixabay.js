@@ -19,17 +19,29 @@ function keywords(prompt) {
 
 async function search(params) {
   const url = `${API}?${new URLSearchParams({ key: process.env.PIXABAY_API_KEY, safesearch: 'true', per_page: '30', ...params })}`;
-  const res = await fetch(url);
+  const res = await fetch(url, { headers: HEADERS });
   if (res.status === 429) throw new Error('Pixabay-Limit erreicht – bitte kurz warten.');
   if (!res.ok) throw new Error(`Pixabay-Fehler ${res.status}`);
   return (await res.json()).hits || [];
 }
 
+const wait = (ms) => new Promise((r) => setTimeout(r, ms));
+const HEADERS = { 'User-Agent': 'TrueReel/1.0 (+https://truereel-der5.onrender.com)' };
+
+// Pixabays CDN drosselt schnelle Folge-Downloads (429) → mit Pause erneut versuchen
 async function toDataUrl(src) {
-  const res = await fetch(src);
-  if (!res.ok) throw new Error(`Bild-Download fehlgeschlagen (${res.status})`);
-  const type = res.headers.get('content-type') || 'image/jpeg';
-  return `data:${type};base64,${Buffer.from(await res.arrayBuffer()).toString('base64')}`;
+  let last = 0;
+  for (let attempt = 0; attempt < 4; attempt++) {
+    if (attempt) await wait(800 * 2 ** (attempt - 1));
+    const res = await fetch(src, { headers: HEADERS });
+    if (res.ok) {
+      const type = res.headers.get('content-type') || 'image/jpeg';
+      return `data:${type};base64,${Buffer.from(await res.arrayBuffer()).toString('base64')}`;
+    }
+    last = res.status;
+    if (res.status !== 429 && res.status < 500) break;
+  }
+  throw new Error(`Bild-Download fehlgeschlagen (${last})`);
 }
 
 export default {
@@ -50,8 +62,14 @@ export default {
       const hits = await search({ ...a, image_type });
       if (!hits.length) continue;
       const hit = hits[Math.abs(seed) % hits.length];
+      let imageUrl;
+      try {
+        imageUrl = await toDataUrl(hit.largeImageURL || hit.webformatURL);
+      } catch {
+        imageUrl = await toDataUrl(hit.webformatURL); // kleinere Variante als Rückfall
+      }
       return {
-        imageUrl: await toDataUrl(hit.largeImageURL || hit.webformatURL),
+        imageUrl,
         credit: { source: 'Pixabay', author: hit.user, url: hit.pageURL },
       };
     }

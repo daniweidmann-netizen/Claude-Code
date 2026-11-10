@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 @layer base {
-  html { -webkit-tap-highlight-color: transparent; scroll-behavior: smooth; }
+  html { -webkit-tap-highlight-color: transparent; scroll-behavior: smooth; scroll-padding-top: 5rem; }
   body { @apply bg-white text-navy-900 antialiased dark:bg-navy-950 dark:text-navy-50; font-feature-settings: 'cv11', 'ss01'; }
   h1, h2, h3 { @apply tracking-tight; }
   :focus-visible { @apply outline-none ring-2 ring-accent-400 ring-offset-2 ring-offset-white dark:ring-offset-navy-950; }
