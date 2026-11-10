@@ -21,17 +21,14 @@ export function Impressum() {
   return (
     <LegalPage title="Impressum">
       <h2>Angaben zum Anbieter</h2>
-      <p><P>{C.legalName}</P><br /><P>{C.legalForm}</P><br /><P>{C.street}</P><br /><P>{C.zipCity}</P><br /><P>{C.country}</P></p>
+      <p>{C.legalName}<br />Inhaber: <P>{C.representative}</P><br />{C.street}<br />{C.zipCity}<br />{C.country}</p>
+      <p>Rechtsform: {C.legalForm}</p>
       <h2>Kontakt</h2>
-      <p>E-Mail: <a className="underline" href={`mailto:${SITE.contactEmail}`}>{SITE.contactEmail}</a><br />Telefon: <P>{C.phone}</P></p>
-      <h2>Vertretungsberechtigt</h2>
-      <p><P>{C.representative}</P></p>
+      <p>E-Mail: <a className="underline" href={`mailto:${SITE.contactEmail}`}>{SITE.contactEmail}</a>{C.phone && <><br />Telefon: {C.phone}</>}</p>
       <h2>Register & Steuern</h2>
-      <p>Handelsregister / UID: <P>{C.register}</P><br />MWST-/USt-IdNr.: <P>{C.vatId}</P></p>
+      <p>{C.register}<br />{C.vatId}</p>
       <h2>Verantwortlich für den Inhalt</h2>
       <p><P>{C.representative}</P>, Anschrift wie oben.</p>
-      <h2>Online-Streitbeilegung (nur bei Sitz in der EU relevant)</h2>
-      <p>Die EU-Kommission stellt eine Plattform zur Online-Streitbeilegung bereit. Wir sind nicht verpflichtet und nicht bereit, an Streitbeilegungsverfahren vor einer Verbraucherschlichtungsstelle teilzunehmen. <P>[anpassen]</P></p>
       <h2>Haftung für Inhalte und Links</h2>
       <p>Wir erstellen die Inhalte dieser Website mit Sorgfalt, übernehmen aber keine Gewähr für Richtigkeit, Vollständigkeit und Aktualität. Für Inhalte externer Links sind ausschliesslich deren Betreiber verantwortlich.</p>
     </LegalPage>
@@ -43,7 +40,7 @@ export function Datenschutz() {
     <LegalPage title="Datenschutzerklärung">
       <p className="mt-6">Diese Erklärung informiert dich darüber, wie {SITE.name} personenbezogene Daten bearbeitet – gemäss der EU-Datenschutz-Grundverordnung (DSGVO) und dem Schweizer Datenschutzgesetz (DSG).</p>
       <h2>1. Verantwortliche Stelle</h2>
-      <p><P>{C.legalName}</P>, <P>{C.street}</P>, <P>{C.zipCity}</P>, <P>{C.country}</P> · <a className="underline" href={`mailto:${SITE.contactEmail}`}>{SITE.contactEmail}</a></p>
+      <p>{C.legalName}, Inhaber: <P>{C.representative}</P>, {C.street}, {C.zipCity}, {C.country} · <a className="underline" href={`mailto:${SITE.contactEmail}`}>{SITE.contactEmail}</a></p>
       <p>EU-Vertretung nach Art. 27 DSGVO (falls Sitz ausserhalb der EU): <P>[Name, Anschrift oder „nicht erforderlich“]</P></p>
       <h2>2. Welche Daten wir bearbeiten</h2>
       <ul>
@@ -62,7 +59,7 @@ export function Datenschutz() {
       <p>Wir verwenden keine Tracking- oder Werbe-Cookies. Lokaler Browser-Speicher wird nur für Anmeldung, Sprache und Darstellung (hell/dunkel) genutzt. Die Schrift „Inter“ wird von unserem eigenen Server geladen, nicht von Google.</p>
       <h2>4. Auftragsverarbeiter und Empfänger</h2>
       <ul>
-        <li><strong>Supabase</strong> (Datenbank, Authentifizierung) – Region: <P>[z. B. EU – Frankfurt]</P></li>
+        <li><strong>Supabase</strong> (Datenbank, Authentifizierung) – Region: EU (Frankfurt, Deutschland)</li>
         <li><strong>Stripe</strong> (Zahlungsabwicklung)</li>
         <li><strong>KI-Anbieter</strong> für Skript, Bild und Stimme: <P>[z. B. Anthropic, OpenAI, ElevenLabs]</P> – es werden nur die für die Generierung nötigen Texte übermittelt.</li>
         <li><strong>Hosting</strong>: <P>[Anbieter, Region]</P></li>
@@ -84,7 +81,7 @@ export function AGB() {
   return (
     <LegalPage title="Allgemeine Geschäftsbedingungen (AGB)">
       <h2>1. Geltungsbereich</h2>
-      <p>Diese AGB gelten für die Nutzung von {SITE.name}, angeboten von <P>{C.legalName}</P> („wir“).</p>
+      <p>Diese AGB gelten für die Nutzung von {SITE.name}, angeboten von {C.legalName} (Inhaber: <P>{C.representative}</P>), {C.street}, {C.zipCity}, {C.country} („wir“).</p>
       <h2>2. Leistungen</h2>
       <p>{SITE.name} erstellt mithilfe von KI kurze Videos (Skript, Bilder, Stimme, Untertitel, Musik) und kann diese auf verbundene Plattformen posten. Der Umfang richtet sich nach dem gewählten Plan. Wir schulden keine bestimmte Reichweite, Aufrufzahl oder Einnahmen.</p>
       <h2>3. Gratis-Test</h2>

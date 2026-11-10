@@ -3,18 +3,18 @@
 export const SITE = {
   name: 'TrueReel',
   claim: 'Faceless Videos, die laufen – ehrlich, einfach, automatisch.',
-  contactEmail: 'hallo@truereel.app', // TODO: echte Adresse
-  supportEmail: 'support@truereel.app', // TODO: echte Adresse
+  contactEmail: 'daniweidmann@icloud.com', // später durch eigene Domain-Adresse ersetzen
+  supportEmail: 'daniweidmann@icloud.com',
   company: {
-    legalName: '[Firmenname / Vor- und Nachname]',
-    legalForm: '[Rechtsform, z. B. Einzelunternehmen / GmbH]',
-    street: '[Strasse Nr.]',
-    zipCity: '[PLZ Ort]',
-    country: '[Land]',
-    register: '[Handelsregister / UID-Nr., falls vorhanden]',
-    vatId: '[MWST-/USt-IdNr., falls vorhanden]',
-    representative: '[Vertretungsberechtigte Person]',
-    phone: '[Telefon, optional]',
+    legalName: 'Truereel',
+    legalForm: 'Projekt in Gründung (noch keine eingetragene Rechtsform)',
+    street: 'Chriesiweg 4',
+    zipCity: '8310 Grafstal',
+    country: 'Schweiz',
+    register: 'Kein Handelsregistereintrag',
+    vatId: 'Keine MWST-Nummer',
+    representative: '[Vor- und Nachname der verantwortlichen Person]', // gesetzlich nötig, solange keine Firma eingetragen ist
+    phone: null,
   },
   // Social Proof erst einschalten, wenn echte Zahlen / Stimmen vorliegen.
   showSocialProof: false,
