@@ -21,14 +21,14 @@ export function Impressum() {
   return (
     <LegalPage title="Impressum">
       <h2>Angaben zum Anbieter</h2>
-      <p>{C.legalName}<br />Inhaber: <P>{C.representative}</P><br />{C.street}<br />{C.zipCity}<br />{C.country}</p>
+      <p>{C.legalName}<br />Inhaber: {C.representative}<br />{C.street}<br />{C.zipCity}<br />{C.country}</p>
       <p>Rechtsform: {C.legalForm}</p>
       <h2>Kontakt</h2>
       <p>E-Mail: <a className="underline" href={`mailto:${SITE.contactEmail}`}>{SITE.contactEmail}</a>{C.phone && <><br />Telefon: {C.phone}</>}</p>
       <h2>Register & Steuern</h2>
       <p>{C.register}<br />{C.vatId}</p>
       <h2>Verantwortlich für den Inhalt</h2>
-      <p><P>{C.representative}</P>, Anschrift wie oben.</p>
+      <p>{C.representative}, Anschrift wie oben.</p>
       <h2>Haftung für Inhalte und Links</h2>
       <p>Wir erstellen die Inhalte dieser Website mit Sorgfalt, übernehmen aber keine Gewähr für Richtigkeit, Vollständigkeit und Aktualität. Für Inhalte externer Links sind ausschliesslich deren Betreiber verantwortlich.</p>
     </LegalPage>
@@ -40,7 +40,7 @@ export function Datenschutz() {
     <LegalPage title="Datenschutzerklärung">
       <p className="mt-6">Diese Erklärung informiert dich darüber, wie {SITE.name} personenbezogene Daten bearbeitet – gemäss der EU-Datenschutz-Grundverordnung (DSGVO) und dem Schweizer Datenschutzgesetz (DSG).</p>
       <h2>1. Verantwortliche Stelle</h2>
-      <p>{C.legalName}, Inhaber: <P>{C.representative}</P>, {C.street}, {C.zipCity}, {C.country} · <a className="underline" href={`mailto:${SITE.contactEmail}`}>{SITE.contactEmail}</a></p>
+      <p>{C.legalName}, Inhaber: {C.representative}, {C.street}, {C.zipCity}, {C.country} · <a className="underline" href={`mailto:${SITE.contactEmail}`}>{SITE.contactEmail}</a></p>
       <p>EU-Vertretung nach Art. 27 DSGVO (falls Sitz ausserhalb der EU): <P>[Name, Anschrift oder „nicht erforderlich“]</P></p>
       <h2>2. Welche Daten wir bearbeiten</h2>
       <ul>
@@ -81,7 +81,7 @@ export function AGB() {
   return (
     <LegalPage title="Allgemeine Geschäftsbedingungen (AGB)">
       <h2>1. Geltungsbereich</h2>
-      <p>Diese AGB gelten für die Nutzung von {SITE.name}, angeboten von {C.legalName} (Inhaber: <P>{C.representative}</P>), {C.street}, {C.zipCity}, {C.country} („wir“).</p>
+      <p>Diese AGB gelten für die Nutzung von {SITE.name}, angeboten von {C.legalName} (Inhaber: {C.representative}), {C.street}, {C.zipCity}, {C.country} („wir“).</p>
       <h2>2. Leistungen</h2>
       <p>{SITE.name} erstellt mithilfe von KI kurze Videos (Skript, Bilder, Stimme, Untertitel, Musik) und kann diese auf verbundene Plattformen posten. Der Umfang richtet sich nach dem gewählten Plan. Wir schulden keine bestimmte Reichweite, Aufrufzahl oder Einnahmen.</p>
       <h2>3. Gratis-Test</h2>

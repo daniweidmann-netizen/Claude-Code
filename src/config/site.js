@@ -13,7 +13,7 @@ export const SITE = {
     country: 'Schweiz',
     register: 'Kein Handelsregistereintrag',
     vatId: 'Keine MWST-Nummer',
-    representative: '[Vor- und Nachname der verantwortlichen Person]', // gesetzlich nötig, solange keine Firma eingetragen ist
+    representative: 'Daniel Weidmann',
     phone: null,
   },
   // Social Proof erst einschalten, wenn echte Zahlen / Stimmen vorliegen.
