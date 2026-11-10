@@ -5,7 +5,7 @@ import { useAuth } from '../../context/AuthContext.jsx';
 import { useAppData } from '../../lib/useAppData.js';
 import { PageHeader } from '../../components/AppLayout.jsx';
 import { Notice, Spinner, Toggle } from '../../components/ui.jsx';
-import { NICHES, ART_STYLES, VOICES, LANGUAGES } from '../../config/catalog.js';
+import { NICHES, ART_STYLES, VOICES, LANGUAGES, VIDEO_LENGTHS } from '../../config/catalog.js';
 import { getPlan } from '../../config/plans.js';
 import { deleteSeries, saveSeries } from '../../lib/store.js';
 import { createVideoForEpisode } from '../../lib/videoFlow.js';
@@ -134,6 +134,7 @@ export function SeriesDetail() {
             <div><label className="label" htmlFor="s-voice">Stimme</label><select id="s-voice" className="input" value={draft.voice_id} onChange={(e) => set({ voice_id: e.target.value })}>{VOICES.map((s) => <option key={s.id} value={s.id}>{s.label}</option>)}</select></div>
           </div>
           <div><label className="label" htmlFor="s-lang">Sprache</label><select id="s-lang" className="input" value={draft.language} onChange={(e) => set({ language: e.target.value })}>{LANGUAGES.map((s) => <option key={s.id} value={s.id}>{s.label}</option>)}</select></div>
+          <div><label className="label" htmlFor="s-len">Videolänge</label><select id="s-len" className="input" value={draft.target_seconds || 65} onChange={(e) => set({ target_seconds: +e.target.value })}>{VIDEO_LENGTHS.map((l) => <option key={l.seconds} value={l.seconds}>{l.label} – {l.desc}</option>)}</select></div>
           <div><p className="label">Zeitplan</p><SchedulePicker schedule={draft.schedule} onChange={(schedule) => set({ schedule })} /></div>
           <div><p className="label">Plattformen</p><PlatformPicker value={draft.platforms} onChange={(platforms) => set({ platforms })} max={Math.max(1, plan.limits.platforms)} /></div>
           <Toggle id="s-approval" checked={draft.require_approval} onChange={(require_approval) => set({ require_approval })} label="Freigabe vor dem Posten" />

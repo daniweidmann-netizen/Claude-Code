@@ -12,6 +12,7 @@ export async function createVideoForEpisode(user, series, episode, onStatus) {
     seriesTitle: series.title,
     episodeKey: episode?.key,
     episodeTitle: episode?.title,
+    targetSeconds: series.target_seconds || 65,
   });
   const project = scriptToProject(script, {
     niche: series.niche,

@@ -6,7 +6,7 @@ import {
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext.jsx';
 import { getVideo, getSeries, saveVideo, deleteVideo, listVideos, uid, uploadMedia } from '../../lib/store.js';
-import { VOICES, CAPTION_FONTS, MUSIC_TRACKS } from '../../config/catalog.js';
+import { VOICES, CAPTION_FONTS, MUSIC_TRACKS, MONETIZATION_MIN_SECONDS } from '../../config/catalog.js';
 import { getPlan } from '../../config/plans.js';
 import Player from '../../video/Player.jsx';
 import { newSeed, timeline, scriptToProject } from '../../video/project.js';
@@ -163,7 +163,7 @@ export default function Editor() {
     if (!confirm('Skript neu schreiben? Deine Textänderungen gehen verloren.')) return;
     setBusy('script');
     try {
-      const script = await regenerateScript({ niche: series?.niche, topic: series?.topic, language: project.language, seriesTitle: series?.title, episodeKey: video.episode_key, episodeTitle: video.title });
+      const script = await regenerateScript({ niche: series?.niche, topic: series?.topic, language: project.language, seriesTitle: series?.title, episodeKey: video.episode_key, episodeTitle: video.title, targetSeconds: series?.target_seconds || 65 });
       const p = scriptToProject(script, project);
       updateProject({ scenes: p.scenes, title: p.title, notice: p.notice, archiveQuery: p.archiveQuery });
     } catch (e) { setMsg({ tone: 'error', text: e.message }); }
@@ -239,6 +239,15 @@ export default function Editor() {
         <span className="text-xs muted">{saved ? 'Gespeichert' : 'Speichert …'}</span>
       </div>
       {project.notice && <Notice tone="warn" className="mb-4">{project.notice}</Notice>}
+      {(series?.target_seconds || 65) >= MONETIZATION_MIN_SECONDS && tl.total < MONETIZATION_MIN_SECONDS && (
+        <Notice tone="warn" className="mb-4 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+          <span>Dieses Video dauert ca. <strong>{Math.round(tl.total)} s</strong>. Für die TikTok-Monetarisierung muss es <strong>über 60 s</strong> lang sein.{scenes.some((s) => !s.audioUrl) ? ' (Die genaue Länge steht nach dem Voiceover fest.)' : ''}</span>
+          <span className="flex shrink-0 gap-2">
+            <button className="btn-outline px-3 py-1.5 text-xs" onClick={addScene}>Szene hinzufügen</button>
+            <button className="btn-dark px-3 py-1.5 text-xs" onClick={rewrite} disabled={!!busy}>Skript neu (länger)</button>
+          </span>
+        </Notice>
+      )}
       {msg && <Notice tone={msg.tone} className="mb-4">{msg.text}</Notice>}
 
       <div className="grid gap-6 lg:grid-cols-[1fr_320px]">

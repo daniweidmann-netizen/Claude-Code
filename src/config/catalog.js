@@ -74,3 +74,12 @@ export const PLATFORMS = [
   { id: 'instagram', label: 'Instagram Reels' },
   { id: 'youtube', label: 'YouTube Shorts' },
 ];
+
+// Ziel-Videolänge. TikTok-Monetarisierung (Creator Rewards) verlangt Videos über 1 Minute.
+export const VIDEO_LENGTHS = [
+  { seconds: 40, label: '30–45 s', desc: 'Kurz & knackig – maximale Reichweite' },
+  { seconds: 65, label: '60–75 s', desc: 'Empfohlen – über 1 Minute (TikTok-Monetarisierung)' },
+  { seconds: 90, label: '~90 s', desc: 'Ausführlich – mehr Story' },
+];
+export const DEFAULT_TARGET_SECONDS = 65;
+export const MONETIZATION_MIN_SECONDS = 60;

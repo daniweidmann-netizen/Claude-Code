@@ -12,7 +12,7 @@ Regeln:
 - Fakten müssen stimmen. Wenn etwas umstritten oder unsicher ist, formuliere vorsichtig („gilt als“, „etwa“).
 - Keine erfundenen Zahlen, Zitate oder Quellen. Keine Clickbait-Lügen.
 - Der Hook (erster Satz) muss in unter 3 Sekunden neugierig machen.
-- LÄNGE STRIKT: Hook + 3–4 Szenen + CTA zusammen 60–95 Wörter (= 30–45 Sekunden bei ruhigem Erzähltempo). Jede Szene höchstens 2 kurze Sätze.
+- LÄNGE STRIKT: Halte dich exakt an die vorgegebene Wortzahl (sie entspricht der gewünschten Videolänge). Jede Szene höchstens 2–3 kurze Sätze.
 - Jahreszahlen und Zahlen nur, wenn du dir sicher bist; sonst weglassen oder mit „um“/„etwa“ formulieren. Datum einer Erfindung ≠ Patentanmeldung ≠ Patenterteilung – nicht verwechseln.
 - "visual" beschreibt das Bild zur Szene auf Englisch für ein Bildmodell (ohne Text im Bild, ohne reale Personen erkennbar).
 - Call-to-Action freundlich und ehrlich.`;
@@ -91,9 +91,14 @@ export default {
       planSchema,
     );
   },
-  async writeScript({ niche, topic, language, episodeTitle, seriesTitle }) {
+  async writeScript({ niche, topic, language, episodeTitle, seriesTitle, targetSeconds = 65 }) {
+    // Erfahrungswert gesprochenes Tempo (inkl. Pausen): ca. 2,0–2,3 Wörter pro Sekunde
+    const t = Math.min(180, Math.max(15, Number(targetSeconds) || 65));
+    const minWords = Math.round(t * 2.0);
+    const maxWords = Math.round(t * 2.3);
+    const scenes = t >= 80 ? '6–8' : t >= 55 ? '5–7' : '3–4';
     return ask(
-      `Schreibe das Skript für eine Folge.\n${NICHE_HINT[niche] || ''}\nSerie: ${seriesTitle || topic || niche}\nFolge: ${episodeTitle || topic}\nNische: ${niche}\nSprache: ${LANG_NAMES[language] || 'Deutsch'}\nAufbau: hook, 3–4 scenes, cta. Maximal 95 Wörter insgesamt.`,
+      `Schreibe das Skript für eine Folge.\n${NICHE_HINT[niche] || ''}\nSerie: ${seriesTitle || topic || niche}\nFolge: ${episodeTitle || topic}\nNische: ${niche}\nSprache: ${LANG_NAMES[language] || 'Deutsch'}\nAufbau: hook, ${scenes} scenes, cta.\nGewünschte Videolänge: ${t} Sekunden → insgesamt ${minWords}–${maxWords} Wörter (Hook + Szenen + CTA). ${t >= 60 ? 'Wichtig: Das Video muss über 60 Sekunden lang sein – lieber etwas mehr als zu wenig Text.' : ''}`,
       scriptSchema,
     );
   },

@@ -4,7 +4,7 @@ import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { ArrowLeft, ArrowRight, Sparkles } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext.jsx';
 import { useAppData } from '../../lib/useAppData.js';
-import { NICHES, DEFAULT_CAPTIONS } from '../../config/catalog.js';
+import { NICHES, DEFAULT_CAPTIONS, VIDEO_LENGTHS, DEFAULT_TARGET_SECONDS } from '../../config/catalog.js';
 import { getPlan } from '../../config/plans.js';
 import { ArtStylePicker, VoicePicker, SchedulePicker, PlatformPicker, CaptionStylePicker } from '../../components/Pickers.jsx';
 import { Notice, Spinner, Toggle } from '../../components/ui.jsx';
@@ -28,7 +28,7 @@ export default function SeriesWizard() {
   const [d, setD] = useState({
     niche: 'history', topic: '', artStyle: 'cinematic', captionStyle: 'karaoke',
     language: (profile?.locale || 'de'), voiceId: 'calm-m',
-    schedule: DEFAULT_SCHEDULE, platforms: [], requireApproval: true,
+    schedule: DEFAULT_SCHEDULE, platforms: [], requireApproval: true, targetSeconds: DEFAULT_TARGET_SECONDS,
   });
   const set = (patch) => setD((x) => ({ ...x, ...patch }));
   const [llm, setLlm] = useState('mock');
@@ -60,6 +60,7 @@ export default function SeriesWizard() {
         schedule: d.schedule,
         platforms: d.platforms,
         require_approval: d.requireApproval,
+        target_seconds: d.targetSeconds,
         episodes: planRes.episodes,
         active: true,
       });
@@ -145,6 +146,16 @@ export default function SeriesWizard() {
 
         {step === 3 && (
           <>
+            <h2 className="text-lg font-semibold">Videolänge</h2>
+            <p className="mb-4 text-sm muted">TikTok zahlt im Creator-Rewards-Programm nur für Videos über 1 Minute.</p>
+            <div className="mb-8 grid gap-2 sm:grid-cols-3">
+              {VIDEO_LENGTHS.map((l) => (
+                <button key={l.seconds} type="button" onClick={() => set({ targetSeconds: l.seconds })} className={`option p-3 ${d.targetSeconds === l.seconds ? 'option-active' : ''}`} aria-pressed={d.targetSeconds === l.seconds}>
+                  <p className="text-sm font-semibold">{l.label}</p>
+                  <p className="mt-0.5 text-[11px] muted">{l.desc}</p>
+                </button>
+              ))}
+            </div>
             <h2 className="text-lg font-semibold">Zeitplan & Plattformen</h2>
             <p className="mb-5 text-sm muted">Plattformen verbindest du später unter „Konto“. Ohne Verbindung kannst du Videos exportieren und manuell posten.</p>
             <SchedulePicker schedule={d.schedule} onChange={(schedule) => set({ schedule })} />
