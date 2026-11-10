@@ -17,6 +17,7 @@ import { CaptionStylePicker, MusicPicker, ArtStylePicker, VoicePicker } from '..
 import { Notice, Spinner, Toggle } from '../../components/ui.jsx';
 import { StatusBadge } from './Dashboard.jsx';
 import { nextFreeSlot, fmtDateTime } from '../../lib/schedule.js';
+import { fillVoice } from '../../lib/videoFlow.js';
 import { apiAvailable } from '../../lib/api.js';
 
 const TABS = [
@@ -174,7 +175,14 @@ export default function Editor() {
     const ctrl = new AbortController();
     abortRef.current = ctrl;
     try {
-      const { blob, hasVoice } = await recordVideo(project, { watermark: plan.id === 'free', onProgress: setProgress, signal: ctrl.signal });
+      let exportProject = project;
+      if (health?.providers?.tts && health.providers.tts !== 'mock' && project.scenes.some((s) => !s.audioUrl)) {
+        setBusy('voice');
+        exportProject = await fillVoice(project, user.id);
+        updateProject({ scenes: exportProject.scenes });
+        setBusy('export');
+      }
+      const { blob, hasVoice } = await recordVideo(exportProject, { watermark: plan.id === 'free', onProgress: setProgress, signal: ctrl.signal });
       let file = blob, ext = blob.type.includes('mp4') ? 'mp4' : 'webm', note = '';
       if (health?.render === 'ffmpeg') {
         setBusy('transcode');
@@ -323,6 +331,7 @@ export default function Editor() {
               <div className="card p-5">
                 <h3 className="font-semibold">1. Exportieren</h3>
                 <p className="mt-1 text-sm muted">MP4 in 1080×1920 {plan.id === 'free' ? '(Gratis-Test: mit Wasserzeichen)' : 'ohne Wasserzeichen'}. Der Export läuft in Echtzeit (ca. {Math.round(tl.total)} s) – bitte Tab geöffnet lassen.</p>
+                {busy === 'voice' && tab === 'publish' && <p className="mt-4 flex items-center gap-2 text-sm"><Spinner />Voiceover wird erzeugt …</p>}
                 {(busy === 'export' || busy === 'transcode') && (
                   <div className="mt-4">
                     <div className="h-2 overflow-hidden rounded-full bg-navy-100 dark:bg-navy-800"><div className="h-full bg-accent-500 transition-all" style={{ width: `${busy === 'transcode' ? 100 : progress * 100}%` }} /></div>
