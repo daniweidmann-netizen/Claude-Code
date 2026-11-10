@@ -16,6 +16,15 @@ Regeln:
 - "visual" beschreibt das Bild zur Szene auf Englisch für ein Bildmodell (ohne Text im Bild, ohne reale Personen erkennbar).
 - Call-to-Action freundlich und ehrlich.`;
 
+const NICHE_HINT = {
+  history: 'Nische Geschichte: nur gut belegte historische Fakten, Jahreszahlen prüfen, Mythen als Mythen kennzeichnen.',
+  facts: 'Nische Fakten: nur überprüfbare, allgemein anerkannte Fakten; Zahlen gerundet und vorsichtig formulieren.',
+  motivation: 'Nische Motivation: ehrliche, alltagstaugliche Impulse ohne Heilsversprechen, keine erfundenen Zitate berühmter Personen.',
+  horror: 'Nische Horror: FIKTIVE Kurzgeschichte mit Spannungsbogen; keine realen Personen, Orte nur allgemein; im CTA als fiktiv kennzeichnen.',
+  reddit: 'Nische Community-Stories: eigene FIKTIVE Alltagsgeschichte im Stil einer Erzählung aus dem Netz – keine echten Posts kopieren, keine echten Nutzernamen; im CTA als fiktiv kennzeichnen.',
+  custom: 'Eigenes Thema des Nutzers: sachlich korrekt bleiben, bei Unsicherheit vorsichtig formulieren.',
+};
+
 const scriptSchema = {
   type: 'object',
   properties: {
@@ -76,13 +85,13 @@ export default {
   name: 'anthropic',
   async planSeries({ niche, topic, language, count = 6 }) {
     return ask(
-      `Plane eine Kurzvideo-Serie mit ${count} Folgen.\nNische: ${niche}\nThema: ${topic || '(frei innerhalb der Nische)'}\nSprache der Titel: ${LANG_NAMES[language] || 'Deutsch'}\nJede Folge braucht einen eindeutigen key (kebab-case), einen packenden Titel und ein passendes Bildmotiv.`,
+      `Plane eine Kurzvideo-Serie mit ${count} Folgen.\n${NICHE_HINT[niche] || ''}\nNische: ${niche}\nThema: ${topic || '(frei innerhalb der Nische)'}\nSprache der Titel: ${LANG_NAMES[language] || 'Deutsch'}\nJede Folge braucht einen eindeutigen key (kebab-case), einen packenden Titel und ein passendes Bildmotiv.`,
       planSchema,
     );
   },
   async writeScript({ niche, topic, language, episodeTitle, seriesTitle }) {
     return ask(
-      `Schreibe das Skript für eine Folge.\nSerie: ${seriesTitle || topic || niche}\nFolge: ${episodeTitle || topic}\nNische: ${niche}\nSprache: ${LANG_NAMES[language] || 'Deutsch'}\nAufbau: hook, 3–5 scenes, cta.`,
+      `Schreibe das Skript für eine Folge.\n${NICHE_HINT[niche] || ''}\nSerie: ${seriesTitle || topic || niche}\nFolge: ${episodeTitle || topic}\nNische: ${niche}\nSprache: ${LANG_NAMES[language] || 'Deutsch'}\nAufbau: hook, 3–5 scenes, cta.`,
       scriptSchema,
     );
   },

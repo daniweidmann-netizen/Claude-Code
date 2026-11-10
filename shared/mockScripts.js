@@ -161,33 +161,51 @@ const HISTORY = [
   },
 ];
 
-const pickLang = (lang) => (lang && lang.startsWith('de') ? 'de' : 'en');
+import { TRANSLATIONS, SERIES_TITLES, CUSTOM_TEXT } from './mockScriptsI18n.js';
+
+// Übersetzungen (FR/IT/ES) einhängen; Bildbeschreibungen (englisch) werden aus EN übernommen
+for (const h of HISTORY) {
+  for (const [lang, t] of Object.entries(TRANSLATIONS[h.id] || {})) {
+    h[lang] = { ...t, scenes: t.scenes.map((text, i) => ({ text, visual: h.en.scenes[i].visual })) };
+  }
+}
+
+const pickLang = (lang) => {
+  const l = (lang || 'de').slice(0, 2);
+  return ['de', 'en', 'fr', 'it', 'es'].includes(l) ? l : 'en';
+};
 
 export function mockSeriesPlan({ niche, topic, language }) {
   const l = pickLang(language);
   if (niche === 'history') {
-    return {
-      title: l === 'de' ? 'Geschichte in 45 Sekunden' : 'History in 45 seconds',
-      description: l === 'de' ? 'Überraschende Momente der Weltgeschichte – kurz, korrekt, packend.' : 'Surprising moments in world history – short, accurate, gripping.',
-      episodes: HISTORY.map((h) => ({ key: h.id, title: h[l].title, motif: h.motif })),
-    };
+    const titles = {
+      de: { title: 'Geschichte in 45 Sekunden', description: 'Überraschende Momente der Weltgeschichte – kurz, korrekt, packend.' },
+      en: { title: 'History in 45 seconds', description: 'Surprising moments in world history – short, accurate, gripping.' },
+      ...SERIES_TITLES,
+    }[l];
+    return { ...titles, episodes: HISTORY.map((h) => ({ key: h.id, title: (h[l] || h.en).title, motif: h.motif })) };
   }
-  const t = topic || (l === 'de' ? 'dein Thema' : 'your topic');
+  const t = topic || ({ de: 'dein Thema', fr: 'ton sujet', it: 'il tuo tema', es: 'tu tema' }[l] || 'your topic');
+  const partTitle = (n) => (CUSTOM_TEXT[l] ? CUSTOM_TEXT[l](t).part(n) : l === 'de' ? `${t} – Teil ${n}` : `${t} – Part ${n}`);
   return {
     title: t,
     description: l === 'de' ? `Serie rund um „${t}“. (Platzhalter – mit verbundenem LLM plant die KI echte Folgen.)` : `Series about “${t}”. (Placeholder – with a connected LLM the AI plans real episodes.)`,
-    episodes: [1, 2, 3, 4, 5].map((n) => ({ key: `custom-${n}`, title: l === 'de' ? `${t} – Teil ${n}` : `${t} – Part ${n}`, motif: ['city', 'field', 'tower', 'temple', 'ship'][n - 1] })),
+    episodes: [1, 2, 3, 4, 5].map((n) => ({ key: `custom-${n}`, title: partTitle(n), motif: ['city', 'field', 'tower', 'temple', 'ship'][n - 1] })),
   };
 }
 
 export function mockScript({ niche, topic, language, episodeKey, episodeTitle }) {
   const l = pickLang(language);
-  const notice = language && !['de', 'de-CH', 'en'].includes(language)
-    ? 'Mock-Skript nur auf DE/EN verfügbar. Mit verbundenem LLM wird in der gewählten Sprache geschrieben.'
-    : null;
   const h = HISTORY.find((x) => x.id === episodeKey) || (niche === 'history' ? HISTORY[0] : null);
-  if (h) return { ...h[l], motif: h.motif, notice };
+  if (h) return { ...(h[l] || h.en), motif: h.motif, notice: null };
   const t = topic || episodeTitle || 'Thema';
+  if (CUSTOM_TEXT[l]) {
+    const c = CUSTOM_TEXT[l](t);
+    return {
+      title: episodeTitle || t, motif: 'city', notice: c.notice, hook: c.hook, cta: c.cta,
+      scenes: [1, 2, 3].map((n) => ({ text: c.scene(n), visual: `${t}, scene ${n}` })),
+    };
+  }
   const de = l === 'de';
   return {
     title: episodeTitle || t,

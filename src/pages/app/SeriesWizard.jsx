@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { apiAvailable } from '../../lib/api.js';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { ArrowLeft, ArrowRight, Sparkles } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext.jsx';
@@ -30,6 +31,9 @@ export default function SeriesWizard() {
     schedule: DEFAULT_SCHEDULE, platforms: [], requireApproval: true,
   });
   const set = (patch) => setD((x) => ({ ...x, ...patch }));
+  const [llm, setLlm] = useState('mock');
+  useEffect(() => { apiAvailable().then((h) => h?.providers?.llm && setLlm(h.providers.llm)); }, []);
+  const nicheReady = (n) => n.ready || llm !== 'mock';
 
   if (loading) return <Spinner className="h-6 w-6 text-accent-500" />;
   const limitReached = seriesLimitReached(profile, series.length);
@@ -107,12 +111,12 @@ export default function SeriesWizard() {
             <div className="grid gap-3 sm:grid-cols-2">
               {NICHES.map((n) => (
                 <button key={n.id} type="button" onClick={() => set({ niche: n.id })} className={`option ${d.niche === n.id ? 'option-active' : ''}`} aria-pressed={d.niche === n.id}>
-                  <p className="font-semibold">{n.emoji} {n.label} {!n.ready && <span className="ml-1 rounded bg-navy-100 px-1.5 py-0.5 text-[10px] font-semibold text-navy-600 dark:bg-navy-800 dark:text-navy-300">bald</span>}</p>
+                  <p className="font-semibold">{n.emoji} {n.label} {!nicheReady(n) && <span className="ml-1 rounded bg-navy-100 px-1.5 py-0.5 text-[10px] font-semibold text-navy-600 dark:bg-navy-800 dark:text-navy-300">bald</span>}</p>
                   <p className="mt-1 text-xs muted">{n.desc}</p>
                 </button>
               ))}
             </div>
-            {(d.niche === 'custom' || !NICHES.find((n) => n.id === d.niche)?.ready) && (
+            {(d.niche === 'custom' || !nicheReady(NICHES.find((n) => n.id === d.niche))) && (
               <div className="mt-5">
                 <label className="label" htmlFor="topic">{d.niche === 'custom' ? 'Dein Thema' : 'Thema präzisieren (optional)'}</label>
                 <input id="topic" className="input" placeholder="z. B. Erfindungen aus der Schweiz" value={d.topic} onChange={(e) => set({ topic: e.target.value })} />
