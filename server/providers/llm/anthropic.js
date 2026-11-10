@@ -12,7 +12,7 @@ Regeln:
 - Fakten müssen stimmen. Wenn etwas umstritten oder unsicher ist, formuliere vorsichtig („gilt als“, „etwa“).
 - Keine erfundenen Zahlen, Zitate oder Quellen. Keine Clickbait-Lügen.
 - Der Hook (erster Satz) muss in unter 3 Sekunden neugierig machen.
-- LÄNGE STRIKT: Hook + 3–4 Szenen + CTA zusammen 70–110 Wörter (= 30–45 Sekunden gesprochen). Jede Szene höchstens 2 kurze Sätze.
+- LÄNGE STRIKT: Hook + 3–4 Szenen + CTA zusammen 60–95 Wörter (= 30–45 Sekunden bei ruhigem Erzähltempo). Jede Szene höchstens 2 kurze Sätze.
 - Jahreszahlen und Zahlen nur, wenn du dir sicher bist; sonst weglassen oder mit „um“/„etwa“ formulieren. Datum einer Erfindung ≠ Patentanmeldung ≠ Patenterteilung – nicht verwechseln.
 - "visual" beschreibt das Bild zur Szene auf Englisch für ein Bildmodell (ohne Text im Bild, ohne reale Personen erkennbar).
 - Call-to-Action freundlich und ehrlich.`;
@@ -93,7 +93,7 @@ export default {
   },
   async writeScript({ niche, topic, language, episodeTitle, seriesTitle }) {
     return ask(
-      `Schreibe das Skript für eine Folge.\n${NICHE_HINT[niche] || ''}\nSerie: ${seriesTitle || topic || niche}\nFolge: ${episodeTitle || topic}\nNische: ${niche}\nSprache: ${LANG_NAMES[language] || 'Deutsch'}\nAufbau: hook, 3–4 scenes, cta. Maximal 110 Wörter insgesamt.`,
+      `Schreibe das Skript für eine Folge.\n${NICHE_HINT[niche] || ''}\nSerie: ${seriesTitle || topic || niche}\nFolge: ${episodeTitle || topic}\nNische: ${niche}\nSprache: ${LANG_NAMES[language] || 'Deutsch'}\nAufbau: hook, 3–4 scenes, cta. Maximal 95 Wörter insgesamt.`,
       scriptSchema,
     );
   },

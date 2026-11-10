@@ -122,7 +122,7 @@ export default function Editor() {
   const regenImage = async (scene) => {
     setBusy(`img-${scene.id}`);
     const seed = newSeed();
-    const r = await generateImage({ prompt: scene.visual || scene.text, style: project.artStyle, seed, userId: user.id, niche: project.niche || series?.niche, archiveQuery: project.archiveQuery });
+    const r = await generateImage({ prompt: scene.visual || scene.text, style: project.artStyle, seed, userId: user.id, niche: project.niche || series?.niche, archiveQuery: project.archiveQuery, exclude: scenes.map((x) => x.credit?.url).filter(Boolean) });
     updateScene(scene.id, { seed, imageUrl: r.imageUrl || null, credit: r.credit || null });
     if (!r.imageUrl) setMsg({ tone: 'info', text: 'Kein Bild gefunden bzw. kein Bild-Modul verbunden – neue Platzhalter-Grafik erzeugt. Tipp: Bildbeschreibung (englisch) anpassen.' });
     setBusy(null);
@@ -131,9 +131,11 @@ export default function Editor() {
   const regenAllImages = async () => {
     setBusy('images'); setMsg(null);
     const next = [];
+    const used = [];
     for (const s of scenes) {
       const seed = newSeed();
-      const r = await generateImage({ prompt: s.visual || s.text, style: project.artStyle, seed, userId: user.id, niche: project.niche || series?.niche, archiveQuery: project.archiveQuery });
+      const r = await generateImage({ prompt: s.visual || s.text, style: project.artStyle, seed, userId: user.id, niche: project.niche || series?.niche, archiveQuery: project.archiveQuery, exclude: used });
+      if (r.credit?.url) used.push(r.credit.url);
       next.push({ ...s, seed, imageUrl: r.imageUrl || null, credit: r.credit || null });
     }
     updateProject({ scenes: next });

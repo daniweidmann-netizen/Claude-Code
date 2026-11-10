@@ -64,7 +64,7 @@ const words = (s) => String(s || '').toLowerCase().replace(/[^a-z0-9\s-]/gi, ' '
 
 export default {
   name: 'wikimedia',
-  async generate({ prompt, archiveQuery, seed = 0 }) {
+  async generate({ prompt, archiveQuery, seed = 0, exclude = [] }) {
     const kw = words(prompt);
     const topic = words(archiveQuery).filter((w) => !/^\d+$/.test(w));
     const attempts = [
@@ -72,7 +72,7 @@ export default {
       archiveQuery ? { q: archiveQuery, must: [] } : null,
     ].filter(Boolean);
     for (const { q, must } of attempts) {
-      const hits = await search(q, must);
+      const hits = (await search(q, must)).filter((h) => !exclude.includes(h.info.descriptionurl));
       if (!hits.length) continue;
       const hit = hits[Math.abs(seed) % hits.length];
       const imageUrl = await download(hit.info.thumburl || hit.info.url);

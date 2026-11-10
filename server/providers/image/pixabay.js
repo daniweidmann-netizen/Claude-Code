@@ -46,7 +46,7 @@ async function toDataUrl(src) {
 
 export default {
   name: 'pixabay',
-  async generate({ prompt, style, seed = 0 }) {
+  async generate({ prompt, style, seed = 0, exclude = [] }) {
     const words = keywords(prompt);
     const image_type = IMAGE_TYPE[style] || 'photo';
     // Von spezifisch zu allgemein suchen, bis etwas gefunden wird
@@ -59,7 +59,7 @@ export default {
     ];
     for (const a of attempts) {
       if (!a.q) continue;
-      const hits = await search({ ...a, image_type });
+      const hits = (await search({ ...a, image_type })).filter((h) => !exclude.includes(h.pageURL));
       if (!hits.length) continue;
       const hit = hits[Math.abs(seed) % hits.length];
       let imageUrl;

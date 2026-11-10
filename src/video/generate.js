@@ -21,9 +21,9 @@ export const planSeries = (input) => withFallback('/generate/series', input, () 
 export const generateScript = (input) => withFallback('/generate/script', input, () => mockScript(input));
 
 // Gibt { imageUrl, credit } zurück – oder imageUrl:null, dann nutzt der Renderer die Platzhalter-Grafik.
-export async function generateImage({ prompt, style, seed, userId, niche, archiveQuery }) {
+export async function generateImage({ prompt, style, seed, userId, niche, archiveQuery, exclude = [] }) {
   try {
-    const r = await api('/generate/image', { method: 'POST', body: { prompt, style, seed, niche, archiveQuery } });
+    const r = await api('/generate/image', { method: 'POST', body: { prompt, style, seed, niche, archiveQuery, exclude } });
     if (r.imageUrl && userId) r.imageUrl = await uploadMedia(userId, r.imageUrl);
     return r;
   } catch {
@@ -37,10 +37,12 @@ export const regenerateScript = (input) => withFallback('/generate/script/previe
 // Holt für alle Szenen Bilder (falls ein Bild-Modul verbunden ist). Fehler einzelner Szenen sind unkritisch.
 export async function fillImages(project, userId, onProgress) {
   const scenes = [];
+  const used = [];
   let found = 0;
   for (const [i, s] of project.scenes.entries()) {
     onProgress?.(i, project.scenes.length);
-    const r = await generateImage({ prompt: s.visual || s.text, style: project.artStyle, seed: s.seed, userId, niche: project.niche, archiveQuery: project.archiveQuery });
+    const r = await generateImage({ prompt: s.visual || s.text, style: project.artStyle, seed: s.seed, userId, niche: project.niche, archiveQuery: project.archiveQuery, exclude: used });
+    if (r.credit?.url) used.push(r.credit.url);
     if (r.imageUrl) found++;
     scenes.push(r.imageUrl ? { ...s, imageUrl: r.imageUrl, credit: r.credit || null } : s);
   }
