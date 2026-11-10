@@ -1,6 +1,8 @@
 # Render Blueprint – kostenloses Hosting für TrueReel (Frontend + API + FFmpeg in einem Container)
 # Einrichtung: render.com → New → Blueprint → dieses Repository wählen.
 # Werte mit "sync: false" fragt Render beim Anlegen ab (geheime Schlüssel – nie ins Repo).
+# ACHTUNG: Werte mit "value:" werden bei jedem Sync aus dieser Datei übernommen –
+# Änderungen daran hier vornehmen, nicht im Render-Dashboard.
 services:
   - type: web
     name: truereel
@@ -45,6 +47,8 @@ services:
       - key: PIXABAY_API_KEY   # pixabay.com/api/docs
         sync: false
       - key: TTS_PROVIDER
-        value: mock
+        value: openai
+      - key: OPENAI_API_KEY   # GEHEIM: platform.openai.com/api-keys (sk-…)
+        sync: false
       - key: STATE_SECRET
         generateValue: true
