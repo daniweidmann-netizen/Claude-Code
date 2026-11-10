@@ -92,19 +92,29 @@ app.use('/api/social', socialRouter);
 // Konto löschen (DSGVO Art. 17 / DSG Art. 32)
 app.delete('/api/account', authenticate, async (req, res) => {
   if (!admin) return res.json({ ok: true, demo: true });
-  // Dateien im Speicher (Bilder, Audio) zuerst entfernen – sie hängen nicht per FK am Nutzer
-  for (const folder of ['images', 'audio', 'music']) {
-    const prefix = `${req.user.id}/${folder}`;
-    for (;;) {
-      const { data: files } = await admin.storage.from('media').list(prefix, { limit: 100 });
-      if (!files?.length) break;
-      await admin.storage.from('media').remove(files.map((f) => `${prefix}/${f.name}`));
-      if (files.length < 100) break;
+  // Dateien im Speicher (Bilder, Audio) zuerst entfernen – sie hängen nicht per FK am Nutzer.
+  // Schlägt das fehl, wird das Konto NICHT gelöscht (sonst blieben Dateien unbemerkt zurück).
+  let removed = 0;
+  try {
+    for (const folder of ['images', 'audio', 'music']) {
+      const prefix = `${req.user.id}/${folder}`;
+      for (;;) {
+        const { data: files, error: listErr } = await admin.storage.from('media').list(prefix, { limit: 100 });
+        if (listErr) throw new Error(`Liste ${prefix}: ${listErr.message}`);
+        if (!files?.length) break;
+        const { data: gone, error: rmErr } = await admin.storage.from('media').remove(files.map((f) => `${prefix}/${f.name}`));
+        if (rmErr) throw new Error(`Löschen ${prefix}: ${rmErr.message}`);
+        if (!gone?.length) throw new Error(`Löschen ${prefix}: keine Datei entfernt`);
+        removed += gone.length;
+      }
     }
+  } catch (e) {
+    console.error('[account] Dateien konnten nicht gelöscht werden:', e.message);
+    return res.status(500).json({ error: 'Deine Dateien konnten nicht gelöscht werden. Bitte versuche es erneut oder kontaktiere den Support.', detail: e.message });
   }
   const { error } = await admin.auth.admin.deleteUser(req.user.id); // Kaskadiert über FK auf alle Tabellen
   if (error) return res.status(500).json({ error: 'Löschen fehlgeschlagen' });
-  res.json({ ok: true });
+  res.json({ ok: true, filesRemoved: removed });
 });
 
 // Produktion: gebautes Frontend ausliefern
