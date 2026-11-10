@@ -15,7 +15,7 @@ function isFree(meta = {}) {
   return FREE.test(short) || FREE.test(lic);
 }
 
-async function search(query) {
+async function search(query, mustContain = []) {
   const params = new URLSearchParams({
     action: 'query', format: 'json', origin: '*',
     generator: 'search', gsrnamespace: '6', gsrlimit: '15',
@@ -35,6 +35,8 @@ async function search(query) {
   return pages
     .map((p) => ({ title: p.title, info: p.imageinfo?.[0] }))
     .filter((p) => p.info && /jpe?g|png/.test(p.info.mime) && p.info.width >= 600 && isFree(p.info.extmetadata))
+    // Bei kombinierten Suchen muss das Hauptthema im Dateinamen vorkommen (sonst z. B. falsche Grenzübergänge)
+    .filter((p) => !mustContain.length || mustContain.some((w) => p.title.toLowerCase().includes(w)))
     .sort((a, b) => (a.title < b.title ? -1 : 1)); // deterministische Reihenfolge für den Seed
 }
 
@@ -51,6 +53,12 @@ async function download(url) {
   return null;
 }
 
+function cleanAuthor(html) {
+  const a = stripHtml(html);
+  if (!a || /unknown|unbekannt|anonymous/i.test(a)) return 'unbekannt';
+  return a.slice(0, 80);
+}
+
 const STOP = new Set(['a', 'an', 'the', 'of', 'in', 'on', 'at', 'with', 'and', 'or', 'to', 'by', 'for', 'from', 'over', 'after', 'before', 'scene', 'close', 'up']);
 const words = (s) => String(s || '').toLowerCase().replace(/[^a-z0-9\s-]/gi, ' ').split(/\s+/).filter((w) => w.length > 2 && !STOP.has(w));
 
@@ -58,13 +66,13 @@ export default {
   name: 'wikimedia',
   async generate({ prompt, archiveQuery, seed = 0 }) {
     const kw = words(prompt);
+    const topic = words(archiveQuery).filter((w) => !/^\d+$/.test(w));
     const attempts = [
-      archiveQuery && kw.length ? `${archiveQuery} ${kw.slice(0, 2).join(' ')}` : null,
-      archiveQuery,
-      kw.slice(0, 3).join(' '),
+      archiveQuery && kw.length ? { q: `${archiveQuery} ${kw.slice(0, 2).join(' ')}`, must: topic } : null,
+      archiveQuery ? { q: archiveQuery, must: [] } : null,
     ].filter(Boolean);
-    for (const q of attempts) {
-      const hits = await search(q);
+    for (const { q, must } of attempts) {
+      const hits = await search(q, must);
       if (!hits.length) continue;
       const hit = hits[Math.abs(seed) % hits.length];
       const imageUrl = await download(hit.info.thumburl || hit.info.url);
@@ -74,7 +82,7 @@ export default {
         imageUrl,
         credit: {
           source: 'Wikimedia Commons',
-          author: stripHtml(m.Artist?.value).slice(0, 80) || 'unbekannt',
+          author: cleanAuthor(m.Artist?.value),
           license: m.LicenseShortName?.value || 'Public domain',
           url: hit.info.descriptionurl,
         },
