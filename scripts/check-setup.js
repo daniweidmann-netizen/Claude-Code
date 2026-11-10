@@ -8,6 +8,7 @@ const rows = [
   ['Stripe (Zahlungen)', ['STRIPE_SECRET_KEY', 'STRIPE_PRICE_HOBBY_MONTHLY', 'STRIPE_PRICE_DAILY_MONTHLY', 'STRIPE_PRICE_PRO_MONTHLY']],
   ['Stripe-Webhook', ['STRIPE_WEBHOOK_SECRET']],
   ['KI-Skript (Claude)', ['ANTHROPIC_API_KEY']],
+  ['Gratis-Stockbilder (Pixabay)', ['PIXABAY_API_KEY']],
   ['KI-Bilder (OpenAI)', ['OPENAI_API_KEY']],
   ['KI-Stimme (ElevenLabs)', ['ELEVENLABS_API_KEY']],
   ['TikTok', ['TIKTOK_CLIENT_KEY', 'TIKTOK_CLIENT_SECRET']],

@@ -62,7 +62,7 @@ export default function SeriesWizard() {
       if (isOnboarding) await updateProfile({ onboarding_done: true });
       if (usage.remaining > 0) {
         setBusy('Skript für die erste Folge wird geschrieben …');
-        const v = await createVideoForEpisode(user, s, planRes.episodes[0]);
+        const v = await createVideoForEpisode(user, s, planRes.episodes[0], setBusy);
         navigate(`/app/video/${v.id}`);
       } else navigate(`/app/serien/${s.id}`);
     } catch (e) {

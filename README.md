@@ -45,7 +45,7 @@ Alle Module liegen in `server/providers/` und werden per `.env` gewählt. Ohne K
 | Modul | Variable | Optionen |
 |---|---|---|
 | Skript (LLM) | `LLM_PROVIDER` | `mock` (handgeschriebene, geprüfte Geschichts-Skripte), `anthropic` (Claude, strukturierte JSON-Ausgabe) |
-| Bilder | `IMAGE_PROVIDER` | `mock` (prozedurale Platzhalter-Grafiken pro Stil), `openai` |
+| Bilder | `IMAGE_PROVIDER` | `mock` (prozedurale Platzhalter-Grafiken pro Stil), `pixabay` (gratis Stockfotos/-illustrationen mit Quellenangabe), `openai` |
 | Voice (TTS) | `TTS_PROVIDER` | `mock` (Browser-Stimme nur in der Vorschau), `elevenlabs`, `openai` |
 | Rendering | `RENDER_PROVIDER` | `ffmpeg` (wandelt Browser-Aufnahme in MP4 um) |
 

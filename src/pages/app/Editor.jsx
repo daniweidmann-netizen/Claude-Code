@@ -53,6 +53,7 @@ function SceneCard({ scene, index, total, project, onChange, onMove, onDelete, o
         </div>
       </div>
       {scene.audioUrl && <p className="mt-2 text-xs text-accent-700 dark:text-accent-400">✓ KI-Voiceover vorhanden</p>}
+      {scene.credit && <p className="mt-2 text-xs muted">Bild: <a href={scene.credit.url} target="_blank" rel="noreferrer" className="underline">{scene.credit.author} / {scene.credit.source}</a></p>}
     </div>
   );
 }
@@ -119,9 +120,10 @@ export default function Editor() {
 
   const regenImage = async (scene) => {
     setBusy(`img-${scene.id}`);
-    const r = await generateImage({ prompt: scene.visual || scene.text, style: project.artStyle, seed: newSeed() });
-    updateScene(scene.id, { seed: newSeed(), imageUrl: r.imageUrl || null });
-    if (!r.imageUrl) setMsg({ tone: 'info', text: 'Kein Bildmodell verbunden – neue Platzhalter-Grafik erzeugt. Setze IMAGE_PROVIDER in der .env für echte KI-Bilder.' });
+    const seed = newSeed();
+    const r = await generateImage({ prompt: scene.visual || scene.text, style: project.artStyle, seed });
+    updateScene(scene.id, { seed, imageUrl: r.imageUrl || null, credit: r.credit || null });
+    if (!r.imageUrl) setMsg({ tone: 'info', text: 'Kein Bild gefunden bzw. kein Bild-Modul verbunden – neue Platzhalter-Grafik erzeugt. Tipp: Bildbeschreibung (englisch) anpassen.' });
     setBusy(null);
   };
 
@@ -129,8 +131,9 @@ export default function Editor() {
     setBusy('images'); setMsg(null);
     const next = [];
     for (const s of scenes) {
-      const r = await generateImage({ prompt: s.visual || s.text, style: project.artStyle, seed: newSeed() });
-      next.push({ ...s, seed: newSeed(), imageUrl: r.imageUrl || null });
+      const seed = newSeed();
+      const r = await generateImage({ prompt: s.visual || s.text, style: project.artStyle, seed });
+      next.push({ ...s, seed, imageUrl: r.imageUrl || null, credit: r.credit || null });
     }
     updateProject({ scenes: next });
     if (!next.some((s) => s.imageUrl)) setMsg({ tone: 'info', text: 'Kein Bildmodell verbunden – Platzhalter-Grafiken wurden neu gemischt.' });

@@ -1,9 +1,9 @@
 // Ablauf "neues Video für eine Folge erstellen" (Skript → Projekt → Entwurf speichern).
-import { generateScript } from '../video/generate.js';
+import { generateScript, fillImages } from '../video/generate.js';
 import { scriptToProject } from '../video/project.js';
 import { saveVideo } from './store.js';
 
-export async function createVideoForEpisode(user, series, episode) {
+export async function createVideoForEpisode(user, series, episode, onStatus) {
   const script = await generateScript({
     niche: series.niche,
     topic: series.topic,
@@ -19,13 +19,15 @@ export async function createVideoForEpisode(user, series, episode) {
     captions: series.captions,
     music: series.music,
   });
+  onStatus?.('Bilder werden gesucht …');
+  const withImages = (await fillImages(project).catch(() => null))?.project || project;
   return saveVideo({
     user_id: user.id,
     series_id: series.id,
     title: script.title || episode?.title || series.title,
     episode_key: episode?.key || null,
     status: 'draft',
-    project,
+    project: withImages,
     platforms: series.platforms || [],
   });
 }
