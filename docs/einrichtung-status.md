@@ -54,3 +54,21 @@ und Stripe Tax / Steuerregistrierung vor dem Livegang prüfen.
 - Migration `0003_media_bucket.sql` eingespielt: Bilder/Audio liegen im Storage-Bucket `media` (Video-Datensatz 2 KB statt 2,6 MB)
 - Produktionsmodus lokal getestet: Registrierung, Speichern, Limits, Login, MP4-Export mit Storage-Bildern
 - Aufräumen: 6 Testbilder im Bucket `media` (Supabase → Storage → media) können gelöscht werden
+
+---
+
+# Live: https://truereel-der5.onrender.com (Render Free, Frankfurt)
+
+Getestet am Live-System:
+- Startseite (~1,4 s), Registrierung, Login, Onboarding, Video mit 6 Pixabay-Bildern
+- MP4-Export (H.264 wird nur neu verpackt – Render Free schafft kein Full-HD-Neukodieren)
+- Stripe: Checkout-Weiterleitung, Webhook → Plan „Daily“ aktiv, Kündigung zum Periodenende → markiert,
+  Abo-Ende → zurück auf Gratis; 1-Klick-Kündigung öffnet den Kündigungs-Flow im Portal
+- Konto löschen entfernt Daten und Dateien (filesRemoved)
+- Statusseite: /api/health (inkl. Format-Check des Webhook-Secrets, ohne Werte)
+
+Offen / vor dem echten Start:
+- E-Mail-Versand (SMTP) einrichten und „Confirm email“ in Supabase wieder einschalten
+- Stripe Live-Modus (Bankdaten, Steuern), danach `npm run setup:stripe` mit Live-Schlüssel + Werte bei Render ersetzen
+- 11 verwaiste Testbilder in Supabase → Storage → media löschen (Ordner gelöschter Testkonten)
+- Rechtstexte prüfen lassen, eigene Domain + E-Mail-Adresse
