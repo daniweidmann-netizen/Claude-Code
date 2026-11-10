@@ -1,0 +1,7 @@
+node_modules
+dist
+.env
+.env.local
+server/.renders
+*.log
+.DS_Store
