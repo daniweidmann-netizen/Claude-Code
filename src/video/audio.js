@@ -60,8 +60,38 @@ export async function renderMusic(trackId, seconds) {
   master.gain.setValueAtTime(0.5, Math.max(1.5, dur - 2));
   master.gain.linearRampToValueAtTime(0, dur);
   const buf = await off.startRendering();
+  normalize(buf, 0.9); // auf ca. -1 dBFS anheben – die Lautstärke regelt danach der Regler
   bufferCache.set(key, buf);
   return buf;
+}
+
+function normalize(buf, target) {
+  let peak = 0;
+  for (let c = 0; c < buf.numberOfChannels; c++) {
+    const d = buf.getChannelData(c);
+    for (let i = 0; i < d.length; i++) { const a = Math.abs(d[i]); if (a > peak) peak = a; }
+  }
+  if (!peak) return;
+  const k = target / peak;
+  for (let c = 0; c < buf.numberOfChannels; c++) {
+    const d = buf.getChannelData(c);
+    for (let i = 0; i < d.length; i++) d[i] *= k;
+  }
+}
+
+// iPhone/iPad: Ton auch bei aktivem Lautlos-Schalter abspielen und Sprachausgabe
+// freischalten. Muss direkt in einem Fingertipp (Klick-Handler) aufgerufen werden.
+export function unlockAudio() {
+  try { if (navigator.audioSession) navigator.audioSession.type = 'playback'; } catch {}
+  try { audioCtx().resume(); } catch {}
+  try {
+    if ('speechSynthesis' in window && !unlockAudio.speechDone) {
+      const u = new SpeechSynthesisUtterance(' ');
+      u.volume = 0;
+      window.speechSynthesis.speak(u);
+      unlockAudio.speechDone = true;
+    }
+  } catch {}
 }
 
 export async function decodeUrl(url) {

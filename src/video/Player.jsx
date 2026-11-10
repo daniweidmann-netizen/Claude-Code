@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Pause, Play, RotateCcw, Volume2, VolumeX } from 'lucide-react';
 import { drawFrame } from './renderer.js';
 import { timeline, sceneAt } from './project.js';
-import { audioCtx, renderMusic, decodeUrl } from './audio.js';
+import { audioCtx, renderMusic, decodeUrl, unlockAudio } from './audio.js';
 import { speak, stopSpeaking } from './tts.js';
 
 const PW = 540, PH = 960;
@@ -98,6 +98,7 @@ export default function Player({ framed = false, project, autoPlay = false, init
   const play = useCallback(async (from = st.current.t) => {
     if (!tl.total) return;
     if (from >= tl.total - 0.05) from = 0;
+    if (!mutedRef.current) unlockAudio(); // synchron im Fingertipp – wichtig für iOS
     try { await audioCtx().resume(); } catch {}
     stopAudio();
     st.current.playing = true;

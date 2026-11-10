@@ -3,7 +3,7 @@ import { Play, Square, Check } from 'lucide-react';
 import { ART_STYLES, VOICES, LANGUAGES, CAPTION_STYLES, MUSIC_TRACKS, PLATFORMS, POST_FREQUENCIES } from '../config/catalog.js';
 import { renderArt } from '../video/art.js';
 import { speak, stopSpeaking, browserTTSAvailable } from '../video/tts.js';
-import { previewMusic, stopMusicPreview } from '../video/audio.js';
+import { previewMusic, stopMusicPreview, unlockAudio } from '../video/audio.js';
 
 export function ArtThumb({ style, seed = 4242, motif = 'pyramid', className = '' }) {
   const ref = useRef(null);
@@ -44,6 +44,7 @@ export function VoicePicker({ language, voiceId, onChange }) {
   const preview = (id) => {
     stopSpeaking();
     if (playing === id) return setPlaying(null);
+    unlockAudio();
     setPlaying(id);
     speak(SAMPLE[language] || SAMPLE.de, { lang: language, voiceId: id, onEnd: () => setPlaying(null) });
   };
@@ -91,6 +92,7 @@ export function MusicPicker({ value, onChange }) {
   useEffect(() => () => stopMusicPreview(), []);
   const toggle = async (id) => {
     if (playing === id) { stopMusicPreview(); return setPlaying(null); }
+    unlockAudio();
     setPlaying(id);
     await previewMusic(id, 8);
     setTimeout(() => setPlaying((p) => (p === id ? null : p)), 8000);

@@ -3,7 +3,7 @@
 // per FFmpeg in MP4 (H.264/AAC) umwandeln.
 import { drawFrame } from './renderer.js';
 import { timeline, VIDEO_W, VIDEO_H } from './project.js';
-import { audioCtx, renderMusic, decodeUrl } from './audio.js';
+import { audioCtx, renderMusic, decodeUrl, unlockAudio } from './audio.js';
 import { api } from '../lib/api.js';
 
 function pickMime() {
@@ -31,6 +31,7 @@ export async function recordVideo(project, { watermark = false, onProgress, sign
   const ctx = canvas.getContext('2d');
   const getImage = await loadImages(project);
 
+  unlockAudio();
   const actx = audioCtx();
   await actx.resume();
   const dest = actx.createMediaStreamDestination();
