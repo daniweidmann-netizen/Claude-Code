@@ -72,3 +72,12 @@ Offen / vor dem echten Start:
 - Stripe Live-Modus (Bankdaten, Steuern), danach `npm run setup:stripe` mit Live-Schlüssel + Werte bei Render ersetzen
 - 11 verwaiste Testbilder in Supabase → Storage → media löschen (Ordner gelöschter Testkonten)
 - Rechtstexte prüfen lassen, eigene Domain + E-Mail-Adresse
+
+---
+
+# Inhalte (Stand)
+
+- Skripte: Claude (`LLM_PROVIDER=anthropic`), alle Nischen, 5 Sprachen; Mock-Fallback mit 6 Geschichts-Folgen in DE/EN/FR/IT/ES
+- Stimme: OpenAI (`TTS_PROVIDER=openai`), Sprech-Anweisungen je Sprache/Stil, automatisch beim Erstellen und vor dem Export
+- Bilder: Nische Geschichte → Wikimedia Commons (nur Public Domain/CC0, Quelle+Lizenz pro Szene), sonst/Rückfall Pixabay; keine Wiederholung pro Video
+- Hinweis: Einstellungen mit `value:` in render.yaml überschreiben Dashboard-Werte – dort ändern
