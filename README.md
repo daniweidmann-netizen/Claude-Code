@@ -59,7 +59,15 @@ Neues Modul: Datei mit gleicher Schnittstelle anlegen und in `server/providers/i
 
 Das Schema enthält RLS auf allen Tabellen; Abo-Felder sind für Nutzer schreibgeschützt (nur der Stripe-Webhook setzt sie), Social-Tokens sind für den Client nicht lesbar.
 
-## Stripe einrichten
+## Automatisierte Einrichtung
+
+```bash
+npm run check                                   # zeigt, was konfiguriert ist und was fehlt
+STRIPE_SECRET_KEY=sk_test_... npm run setup:stripe   # legt Produkte, 6 Preise, Kundenportal (+ Webhook) an und schreibt die IDs in .env
+docker build --build-arg VITE_SUPABASE_URL=... --build-arg VITE_SUPABASE_ANON_KEY=... -t truereel .   # Produktions-Image inkl. FFmpeg
+```
+
+## Stripe einrichten (manuell)
 
 1. Drei Produkte (Hobby $17, Daily $35, Pro $62) mit je einem Monats- und Jahrespreis (−20 %: $163.20 / $336 / $595.20) anlegen; Preis-IDs in `.env`.
 2. Kundenportal aktivieren (Kündigung, Zahlungsmethode, Rechnungen, Planwechsel). Stripe Tax optional (Checkout nutzt `automatic_tax`).
