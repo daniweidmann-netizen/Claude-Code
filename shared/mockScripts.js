@@ -5,6 +5,7 @@
 const HISTORY = [
   {
     id: 'zanzibar',
+    archiveQuery: 'Anglo-Zanzibar War',
     motif: 'ship',
     de: {
       title: 'Der kürzeste Krieg der Geschichte',
@@ -31,6 +32,7 @@ const HISTORY = [
   },
   {
     id: 'cleopatra',
+    archiveQuery: 'Cleopatra',
     motif: 'pyramid',
     de: {
       title: 'Kleopatra und die Mondlandung',
@@ -57,6 +59,7 @@ const HISTORY = [
   },
   {
     id: 'emu',
+    archiveQuery: 'Emu War Australia',
     motif: 'field',
     de: {
       title: 'Der Emu-Krieg',
@@ -83,6 +86,7 @@ const HISTORY = [
   },
   {
     id: 'napoleon',
+    archiveQuery: 'Napoleon Bonaparte',
     motif: 'castle',
     de: {
       title: 'War Napoleon wirklich klein?',
@@ -109,6 +113,7 @@ const HISTORY = [
   },
   {
     id: 'berlin',
+    archiveQuery: 'Berlin Wall 1989',
     motif: 'wall',
     de: {
       title: 'Der Zettel, der die Mauer öffnete',
@@ -135,6 +140,7 @@ const HISTORY = [
   },
   {
     id: 'oxford',
+    archiveQuery: 'Tenochtitlan',
     motif: 'temple',
     de: {
       title: 'Älter als das Aztekenreich',
@@ -197,7 +203,7 @@ export function mockSeriesPlan({ niche, topic, language }) {
 export function mockScript({ niche, topic, language, episodeKey, episodeTitle }) {
   const l = pickLang(language);
   const h = HISTORY.find((x) => x.id === episodeKey) || (niche === 'history' ? HISTORY[0] : null);
-  if (h) return { ...(h[l] || h.en), motif: h.motif, notice: null };
+  if (h) return { ...(h[l] || h.en), motif: h.motif, archiveQuery: h.archiveQuery, notice: null };
   const t = topic || episodeTitle || 'Thema';
   if (CUSTOM_TEXT[l]) {
     const c = CUSTOM_TEXT[l](t);

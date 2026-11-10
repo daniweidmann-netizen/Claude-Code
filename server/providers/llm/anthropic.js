@@ -42,8 +42,9 @@ const scriptSchema = {
     },
     cta: { type: 'string' },
     motif: { type: 'string', enum: MOTIFS },
+    archiveQuery: { type: 'string', description: 'Kurzer englischer Suchbegriff für historische Archivbilder (Wikimedia), z. B. „Anglo-Zanzibar War“ oder „Napoleon Bonaparte“. Bei nicht-historischen Themen ein allgemeiner Begriff.' },
   },
-  required: ['title', 'hook', 'scenes', 'cta', 'motif'],
+  required: ['title', 'hook', 'scenes', 'cta', 'motif', 'archiveQuery'],
   additionalProperties: false,
 };
 

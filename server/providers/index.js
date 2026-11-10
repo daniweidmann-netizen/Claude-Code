@@ -5,13 +5,14 @@ import llmAnthropic from './llm/anthropic.js';
 import imageMock from './image/mock.js';
 import imageOpenAI from './image/openai.js';
 import imagePixabay from './image/pixabay.js';
+import imageWikimedia from './image/wikimedia.js';
 import ttsMock from './tts/mock.js';
 import ttsElevenLabs from './tts/elevenlabs.js';
 import ttsOpenAI from './tts/openai.js';
 
 const REGISTRY = {
   llm: { mock: llmMock, anthropic: llmAnthropic },
-  image: { mock: imageMock, openai: imageOpenAI, pixabay: imagePixabay },
+  image: { mock: imageMock, openai: imageOpenAI, pixabay: imagePixabay, wikimedia: imageWikimedia },
   tts: { mock: ttsMock, elevenlabs: ttsElevenLabs, openai: ttsOpenAI },
 };
 
@@ -40,3 +41,5 @@ export function providerDiagnose() {
 export function providerStatus() {
   return Object.fromEntries(Object.keys(REGISTRY).map((k) => [k, provider(k).name]));
 }
+
+export const historyImageProvider = imageWikimedia;

@@ -18,6 +18,8 @@ export function scriptToProject(script, settings) {
     version: 1,
     title: script.title,
     motif: script.motif || 'city',
+    niche: settings.niche || null,
+    archiveQuery: script.archiveQuery || null, // englischer Suchbegriff für Archivbilder (z. B. „Anglo-Zanzibar War“)
     language: settings.language || 'de',
     voiceId: settings.voiceId || 'calm-m',
     artStyle: settings.artStyle || 'cinematic',

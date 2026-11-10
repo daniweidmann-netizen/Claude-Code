@@ -14,6 +14,7 @@ export async function createVideoForEpisode(user, series, episode, onStatus) {
     episodeTitle: episode?.title,
   });
   const project = scriptToProject(script, {
+    niche: series.niche,
     language: series.language,
     voiceId: series.voice_id,
     artStyle: series.art_style,

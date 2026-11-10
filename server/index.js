@@ -7,7 +7,7 @@ import os from 'node:os';
 import { fileURLToPath } from 'node:url';
 import { config, stripeEnabled, supabaseEnabled } from './config.js';
 import { authenticate, getProfile, admin } from './supabaseAdmin.js';
-import { provider, providerStatus, providerDiagnose } from './providers/index.js';
+import { provider, providerStatus, providerDiagnose, historyImageProvider } from './providers/index.js';
 import { ffmpegAvailable, transcodeToMp4 } from './providers/render.js';
 import stripeRouter, { webhookHandler } from './stripe.js';
 import socialRouter from './social/router.js';
@@ -64,7 +64,16 @@ const handle = (fn) => async (req, res) => {
 app.post('/api/generate/series', authenticate, handle(async (req) => ({ ...(await provider('llm').planSeries(req.body)), provider: provider('llm').name })));
 app.post('/api/generate/script', authenticate, checkQuota, handle(async (req) => ({ ...(await provider('llm').writeScript(req.body)), provider: provider('llm').name })));
 app.post('/api/generate/script/preview', authenticate, handle(async (req) => ({ ...(await provider('llm').writeScript(req.body)), provider: provider('llm').name })));
-app.post('/api/generate/image', authenticate, handle(async (req) => ({ ...(await provider('image').generate(req.body)), provider: provider('image').name })));
+app.post('/api/generate/image', authenticate, handle(async (req) => {
+  // Geschichte: zuerst gemeinfreie Archivbilder (Wikimedia), sonst das konfigurierte Modul
+  if (req.body?.niche === 'history' && process.env.HISTORY_IMAGES !== 'off') {
+    try {
+      const r = await historyImageProvider.generate(req.body);
+      if (r.imageUrl) return { ...r, provider: 'wikimedia' };
+    } catch (e) { console.warn('[wikimedia]', e.message); }
+  }
+  return { ...(await provider('image').generate(req.body)), provider: provider('image').name };
+}));
 app.post('/api/generate/voice', authenticate, handle(async (req) => {
   const text = String(req.body?.text || '').slice(0, 1200);
   return { ...(await provider('tts').synthesize({ ...req.body, text })), provider: provider('tts').name };

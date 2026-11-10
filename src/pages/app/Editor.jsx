@@ -54,7 +54,7 @@ function SceneCard({ scene, index, total, project, onChange, onMove, onDelete, o
         </div>
       </div>
       {scene.audioUrl && <p className="mt-2 text-xs text-accent-700 dark:text-accent-400">✓ KI-Voiceover vorhanden</p>}
-      {scene.credit && <p className="mt-2 text-xs muted">Bild: <a href={scene.credit.url} target="_blank" rel="noreferrer" className="underline">{scene.credit.author} / {scene.credit.source}</a></p>}
+      {scene.credit && <p className="mt-2 text-xs muted">Bild: <a href={scene.credit.url} target="_blank" rel="noreferrer" className="underline">{scene.credit.author} / {scene.credit.source}{scene.credit.license ? ` (${scene.credit.license})` : ''}</a></p>}
     </div>
   );
 }
@@ -122,7 +122,7 @@ export default function Editor() {
   const regenImage = async (scene) => {
     setBusy(`img-${scene.id}`);
     const seed = newSeed();
-    const r = await generateImage({ prompt: scene.visual || scene.text, style: project.artStyle, seed, userId: user.id });
+    const r = await generateImage({ prompt: scene.visual || scene.text, style: project.artStyle, seed, userId: user.id, niche: project.niche || series?.niche, archiveQuery: project.archiveQuery });
     updateScene(scene.id, { seed, imageUrl: r.imageUrl || null, credit: r.credit || null });
     if (!r.imageUrl) setMsg({ tone: 'info', text: 'Kein Bild gefunden bzw. kein Bild-Modul verbunden – neue Platzhalter-Grafik erzeugt. Tipp: Bildbeschreibung (englisch) anpassen.' });
     setBusy(null);
@@ -133,7 +133,7 @@ export default function Editor() {
     const next = [];
     for (const s of scenes) {
       const seed = newSeed();
-      const r = await generateImage({ prompt: s.visual || s.text, style: project.artStyle, seed, userId: user.id });
+      const r = await generateImage({ prompt: s.visual || s.text, style: project.artStyle, seed, userId: user.id, niche: project.niche || series?.niche, archiveQuery: project.archiveQuery });
       next.push({ ...s, seed, imageUrl: r.imageUrl || null, credit: r.credit || null });
     }
     updateProject({ scenes: next });
@@ -163,7 +163,7 @@ export default function Editor() {
     try {
       const script = await regenerateScript({ niche: series?.niche, topic: series?.topic, language: project.language, seriesTitle: series?.title, episodeKey: video.episode_key, episodeTitle: video.title });
       const p = scriptToProject(script, project);
-      updateProject({ scenes: p.scenes, title: p.title, notice: p.notice });
+      updateProject({ scenes: p.scenes, title: p.title, notice: p.notice, archiveQuery: p.archiveQuery });
     } catch (e) { setMsg({ tone: 'error', text: e.message }); }
     setBusy(null);
   };
