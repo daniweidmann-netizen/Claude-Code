@@ -23,3 +23,14 @@ Kundenportal: Kündigung zum Periodenende, Planwechsel (anteilig), Zahlungsmetho
 
 Noch offen: Webhook (sobald die App eine öffentliche https-Adresse hat, Skript erneut ausführen)
 und Stripe Tax / Steuerregistrierung vor dem Livegang prüfen.
+
+---
+
+# Supabase
+
+- Projekt-Ref: `rocgdmpjiwytnsjgjpcj` · Region: eu-north-1 (Stockholm)
+- URL: `https://rocgdmpjiwytnsjgjpcj.supabase.co`
+- Schema `supabase/migrations/0001_init.sql` eingespielt (Tabellen, RLS, Kontingent-Trigger)
+- Auth: Site-URL `http://localhost:5173`, Redirects `http://localhost:5173/**`, Passwort min. 8 Zeichen
+- Offen: E-Mail-Versand (eigenes SMTP) oder Bestätigung vorübergehend abschalten; Google-Login; nach dem Hosting Site-URL/Redirects auf die echte Domain umstellen
+- Anon-Key: Supabase Dashboard → Project Settings → API (öffentlich). Service-Role-Key: dort, **geheim**, nur beim Hoster eintragen.

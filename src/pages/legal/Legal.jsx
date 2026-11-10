@@ -59,7 +59,7 @@ export function Datenschutz() {
       <p>Wir verwenden keine Tracking- oder Werbe-Cookies. Lokaler Browser-Speicher wird nur für Anmeldung, Sprache und Darstellung (hell/dunkel) genutzt. Die Schrift „Inter“ wird von unserem eigenen Server geladen, nicht von Google.</p>
       <h2>4. Auftragsverarbeiter und Empfänger</h2>
       <ul>
-        <li><strong>Supabase</strong> (Datenbank, Authentifizierung) – Region: EU (Frankfurt, Deutschland)</li>
+        <li><strong>Supabase</strong> (Datenbank, Authentifizierung) – Region: EU (Stockholm, Schweden)</li>
         <li><strong>Stripe</strong> (Zahlungsabwicklung)</li>
         <li><strong>KI-Anbieter</strong> für Skript, Bild und Stimme: <P>[z. B. Anthropic, OpenAI, ElevenLabs]</P> – es werden nur die für die Generierung nötigen Texte übermittelt.</li>
         <li><strong>Hosting</strong>: <P>[Anbieter, Region]</P></li>
