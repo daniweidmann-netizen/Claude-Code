@@ -15,9 +15,14 @@ async function sbList(table, userId, extra) {
   return data;
 }
 
-async function sbUpsert(table, row) {
-  const { data, error } = await supabase.from(table).upsert(row).select().single();
-  if (error) throw error;
+// Neue Zeilen per INSERT, bestehende per UPDATE (kein Upsert: der löst die
+// Kontingent-Trigger der Datenbank auch beim reinen Bearbeiten aus).
+async function sbSave(table, row, isNew) {
+  const q = isNew
+    ? supabase.from(table).insert(row)
+    : supabase.from(table).update(row).eq('id', row.id);
+  const { data, error } = await q.select().single();
+  if (error) throw new Error(error.message);
   return data;
 }
 
@@ -44,7 +49,7 @@ export async function getSeries(id) {
 
 export async function saveSeries(series) {
   const row = { ...series, id: series.id || uid(), created_at: series.created_at || now(), updated_at: now() };
-  return DEMO_MODE ? lsUpsert(LS.series, row) : sbUpsert('series', row);
+  return DEMO_MODE ? lsUpsert(LS.series, row) : sbSave('series', row, !series.id);
 }
 
 export async function deleteSeries(id) {
@@ -73,7 +78,7 @@ export async function getVideo(id) {
 
 export async function saveVideo(video) {
   const row = { ...video, id: video.id || uid(), created_at: video.created_at || now(), updated_at: now() };
-  return DEMO_MODE ? lsUpsert(LS.videos, row) : sbUpsert('videos', row);
+  return DEMO_MODE ? lsUpsert(LS.videos, row) : sbSave('videos', row, !video.id);
 }
 
 export async function deleteVideo(id) {

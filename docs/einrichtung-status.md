@@ -32,5 +32,8 @@ und Stripe Tax / Steuerregistrierung vor dem Livegang prüfen.
 - URL: `https://rocgdmpjiwytnsjgjpcj.supabase.co`
 - Schema `supabase/migrations/0001_init.sql` eingespielt (Tabellen, RLS, Kontingent-Trigger)
 - Auth: Site-URL `http://localhost:5173`, Redirects `http://localhost:5173/**`, Passwort min. 8 Zeichen
-- Offen: E-Mail-Versand (eigenes SMTP) oder Bestätigung vorübergehend abschalten; Google-Login; nach dem Hosting Site-URL/Redirects auf die echte Domain umstellen
+- E-Mail-Bestätigung vorübergehend AUS (Testphase) – vor dem Start eigenes SMTP einrichten und wieder einschalten
+- Migration `0002_quota_trigger_upsert.sql` eingespielt (Bearbeiten zählt nicht als neues Video)
+- Getestet: Registrierung, Profil, Serie/Video speichern, Limits, RLS, Login
+- Offen: Google-Login; nach dem Hosting Site-URL/Redirects auf die echte Domain umstellen
 - Anon-Key: Supabase Dashboard → Project Settings → API (öffentlich). Service-Role-Key: dort, **geheim**, nur beim Hoster eintragen.
