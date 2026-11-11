@@ -9,7 +9,11 @@ import { config, stripeEnabled, supabaseEnabled } from './config.js';
 import { authenticate, getProfile, admin } from './supabaseAdmin.js';
 import { provider, providerStatus, providerDiagnose, historyImageProvider, fallbackImageProvider } from './providers/index.js';
 import { ffmpegAvailable, transcodeToMp4 } from './providers/render.js';
-import stripeRouter, { webhookHandler } from './stripe.js';
+import stripeRouter, { webhookHandler, stripe } from './stripe.js';
+
+// Welches Stripe-Konto der Schlüssel öffnet (nur die öffentliche Konto-ID, für /api/health)
+let stripeAccountId = null;
+if (stripe) stripe.accounts.retrieve().then((a) => { stripeAccountId = a.id; }).catch((e) => { stripeAccountId = `Fehler: ${e.message.slice(0, 80)}`; });
 import socialRouter from './social/router.js';
 import { startScheduler } from './scheduler.js';
 import { publishVideo, publishDue } from './publish.js';
@@ -40,6 +44,9 @@ app.get('/api/health', (_req, res) => {
       : config.stripeWebhookSecret !== config.stripeWebhookSecret.trim() ? 'enthaelt-leerzeichen'
       : /^whsec_[A-Za-z0-9]{20,}$/.test(config.stripeWebhookSecret) ? 'ok-format' : 'falsches-format',
     stripeKeyMode: config.stripeKey.startsWith('sk_test_') ? 'test' : config.stripeKey.startsWith('sk_live_') ? 'live' : 'unbekannt',
+    // Nur der Typ-Präfix (z. B. "pk_test", "rk_live", "mk"), nie der Schlüssel selbst
+    stripeKeyType: (config.stripeKey.match(/^(sk|pk|rk|mk|whsec)_(test|live)?/)?.[0] || (config.stripeKey ? 'anderes Format' : 'leer')).replace(/_$/, ''),
+    stripeAccount: stripeAccountId || null,
   });
 });
 
