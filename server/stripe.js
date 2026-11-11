@@ -132,9 +132,15 @@ async function syncSubscription(sub) {
     cancel_at_period_end: sub.cancel_at_period_end,
     updated_at: new Date().toISOString(),
   });
-  // Ein beendetes älteres Abo darf ein anderes, aktives Abo nicht überschreiben
+  // Das Profil folgt nur dem „aktuellen“ Abo. Meldungen zu einem anderen Abo ändern es nur,
+  // wenn das aktuelle nicht mehr aktiv ist (z. B. ein beendetes Doppel-Abo überschreibt nichts).
   const { data: current } = await admin.from('profiles').select('stripe_subscription_id').eq('id', userId).maybeSingle();
-  if (!active && current?.stripe_subscription_id && current.stripe_subscription_id !== sub.id) return;
+  const currentId = current?.stripe_subscription_id;
+  if (currentId && currentId !== sub.id) {
+    if (!active) return;
+    const cur = await stripe.subscriptions.retrieve(currentId).catch(() => null);
+    if (cur && ['active', 'trialing', 'past_due'].includes(cur.status)) return;
+  }
   await admin.from('profiles').update({
     stripe_customer_id: sub.customer,
     plan: active ? mapped.plan : 'free',
