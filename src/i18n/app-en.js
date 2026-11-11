@@ -1,5 +1,7 @@
 // English versions of the app texts. Key = German original (see tr() in index.jsx).
 export default {
+  "{p} ist verbunden.": "{p} is connected.",
+  "Verbindung mit {p} fehlgeschlagen.": "Connecting {p} failed.",
   "eigene": "own",
   "Hellmodus": "Light mode",
   "Dunkelmodus": "Dark mode",

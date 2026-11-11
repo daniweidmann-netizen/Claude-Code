@@ -65,8 +65,9 @@ export default function Account() {
       setTimeout(refreshProfile, 2500);
     } else if (checkout === 'cancelled') setMsg({ tone: 'info', text: tr("Checkout abgebrochen – es wurde nichts berechnet.") });
     if (params.get('cancelled')) { setMsg({ tone: 'success', text: tr("Dein Abo wurde gekündigt. Es läuft bis zum Ende der bezahlten Periode weiter.") }); setTimeout(refreshProfile, 2500); }
-    if (params.get('connected')) setMsg({ tone: 'success', text: `${params.get('connected')} verbunden.` });
-    if (params.get('social_error')) setMsg({ tone: 'error', text: `Verbindung mit ${params.get('social_error')} fehlgeschlagen.` });
+    const PL = { youtube: 'YouTube', tiktok: 'TikTok', instagram: 'Instagram' };
+    if (params.get('connected')) setMsg({ tone: 'success', text: tr('{p} ist verbunden.', { p: PL[params.get('connected')] || params.get('connected') }) });
+    if (params.get('social_error')) setMsg({ tone: 'error', text: tr('Verbindung mit {p} fehlgeschlagen.', { p: PL[params.get('social_error')] || params.get('social_error') }) });
     if (autoPlan) startCheckout(autoPlan, params.get('interval') || 'monthly').catch((e) => setMsg({ tone: 'error', text: e.message }));
     if ([...params.keys()].length) setParams({}, { replace: true });
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
