@@ -52,5 +52,14 @@ services:
         value: openai
       - key: OPENAI_API_KEY   # GEHEIM: platform.openai.com/api-keys (sk-…)
         sync: false
+      # ── Auto-Posting ──────────────────────────────────
+      - key: GOOGLE_CLIENT_ID   # Google Cloud → OAuth-Client (YouTube)
+        sync: false
+      - key: GOOGLE_CLIENT_SECRET   # GEHEIM
+        sync: false
+      - key: YOUTUBE_PRIVACY   # private, bis Google die App geprüft hat; danach public
+        value: private
+      - key: STRIPE_AUTOMATIC_TAX   # true nur bei MWST-Pflicht (Stripe Tax kostet pro Zahlung)
+        value: "false"
       - key: STATE_SECRET
         generateValue: true

@@ -5,7 +5,7 @@ import {
   Wand2, Upload, Undo2, ArrowLeft,
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext.jsx';
-import { getVideo, getSeries, saveVideo, deleteVideo, listVideos, uid, uploadMedia } from '../../lib/store.js';
+import { getVideo, getSeries, saveVideo, deleteVideo, listVideos, uid, uploadMedia, uploadRender } from '../../lib/store.js';
 import { VOICES, CAPTION_FONTS, MUSIC_TRACKS, MONETIZATION_MIN_SECONDS } from '../../config/catalog.js';
 import { getPlan } from '../../config/plans.js';
 import Player from '../../video/Player.jsx';
@@ -18,7 +18,7 @@ import { Notice, Spinner, Toggle } from '../../components/ui.jsx';
 import { StatusBadge } from './Dashboard.jsx';
 import { nextFreeSlot, fmtDateTime } from '../../lib/schedule.js';
 import { fillVoice } from '../../lib/videoFlow.js';
-import { apiAvailable } from '../../lib/api.js';
+import { api, apiAvailable } from '../../lib/api.js';
 
 const TABS = [
   ['scenes', 'Szenen'],
@@ -193,6 +193,10 @@ export default function Editor() {
       download(file, `${(video.title || 'truereel').replace(/[^\w\-äöüÄÖÜ ]+/g, '').trim() || 'truereel'}.${ext}`);
       const nextStatus = video.status === 'draft' ? (series && !series.require_approval ? 'scheduled' : 'pending_approval') : video.status;
       const patch = { status: nextStatus };
+      if (ext === 'mp4') {
+        try { const path = await uploadRender(user.id, video.id, file); if (path) patch.video_path = path; }
+        catch (e) { note += ` ${e.message}`; }
+      }
       if (nextStatus === 'scheduled' && !video.scheduled_at) {
         const slot = nextFreeSlot(series, await listVideos(user.id));
         patch.scheduled_at = slot?.toISOString() || null;
@@ -209,6 +213,18 @@ export default function Editor() {
     const slot = series ? nextFreeSlot(series, await listVideos(user.id)) : null;
     update({ status: 'scheduled', scheduled_at: video.scheduled_at || slot?.toISOString() || null });
     setMsg({ tone: 'success', text: slot ? `Freigegeben und geplant für ${fmtDateTime(video.scheduled_at || slot)}.` : 'Freigegeben.' });
+  };
+
+  const publishNow = async () => {
+    setBusy('publish'); setMsg(null);
+    try {
+      const r = await api(`/videos/${video.id}/publish`, { method: 'POST' });
+      const fresh = await getVideo(video.id);
+      setVideo(fresh);
+      const lines = Object.entries(r.results || {}).map(([pl, x]) => (x.id ? `${pl}: ✓ ${x.url}${x.privacy === 'private' ? ' (privat – in YouTube auf „öffentlich“ stellen)' : ''}` : `${pl}: ✗ ${x.error}`));
+      setMsg({ tone: r.ok ? 'success' : 'error', text: lines.join(' · ') || 'Nichts zu posten.' });
+    } catch (e) { setMsg({ tone: 'error', text: e.message }); }
+    setBusy(null);
   };
 
   const remove = async () => {
@@ -377,6 +393,15 @@ export default function Editor() {
                     {video.status === 'draft' && <p className="mt-2 text-xs muted">Zuerst exportieren, damit du das fertige Video geprüft hast.</p>}
                   </>
                 )}
+                {video.video_path && (video.platforms || []).length > 0 && video.status !== 'posted' && (
+                  <div className="mt-4 border-t border-navy-100 pt-4 dark:border-navy-800">
+                    <button className="btn-outline" onClick={publishNow} disabled={!!busy}>{busy === 'publish' ? <Spinner /> : <CheckCircle2 className="h-4 w-4" />}Jetzt posten</button>
+                    <p className="mt-2 text-xs muted">Postet sofort auf {(video.platforms || []).join(', ')} statt zum geplanten Zeitpunkt.</p>
+                  </div>
+                )}
+                {video.post_results && Object.entries(video.post_results).map(([pl, x]) => (
+                  <p key={pl} className="mt-2 text-xs">{pl}: {x.url ? <a className="underline" href={x.url} target="_blank" rel="noreferrer">{x.url}</a> : <span className="text-red-600">{x.error}</span>}</p>
+                ))}
                 {!(video.platforms || []).length && <p className="mt-3 text-xs muted">Keine Plattform gewählt – das Video erscheint als Erinnerung im Kalender. Plattformen wählst du in den Serien-Einstellungen, verbinden kannst du sie unter <Link className="underline" to="/app/account">Konto</Link>.</p>}
               </div>
 

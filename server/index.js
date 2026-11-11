@@ -12,6 +12,7 @@ import { ffmpegAvailable, transcodeToMp4 } from './providers/render.js';
 import stripeRouter, { webhookHandler } from './stripe.js';
 import socialRouter from './social/router.js';
 import { startScheduler } from './scheduler.js';
+import { publishVideo, publishDue } from './publish.js';
 import { PLAN_QUOTAS } from './quotas.js';
 
 const app = express();
@@ -94,6 +95,16 @@ app.post('/api/render/mp4', authenticate, upload.single('video'), async (req, re
     fs.rm(req.file.path, () => {});
     res.status(500).json({ error: 'MP4-Umwandlung fehlgeschlagen' });
   }
+});
+
+// ── Auto-Posting ────────────────────────────────────────
+app.post('/api/videos/:id/publish', authenticate, async (req, res) => {
+  try { res.json(await publishVideo(req.params.id, { userId: req.user.id })); }
+  catch (e) { res.status(400).json({ error: e.message }); }
+});
+// Vom Supabase-Zeitplaner aufgerufen; verarbeitet nur bereits freigegebene, fällige Posts
+app.post('/api/cron/publish', async (_req, res) => {
+  try { res.json(await publishDue()); } catch (e) { res.status(500).json({ error: e.message }); }
 });
 
 app.use('/api/stripe', stripeRouter);

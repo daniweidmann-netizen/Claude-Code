@@ -111,3 +111,12 @@ export async function uploadMedia(userId, dataUrl, kind = 'images') {
   if (error) { console.warn('Upload fehlgeschlagen, nutze Data-URL', error.message); return dataUrl; }
   return supabase.storage.from('media').getPublicUrl(path).data.publicUrl;
 }
+
+// Exportiertes MP4 für das Auto-Posting im privaten Bucket "renders" ablegen
+export async function uploadRender(userId, videoId, blob) {
+  if (DEMO_MODE) return null;
+  const path = `${userId}/${videoId}.mp4`;
+  const { error } = await supabase.storage.from('renders').upload(path, blob, { contentType: 'video/mp4', upsert: true });
+  if (error) throw new Error(`Video konnte nicht gespeichert werden: ${error.message}`);
+  return path;
+}

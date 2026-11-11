@@ -29,8 +29,8 @@ router.post('/checkout', authenticate, async (req, res) => {
       customer,
       line_items: [{ price, quantity: 1 }],
       allow_promotion_codes: true,
-      automatic_tax: { enabled: true },
-      customer_update: { address: 'auto' },
+      // Stripe Tax kostet pro Zahlung eine Gebühr – nur einschalten, wenn MWST-pflichtig (STRIPE_AUTOMATIC_TAX=true)
+      ...(process.env.STRIPE_AUTOMATIC_TAX === 'true' ? { automatic_tax: { enabled: true }, customer_update: { address: 'auto' } } : {}),
       subscription_data: { metadata: { user_id: req.user.id } },
       metadata: { user_id: req.user.id },
       success_url: `${config.appUrl}/app/account?checkout=success`,
