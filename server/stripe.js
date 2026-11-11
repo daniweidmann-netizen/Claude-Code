@@ -29,6 +29,11 @@ router.post('/checkout', authenticate, async (req, res) => {
   if (!price) return res.status(400).json({ error: 'Unbekannter Plan' });
   try {
     const customer = await ensureCustomer(req.user);
+    // Kein zweites Abo: wer schon eins hat, wechselt den Plan im Kundenportal
+    const subs = await stripe.subscriptions.list({ customer, status: 'all', limit: 10 });
+    if (subs.data.some((x) => ['active', 'trialing', 'past_due'].includes(x.status))) {
+      return res.status(409).json({ error: 'Du hast bereits ein aktives Abo. Planwechsel bitte über „Zahlungsdaten & Rechnungen“.' });
+    }
     const session = await stripe.checkout.sessions.create({
       mode: 'subscription',
       customer,
@@ -127,6 +132,9 @@ async function syncSubscription(sub) {
     cancel_at_period_end: sub.cancel_at_period_end,
     updated_at: new Date().toISOString(),
   });
+  // Ein beendetes älteres Abo darf ein anderes, aktives Abo nicht überschreiben
+  const { data: current } = await admin.from('profiles').select('stripe_subscription_id').eq('id', userId).maybeSingle();
+  if (!active && current?.stripe_subscription_id && current.stripe_subscription_id !== sub.id) return;
   await admin.from('profiles').update({
     stripe_customer_id: sub.customer,
     plan: active ? mapped.plan : 'free',
