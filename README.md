@@ -69,7 +69,7 @@ docker build --build-arg VITE_SUPABASE_URL=... --build-arg VITE_SUPABASE_ANON_KE
 
 ## Stripe einrichten (manuell)
 
-1. Drei Produkte (Hobby $17, Daily $35, Pro $62) mit je einem Monats- und Jahrespreis (−20 %: $163.20 / $336 / $595.20) anlegen; Preis-IDs in `.env`.
+1. Drei Produkte (Hobby $19, Daily $39, Pro $69) mit je einem Monats- und Jahrespreis (−20 %: $182.40 / $374.40 / $662.40) anlegen; Preis-IDs in `.env`.
 2. Kundenportal aktivieren (Kündigung, Zahlungsmethode, Rechnungen, Planwechsel). Stripe Tax optional (Checkout nutzt `automatic_tax`).
 3. Webhook auf `/api/stripe/webhook` mit `checkout.session.completed` und `customer.subscription.*`; lokal: `stripe listen --forward-to localhost:8787/api/stripe/webhook`.
 

@@ -15,9 +15,9 @@ STRIPE_PORTAL_CONFIG=bpc_1UaDvaCAr5FN2JA9K2VPfAby
 
 | Plan | Monatlich | Jährlich (−20 %) |
 |---|---|---|
-| Hobby | $17.00 | $163.20 |
-| Daily | $35.00 | $336.00 |
-| Pro | $62.00 | $595.20 |
+| Hobby | $19.00 | $182.40 |
+| Daily | $39.00 | $374.40 |
+| Pro | $69.00 | $662.40 |
 
 Kundenportal: Kündigung zum Periodenende, Planwechsel (anteilig), Zahlungsmethode, Rechnungen.
 

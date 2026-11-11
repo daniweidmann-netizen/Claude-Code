@@ -17,19 +17,24 @@ const stripe = new Stripe(key, process.env.NODE_USE_ENV_PROXY ? { httpClient: St
 const appUrl = process.env.APP_URL || 'http://localhost:5173';
 
 const PLANS = [
-  { id: 'hobby', name: 'TrueReel Hobby', desc: '3 Videos pro Woche, 1 Serie, Auto-Posting auf 1 Plattform', monthly: 1700 },
-  { id: 'daily', name: 'TrueReel Daily', desc: '1 Video pro Tag, 3 Serien, alle Plattformen', monthly: 3500 },
-  { id: 'pro', name: 'TrueReel Pro', desc: '2 Videos pro Tag, unbegrenzte Serien, Priority Support, eigene Musik/Voice', monthly: 6200 },
+  { id: 'hobby', name: 'TrueReel Hobby', desc: '3 Videos pro Woche, 1 Serie, Auto-Posting auf 1 Plattform', monthly: 1900 },
+  { id: 'daily', name: 'TrueReel Daily', desc: '1 Video pro Tag, 3 Serien, alle Plattformen', monthly: 3900 },
+  { id: 'pro', name: 'TrueReel Pro', desc: '2 Videos pro Tag, unbegrenzte Serien, Priority Support, eigene Musik/Voice', monthly: 6900 },
 ];
 const yearly = (cents) => Math.round(cents * 12 * 0.8); // 20 % Rabatt
 
 async function ensurePrice(product, lookupKey, amount, interval) {
   const existing = await stripe.prices.list({ lookup_keys: [lookupKey], active: true, limit: 1 });
-  if (existing.data[0]) return existing.data[0];
-  return stripe.prices.create({
-    product: product.id, currency: 'usd', unit_amount: amount, lookup_key: lookupKey,
+  const old = existing.data[0];
+  if (old && old.unit_amount === amount) return old;
+  // Preis geändert: neuen Preis anlegen, Lookup-Key übertragen, alten archivieren.
+  // Bestehende Abos behalten ihren alten Preis, bis sie im Kundenportal wechseln.
+  const created = await stripe.prices.create({
+    product: product.id, currency: 'usd', unit_amount: amount, lookup_key: lookupKey, transfer_lookup_key: true,
     recurring: { interval }, tax_behavior: 'exclusive',
   });
+  if (old) await stripe.prices.update(old.id, { active: false });
+  return created;
 }
 
 async function ensureProduct(plan) {
