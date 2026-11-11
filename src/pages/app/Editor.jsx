@@ -158,7 +158,6 @@ export default function Editor() {
         setBusy('transcode');
         try { file = await toMp4(blob); ext = 'mp4'; } catch (e) { note = ` ${tr('MP4-Umwandlung nicht möglich ({e}) – Datei als {x} gespeichert.', { e: e.message, x: ext.toUpperCase() })}`; }
       } else if (ext !== 'mp4') note = tr(" Server-Rendering (FFmpeg) nicht erreichbar – Datei als WebM gespeichert.");
-      download(file, `${(video.title || 'truereel').replace(/[^\w\-äöüÄÖÜ ]+/g, '').trim() || 'truereel'}.${ext}`);
       const nextStatus = video.status === 'draft' ? (series && !series.require_approval ? 'scheduled' : 'pending_approval') : video.status;
       const patch = { status: nextStatus };
       if (ext === 'mp4') {
@@ -169,7 +168,13 @@ export default function Editor() {
         const slot = nextFreeSlot(series, await listVideos(user.id));
         patch.scheduled_at = slot?.toISOString() || null;
       }
-      update(patch);
+      // Sofort speichern (nicht verzögert), bevor der Download startet
+      clearTimeout(saveTimer.current);
+      const savedVideo = { ...video, ...patch };
+      setVideo((v) => ({ ...v, ...patch }));
+      try { await saveVideo(savedVideo); setSaved(true); } catch (e) { note += ` ${tr('Speichern fehlgeschlagen:')} ${e.message}`; }
+      // Erst nach dem Speichern herunterladen: auf dem iPhone verlässt der Download die Seite
+      download(file, `${(video.title || 'truereel').replace(/[^\w\-äöüÄÖÜ ]+/g, '').trim() || 'truereel'}.${ext}`);
       setMsg({ tone: 'success', text: `${tr("Export fertig (1080×1920).")}${hasVoice ? '' : tr(" Hinweis: ohne Voiceover, da kein TTS-Anbieter verbunden ist.")}${plan.id === 'free' ? tr(" Gratis-Export mit Wasserzeichen.") : ''}${note}` });
     } catch (e) {
       setMsg({ tone: 'error', text: e.message });

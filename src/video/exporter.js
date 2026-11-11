@@ -65,7 +65,7 @@ export async function recordVideo(project, { watermark = false, onProgress, sign
 
   const stream = new MediaStream([...canvas.captureStream(30).getVideoTracks(), ...dest.stream.getAudioTracks()]);
   const mimeType = pickMime();
-  const rec = new MediaRecorder(stream, { mimeType, videoBitsPerSecond: 8_000_000 });
+  const rec = new MediaRecorder(stream, { mimeType, videoBitsPerSecond: 3_500_000, audioBitsPerSecond: 128_000 /* ~40 MB für 90 s – Speicherlimit 50 MB pro Datei */ });
   const chunks = [];
   rec.ondataavailable = (e) => e.data.size && chunks.push(e.data);
   const done = new Promise((res) => { rec.onstop = res; });
