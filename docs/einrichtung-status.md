@@ -81,3 +81,17 @@ Offen / vor dem echten Start:
 - Stimme: OpenAI (`TTS_PROVIDER=openai`), Sprech-Anweisungen je Sprache/Stil, automatisch beim Erstellen und vor dem Export
 - Bilder: Nische Geschichte → Wikimedia Commons (nur Public Domain/CC0, Quelle+Lizenz pro Szene), sonst/Rückfall Pixabay; keine Wiederholung pro Video
 - Hinweis: Einstellungen mit `value:` in render.yaml überschreiben Dashboard-Werte – dort ändern
+
+## Stripe: live und Sandbox
+
+render.yaml enthält die **Live**-IDs (Konto Truereel, acct_1UajYhPcZaD5KrkX). Zum Testen mit der **Truereel Sandbox** (acct_1UZdlqB41s0DKjW8) in Render `STRIPE_SECRET_KEY`=sk_test_…, das Sandbox-Webhook-Geheimnis und diese IDs setzen:
+
+- `STRIPE_PRICE_HOBBY_MONTHLY` = `price_1UajngB41s0DKjW8VRHTa1Um`
+- `STRIPE_PRICE_HOBBY_YEARLY` = `price_1UajnhB41s0DKjW8lGwg1AbK`
+- `STRIPE_PRICE_DAILY_MONTHLY` = `price_1UajnhB41s0DKjW8wIdEtQPZ`
+- `STRIPE_PRICE_DAILY_YEARLY` = `price_1UajniB41s0DKjW8vFyWeoMq`
+- `STRIPE_PRICE_PRO_MONTHLY` = `price_1UajnjB41s0DKjW8ycgY3IfJ`
+- `STRIPE_PRICE_PRO_YEARLY` = `price_1UajnkB41s0DKjW8ZnG59z5Y`
+- `STRIPE_PORTAL_CONFIG` = `bpc_1UajnkB41s0DKjW8zlR96zad`
+
+Managed Payments ist aktiv (`STRIPE_MANAGED_PAYMENTS=true`); Produkte haben den Steuercode `txcd_10103000`.
