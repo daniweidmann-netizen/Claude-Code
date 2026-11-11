@@ -17,9 +17,9 @@ const stripe = new Stripe(key, process.env.NODE_USE_ENV_PROXY ? { httpClient: St
 const appUrl = process.env.APP_URL || 'http://localhost:5173';
 
 const PLANS = [
-  { id: 'hobby', name: 'TrueReel Hobby', desc: '3 Videos pro Woche, 1 Serie, Auto-Posting auf 1 Plattform', monthly: 1900 },
-  { id: 'daily', name: 'TrueReel Daily', desc: '1 Video pro Tag, 3 Serien, alle Plattformen', monthly: 3900 },
-  { id: 'pro', name: 'TrueReel Pro', desc: '2 Videos pro Tag, unbegrenzte Serien, Priority Support, eigene Musik/Voice', monthly: 6900 },
+  { id: 'hobby', name: 'TrueReel Hobby', desc: '3 Videos pro Woche, 1 Serie, Auto-Posting auf 1 Plattform', monthly: 2400 },
+  { id: 'daily', name: 'TrueReel Daily', desc: '1 Video pro Tag, 3 Serien, alle Plattformen', monthly: 4900 },
+  { id: 'pro', name: 'TrueReel Pro', desc: '2 Videos pro Tag, unbegrenzte Serien, Priority Support, eigene Musik/Voice', monthly: 8900 },
 ];
 const yearly = (cents) => Math.round(cents * 12 * 0.8); // 20 % Rabatt
 

@@ -26,19 +26,19 @@ services:
       - key: STRIPE_WEBHOOK_SECRET   # GEHEIM: whsec_… (nach dem ersten Deploy)
         sync: false
       - key: STRIPE_PRICE_HOBBY_MONTHLY
-        value: price_1UajjFB41s0DKjW8etefpm1u
+        value: price_1UajngB41s0DKjW8VRHTa1Um
       - key: STRIPE_PRICE_HOBBY_YEARLY
-        value: price_1UajjGB41s0DKjW8bfB7bAp5
+        value: price_1UajnhB41s0DKjW8lGwg1AbK
       - key: STRIPE_PRICE_DAILY_MONTHLY
-        value: price_1UajjHB41s0DKjW8ND3Wx8HQ
+        value: price_1UajnhB41s0DKjW8wIdEtQPZ
       - key: STRIPE_PRICE_DAILY_YEARLY
-        value: price_1UajjIB41s0DKjW86bcPLozE
+        value: price_1UajniB41s0DKjW8vFyWeoMq
       - key: STRIPE_PRICE_PRO_MONTHLY
-        value: price_1UajjJB41s0DKjW8JUxhX9u3
+        value: price_1UajnjB41s0DKjW8ycgY3IfJ
       - key: STRIPE_PRICE_PRO_YEARLY
-        value: price_1UajjKB41s0DKjW8liAwHsoy
+        value: price_1UajnkB41s0DKjW8ZnG59z5Y
       - key: STRIPE_PORTAL_CONFIG
-        value: bpc_1UajjKB41s0DKjW8ar9RUngs
+        value: bpc_1UajnkB41s0DKjW8zlR96zad
       # ── Inhalte ───────────────────────────────────────
       - key: LLM_PROVIDER   # anthropic = KI-Skripte (ohne ANTHROPIC_API_KEY automatisch Mock)
         value: anthropic

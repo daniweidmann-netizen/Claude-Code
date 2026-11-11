@@ -6,7 +6,7 @@ export const PLANS = [
   {
     id: 'hobby',
     name: 'Hobby',
-    monthly: 19,
+    monthly: 24,
     videosPerMonth: Math.round(3 * WEEKS_PER_MONTH), // 13
     limits: { videosPerWeek: 3, series: 1, platforms: 1, customUploads: false },
     featureKeys: ['plan.hobby.f1', 'plan.hobby.f2', 'plan.hobby.f3', 'plan.common.export', 'plan.common.voices'],
@@ -14,7 +14,7 @@ export const PLANS = [
   {
     id: 'daily',
     name: 'Daily',
-    monthly: 39,
+    monthly: 49,
     popular: true,
     videosPerMonth: 30,
     limits: { videosPerDay: 1, series: 3, platforms: 3, customUploads: false },
@@ -23,7 +23,7 @@ export const PLANS = [
   {
     id: 'pro',
     name: 'Pro',
-    monthly: 69,
+    monthly: 89,
     videosPerMonth: 60,
     limits: { videosPerDay: 2, series: Infinity, platforms: 3, customUploads: true },
     featureKeys: ['plan.pro.f1', 'plan.pro.f2', 'plan.pro.f3', 'plan.pro.f4', 'plan.pro.f5', 'plan.common.export'],
