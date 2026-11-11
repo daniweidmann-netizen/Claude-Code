@@ -26,6 +26,7 @@ export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [recovery, setRecovery] = useState(false); // Nutzer kam über „Passwort vergessen“-Link
 
   const loadProfile = useCallback(async (u) => {
     if (!u) { setProfile(null); return null; }
@@ -54,7 +55,8 @@ export function AuthProvider({ children }) {
       setUser(u);
       loadProfile(u).finally(() => setLoading(false));
     });
-    const { data: sub } = supabase.auth.onAuthStateChange((_e, session) => {
+    const { data: sub } = supabase.auth.onAuthStateChange((event, session) => {
+      if (event === 'PASSWORD_RECOVERY') setRecovery(true);
       const u = session?.user ?? null;
       setUser(u);
       loadProfile(u);
@@ -100,6 +102,13 @@ export function AuthProvider({ children }) {
     if (error) throw error;
   };
 
+  const updatePassword = async (password) => {
+    if (DEMO_MODE) return;
+    const { error } = await supabase.auth.updateUser({ password });
+    if (error) throw error;
+    setRecovery(false);
+  };
+
   const signOut = async () => {
     if (DEMO_MODE) localStorage.removeItem(DEMO_USER_KEY);
     else await supabase.auth.signOut();
@@ -122,8 +131,8 @@ export function AuthProvider({ children }) {
 
   return (
     <AuthContext.Provider value={{
-      user, profile, loading, demo: DEMO_MODE,
-      signUp, signIn, signInWithGoogle, signOut, resetPassword, updateProfile,
+      user, profile, loading, demo: DEMO_MODE, recovery,
+      signUp, signIn, signInWithGoogle, signOut, resetPassword, updateProfile, updatePassword,
       refreshProfile: () => loadProfile(user),
     }}>
       {children}

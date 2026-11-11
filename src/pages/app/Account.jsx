@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { CreditCard, XCircle, Link2, Unlink, Download, Trash2, Save, Mail } from 'lucide-react';
+import { CreditCard, XCircle, Link2, Unlink, Download, Trash2, Save, Mail, KeyRound } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext.jsx';
 import { PageHeader } from '../../components/AppLayout.jsx';
 import { Notice, Spinner, StripeBadge } from '../../components/ui.jsx';
@@ -27,7 +27,18 @@ function useConnections(user) {
 }
 
 export default function Account() {
-  const { user, profile, updateProfile, signOut, refreshProfile } = useAuth();
+  const { user, profile, updateProfile, signOut, refreshProfile, recovery, updatePassword, demo } = useAuth();
+  const [pw, setPw] = useState({ a: '', b: '' });
+  const pwRef = useRef(null);
+  useEffect(() => { if (recovery) pwRef.current?.scrollIntoView({ behavior: 'smooth' }); }, [recovery]);
+  const savePassword = async (e) => {
+    e.preventDefault();
+    if (pw.a.length < 8) return setMsg({ tone: 'error', text: 'Das Passwort muss mindestens 8 Zeichen lang sein.' });
+    if (pw.a !== pw.b) return setMsg({ tone: 'error', text: 'Die beiden Passwörter stimmen nicht überein.' });
+    setBusy('pw');
+    try { await updatePassword(pw.a); setPw({ a: '', b: '' }); setMsg({ tone: 'success', text: 'Neues Passwort gespeichert.' }); } catch (err) { setMsg({ tone: 'error', text: err.message }); }
+    setBusy(null);
+  };
   const [params, setParams] = useSearchParams();
   const navigate = useNavigate();
   const plan = getPlan(profile?.plan);
@@ -175,7 +186,19 @@ export default function Account() {
         {hasSub ? <button className="btn-outline" onClick={portal}>Plan im Kundenportal ändern</button> : <PricingSection showCalculator={false} currentPlan={plan.id} />}
       </section>
 
-      <section className="mt-10 card p-5">
+      {!demo && (
+        <section ref={pwRef} className={`mt-10 card p-5 ${recovery ? 'ring-2 ring-accent-500' : ''}`}>
+          <h2 className="flex items-center gap-2 font-semibold"><KeyRound className="h-4 w-4" />{recovery ? 'Neues Passwort festlegen' : 'Passwort ändern'}</h2>
+          {recovery && <p className="mt-1 text-sm muted">Du bist über den Link aus der E-Mail angemeldet. Lege jetzt dein neues Passwort fest.</p>}
+          <form onSubmit={savePassword} className="mt-4 grid gap-3 sm:grid-cols-[1fr_1fr_auto] sm:items-end">
+            <div><label className="label" htmlFor="pw-a">Neues Passwort</label><input id="pw-a" type="password" autoComplete="new-password" minLength={8} className="input" value={pw.a} onChange={(e) => setPw({ ...pw, a: e.target.value })} /></div>
+            <div><label className="label" htmlFor="pw-b">Wiederholen</label><input id="pw-b" type="password" autoComplete="new-password" minLength={8} className="input" value={pw.b} onChange={(e) => setPw({ ...pw, b: e.target.value })} /></div>
+            <button className="btn-primary" disabled={busy === 'pw'}>{busy === 'pw' ? <Spinner /> : <Save className="h-4 w-4" />}Speichern</button>
+          </form>
+        </section>
+      )}
+
+      <section className="mt-6 card p-5">
         <h2 className="font-semibold">Verbundene Plattformen</h2>
         <p className="mb-4 text-sm muted">TrueReel postet nur auf Plattformen, die du hier verbindest – und nur Videos, die du freigegeben hast (sofern Freigabe aktiv).</p>
         <ul className="divide-y divide-navy-100 dark:divide-navy-800">
