@@ -1,13 +1,30 @@
 import { createContext, useContext, useEffect, useMemo, useState } from 'react';
 import de from './de.js';
 import en from './en.js';
+import appEn from './app-en.js';
 
-// FR/IT/ES-Oberfläche: Wörterbücher hier ergänzen. Fehlende Keys fallen auf Deutsch zurück.
+// Zwei Arten von Texten:
+//  t('key')        – Schlüssel-basiert (Marketing-Seiten, de.js / en.js)
+//  tr('Deutscher Text', { n: 3 }) – App-Texte: der deutsche Text ist der Schlüssel,
+//                    app-en.js liefert die englische Fassung. Platzhalter: {n}
 const DICTS = { de, en };
 export const UI_LANGUAGES = [
-  { id: 'de', label: 'DE' },
   { id: 'en', label: 'EN' },
+  { id: 'de', label: 'DE' },
 ];
+export const DEFAULT_LANG = 'en';
+
+let currentLang = DEFAULT_LANG;
+export const getLang = () => currentLang;
+export const getLocale = () => (currentLang === 'de' ? 'de-CH' : 'en-GB');
+
+const fill = (s, vars) => (vars ? String(s).replace(/\{(\w+)\}/g, (_, k) => (vars[k] ?? `{${k}}`)) : s);
+
+// Auch ausserhalb von React nutzbar (z. B. für Fehlermeldungen)
+export function translate(de, vars, lang = currentLang) {
+  if (lang === 'de') return fill(de, vars);
+  return fill(appEn[de] ?? de, vars);
+}
 
 const I18nContext = createContext(null);
 
@@ -16,12 +33,12 @@ function detect() {
     const saved = localStorage.getItem('tr-lang');
     if (saved && DICTS[saved]) return saved;
   } catch {}
-  const nav = (navigator.language || 'de').slice(0, 2);
-  return DICTS[nav] ? nav : 'de';
+  return DEFAULT_LANG; // Englisch als Standard, Deutsch umschaltbar
 }
 
 export function I18nProvider({ children }) {
   const [lang, setLang] = useState(detect);
+  currentLang = lang;
   useEffect(() => {
     document.documentElement.lang = lang;
     try { localStorage.setItem('tr-lang', lang); } catch {}
@@ -29,7 +46,9 @@ export function I18nProvider({ children }) {
   const value = useMemo(() => ({
     lang,
     setLang,
-    t: (key) => DICTS[lang]?.[key] ?? de[key] ?? key,
+    locale: lang === 'de' ? 'de-CH' : 'en-GB',
+    t: (key) => DICTS[lang]?.[key] ?? en[key] ?? key,
+    tr: (de, vars) => translate(de, vars, lang),
   }), [lang]);
   return <I18nContext.Provider value={value}>{children}</I18nContext.Provider>;
 }

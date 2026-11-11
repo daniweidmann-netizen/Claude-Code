@@ -6,6 +6,7 @@ import { useI18n } from '../i18n/index.jsx';
 import { useAuth } from '../context/AuthContext.jsx';
 import { SITE } from '../config/site.js';
 import { useEffect } from 'react';
+import { translate as tr } from '../i18n/index.jsx';
 
 function Navbar() {
   const { t } = useI18n();
@@ -20,7 +21,7 @@ function Navbar() {
   ];
   return (
     <header className="sticky top-0 z-40 border-b border-navy-100/70 bg-white/85 backdrop-blur dark:border-navy-800 dark:bg-navy-950/85">
-      <nav className="container-x flex h-16 items-center justify-between" aria-label="Hauptnavigation">
+      <nav className="container-x flex h-16 items-center justify-between" aria-label={tr("Hauptnavigation")}>
         <Logo />
         <div className="hidden items-center gap-1 md:flex">
           {links.map(([href, label]) => (
@@ -38,7 +39,7 @@ function Navbar() {
               <Link to="/registrieren" className="btn-primary hidden sm:inline-flex">{t('nav.start')}</Link>
             </>
           )}
-          <button className="btn-icon md:hidden" onClick={() => setOpen(!open)} aria-expanded={open} aria-label="Menü">
+          <button className="btn-icon md:hidden" onClick={() => setOpen(!open)} aria-expanded={open} aria-label={tr("Menü")}>
             {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
           </button>
         </div>
@@ -67,8 +68,8 @@ function TrustBar() {
   return (
     <div className="border-t border-navy-100 bg-navy-50 dark:border-navy-800 dark:bg-navy-900">
       <div className="container-x grid gap-4 py-6 text-sm text-navy-600 dark:text-navy-200 sm:grid-cols-3 sm:divide-x sm:divide-navy-200 dark:sm:divide-navy-700">
-        <div className="flex items-center justify-center gap-3"><span className="text-xl font-black tracking-tight text-navy-950 dark:text-white">stripe</span>Zahlung via Stripe</div>
-        <div className="flex items-center justify-center gap-3"><ShieldCheck className="h-6 w-6" strokeWidth={1.6} />DSGVO/DSG-konform</div>
+        <div className="flex items-center justify-center gap-3"><span className="text-xl font-black tracking-tight text-navy-950 dark:text-white">{tr("stripe")}</span>{tr("Zahlung via Stripe")}</div>
+        <div className="flex items-center justify-center gap-3"><ShieldCheck className="h-6 w-6" strokeWidth={1.6} />{tr("DSGVO/DSG-konform")}</div>
         <a href={`mailto:${SITE.contactEmail}`} className="flex items-center justify-center gap-3 hover:text-navy-950 dark:hover:text-white"><Mail className="h-6 w-6" strokeWidth={1.6} />{SITE.contactEmail}</a>
       </div>
     </div>
@@ -84,7 +85,7 @@ export function Footer() {
       <div className="container-x grid gap-10 py-12 sm:grid-cols-2 lg:grid-cols-4">
         <div className="space-y-3">
           <Logo />
-          <p className="text-sm muted">{SITE.claim}</p>
+          <p className="text-sm muted">{t('hero.title1')} {t('hero.title2')}</p>
           <StripeBadge />
         </div>
         <div>
@@ -124,7 +125,7 @@ export function Footer() {
 export default function SiteLayout() {
   return (
     <div className="flex min-h-screen flex-col">
-      <a href="#main" className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:rounded-lg focus:bg-white focus:px-4 focus:py-2">Zum Inhalt</a>
+      <a href="#main" className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:rounded-lg focus:bg-white focus:px-4 focus:py-2">{tr("Zum Inhalt")}</a>
       <Navbar />
       <main id="main" className="flex-1"><Outlet /></main>
       <Footer />

@@ -1,3 +1,4 @@
+import { translateServerError } from '../i18n/serverErrors.js';
 import { supabase } from './supabase.js';
 
 // Fetch-Wrapper für den eigenen Server (/api). Hängt das Supabase-JWT an.
@@ -15,7 +16,11 @@ export async function api(path, { method = 'GET', body, headers = {}, raw = fals
   const res = await fetch(`/api${path}`, { method, headers: h, body: payload });
   if (raw) return res;
   const data = await res.json().catch(() => ({}));
-  if (!res.ok) throw new Error(data.error || `Fehler ${res.status}`);
+  if (!res.ok) {
+    const err = new Error(translateServerError(data.error || `Fehler ${res.status}`));
+    err.status = res.status;
+    throw err;
+  }
   return data;
 }
 

@@ -12,10 +12,11 @@ import { fmtDateTime, nextFreeSlot } from '../../lib/schedule.js';
 import { getVideo, saveVideo } from '../../lib/store.js';
 import { timeline } from '../../video/project.js';
 import { PLATFORMS } from '../../config/catalog.js';
+import { translate as tr } from '../../i18n/index.jsx';
 
 export function StatusBadge({ status }) {
   const s = STATUS_LABELS[status] || STATUS_LABELS.draft;
-  return <span className={`inline-flex rounded-full px-2 py-0.5 text-xs font-semibold ${s.cls}`}>{s.label}</span>;
+  return <span className={`inline-flex rounded-full px-2 py-0.5 text-xs font-semibold ${s.cls}`}>{tr(s.label)}</span>;
 }
 
 function Stat({ icon: Icon, label, value, sub }) {
@@ -33,13 +34,13 @@ function Stat({ icon: Icon, label, value, sub }) {
 
 const greeting = () => {
   const h = new Date().getHours();
-  return h < 11 ? 'Guten Morgen!' : h < 18 ? 'Guten Tag!' : 'Guten Abend!';
+  return h < 11 ? tr("Guten Morgen!") : h < 18 ? tr("Guten Tag!") : tr("Guten Abend!");
 };
 
 function SeriesStatus({ series, count }) {
-  if (series.active === false) return <span className="inline-flex items-center gap-1.5 rounded-lg bg-amber-100 px-2.5 py-1 text-sm font-semibold text-amber-800 dark:bg-amber-500/15 dark:text-amber-300"><Pause className="h-3.5 w-3.5" />pausiert</span>;
-  if (!count) return <span className="inline-flex items-center gap-1.5 rounded-lg bg-navy-100 px-2.5 py-1 text-sm font-semibold text-navy-600 dark:bg-navy-800 dark:text-navy-200"><FileText className="h-3.5 w-3.5" />Entwurf</span>;
-  return <span className="inline-flex items-center gap-1.5 rounded-lg bg-accent-100 px-2.5 py-1 text-sm font-semibold text-accent-800 dark:bg-accent-500/15 dark:text-accent-500"><span className="h-2 w-2 rounded-full bg-accent-600 dark:bg-accent-500" />aktiv</span>;
+  if (series.active === false) return <span className="inline-flex items-center gap-1.5 rounded-lg bg-amber-100 px-2.5 py-1 text-sm font-semibold text-amber-800 dark:bg-amber-500/15 dark:text-amber-300"><Pause className="h-3.5 w-3.5" />{tr("pausiert")}</span>;
+  if (!count) return <span className="inline-flex items-center gap-1.5 rounded-lg bg-navy-100 px-2.5 py-1 text-sm font-semibold text-navy-600 dark:bg-navy-800 dark:text-navy-200"><FileText className="h-3.5 w-3.5" />{tr("Entwurf")}</span>;
+  return <span className="inline-flex items-center gap-1.5 rounded-lg bg-accent-100 px-2.5 py-1 text-sm font-semibold text-accent-800 dark:bg-accent-500/15 dark:text-accent-500"><span className="h-2 w-2 rounded-full bg-accent-600 dark:bg-accent-500" />{tr("aktiv")}</span>;
 }
 
 // Vorschaubild: erstes Bild des neuesten Videos, sonst Platzhalter-Grafik
@@ -78,8 +79,8 @@ function ApprovalQueue({ videos, series, reload }) {
 
   return (
     <div className="card p-6">
-      <h2 className="text-2xl font-extrabold tracking-tight">Freigabe-Warteschlange</h2>
-      <p className="mt-1 muted">{next ? 'Nächster Post zur Freigabe.' : 'Nichts wartet auf deine Freigabe.'}</p>
+      <h2 className="text-2xl font-extrabold tracking-tight">{tr("Freigabe-Warteschlange")}</h2>
+      <p className="mt-1 muted">{next ? tr("Nächster Post zur Freigabe.") : tr("Nichts wartet auf deine Freigabe.")}</p>
       {next ? (
         <>
           <Link to={`/app/video/${next.id}`} className="relative mt-5 block aspect-video overflow-hidden rounded-2xl bg-navy-800">
@@ -88,16 +89,16 @@ function ApprovalQueue({ videos, series, reload }) {
             {dur != null && <span className="absolute bottom-3 right-3 rounded-md bg-black/60 px-2 py-0.5 text-sm font-semibold text-white">{Math.floor(dur / 60)}:{String(dur % 60).padStart(2, '0')}</span>}
           </Link>
           <p className="mt-4 truncate font-semibold">{next.title}</p>
-          <p className="mt-1 flex items-center gap-2 text-[15px] font-medium"><CalendarDays className="h-5 w-5" strokeWidth={1.8} />{slot ? fmtDateTime(slot) : 'kein Zeitplan'}{platforms ? ` · ${platforms}` : ''}</p>
+          <p className="mt-1 flex items-center gap-2 text-[15px] font-medium"><CalendarDays className="h-5 w-5" strokeWidth={1.8} />{slot ? fmtDateTime(slot) : tr("kein Zeitplan")}{platforms ? ` · ${platforms}` : ''}</p>
           {next.status === 'ready' || next.status === 'pending_approval' ? null : null}
           <div className="mt-5 grid grid-cols-2 gap-3">
-            <Link to={`/app/video/${next.id}`} className="btn-outline py-3"><Eye className="h-5 w-5" />Vorschau ansehen</Link>
-            <button onClick={approve} disabled={busy} className="btn-primary py-3">{busy ? <Spinner /> : <Check className="h-5 w-5" />}Freigeben</button>
+            <Link to={`/app/video/${next.id}`} className="btn-outline py-3"><Eye className="h-5 w-5" />{tr("Vorschau ansehen")}</Link>
+            <button onClick={approve} disabled={busy} className="btn-primary py-3">{busy ? <Spinner /> : <Check className="h-5 w-5" />}{tr("Freigeben")}</button>
           </div>
-          {pending.length > 1 && <p className="mt-3 text-center text-sm muted">+ {pending.length - 1} weitere warten</p>}
+          {pending.length > 1 && <p className="mt-3 text-center text-sm muted">{tr('+ {n} weitere warten', { n: pending.length - 1 })}</p>}
         </>
       ) : (
-        <div className="mt-6 rounded-2xl border border-dashed border-navy-200 p-8 text-center text-sm muted dark:border-navy-700">Exportierte Videos erscheinen hier, bevor sie gepostet werden.</div>
+        <div className="mt-6 rounded-2xl border border-dashed border-navy-200 p-8 text-center text-sm muted dark:border-navy-700">{tr("Exportierte Videos erscheinen hier, bevor sie gepostet werden.")}</div>
       )}
     </div>
   );
@@ -115,48 +116,48 @@ export default function Dashboard() {
   const now = Date.now();
   const upcoming = videos.filter((v) => v.status === 'scheduled' && new Date(v.scheduled_at) > now);
   const activeSeries = series.filter((s) => s.active !== false);
-  const limitText = usage.plan.id === 'free' ? 'Dein Gratis-Video ist aufgebraucht. Wähle einen Plan unter „Konto“.' : 'Dein monatliches Kontingent ist aufgebraucht.';
+  const limitText = usage.plan.id === 'free' ? tr("Dein Gratis-Video ist aufgebraucht. Wähle einen Plan unter „Konto“.") : tr("Dein monatliches Kontingent ist aufgebraucht.");
 
   return (
     <>
       <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
         <div>
           <h1 className="text-4xl font-extrabold tracking-tight">{greeting()} 👋</h1>
-          <p className="mt-1.5 text-lg muted">Hier ist dein Fortschritt bei TrueReel.</p>
+          <p className="mt-1.5 text-lg muted">{tr("Hier ist dein Fortschritt bei TrueReel.")}</p>
         </div>
-        {series.length > 0 && <button onClick={() => setIdeaOpen(true)} className="btn-outline"><Lightbulb className="h-4 w-4" />Eigene Video-Idee</button>}
+        {series.length > 0 && <button onClick={() => setIdeaOpen(true)} className="btn-outline"><Lightbulb className="h-4 w-4" />{tr("Eigene Video-Idee")}</button>}
       </div>
       {ideaOpen && <IdeaDialog allSeries={series} onClose={() => setIdeaOpen(false)} canCreate={usage.remaining > 0} limitText={limitText} />}
       {error && <Notice tone="error" className="mb-4">{error}</Notice>}
       {usage.plan.id === 'free' && (
         <Notice tone="info" className="mb-6 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-          <span>Gratis-Test: <strong>{usage.remaining} von 1 Video</strong> verfügbar. Gratis-Exporte haben ein kleines Wasserzeichen.</span>
-          <Link to="/preise" className="btn-primary shrink-0 px-3 py-1.5 text-xs">Pläne ansehen</Link>
+          <span>{tr('Gratis-Test: {n} von 1 Video verfügbar. Gratis-Exporte haben ein kleines Wasserzeichen.', { n: usage.remaining })}</span>
+          <Link to="/preise" className="btn-primary shrink-0 px-3 py-1.5 text-xs">{tr("Pläne ansehen")}</Link>
         </Notice>
       )}
 
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-        <Stat icon={Play} label="Videos diesen Monat" value={usage.used} sub={`von ${usage.limit}`} />
-        <Stat icon={CalendarDays} label="Geplante Posts" value={upcoming.length} sub={upcoming[0] ? `nächster ${fmtDateTime(upcoming[0].scheduled_at)}` : null} />
-        <Stat icon={Layers} label="Aktive Serien" value={activeSeries.length} />
-        <Stat icon={Eye} label="Ansichten" value="–" sub="nach dem ersten Post" />
+        <Stat icon={Play} label={tr("Videos diesen Monat")} value={usage.used} sub={tr('von {n}', { n: usage.limit })} />
+        <Stat icon={CalendarDays} label={tr("Geplante Posts")} value={upcoming.length} sub={upcoming[0] ? tr('nächster {d}', { d: fmtDateTime(upcoming[0].scheduled_at) }) : null} />
+        <Stat icon={Layers} label={tr("Aktive Serien")} value={activeSeries.length} />
+        <Stat icon={Eye} label={tr("Ansichten")} value="–" sub={tr("nach dem ersten Post")} />
       </div>
 
       <div className="mt-6 grid gap-6 xl:grid-cols-[1.45fr_1fr]">
         <section className="card p-6">
           <div className="mb-4 flex items-center justify-between gap-4">
-            <h2 className="text-2xl font-extrabold tracking-tight">Serien</h2>
-            <Link to="/app/serien/neu" className="btn-primary"><Plus className="h-5 w-5" />Neue Serie</Link>
+            <h2 className="text-2xl font-extrabold tracking-tight">{tr("Serien")}</h2>
+            <Link to="/app/serien/neu" className="btn-primary"><Plus className="h-5 w-5" />{tr("Neue Serie")}</Link>
           </div>
           {series.length === 0 ? (
             <div className="rounded-2xl border border-dashed border-navy-200 p-8 text-center dark:border-navy-700">
-              <p className="font-medium">Noch keine Serie</p>
-              <Link to="/app/onboarding" className="btn-primary mt-4">Erste Serie einrichten</Link>
+              <p className="font-medium">{tr("Noch keine Serie")}</p>
+              <Link to="/app/onboarding" className="btn-primary mt-4">{tr("Erste Serie einrichten")}</Link>
             </div>
           ) : (
             <div className="overflow-x-auto">
               <table className="w-full min-w-[520px] text-left">
-                <thead><tr className="border-b border-navy-100 text-[15px] muted dark:border-navy-800"><th className="py-3 font-medium">Serie</th><th className="py-3 font-medium">Status</th><th className="py-3 font-medium">Geplante Posts</th><th /></tr></thead>
+                <thead><tr className="border-b border-navy-100 text-[15px] muted dark:border-navy-800"><th className="py-3 font-medium">{tr("Serie")}</th><th className="py-3 font-medium">{tr("Status")}</th><th className="py-3 font-medium">{tr("Geplante Posts")}</th><th /></tr></thead>
                 <tbody>
                   {series.map((s) => {
                     const vids = videos.filter((v) => v.series_id === s.id);
@@ -174,7 +175,7 @@ export default function Dashboard() {
                         </td>
                         <td className="py-4 pr-4"><SeriesStatus series={s} count={vids.length} /></td>
                         <td className="py-4 pr-4 text-lg font-semibold tabular-nums">{planned}</td>
-                        <td className="py-4 text-right"><Link to={`/app/serien/${s.id}`} className="btn-icon" aria-label="Serie öffnen"><MoreHorizontal className="h-5 w-5" /></Link></td>
+                        <td className="py-4 text-right"><Link to={`/app/serien/${s.id}`} className="btn-icon" aria-label={tr("Serie öffnen")}><MoreHorizontal className="h-5 w-5" /></Link></td>
                       </tr>
                     );
                   })}

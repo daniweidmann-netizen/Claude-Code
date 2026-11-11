@@ -8,7 +8,7 @@ async function withFallback(path, body, fallback) {
   try {
     return await api(path, { method: 'POST', body });
   } catch (e) {
-    if (/Failed to fetch|NetworkError|Fehler 50[02]|Fehler 404/.test(e.message)) {
+    if (/Failed to fetch|NetworkError|Load failed/.test(e.message) || [404, 500, 502].includes(e.status)) {
       console.warn(`[TrueReel] ${path} nicht erreichbar – nutze lokalen Mock.`);
       return { ...fallback(), provider: 'mock-offline' };
     }

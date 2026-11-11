@@ -3,6 +3,7 @@ import { Link, Navigate, useNavigate, useSearchParams } from 'react-router-dom';
 import { useI18n } from '../i18n/index.jsx';
 import { useAuth } from '../context/AuthContext.jsx';
 import { Logo, Notice, Spinner, ThemeToggle, LangSwitch } from '../components/ui.jsx';
+import { translate as tr } from '../i18n/index.jsx';
 
 function GoogleIcon() {
   return (
@@ -27,7 +28,7 @@ function AuthShell({ title, sub, children }) {
         <div className="card w-full max-w-md p-6 sm:p-8">
           <h1 className="text-2xl font-bold">{title}</h1>
           {sub && <p className="mt-1 text-sm muted">{sub}</p>}
-          {demo && <Notice tone="warn" className="mt-4">Demo-Modus: Supabase ist nicht konfiguriert. Daten werden nur lokal in diesem Browser gespeichert; das Passwort wird nicht geprüft.</Notice>}
+          {demo && <Notice tone="warn" className="mt-4">{tr("Demo-Modus: Supabase ist nicht konfiguriert. Daten werden nur lokal in diesem Browser gespeichert; das Passwort wird nicht geprüft.")}</Notice>}
           <div className="mt-6">{children}</div>
         </div>
       </main>
@@ -55,11 +56,11 @@ export function Login() {
   const submit = async (e) => {
     e.preventDefault();
     setBusy(true); setMsg(null);
-    try { await signIn(form); navigate(next); } catch (err) { setMsg({ tone: 'error', text: err.message === 'Invalid login credentials' ? 'E-Mail oder Passwort ist falsch.' : err.message }); }
+    try { await signIn(form); navigate(next); } catch (err) { setMsg({ tone: 'error', text: err.message === 'Invalid login credentials' ? tr("E-Mail oder Passwort ist falsch.") : err.message }); }
     setBusy(false);
   };
   const forgot = async () => {
-    if (!form.email) return setMsg({ tone: 'warn', text: 'Bitte gib zuerst deine E-Mail-Adresse ein.' });
+    if (!form.email) return setMsg({ tone: 'warn', text: tr("Bitte gib zuerst deine E-Mail-Adresse ein.") });
     try { await resetPassword(form.email); setMsg({ tone: 'success', text: t('auth.resetSent') }); } catch (err) { setMsg({ tone: 'error', text: err.message }); }
   };
 
@@ -93,7 +94,7 @@ export function Register() {
 
   const submit = async (e) => {
     e.preventDefault();
-    if (form.password.length < 8) return setMsg({ tone: 'error', text: 'Das Passwort muss mindestens 8 Zeichen lang sein.' });
+    if (form.password.length < 8) return setMsg({ tone: 'error', text: tr("Das Passwort muss mindestens 8 Zeichen lang sein.") });
     setBusy(true); setMsg(null);
     try {
       const r = await signUp(form);
@@ -110,7 +111,7 @@ export function Register() {
       <form onSubmit={submit} className="space-y-4">
         <div><label className="label" htmlFor="name">{t('auth.name')}</label><input id="name" className="input" autoComplete="name" value={form.fullName} onChange={(e) => setForm({ ...form, fullName: e.target.value })} /></div>
         <div><label className="label" htmlFor="email">{t('auth.email')}</label><input id="email" type="email" required autoComplete="email" className="input" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} /></div>
-        <div><label className="label" htmlFor="pw">{t('auth.password')}</label><input id="pw" type="password" required minLength={8} autoComplete="new-password" className="input" value={form.password} onChange={(e) => setForm({ ...form, password: e.target.value })} /><p className="mt-1 text-xs muted">Mindestens 8 Zeichen</p></div>
+        <div><label className="label" htmlFor="pw">{t('auth.password')}</label><input id="pw" type="password" required minLength={8} autoComplete="new-password" className="input" value={form.password} onChange={(e) => setForm({ ...form, password: e.target.value })} /><p className="mt-1 text-xs muted">{tr("Mindestens 8 Zeichen")}</p></div>
         {msg && <Notice tone={msg.tone}>{msg.text}</Notice>}
         <button className="btn-primary w-full" disabled={busy}>{busy && <Spinner />}{t('auth.register')}</button>
         <p className="text-center text-xs muted">

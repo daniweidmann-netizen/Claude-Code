@@ -6,11 +6,12 @@ import { useI18n } from '../i18n/index.jsx';
 import { useAuth } from '../context/AuthContext.jsx';
 import { startCheckout } from '../lib/billing.js';
 import { StripeBadge, Spinner, Notice } from './ui.jsx';
+import { translate as tr } from '../i18n/index.jsx';
 
 export function IntervalToggle({ interval, setInterval }) {
   const { t } = useI18n();
   return (
-    <div className="inline-flex rounded-2xl border border-navy-200 bg-white p-1 text-base font-semibold dark:border-navy-700 dark:bg-navy-950" role="radiogroup" aria-label="Abrechnungsintervall">
+    <div className="inline-flex rounded-2xl border border-navy-200 bg-white p-1 text-base font-semibold dark:border-navy-700 dark:bg-navy-950" role="radiogroup" aria-label={tr("Abrechnungsintervall")}>
       {['monthly', 'yearly'].map((i) => (
         <button key={i} role="radio" aria-checked={interval === i} onClick={() => setInterval(i)}
           className={`flex items-center gap-2 rounded-xl px-6 py-2.5 transition ${interval === i ? 'bg-navy-100 text-navy-950 dark:bg-navy-800 dark:text-white' : 'text-navy-600 dark:text-white/80'}`}>
@@ -63,7 +64,7 @@ export function PricingTable({ interval, currentPlan }) {
               <button onClick={() => choose(plan.id)} disabled={busy || isCurrent}
                 className={`btn mt-7 w-full py-3 text-base ${hot ? 'bg-navy-950 text-white hover:bg-navy-800' : 'btn-outline'}`}>
                 {busy === plan.id && <Spinner />}
-                {isCurrent ? 'Aktueller Plan' : t('pricing.choose')}
+                {isCurrent ? tr("Aktueller Plan") : t('pricing.choose')}
               </button>
               <p className={`mt-3 text-center text-sm ${hot ? 'text-navy-900' : 'muted'}`}>{t('trust.cancel')}</p>
             </div>
@@ -78,10 +79,10 @@ export function CostTable({ interval }) {
   const { t } = useI18n();
   return (
     <div>
-      <h3 className="mb-4 text-3xl font-extrabold tracking-tight">{t('pricing.perVideo') === 'per video' ? 'Cost per video' : 'Kosten pro Video'}</h3>
+      <h3 className="mb-4 text-3xl font-extrabold tracking-tight">{tr("Kosten pro Video")}</h3>
       <div className="card overflow-hidden p-0">
         <table className="w-full text-left text-[15px]">
-          <thead><tr className="border-b border-navy-100 text-sm muted dark:border-navy-800"><th className="px-6 py-4 font-medium">Plan</th><th className="px-6 py-4 font-medium">Videos/Monat</th><th className="px-6 py-4 font-medium">{t('pricing.perVideo') === 'per video' ? 'Cost per video' : 'Kosten pro Video'}</th></tr></thead>
+          <thead><tr className="border-b border-navy-100 text-sm muted dark:border-navy-800"><th className="px-6 py-4 font-medium">{tr("Plan")}</th><th className="px-6 py-4 font-medium">{tr("Videos/Monat")}</th><th className="px-6 py-4 font-medium">{tr("Kosten pro Video")}</th></tr></thead>
           <tbody>
             {PLANS.map((plan) => (
               <tr key={plan.id} className="border-b border-navy-100 last:border-0 dark:border-navy-800">
@@ -127,7 +128,7 @@ export function CostCalculator({ interval }) {
                 <p className="text-xs muted">{t('pricing.perVideo')}{plan.videosPerMonth > need ? ` · ${plan.videosPerMonth - need} ${t('calc.unused')}` : ''}</p>
               </>
             ) : (
-              <p className="mt-2 text-sm muted">max. {plan.videosPerMonth} / Monat – {t('calc.notEnough')}</p>
+              <p className="mt-2 text-sm muted">{tr('max. {n} / Monat', { n: plan.videosPerMonth })} – {t('calc.notEnough')}</p>
             )}
           </div>
         ))}

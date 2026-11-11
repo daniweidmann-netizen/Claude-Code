@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { Moon, Sun, Lock, ShieldCheck, RefreshCcw, Gift, Eye } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext.jsx';
 import { useI18n, UI_LANGUAGES } from '../i18n/index.jsx';
+import { translate as tr } from '../i18n/index.jsx';
 
 // Logo-Zeichen „Feed-Stapel“: gestapelte Hochformat-Videos, vorne das Play
 export function LogoMark({ className = 'h-8 w-8', simple = false }) {
@@ -24,9 +25,9 @@ export function LogoMark({ className = 'h-8 w-8', simple = false }) {
 
 export function Logo({ to = '/', className = '' }) {
   return (
-    <Link to={to} className={`flex items-center gap-2 ${className}`} aria-label="TrueReel Startseite">
+    <Link to={to} className={`flex items-center gap-2 ${className}`} aria-label={tr("TrueReel Startseite")}>
       <LogoMark className="h-9 w-9" />
-      <span className="text-xl font-black tracking-[-0.04em]" aria-hidden="true">true<span className="text-accent-700 dark:text-accent-500">reel</span></span>
+      <span className="text-xl font-black tracking-[-0.04em]" aria-hidden="true">{tr("true")}<span className="text-accent-700 dark:text-accent-500">{tr("reel")}</span></span>
     </Link>
   );
 }
@@ -34,7 +35,7 @@ export function Logo({ to = '/', className = '' }) {
 export function ThemeToggle() {
   const { theme, toggle } = useTheme();
   return (
-    <button onClick={toggle} className="btn-icon" aria-label={theme === 'dark' ? 'Hellmodus' : 'Dunkelmodus'} title={theme === 'dark' ? 'Hellmodus' : 'Dunkelmodus'}>
+    <button onClick={toggle} className="btn-icon" aria-label={theme === 'dark' ? tr('Hellmodus') : tr('Dunkelmodus')} title={theme === 'dark' ? tr('Hellmodus') : tr('Dunkelmodus')}>
       {theme === 'dark' ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
     </button>
   );
@@ -43,7 +44,7 @@ export function ThemeToggle() {
 export function LangSwitch() {
   const { lang, setLang } = useI18n();
   return (
-    <div className="flex rounded-lg border border-navy-100 p-0.5 text-xs font-semibold dark:border-navy-800" role="group" aria-label="Sprache">
+    <div className="flex rounded-lg border border-navy-100 p-0.5 text-xs font-semibold dark:border-navy-800" role="group" aria-label={tr("Sprache")}>
       {UI_LANGUAGES.map((l) => (
         <button key={l.id} onClick={() => setLang(l.id)} aria-pressed={lang === l.id}
           className={`rounded-md px-2 py-1 ${lang === l.id ? 'bg-navy-900 text-white dark:bg-white dark:text-navy-900' : 'text-navy-500 dark:text-navy-300'}`}>
@@ -57,7 +58,7 @@ export function LangSwitch() {
 export function StripeBadge({ className = '' }) {
   return (
     <span className={`inline-flex items-center gap-1.5 rounded-md border border-navy-200 px-2 py-1 text-xs font-medium text-navy-600 dark:border-navy-700 dark:text-navy-300 ${className}`}>
-      <Lock className="h-3 w-3" /> Powered by <span className="font-bold text-[#635bff]">stripe</span>
+      <Lock className="h-3 w-3" /> {tr("Powered by")} <span className="font-bold text-[#635bff]">{tr("stripe")}</span>
     </span>
   );
 }

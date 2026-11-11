@@ -1,3 +1,4 @@
+import { translate as tr } from '../i18n/index.jsx';
 // Export: Rendert das Video in Echtzeit auf ein 1080×1920-Canvas, nimmt es mit
 // MediaRecorder auf (inkl. Musik + Server-Voiceover) und lässt es serverseitig
 // per FFmpeg in MP4 (H.264/AAC) umwandeln.
@@ -24,7 +25,7 @@ async function loadImages(project) {
 }
 
 export async function recordVideo(project, { watermark = false, onProgress, signal } = {}) {
-  if (!window.MediaRecorder) throw new Error('Dieser Browser unterstützt keinen Video-Export (MediaRecorder fehlt).');
+  if (!window.MediaRecorder) throw new Error(tr('Dieser Browser unterstützt keinen Video-Export (MediaRecorder fehlt).'));
   const tl = timeline(project);
   const canvas = document.createElement('canvas');
   canvas.width = VIDEO_W; canvas.height = VIDEO_H;
@@ -87,7 +88,7 @@ export async function recordVideo(project, { watermark = false, onProgress, sign
   rec.stop();
   sources.forEach((s) => { try { s.stop(); } catch {} });
   await done;
-  if (signal?.aborted) throw new Error('Export abgebrochen');
+  if (signal?.aborted) throw new Error(tr('Export abgebrochen'));
   return { blob: new Blob(chunks, { type: mimeType.split(';')[0] }), mimeType, hasVoice };
 }
 

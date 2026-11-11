@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+import { useI18n } from './i18n/index.jsx';
 import { Link, Route, Routes, useLocation } from 'react-router-dom';
 import SiteLayout from './components/SiteLayout.jsx';
 import AppLayout, { RequireAuth } from './components/AppLayout.jsx';
@@ -12,6 +13,7 @@ import Editor from './pages/app/Editor.jsx';
 import Calendar from './pages/app/Calendar.jsx';
 import Account from './pages/app/Account.jsx';
 import { Impressum, Datenschutz, AGB, Rueckerstattung } from './pages/legal/Legal.jsx';
+import { translate as tr } from './i18n/index.jsx';
 
 function ScrollManager() {
   const { pathname, hash } = useLocation();
@@ -29,17 +31,18 @@ function NotFound() {
   return (
     <div className="section text-center">
       <h1 className="text-4xl font-bold">404</h1>
-      <p className="mt-2 muted">Diese Seite gibt es nicht.</p>
-      <Link to="/" className="btn-primary mt-6">Zur Startseite</Link>
+      <p className="mt-2 muted">{tr("Diese Seite gibt es nicht.")}</p>
+      <Link to="/" className="btn-primary mt-6">{tr("Zur Startseite")}</Link>
     </div>
   );
 }
 
 export default function App() {
+  const { lang } = useI18n(); // Sprachwechsel → Seiten neu aufbauen
   return (
     <>
       <ScrollManager />
-      <Routes>
+      <Routes key={lang}>
         <Route element={<SiteLayout />}>
           <Route index element={<Landing />} />
           <Route path="preise" element={<PricingPage />} />

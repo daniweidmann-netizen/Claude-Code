@@ -1,3 +1,4 @@
+import { translate as tr } from '../i18n/index.jsx';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Pause, Play, RotateCcw, Volume2, VolumeX } from 'lucide-react';
 import { drawFrame } from './renderer.js';
@@ -188,20 +189,20 @@ export default function Player({ seekRequest, framed = false, project, autoPlay 
       <div className={framed ? 'relative mx-auto w-full max-w-[260px] overflow-hidden rounded-[2.4rem] border-[10px] border-navy-900 bg-black shadow-2xl dark:border-navy-700' : 'relative overflow-hidden rounded-[inherit] bg-black'} style={{ aspectRatio: framed ? undefined : '9 / 16' }}>
          <canvas ref={canvasRef} width={PW} height={PH} className="block h-auto w-full" onClick={() => (playing ? pause() : play())} />
         {controls && !playing && (
-          <button onClick={() => play()} className="absolute inset-0 m-auto flex h-16 w-16 items-center justify-center rounded-full bg-white/90 text-navy-900 shadow-lg transition hover:scale-105" aria-label="Abspielen">
+          <button onClick={() => play()} className="absolute inset-0 m-auto flex h-16 w-16 items-center justify-center rounded-full bg-white/90 text-navy-900 shadow-lg transition hover:scale-105" aria-label={tr("Abspielen")}>
             <Play className="ml-1 h-7 w-7" />
           </button>
         )}
       </div>
       {controls && (
         <div className={`mt-3 flex items-center gap-2 text-xs ${framed ? 'mx-auto max-w-[300px]' : ''} text-navy-500 dark:text-navy-300`}>
-          <button className="btn-icon" onClick={() => (playing ? pause() : play())} aria-label={playing ? 'Pause' : 'Abspielen'}>
+          <button className="btn-icon" onClick={() => (playing ? pause() : play())} aria-label={playing ? 'Pause' : tr('Abspielen')}>
             {playing ? <Pause className="h-4 w-4" /> : <Play className="h-4 w-4" />}
           </button>
-          <button className="btn-icon" onClick={() => seek(0)} aria-label="Zum Anfang"><RotateCcw className="h-4 w-4" /></button>
+          <button className="btn-icon" onClick={() => seek(0)} aria-label={tr("Zum Anfang")}><RotateCcw className="h-4 w-4" /></button>
           <input type="range" min={0} max={tl.total || 1} step={0.05} value={t} onChange={(e) => seek(+e.target.value)} className="flex-1 accent-accent-500" aria-label="Position" />
           <span className="whitespace-nowrap tabular-nums">{fmt(t)} / {fmt(tl.total)}</span>
-          <button className="btn-icon" onClick={toggleMute} aria-label={muted ? 'Ton an' : 'Ton aus'}>
+          <button className="btn-icon" onClick={toggleMute} aria-label={muted ? tr('Ton an') : tr('Ton aus')}>
             {muted ? <VolumeX className="h-4 w-4" /> : <Volume2 className="h-4 w-4" />}
           </button>
         </div>

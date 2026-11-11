@@ -1,3 +1,4 @@
+import { getLocale } from '../i18n/index.jsx';
 // Zeitplan-Logik für Auto-Posting (lokale Zeitzone des Browsers).
 export const DEFAULT_SCHEDULE = { frequency: '1d', times: ['18:00'], days: [1, 3, 5] };
 
@@ -31,4 +32,4 @@ export function nextFreeSlot(series, videos) {
   return slotsForSeries(series, new Date(Date.now() + 5 * 60 * 1000), 120).find((s) => !taken.has(s.getTime())) || null;
 }
 
-export const fmtDateTime = (d) => new Date(d).toLocaleString('de-CH', { weekday: 'short', day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' });
+export const fmtDateTime = (d) => new Date(d).toLocaleString(getLocale(), { weekday: 'short', day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' });

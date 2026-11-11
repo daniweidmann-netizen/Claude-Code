@@ -1,3 +1,4 @@
+import { translate as tr } from '../i18n/index.jsx';
 // Ablauf "neues Video für eine Folge erstellen" (Skript → Projekt → Entwurf speichern).
 import { generateScript, fillImages } from '../video/generate.js';
 import { scriptToProject } from '../video/project.js';
@@ -6,7 +7,7 @@ import { splitOwnText } from '../../shared/mockScripts.js';
 import { synthesize } from '../video/tts.js';
 
 export async function createVideoForEpisode(user, series, episode, onStatus, custom = {}) {
-  onStatus?.(custom.ownText ? 'Dein Text wird in Szenen aufgeteilt …' : 'Skript wird geschrieben …');
+  onStatus?.(custom.ownText ? tr('Dein Text wird in Szenen aufgeteilt …') : tr('Skript wird geschrieben …'));
   const script = await generateScript({
     idea: custom.idea || undefined,
     notes: custom.notes || undefined,
@@ -37,9 +38,9 @@ export async function createVideoForEpisode(user, series, episode, onStatus, cus
     captions: series.captions,
     music: series.music,
   });
-  onStatus?.('Bilder werden gesucht …');
+  onStatus?.(tr('Bilder werden gesucht …'));
   const withImages = (await fillImages(project, user.id).catch(() => null))?.project || project;
-  onStatus?.('Voiceover wird gesprochen …');
+  onStatus?.(tr('Voiceover wird gesprochen …'));
   const withVoice = await fillVoice(withImages, user.id).catch(() => withImages);
   return saveVideo({
     user_id: user.id,

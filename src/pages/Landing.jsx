@@ -12,6 +12,7 @@ import { scriptToProject } from '../video/project.js';
 import { exampleScripts } from '../config/examples.js';
 import { NICHES } from '../config/catalog.js';
 import { SITE } from '../config/site.js';
+import { translate as tr } from '../i18n/index.jsx';
 
 function useExampleProject(key, lang) {
   return useMemo(() => {
@@ -180,7 +181,7 @@ function Examples() {
           {tabs.map((n) => (
             <button key={n.id} role="tab" aria-selected={tab === n.id} onClick={() => setTab(n.id)}
               className={`rounded-full px-4 py-2 text-sm font-medium transition ${tab === n.id ? 'bg-navy-900 text-white dark:bg-white dark:text-navy-900' : 'bg-navy-50 text-navy-700 hover:bg-navy-100 dark:bg-navy-900 dark:text-navy-200'}`}>
-              {n.emoji} {n.label}
+              {n.emoji} {tr(n.label)}
             </button>
           ))}
         </div>
@@ -189,14 +190,13 @@ function Examples() {
             <Player key={tab + lang} project={project} initialMuted controls={false} autoPlay loop />
           </PhoneFrame>
           <div>
-            <h3 className="text-2xl font-semibold">{niche.emoji} {niche.label}</h3>
-            <p className="mt-2 muted">{niche.desc}</p>
+            <h3 className="text-2xl font-semibold">{niche.emoji} {tr(niche.label)}</h3>
+            <p className="mt-2 muted">{tr(niche.desc)}</p>
             <dl className="mt-6 grid grid-cols-2 gap-4 text-sm">
-              <div className="card p-4"><dt className="muted">Stil</dt><dd className="mt-1 font-semibold capitalize">{project.artStyle}</dd></div>
-              <div className="card p-4"><dt className="muted">Untertitel</dt><dd className="mt-1 font-semibold capitalize">{project.captions.style}</dd></div>
-              <div className="card col-span-2 p-4"><dt className="muted">Hook</dt><dd className="mt-1 font-medium">„{project.scenes[0].text}“</dd></div>
+              <div className="card p-4"><dt className="muted">{tr("Stil")}</dt><dd className="mt-1 font-semibold capitalize">{project.artStyle}</dd></div>
+              <div className="card p-4"><dt className="muted">{tr("Untertitel")}</dt><dd className="mt-1 font-semibold capitalize">{project.captions.style}</dd></div>
+              <div className="card col-span-2 p-4"><dt className="muted">{tr("Hook")}</dt><dd className="mt-1 font-medium">„{project.scenes[0].text}“</dd></div>
             </dl>
-            {!niche.ready && <p className="mt-4 text-xs muted">Im aktuellen Prototyp ist die Nische „Geschichte“ voll ausgebaut; weitere Nischen folgen bzw. laufen über „Eigenes Thema“.</p>}
           </div>
         </div>
       </div>
@@ -212,8 +212,8 @@ function SocialProof() {
     <section className="section">
       <div className="container-x">
         <div className="flex justify-center gap-12 text-center">
-          {usersCount != null && <div><p className="text-3xl font-bold">{usersCount.toLocaleString('de-CH')}</p><p className="muted text-sm">Creator</p></div>}
-          {videosCreated != null && <div><p className="text-3xl font-bold">{videosCreated.toLocaleString('de-CH')}</p><p className="muted text-sm">Videos erstellt</p></div>}
+          {usersCount != null && <div><p className="text-3xl font-bold">{usersCount.toLocaleString('de-CH')}</p><p className="muted text-sm">{tr("Creator")}</p></div>}
+          {videosCreated != null && <div><p className="text-3xl font-bold">{videosCreated.toLocaleString('de-CH')}</p><p className="muted text-sm">{tr("Videos erstellt")}</p></div>}
         </div>
         <div className="mt-10 grid gap-6 md:grid-cols-3">
           {testimonials.map((q) => (
@@ -243,7 +243,7 @@ export default function Landing() {
             <p className="mt-3 muted">{t('pricing.sub')}</p>
           </div>
           <PricingSection showCalculator={false} />
-          <p className="mt-6 text-center text-sm"><Link to="/preise" className="font-semibold text-accent-700 dark:text-accent-400">Kosten pro Video vergleichen →</Link></p>
+          <p className="mt-6 text-center text-sm"><Link to="/preise" className="font-semibold text-accent-700 dark:text-accent-400">{tr("Kosten pro Video vergleichen →")}</Link></p>
         </div>
       </section>
       <section id="faq" className="section scroll-mt-16 bg-navy-50/60 dark:bg-navy-900/40">
@@ -251,7 +251,7 @@ export default function Landing() {
           <h2 className="h2 mb-8 text-center">{t('faq.title')}</h2>
           <FAQ />
           <p className="mt-6 text-center text-sm muted">
-            Noch Fragen? <a className="inline-flex items-center gap-1 font-semibold text-accent-700 dark:text-accent-400" href={`mailto:${SITE.contactEmail}`}><Mail className="h-4 w-4" />{SITE.contactEmail}</a>
+            {tr("Noch Fragen?")} <a className="inline-flex items-center gap-1 font-semibold text-accent-700 dark:text-accent-400" href={`mailto:${SITE.contactEmail}`}><Mail className="h-4 w-4" />{SITE.contactEmail}</a>
           </p>
         </div>
       </section>

@@ -1,5 +1,6 @@
 import { createContext, useCallback, useContext, useEffect, useState } from 'react';
 import { supabase, DEMO_MODE } from '../lib/supabase.js';
+import { useI18n } from '../i18n/index.jsx';
 
 const AuthContext = createContext(null);
 const DEMO_USER_KEY = 'tr-demo-user';
@@ -27,6 +28,7 @@ export function AuthProvider({ children }) {
   const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(true);
   const [recovery, setRecovery] = useState(false); // Nutzer kam über „Passwort vergessen“-Link
+  const { lang } = useI18n();
 
   const loadProfile = useCallback(async (u) => {
     if (!u) { setProfile(null); return null; }
@@ -64,6 +66,12 @@ export function AuthProvider({ children }) {
     return () => sub.subscription.unsubscribe();
   }, [loadProfile]);
 
+  // Sprache im Konto merken – die Supabase-E-Mails (Bestätigung, Passwort) nutzen sie
+  useEffect(() => {
+    if (DEMO_MODE || !user || user.user_metadata?.lang === lang) return;
+    supabase.auth.updateUser({ data: { lang } }).catch(() => {});
+  }, [user, lang]);
+
   const demoLogin = (email, fullName = '') => {
     const u = { id: 'demo-' + btoa(email).replace(/=/g, ''), email, user_metadata: { full_name: fullName } };
     writeJSON(DEMO_USER_KEY, u);
@@ -75,7 +83,7 @@ export function AuthProvider({ children }) {
     if (DEMO_MODE) { await demoLogin(email, fullName); return { needsConfirmation: false }; }
     const { data, error } = await supabase.auth.signUp({
       email, password,
-      options: { data: { full_name: fullName }, emailRedirectTo: `${window.location.origin}/app` },
+      options: { data: { full_name: fullName, lang }, emailRedirectTo: `${window.location.origin}/app` },
     });
     if (error) throw error;
     return { needsConfirmation: !data.session };

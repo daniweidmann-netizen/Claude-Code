@@ -1,3 +1,4 @@
+import { translate as tr } from '../i18n/index.jsx';
 // Datenzugriff für Serien & Videos. Supabase, wenn konfiguriert – sonst localStorage (Demo).
 import { supabase, DEMO_MODE } from './supabase.js';
 
@@ -117,6 +118,6 @@ export async function uploadRender(userId, videoId, blob) {
   if (DEMO_MODE) return null;
   const path = `${userId}/${videoId}.mp4`;
   const { error } = await supabase.storage.from('renders').upload(path, blob, { contentType: 'video/mp4', upsert: true });
-  if (error) throw new Error(`Video konnte nicht gespeichert werden: ${error.message}`);
+  if (error) throw new Error(`${tr('Video konnte nicht gespeichert werden:')} ${error.message}`);
   return path;
 }
