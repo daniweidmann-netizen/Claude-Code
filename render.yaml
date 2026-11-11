@@ -63,6 +63,8 @@ services:
         sync: false
       - key: YOUTUBE_PRIVACY   # private, bis Google die App geprüft hat; danach public
         value: private
+      - key: STRIPE_MANAGED_PAYMENTS   # Stripe als Händler: übernimmt MWST/USt weltweit
+        value: "true"
       - key: STRIPE_AUTOMATIC_TAX   # true nur bei MWST-Pflicht (Stripe Tax kostet pro Zahlung)
         value: "false"
       - key: STATE_SECRET

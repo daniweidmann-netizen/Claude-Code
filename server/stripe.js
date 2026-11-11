@@ -7,6 +7,7 @@ export const stripe = stripeEnabled()
   ? new Stripe(config.stripeKey, process.env.NODE_USE_ENV_PROXY ? { httpClient: Stripe.createFetchHttpClient() } : {})
   : null;
 const router = express.Router();
+export const managedPayments = process.env.STRIPE_MANAGED_PAYMENTS !== 'false';
 
 async function ensureCustomer(user) {
   const profile = await getProfile(user.id);
@@ -29,8 +30,12 @@ router.post('/checkout', authenticate, async (req, res) => {
       customer,
       line_items: [{ price, quantity: 1 }],
       allow_promotion_codes: true,
-      // Stripe Tax kostet pro Zahlung eine Gebühr – nur einschalten, wenn MWST-pflichtig (STRIPE_AUTOMATIC_TAX=true)
-      ...(process.env.STRIPE_AUTOMATIC_TAX === 'true' ? { automatic_tax: { enabled: true }, customer_update: { address: 'auto' } } : {}),
+      // Managed Payments: Stripe ist offizieller Verkäufer und übernimmt MWST/USt weltweit,
+      // Betrugsprüfung und Rückbuchungen (Zusatzgebühr pro Zahlung). Abschalten mit STRIPE_MANAGED_PAYMENTS=false.
+      ...(managedPayments
+        ? { managed_payments: { enabled: true } }
+        // Ohne Managed Payments: Stripe Tax nur bei eigener MWST-Pflicht (STRIPE_AUTOMATIC_TAX=true)
+        : process.env.STRIPE_AUTOMATIC_TAX === 'true' ? { automatic_tax: { enabled: true }, customer_update: { address: 'auto' } } : {}),
       subscription_data: { metadata: { user_id: req.user.id } },
       metadata: { user_id: req.user.id },
       success_url: `${config.appUrl}/app/account?checkout=success`,

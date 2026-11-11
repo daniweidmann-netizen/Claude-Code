@@ -40,8 +40,10 @@ async function ensurePrice(product, lookupKey, amount, interval) {
 async function ensureProduct(plan) {
   const all = await stripe.products.list({ active: true, limit: 100 });
   const found = all.data.find((p) => p.metadata?.truereel_plan === plan.id);
-  if (found) return found;
-  return stripe.products.create({ name: plan.name, description: plan.desc, metadata: { truereel_plan: plan.id } });
+  // Steuercode „SaaS – private Nutzung“ (nötig für Managed Payments / Stripe Tax)
+  const tax_code = 'txcd_10103000';
+  if (found) return found.tax_code === tax_code ? found : stripe.products.update(found.id, { tax_code });
+  return stripe.products.create({ name: plan.name, description: plan.desc, tax_code, metadata: { truereel_plan: plan.id } });
 }
 
 const env = {};

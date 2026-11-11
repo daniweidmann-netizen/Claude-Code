@@ -9,7 +9,7 @@ import { config, stripeEnabled, supabaseEnabled } from './config.js';
 import { authenticate, getProfile, admin } from './supabaseAdmin.js';
 import { provider, providerStatus, providerDiagnose, historyImageProvider, fallbackImageProvider } from './providers/index.js';
 import { ffmpegAvailable, transcodeToMp4 } from './providers/render.js';
-import stripeRouter, { webhookHandler, stripe } from './stripe.js';
+import stripeRouter, { webhookHandler, stripe, managedPayments } from './stripe.js';
 
 // Welches Stripe-Konto der Schlüssel öffnet (nur die öffentliche Konto-ID, für /api/health)
 let stripeAccountId = null;
@@ -47,6 +47,7 @@ app.get('/api/health', (_req, res) => {
     // Nur der Typ-Präfix (z. B. "pk_test", "rk_live", "mk"), nie der Schlüssel selbst
     stripeKeyType: (config.stripeKey.match(/^(sk|pk|rk|mk|whsec)_(test|live)?/)?.[0] || (config.stripeKey ? 'anderes Format' : 'leer')).replace(/_$/, ''),
     stripeAccount: stripeAccountId || null,
+    stripeManagedPayments: managedPayments,
   });
 });
 
