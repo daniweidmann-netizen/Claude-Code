@@ -154,7 +154,8 @@ if (fs.existsSync(dist)) {
   // Öffentliche Laufzeit-Konfiguration ins HTML einsetzen (nur öffentliche Werte!)
   const publicConfig = JSON.stringify({ supabaseUrl: config.supabaseUrl, supabaseAnonKey: config.supabaseAnonKey }).replace(/</g, '\\u003c');
   const html = fs.readFileSync(path.join(dist, 'index.html'), 'utf8')
-    .replace('<head>', `<head><script>window.__TRUEREEL_CONFIG__=${publicConfig}</script>`);
+    .replace('<head>', `<head><script>window.__TRUEREEL_CONFIG__=${publicConfig}</script>`)
+    .replace('content="/og-image.png"', `content="${config.appUrl}/og-image.png"`); // Social-Vorschau braucht absolute URL
   const sendIndex = (_req, res) => res.type('html').send(html);
   app.get('/', sendIndex);
   app.use(express.static(dist, { index: false, maxAge: '1h' }));
