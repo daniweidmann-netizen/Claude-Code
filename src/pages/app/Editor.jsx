@@ -1,19 +1,19 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import {
-  ArrowDown, ArrowUp, GripVertical, ImagePlus, Mic, Plus, RefreshCw, Trash2, Download, CalendarCheck, CheckCircle2,
-  Wand2, Upload, Undo2, ArrowLeft,
+  ArrowDown, ArrowUp, GripVertical, ImagePlus, Mic, Plus, RefreshCw, Trash2, CalendarCheck, CheckCircle2,
+  Upload, Undo2, ArrowLeft, PenSquare, Film, Eye, Play, Captions, Music, Info, Send, Layers, ChevronDown,
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext.jsx';
 import { getVideo, getSeries, saveVideo, deleteVideo, listVideos, uid, uploadMedia, uploadRender } from '../../lib/store.js';
-import { VOICES, CAPTION_FONTS, MUSIC_TRACKS, MONETIZATION_MIN_SECONDS } from '../../config/catalog.js';
+import { VOICES, CAPTION_FONTS, CAPTION_STYLES, MUSIC_TRACKS, MONETIZATION_MIN_SECONDS } from '../../config/catalog.js';
 import { getPlan } from '../../config/plans.js';
 import Player from '../../video/Player.jsx';
 import { newSeed, timeline, scriptToProject } from '../../video/project.js';
 import { generateImage, regenerateScript } from '../../video/generate.js';
 import { synthesize, speak, stopSpeaking } from '../../video/tts.js';
 import { recordVideo, toMp4, download } from '../../video/exporter.js';
-import { CaptionStylePicker, MusicPicker, ArtStylePicker, VoicePicker } from '../../components/Pickers.jsx';
+import { CaptionStylePicker, MusicPicker, ArtStylePicker, VoicePicker, ArtThumb } from '../../components/Pickers.jsx';
 import { Notice, Spinner, Toggle } from '../../components/ui.jsx';
 import { StatusBadge } from './Dashboard.jsx';
 import { nextFreeSlot, fmtDateTime } from '../../lib/schedule.js';
@@ -29,36 +29,6 @@ const TABS = [
   ['publish', 'Export & Posten'],
 ];
 
-function SceneCard({ scene, index, total, project, onChange, onMove, onDelete, onRegenImage, busy, dragProps }) {
-  return (
-    <div className="card p-4" {...dragProps}>
-      <div className="mb-2 flex items-center gap-2">
-        <span className="cursor-grab text-navy-300" aria-hidden="true"><GripVertical className="h-4 w-4" /></span>
-        <span className="text-xs font-semibold uppercase tracking-wide muted">{scene.role === 'hook' ? 'Hook' : scene.role === 'cta' ? 'Call-to-Action' : `Szene ${index}`}</span>
-        <div className="ml-auto flex items-center">
-          <button className="btn-icon" onClick={() => onMove(-1)} disabled={index === 0} aria-label="Nach oben"><ArrowUp className="h-4 w-4" /></button>
-          <button className="btn-icon" onClick={() => onMove(1)} disabled={index === total - 1} aria-label="Nach unten"><ArrowDown className="h-4 w-4" /></button>
-          <button className="btn-icon text-red-600" onClick={onDelete} disabled={total <= 1} aria-label="Szene löschen"><Trash2 className="h-4 w-4" /></button>
-        </div>
-      </div>
-      <textarea className="input min-h-[72px] resize-y" value={scene.text} onChange={(e) => onChange({ text: e.target.value, audioUrl: null, audioDuration: null })} aria-label="Sprechertext" />
-      <div className="mt-2 grid gap-2 sm:grid-cols-[1fr_auto_auto]">
-        <input className="input py-2 text-xs" value={scene.visual || ''} placeholder="Bildbeschreibung (für das Bildmodell)" onChange={(e) => onChange({ visual: e.target.value })} aria-label="Bildbeschreibung" />
-        <select className="input py-2 text-xs" value={scene.voiceId || ''} onChange={(e) => onChange({ voiceId: e.target.value || null, audioUrl: null, audioDuration: null })} aria-label="Stimme dieser Szene">
-          <option value="">Stimme: Standard</option>
-          {VOICES.map((v) => <option key={v.id} value={v.id}>{v.label}</option>)}
-        </select>
-        <div className="flex gap-1">
-          <button className="btn-outline px-2.5 py-2 text-xs" onClick={() => speak(scene.text, { lang: project.language, voiceId: scene.voiceId || project.voiceId })} title="Vorhören"><Mic className="h-3.5 w-3.5" /></button>
-          <button className="btn-outline px-2.5 py-2 text-xs" onClick={onRegenImage} disabled={busy} title="Bild neu generieren">{busy ? <Spinner className="h-3.5 w-3.5" /> : <RefreshCw className="h-3.5 w-3.5" />}Bild</button>
-        </div>
-      </div>
-      {scene.audioUrl && <p className="mt-2 text-xs text-accent-700 dark:text-accent-400">✓ KI-Voiceover vorhanden</p>}
-      {scene.credit && <p className="mt-2 text-xs muted">Bild: <a href={scene.credit.url} target="_blank" rel="noreferrer" className="underline">{scene.credit.author} / {scene.credit.source}{scene.credit.license ? ` (${scene.credit.license})` : ''}</a></p>}
-    </div>
-  );
-}
-
 export default function Editor() {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -67,6 +37,8 @@ export default function Editor() {
   const [video, setVideo] = useState(null);
   const [series, setSeries] = useState(null);
   const [tab, setTab] = useState('scenes');
+  const [selected, setSelected] = useState(null);
+  const [seekReq, setSeekReq] = useState(null);
   const [msg, setMsg] = useState(null);
   const [busy, setBusy] = useState(null);
   const [progress, setProgress] = useState(0);
@@ -246,99 +218,220 @@ export default function Editor() {
     r.readAsDataURL(f);
   };
 
+  const fmtDur = (sec) => `${Math.floor(sec / 60)}:${String(Math.round(sec % 60)).padStart(2, '0')}`;
+  const sceneLabel = (sc, i) => (sc.role === 'hook' ? 'Hook' : sc.role === 'cta' ? 'Call-to-Action' : `Szene ${i}`);
+  const selIdx = Math.max(0, scenes.findIndex((x) => x.id === selected));
+  const sel = scenes[selIdx];
+  const jump = (i, play = true) => { setSelected(scenes[i].id); setSeekReq({ time: tl.items[i]?.start || 0, play, nonce: Date.now() }); };
+  const settingsTabs = TABS.filter(([k]) => k !== 'scenes' && k !== 'publish');
+
   return (
     <div>
-      <div className="mb-4 flex flex-wrap items-center gap-3">
-        <Link to={series ? `/app/serien/${series.id}` : '/app'} className="btn-ghost px-2"><ArrowLeft className="h-4 w-4" /></Link>
-        <input className="min-w-0 flex-1 rounded-lg bg-transparent text-xl font-bold focus:bg-white focus:px-2 dark:focus:bg-navy-900 sm:text-2xl" value={video.title} onChange={(e) => update({ title: e.target.value })} aria-label="Titel" />
-        <StatusBadge status={video.status} />
-        <span className="text-xs muted">{saved ? 'Gespeichert' : 'Speichert …'}</span>
+      {/* Kopfzeile */}
+      <div className="mb-5 flex flex-col gap-3 xl:flex-row xl:items-center">
+        <div className="flex min-w-0 flex-1 items-center gap-2">
+          <Link to={series ? `/app/serien/${series.id}` : '/app'} className="btn-icon h-10 w-10 shrink-0" aria-label="Zurück"><ArrowLeft className="h-5 w-5" /></Link>
+          <input className="min-w-0 flex-1 rounded-lg bg-transparent text-xl font-extrabold tracking-tight focus:bg-white focus:px-2 dark:focus:bg-navy-900 sm:text-3xl" value={video.title} onChange={(e) => update({ title: e.target.value })} aria-label="Titel" />
+        </div>
+        <div className="flex flex-wrap items-center gap-2">
+          {series && <Link to={`/app/serien/${series.id}`} className="flex items-center gap-2 rounded-xl border border-navy-200 px-3 py-2 text-sm font-medium dark:border-navy-600 sm:px-4 sm:text-[15px]"><Layers className="h-4 w-4" /><span className="max-w-[12rem] truncate">{series.title}</span></Link>}
+          <span className="flex items-center gap-2 rounded-xl bg-navy-100 px-3 py-2 text-sm dark:bg-navy-900"><span className={`h-2 w-2 rounded-full ${saved ? 'bg-accent-600 dark:bg-accent-500' : 'animate-pulse bg-amber-500'}`} />{saved ? 'Gespeichert' : 'Speichert …'}</span>
+          <StatusBadge status={video.status} />
+          <button className="btn-icon ml-auto h-10 w-10 rounded-xl border border-navy-200 dark:border-navy-600" onClick={remove} aria-label="Video löschen" title="Video löschen"><Trash2 className="h-4 w-4" /></button>
+        </div>
       </div>
+
       {project.notice && <Notice tone="warn" className="mb-4">{project.notice}</Notice>}
       {(series?.target_seconds || 65) >= MONETIZATION_MIN_SECONDS && tl.total < MONETIZATION_MIN_SECONDS && (
         <Notice tone="warn" className="mb-4 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-          <span>Dieses Video dauert ca. <strong>{Math.round(tl.total)} s</strong>. Für die TikTok-Monetarisierung muss es <strong>über 60 s</strong> lang sein.{scenes.some((s) => !s.audioUrl) ? ' (Die genaue Länge steht nach dem Voiceover fest.)' : ''}</span>
+          <span>Dieses Video dauert ca. <strong>{Math.round(tl.total)} s</strong>. Für die TikTok-Monetarisierung muss es <strong>über 60 s</strong> lang sein.{scenes.some((x) => !x.audioUrl) ? ' (Die genaue Länge steht nach dem Voiceover fest.)' : ''}</span>
           <span className="flex shrink-0 gap-2">
             <button className="btn-outline px-3 py-1.5 text-xs" onClick={addScene}>Szene hinzufügen</button>
-            <button className="btn-dark px-3 py-1.5 text-xs" onClick={rewrite} disabled={!!busy}>Skript neu (länger)</button>
+            <button className="btn-primary px-3 py-1.5 text-xs" onClick={rewrite} disabled={!!busy}>Skript neu (länger)</button>
           </span>
         </Notice>
       )}
       {msg && <Notice tone={msg.tone} className="mb-4">{msg.text}</Notice>}
 
-      <div className="grid gap-6 lg:grid-cols-[1fr_320px]">
-        <div className="order-2 lg:order-1">
-          <div className="-mx-4 mb-4 flex gap-1 overflow-x-auto px-4 sm:mx-0 sm:px-0" role="tablist">
-            {TABS.map(([k, l]) => (
-              <button key={k} role="tab" aria-selected={tab === k} onClick={() => setTab(k)} className={`shrink-0 rounded-lg px-3 py-2 text-sm font-medium ${tab === k ? 'bg-navy-900 text-white dark:bg-white dark:text-navy-900' : 'text-navy-600 hover:bg-navy-100 dark:text-navy-300 dark:hover:bg-navy-800'}`}>{l}</button>
+      <div className="grid gap-5 lg:grid-cols-2 xl:grid-cols-[1fr_1fr_400px]">
+        {/* ── Skript ── */}
+        <section className="card flex flex-col p-5">
+          <h2 className="mb-4 flex items-center gap-2 text-xl font-extrabold"><PenSquare className="h-5 w-5" />Skript</h2>
+          <div className="flex-1 space-y-4">
+            {scenes.map((sc, i) => (
+              <div key={sc.id}>
+                <label className="mb-1.5 block font-bold" htmlFor={`txt-${sc.id}`}>{sceneLabel(sc, i)}</label>
+                <textarea id={`txt-${sc.id}`} className={`input min-h-[84px] resize-y text-[15px] leading-relaxed ${sc.id === sel?.id ? 'border-accent-500 dark:border-accent-500' : ''}`}
+                  value={sc.text} onFocus={() => setSelected(sc.id)}
+                  onChange={(e) => updateScene(sc.id, { text: e.target.value, audioUrl: null, audioDuration: null })} />
+              </div>
             ))}
           </div>
+          <div className="mt-5 grid gap-2 sm:grid-cols-[1fr_auto]">
+            <button className="btn-primary py-3 text-base" onClick={rewrite} disabled={!!busy}>{busy === 'script' ? <Spinner /> : <RefreshCw className="h-5 w-5" />}Skript neu generieren</button>
+            <button className="btn-outline py-3" onClick={addScene}><Plus className="h-5 w-5" />Szene</button>
+          </div>
+        </section>
 
-          {tab === 'scenes' && (
-            <div className="space-y-3">
-              <div className="flex flex-wrap gap-2">
-                <button className="btn-outline text-xs" onClick={rewrite} disabled={!!busy}>{busy === 'script' ? <Spinner /> : <Wand2 className="h-4 w-4" />}Skript neu schreiben</button>
-                <button className="btn-outline text-xs" onClick={regenAllImages} disabled={!!busy}>{busy === 'images' ? <Spinner /> : <ImagePlus className="h-4 w-4" />}Alle Bilder neu</button>
-                <button className="btn-outline text-xs" onClick={addScene}><Plus className="h-4 w-4" />Szene</button>
+        {/* ── Szenenliste ── */}
+        <section className="card flex flex-col p-5">
+          <div className="mb-4 flex items-center justify-between">
+            <h2 className="flex items-center gap-2 text-xl font-extrabold"><Film className="h-5 w-5" />Szenenliste</h2>
+            <button className="btn-icon" onClick={regenAllImages} disabled={!!busy} title="Alle Bilder neu" aria-label="Alle Bilder neu">{busy === 'images' ? <Spinner /> : <ImagePlus className="h-5 w-5" />}</button>
+          </div>
+          <ul className="flex-1 space-y-3">
+            {scenes.map((sc, i) => {
+              const active = sc.id === sel?.id;
+              return (
+                <li key={sc.id} draggable onDragStart={() => { dragFrom.current = i; }} onDragOver={(e) => e.preventDefault()} onDrop={() => { move(dragFrom.current, i); dragFrom.current = null; }}
+                  className={`rounded-2xl border-2 p-3 transition ${active ? 'border-accent-500 bg-accent-50/40 dark:bg-navy-800/60' : 'border-transparent bg-navy-50 dark:bg-navy-800/50'}`}>
+                  <div className="flex items-center gap-3">
+                    <GripVertical className="h-5 w-5 shrink-0 cursor-grab muted" aria-hidden="true" />
+                    <button className="h-16 w-24 shrink-0 overflow-hidden rounded-xl bg-navy-800" onClick={() => jump(i, false)} aria-label={`${sceneLabel(sc, i)} auswählen`}>
+                      {sc.imageUrl ? <img src={sc.imageUrl} alt="" className="h-full w-full object-cover" /> : <ArtThumb style={project.artStyle} seed={sc.seed} motif={project.motif} className="h-full w-full object-cover" />}
+                    </button>
+                    <button className="min-w-0 flex-1 text-left" onClick={() => jump(i, false)}>
+                      <p className="truncate font-bold">{sceneLabel(sc, i)}</p>
+                      <p className="text-sm muted tabular-nums">{fmtDur(tl.items[i]?.duration || 0)}{sc.audioUrl ? ' · 🎙️' : ''}</p>
+                    </button>
+                    <button className="btn-icon h-10 w-10" onClick={() => jump(i, true)} aria-label="Ab hier abspielen"><Play className="h-5 w-5 fill-current" /></button>
+                  </div>
+                  {active && (
+                    <div className="mt-3 space-y-2 border-t border-navy-100 pt-3 dark:border-navy-700">
+                      <input className="input py-2 text-xs" value={sc.visual || ''} placeholder="Bildbeschreibung (englisch, für die Bildsuche)" onChange={(e) => updateScene(sc.id, { visual: e.target.value })} aria-label="Bildbeschreibung" />
+                      <div className="flex flex-wrap items-center gap-1.5">
+                        <select className="input w-auto flex-1 py-2 text-xs" value={sc.voiceId || ''} onChange={(e) => updateScene(sc.id, { voiceId: e.target.value || null, audioUrl: null, audioDuration: null })} aria-label="Stimme dieser Szene">
+                          <option value="">Stimme: Standard</option>
+                          {VOICES.map((v) => <option key={v.id} value={v.id}>{v.label}</option>)}
+                        </select>
+                        <button className="btn-outline px-2.5 py-2 text-xs" onClick={() => regenImage(sc)} disabled={!!busy}>{busy === `img-${sc.id}` ? <Spinner className="h-3.5 w-3.5" /> : <RefreshCw className="h-3.5 w-3.5" />}Bild</button>
+                        <button className="btn-icon" onClick={() => move(i, i - 1)} disabled={i === 0} aria-label="Nach oben"><ArrowUp className="h-4 w-4" /></button>
+                        <button className="btn-icon" onClick={() => move(i, i + 1)} disabled={i === scenes.length - 1} aria-label="Nach unten"><ArrowDown className="h-4 w-4" /></button>
+                        <button className="btn-icon text-red-600" onClick={() => updateProject({ scenes: scenes.filter((x) => x.id !== sc.id) })} disabled={scenes.length <= 1} aria-label="Szene löschen"><Trash2 className="h-4 w-4" /></button>
+                      </div>
+                      {sc.credit && <p className="text-xs muted">Bild: <a href={sc.credit.url} target="_blank" rel="noreferrer" className="underline">{sc.credit.author} / {sc.credit.source}{sc.credit.license ? ` (${sc.credit.license})` : ''}</a></p>}
+                    </div>
+                  )}
+                </li>
+              );
+            })}
+          </ul>
+          <p className="mt-4 flex items-center gap-2 text-sm muted"><Info className="h-4 w-4" />Szenen per Drag & Drop umsortieren · Gesamt {fmtDur(tl.total)}</p>
+        </section>
+
+        {/* ── Vorschau ── */}
+        <section className="card order-first p-5 lg:order-last lg:col-span-2 xl:order-none xl:col-span-1">
+          <h2 className="mb-4 flex items-center gap-2 text-xl font-extrabold"><Eye className="h-5 w-5" />Vorschau</h2>
+          <div className="xl:sticky xl:top-20">
+            <Player framed project={project} watermark={plan.id === 'free'} seekRequest={seekReq} />
+            <div className="mt-5 space-y-3">
+              <div className="grid grid-cols-[1fr_auto] gap-2">
+                <label className="input flex items-center gap-2 py-0 pr-1"><Mic className="h-5 w-5 shrink-0" />
+                  <select className="w-full bg-transparent py-3 text-[15px] focus:outline-none" value={project.voiceId} onChange={(e) => updateProject({ voiceId: e.target.value, scenes: scenes.map((x) => ({ ...x, audioUrl: x.voiceId ? x.audioUrl : null, audioDuration: x.voiceId ? x.audioDuration : null })) })} aria-label="Stimme">
+                    {VOICES.map((v) => <option key={v.id} value={v.id}>Stimme: {v.label}</option>)}
+                  </select>
+                </label>
+                <button className="btn-outline px-4" onClick={() => speak(sel?.text || scenes[0].text, { lang: project.language, voiceId: sel?.voiceId || project.voiceId })}><Play className="h-4 w-4 fill-current" />Vorhören</button>
               </div>
-              {scenes.map((s, i) => (
-                <SceneCard key={s.id} scene={s} index={i} total={scenes.length} project={project}
-                  busy={busy === `img-${s.id}`}
-                  onChange={(patch) => updateScene(s.id, patch)}
-                  onMove={(d) => move(i, i + d)}
-                  onDelete={() => updateProject({ scenes: scenes.filter((x) => x.id !== s.id) })}
-                  onRegenImage={() => regenImage(s)}
-                  dragProps={{
-                    draggable: true,
-                    onDragStart: () => { dragFrom.current = i; },
-                    onDragOver: (e) => e.preventDefault(),
-                    onDrop: () => { move(dragFrom.current, i); dragFrom.current = null; },
-                  }}
-                />
-              ))}
-              <p className="text-xs muted">Tipp: Szenen per Drag & Drop oder mit den Pfeilen umordnen. Gesamtlänge ca. {Math.round(tl.total)} s.</p>
+              <label className="input flex items-center gap-2 py-0 pr-1"><Captions className="h-5 w-5 shrink-0" />
+                <select className="w-full bg-transparent py-3 text-[15px] focus:outline-none" value={project.captions.style} onChange={(e) => updateProject({ captions: { ...project.captions, style: e.target.value } })} aria-label="Untertitel-Stil">
+                  {CAPTION_STYLES.map((c) => <option key={c.id} value={c.id}>Untertitel: {c.label}</option>)}
+                </select>
+              </label>
+              <label className="input flex items-center gap-2 py-0 pr-1"><Music className="h-5 w-5 shrink-0" />
+                <select className="w-full bg-transparent py-3 text-[15px] focus:outline-none" value={project.music.customUrl ? 'custom' : project.music.trackId} onChange={(e) => e.target.value !== 'custom' && updateProject({ music: { ...project.music, trackId: e.target.value, customUrl: null, customName: null } })} aria-label="Musik">
+                  {MUSIC_TRACKS.map((m) => <option key={m.id} value={m.id}>Musik: {m.label}</option>)}
+                  {project.music.customUrl && <option value="custom">Musik: {project.music.customName || 'eigene'}</option>}
+                </select>
+              </label>
+              <button className="btn-primary w-full py-3.5 text-base" onClick={exportVideo} disabled={!!busy}>{['export', 'transcode', 'voice'].includes(busy) ? <Spinner /> : <Upload className="h-5 w-5" />}Exportieren 1080p</button>
+              {busy === 'voice' && <p className="flex items-center gap-2 text-sm"><Spinner />Voiceover wird erzeugt …</p>}
+              {(busy === 'export' || busy === 'transcode') && (
+                <div>
+                  <div className="h-2 overflow-hidden rounded-full bg-navy-100 dark:bg-navy-800"><div className="h-full bg-accent-500 transition-all" style={{ width: `${busy === 'transcode' ? 100 : progress * 100}%` }} /></div>
+                  <p className="mt-1 flex justify-between text-xs muted"><span>{busy === 'transcode' ? 'Wird in MP4 umgewandelt …' : `${Math.round(progress * 100)} % · Tab bitte offen lassen`}</span>{busy === 'export' && <button className="underline" onClick={() => abortRef.current?.abort()}>Abbrechen</button>}</p>
+                </div>
+              )}
+              <p className="text-center text-xs muted">MP4 · 1080×1920 {plan.id === 'free' ? '· Gratis-Test mit Wasserzeichen' : '· ohne Wasserzeichen'}</p>
             </div>
-          )}
+          </div>
+        </section>
+      </div>
 
-          {tab === 'style' && (
-            <div className="card p-5">
-              <h3 className="mb-3 font-semibold">Art-Style</h3>
+      {/* ── Freigeben & Posten ── */}
+      <section className="card mt-5 p-5">
+        <h2 className="text-xl font-extrabold">Freigeben & posten</h2>
+        {video.status === 'scheduled' ? (
+          <>
+            <p className="mt-2 flex items-center gap-2 text-sm"><CalendarCheck className="h-4 w-4 text-accent-700 dark:text-accent-500" />Geplant für <strong>{video.scheduled_at ? fmtDateTime(video.scheduled_at) : '—'}</strong> auf {(video.platforms || []).join(', ') || 'keiner Plattform'}</p>
+            <div className="mt-3 grid gap-3 sm:grid-cols-[1fr_auto] lg:max-w-xl">
+              <input type="datetime-local" className="input" aria-label="Zeitpunkt ändern"
+                value={video.scheduled_at ? new Date(new Date(video.scheduled_at).getTime() - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, 16) : ''}
+                onChange={(e) => update({ scheduled_at: e.target.value ? new Date(e.target.value).toISOString() : null })} />
+              <button className="btn-outline" onClick={() => update({ status: 'pending_approval' })}><Undo2 className="h-4 w-4" />Zurückziehen</button>
+            </div>
+          </>
+        ) : video.status === 'posted' ? (
+          <p className="mt-2 flex items-center gap-2 text-sm"><CheckCircle2 className="h-4 w-4 text-accent-700 dark:text-accent-500" />Gepostet.</p>
+        ) : (
+          <div className="mt-2 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+            <p className="text-sm muted">{video.status === 'draft' ? 'Zuerst exportieren – so prüfst du das fertige Video vor dem Posten.' : series?.require_approval ? 'Nichts geht ohne deine Freigabe live. Nach der Freigabe wird im nächsten freien Slot gepostet.' : 'Auto-Post ist aktiv: Das Video wird automatisch eingeplant.'}</p>
+            <button className="btn-primary shrink-0" onClick={approve} disabled={video.status === 'draft' || !!busy}><CheckCircle2 className="h-4 w-4" />Freigeben & einplanen</button>
+          </div>
+        )}
+        {video.video_path && (video.platforms || []).length > 0 && video.status !== 'posted' && (
+          <div className="mt-4 flex flex-wrap items-center gap-3 border-t border-navy-100 pt-4 dark:border-navy-800">
+            <button className="btn-outline" onClick={publishNow} disabled={!!busy}>{busy === 'publish' ? <Spinner /> : <Send className="h-4 w-4" />}Jetzt posten</button>
+            <p className="text-xs muted">Postet sofort auf {(video.platforms || []).join(', ')} statt zum geplanten Zeitpunkt.</p>
+          </div>
+        )}
+        {video.post_results && Object.entries(video.post_results).map(([pl, x]) => (
+          <p key={pl} className="mt-2 text-xs">{pl}: {x.url ? <a className="underline" href={x.url} target="_blank" rel="noreferrer">{x.url}</a> : <span className="text-red-600">{x.error}</span>}</p>
+        ))}
+        {!(video.platforms || []).length && <p className="mt-3 text-xs muted">Keine Plattform gewählt – Plattformen wählst du in den Serien-Einstellungen, verbinden unter <Link className="underline" to="/app/account">Konto</Link>.</p>}
+      </section>
+
+      {/* ── Weitere Einstellungen ── */}
+      <details className="card group mt-5 p-5" open={tab !== 'scenes'}>
+        <summary className="flex cursor-pointer list-none items-center justify-between text-xl font-extrabold">Weitere Einstellungen<ChevronDown className="h-5 w-5 transition group-open:rotate-180" /></summary>
+        <div className="mt-4 flex gap-1 overflow-x-auto" role="tablist">
+          {settingsTabs.map(([k, l]) => (
+            <button key={k} role="tab" aria-selected={tab === k} onClick={() => setTab(k)} className={`shrink-0 rounded-xl px-4 py-2 text-sm font-semibold ${tab === k ? 'bg-accent-500 text-navy-950' : 'text-navy-600 hover:bg-navy-100 dark:text-white/80 dark:hover:bg-navy-800'}`}>{l}</button>
+          ))}
+        </div>
+        <div className="mt-4">
+          {(tab === 'style' || tab === 'scenes') && (
+            <div>
               <ArtStylePicker value={project.artStyle} motif={project.motif} onChange={(artStyle) => updateProject({ artStyle })} />
-              <p className="mt-3 text-xs muted">Bei verbundenem Bildmodell danach „Alle Bilder neu“ ausführen, damit die Bilder im neuen Stil entstehen.</p>
+              <p className="mt-3 text-xs muted">Danach in der Szenenliste „Alle Bilder neu“ tippen, damit die Bilder im neuen Stil gesucht werden.</p>
             </div>
           )}
-
           {tab === 'voice' && (
-            <div className="card space-y-5 p-5">
-              <VoicePicker language={project.language} voiceId={project.voiceId} onChange={(p) => updateProject({ ...p, scenes: scenes.map((s) => ({ ...s, audioUrl: null, audioDuration: null })) })} />
-              <div className="flex flex-wrap items-center gap-3 border-t border-navy-100 pt-5 dark:border-navy-800">
+            <div className="space-y-5">
+              <VoicePicker language={project.language} voiceId={project.voiceId} onChange={(p) => updateProject({ ...p, scenes: scenes.map((x) => ({ ...x, audioUrl: null, audioDuration: null })) })} />
+              <div className="flex flex-wrap items-center gap-3">
                 <button className="btn-primary" onClick={genVoice} disabled={!!busy}>{busy === 'voice' ? <Spinner /> : <Mic className="h-4 w-4" />}KI-Voiceover erzeugen</button>
                 <span className="text-xs muted">Anbieter: {health?.providers?.tts || 'offline'}</span>
               </div>
-              {plan.limits.customUploads ? (
-                <p className="text-xs muted">Eigene Stimme (Voice-Clone) – im Pro-Plan über den TTS-Anbieter verfügbar (in Vorbereitung).</p>
-              ) : <p className="text-xs muted">Eigener Voice-Upload ist im Pro-Plan enthalten.</p>}
             </div>
           )}
-
           {tab === 'captions' && (
-            <div className="card space-y-5 p-5">
+            <div className="space-y-5">
               <CaptionStylePicker value={project.captions.style} onChange={(style) => updateProject({ captions: { ...project.captions, style } })} />
-              <div className="grid gap-4 sm:grid-cols-2">
+              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                 <div><label className="label" htmlFor="c-font">Schrift</label><select id="c-font" className="input" value={project.captions.font} onChange={(e) => updateProject({ captions: { ...project.captions, font: e.target.value } })}>{CAPTION_FONTS.map((f) => <option key={f}>{f}</option>)}</select></div>
                 <div><label className="label" htmlFor="c-pos">Position</label><select id="c-pos" className="input" value={project.captions.position} onChange={(e) => updateProject({ captions: { ...project.captions, position: e.target.value } })}><option value="top">Oben</option><option value="middle">Mitte</option><option value="bottom">Unten</option></select></div>
+                <div><label className="label" htmlFor="c-size">Grösse ({Math.round(project.captions.size * 100)} %)</label><input id="c-size" type="range" min={0.6} max={1.5} step={0.05} className="w-full accent-accent-500" value={project.captions.size} onChange={(e) => updateProject({ captions: { ...project.captions, size: +e.target.value } })} /></div>
                 <div><label className="label" htmlFor="c-col">Textfarbe</label><input id="c-col" type="color" className="h-10 w-full cursor-pointer rounded-lg" value={project.captions.color} onChange={(e) => updateProject({ captions: { ...project.captions, color: e.target.value } })} /></div>
                 <div><label className="label" htmlFor="c-hi">Hervorhebung</label><input id="c-hi" type="color" className="h-10 w-full cursor-pointer rounded-lg" value={project.captions.highlight} onChange={(e) => updateProject({ captions: { ...project.captions, highlight: e.target.value } })} /></div>
-                <div><label className="label" htmlFor="c-size">Grösse ({Math.round(project.captions.size * 100)} %)</label><input id="c-size" type="range" min={0.6} max={1.5} step={0.05} className="w-full accent-accent-500" value={project.captions.size} onChange={(e) => updateProject({ captions: { ...project.captions, size: +e.target.value } })} /></div>
                 <div className="flex items-end"><Toggle id="c-up" checked={project.captions.uppercase} onChange={(uppercase) => updateProject({ captions: { ...project.captions, uppercase } })} label="GROSSBUCHSTABEN" /></div>
               </div>
             </div>
           )}
-
           {tab === 'music' && (
-            <div className="card space-y-5 p-5">
+            <div className="space-y-5">
               <MusicPicker value={project.music.customUrl ? null : project.music.trackId} onChange={(trackId) => updateProject({ music: { ...project.music, trackId, customUrl: null, customName: null } })} />
-              <div><label className="label" htmlFor="m-vol">Lautstärke ({Math.round(project.music.volume * 100)} %)</label><input id="m-vol" type="range" min={0} max={1} step={0.05} className="w-full accent-accent-500" value={project.music.volume} onChange={(e) => updateProject({ music: { ...project.music, volume: +e.target.value } })} /></div>
+              <div className="lg:max-w-md"><label className="label" htmlFor="m-vol">Lautstärke ({Math.round(project.music.volume * 100)} %)</label><input id="m-vol" type="range" min={0} max={1} step={0.05} className="w-full accent-accent-500" value={project.music.volume} onChange={(e) => updateProject({ music: { ...project.music, volume: +e.target.value } })} /></div>
               <div className="rounded-xl border border-dashed border-navy-200 p-4 dark:border-navy-700">
                 <p className="text-sm font-semibold">Eigene Musik</p>
                 {plan.limits.customUploads ? (
@@ -349,74 +442,10 @@ export default function Editor() {
                   </>
                 ) : <p className="mt-1 text-xs muted">Im Pro-Plan enthalten. <Link to="/app/account" className="underline">Upgraden</Link></p>}
               </div>
-              <p className="text-xs muted">Die Bibliothek wird von TrueReel selbst erzeugt und ist lizenzfrei nutzbar. ({MUSIC_TRACKS.length - 1} Tracks im Prototyp)</p>
-            </div>
-          )}
-
-          {tab === 'publish' && (
-            <div className="space-y-4">
-              <div className="card p-5">
-                <h3 className="font-semibold">1. Exportieren</h3>
-                <p className="mt-1 text-sm muted">MP4 in 1080×1920 {plan.id === 'free' ? '(Gratis-Test: mit Wasserzeichen)' : 'ohne Wasserzeichen'}. Der Export läuft in Echtzeit (ca. {Math.round(tl.total)} s) – bitte Tab geöffnet lassen.</p>
-                {busy === 'voice' && tab === 'publish' && <p className="mt-4 flex items-center gap-2 text-sm"><Spinner />Voiceover wird erzeugt …</p>}
-                {(busy === 'export' || busy === 'transcode') && (
-                  <div className="mt-4">
-                    <div className="h-2 overflow-hidden rounded-full bg-navy-100 dark:bg-navy-800"><div className="h-full bg-accent-500 transition-all" style={{ width: `${busy === 'transcode' ? 100 : progress * 100}%` }} /></div>
-                    <p className="mt-1 text-xs muted">{busy === 'transcode' ? 'Wird in MP4 umgewandelt …' : `${Math.round(progress * 100)} %`}</p>
-                  </div>
-                )}
-                <div className="mt-4 flex gap-2">
-                  <button className="btn-primary" onClick={exportVideo} disabled={!!busy}>{busy === 'export' || busy === 'transcode' ? <Spinner /> : <Download className="h-4 w-4" />}Video exportieren</button>
-                  {busy === 'export' && <button className="btn-ghost" onClick={() => abortRef.current?.abort()}>Abbrechen</button>}
-                </div>
-                <p className="mt-3 text-xs muted">Rendering: {health ? (health.render === 'ffmpeg' ? 'Browser + FFmpeg (MP4/H.264)' : 'nur Browser (WebM)') : 'Server offline – nur Browser'}</p>
-              </div>
-
-              <div className="card p-5">
-                <h3 className="font-semibold">2. Freigeben & planen</h3>
-                {video.status === 'scheduled' ? (
-                  <>
-                    <p className="mt-1 flex items-center gap-2 text-sm"><CalendarCheck className="h-4 w-4 text-accent-700" />Geplant für <strong>{video.scheduled_at ? fmtDateTime(video.scheduled_at) : '—'}</strong> auf {(video.platforms || []).join(', ') || 'keiner Plattform'}</p>
-                    <div className="mt-3 grid gap-3 sm:grid-cols-[1fr_auto]">
-                      <input type="datetime-local" className="input" aria-label="Zeitpunkt ändern"
-                        value={video.scheduled_at ? new Date(new Date(video.scheduled_at).getTime() - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, 16) : ''}
-                        onChange={(e) => update({ scheduled_at: e.target.value ? new Date(e.target.value).toISOString() : null })} />
-                      <button className="btn-outline" onClick={() => update({ status: 'pending_approval' })}><Undo2 className="h-4 w-4" />Zurückziehen</button>
-                    </div>
-                  </>
-                ) : video.status === 'posted' ? (
-                  <p className="mt-1 flex items-center gap-2 text-sm"><CheckCircle2 className="h-4 w-4 text-accent-700" />Gepostet.</p>
-                ) : (
-                  <>
-                    <p className="mt-1 text-sm muted">{series?.require_approval ? 'Nichts geht ohne deine Freigabe live. Prüfe die Vorschau und gib das Video frei – es wird dann im nächsten freien Slot deines Zeitplans gepostet.' : 'Auto-Post ist aktiv: Nach dem Export wird das Video automatisch eingeplant.'}</p>
-                    <button className="btn-dark mt-4" onClick={approve} disabled={video.status === 'draft' || !!busy}><CheckCircle2 className="h-4 w-4" />Freigeben & einplanen</button>
-                    {video.status === 'draft' && <p className="mt-2 text-xs muted">Zuerst exportieren, damit du das fertige Video geprüft hast.</p>}
-                  </>
-                )}
-                {video.video_path && (video.platforms || []).length > 0 && video.status !== 'posted' && (
-                  <div className="mt-4 border-t border-navy-100 pt-4 dark:border-navy-800">
-                    <button className="btn-outline" onClick={publishNow} disabled={!!busy}>{busy === 'publish' ? <Spinner /> : <CheckCircle2 className="h-4 w-4" />}Jetzt posten</button>
-                    <p className="mt-2 text-xs muted">Postet sofort auf {(video.platforms || []).join(', ')} statt zum geplanten Zeitpunkt.</p>
-                  </div>
-                )}
-                {video.post_results && Object.entries(video.post_results).map(([pl, x]) => (
-                  <p key={pl} className="mt-2 text-xs">{pl}: {x.url ? <a className="underline" href={x.url} target="_blank" rel="noreferrer">{x.url}</a> : <span className="text-red-600">{x.error}</span>}</p>
-                ))}
-                {!(video.platforms || []).length && <p className="mt-3 text-xs muted">Keine Plattform gewählt – das Video erscheint als Erinnerung im Kalender. Plattformen wählst du in den Serien-Einstellungen, verbinden kannst du sie unter <Link className="underline" to="/app/account">Konto</Link>.</p>}
-              </div>
-
-              <button className="btn-danger" onClick={remove}><Trash2 className="h-4 w-4" />Video löschen</button>
             </div>
           )}
         </div>
-
-        <aside className="order-1 lg:order-2">
-          <div className="lg:sticky lg:top-6">
-            <Player framed project={project} watermark={plan.id === 'free'} />
-            <p className="mx-auto mt-2 max-w-[300px] text-center text-xs muted">Vorschau 9:16 · Ton an für Stimme & Musik</p>
-          </div>
-        </aside>
-      </div>
+      </details>
     </div>
   );
 }

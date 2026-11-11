@@ -1,12 +1,15 @@
-import { NavLink, Navigate, Outlet, useLocation } from 'react-router-dom';
-import { LayoutDashboard, Layers, CalendarDays, CreditCard, LogOut, Plus } from 'lucide-react';
+import { useEffect, useRef, useState } from 'react';
+import { NavLink, Navigate, Outlet, useLocation, Link } from 'react-router-dom';
+import { Home, Layers, CalendarDays, CreditCard, LogOut, HelpCircle, Bell, ChevronDown, Moon, Sun } from 'lucide-react';
 import { useAuth } from '../context/AuthContext.jsx';
-import { Logo, ThemeToggle, Spinner } from './ui.jsx';
-import { getPlan } from '../config/plans.js';
+import { useTheme } from '../context/ThemeContext.jsx';
+import { Logo, Spinner } from './ui.jsx';
 import { SITE } from '../config/site.js';
+import { listVideos } from '../lib/store.js';
+import { computeUsage } from '../lib/usage.js';
 
 const NAV = [
-  { to: '/app', label: 'Dashboard', icon: LayoutDashboard, end: true },
+  { to: '/app', label: 'Übersicht', icon: Home, end: true },
   { to: '/app/serien', label: 'Serien', icon: Layers },
   { to: '/app/kalender', label: 'Kalender', icon: CalendarDays },
   { to: '/app/account', label: 'Konto & Abrechnung', short: 'Konto', icon: CreditCard },
@@ -20,53 +23,96 @@ export function RequireAuth({ children }) {
   return children;
 }
 
-export default function AppLayout() {
-  const { profile, signOut, demo, user } = useAuth();
-  const plan = getPlan(profile?.plan);
+function useUsage() {
+  const { user, profile } = useAuth();
+  const loc = useLocation();
+  const [usage, setUsage] = useState(null);
+  useEffect(() => {
+    if (!user) return;
+    listVideos(user.id).then((v) => setUsage(computeUsage(profile, v))).catch(() => {});
+  }, [user, profile, loc.pathname]);
+  return usage;
+}
+
+function ProfileMenu() {
+  const { profile, user, signOut } = useAuth();
+  const { theme, toggle } = useTheme();
+  const [open, setOpen] = useState(false);
+  const ref = useRef(null);
+  useEffect(() => {
+    const close = (e) => { if (!ref.current?.contains(e.target)) setOpen(false); };
+    document.addEventListener('click', close);
+    return () => document.removeEventListener('click', close);
+  }, []);
+  const name = profile?.full_name || user?.email || '?';
   return (
-    <div className="min-h-screen bg-navy-50/50 dark:bg-navy-950">
-      {demo && (
-        <div className="bg-amber-100 px-4 py-1.5 text-center text-xs text-amber-900 dark:bg-amber-900/50 dark:text-amber-100">
-          Demo-Modus – Daten liegen nur in diesem Browser. Für echten Betrieb Supabase & Stripe in <code>.env</code> konfigurieren.
+    <div className="relative" ref={ref}>
+      <button onClick={() => setOpen(!open)} className="flex items-center gap-1.5" aria-expanded={open} aria-label="Profilmenü">
+        <span className="flex h-9 w-9 items-center justify-center rounded-full bg-accent-500 text-sm font-bold uppercase text-navy-950">{name[0]}</span>
+        <ChevronDown className="h-4 w-4 muted" />
+      </button>
+      {open && (
+        <div className="absolute right-0 top-12 z-40 w-60 rounded-xl border border-navy-100 bg-white p-2 shadow-xl dark:border-navy-700 dark:bg-navy-900">
+          <p className="truncate px-3 py-2 text-sm font-semibold">{name}</p>
+          <Link to="/app/account" className="block rounded-lg px-3 py-2 text-sm hover:bg-navy-50 dark:hover:bg-navy-800" onClick={() => setOpen(false)}>Konto & Abrechnung</Link>
+          <button onClick={toggle} className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm hover:bg-navy-50 dark:hover:bg-navy-800">
+            {theme === 'dark' ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}{theme === 'dark' ? 'Hellmodus' : 'Dunkelmodus'}
+          </button>
+          <button onClick={signOut} className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm text-red-600 hover:bg-navy-50 dark:text-red-400 dark:hover:bg-navy-800"><LogOut className="h-4 w-4" />Abmelden</button>
         </div>
       )}
-      <aside className="fixed inset-y-0 left-0 z-30 hidden w-64 flex-col border-r border-navy-100 bg-white p-4 dark:border-navy-800 dark:bg-navy-900 lg:flex" style={demo ? { top: 28 } : undefined}>
-        <Logo to="/app" className="px-2 py-1" />
-        <NavLink to="/app/serien/neu" className="btn-primary mt-6"><Plus className="h-4 w-4" />Neue Serie</NavLink>
-        <nav className="mt-6 flex-1 space-y-1" aria-label="App-Navigation">
+    </div>
+  );
+}
+
+export default function AppLayout() {
+  const { demo } = useAuth();
+  const usage = useUsage();
+  return (
+    <div className="min-h-screen bg-navy-50/60 dark:bg-navy-950">
+      {demo && (
+        <div className="bg-amber-100 px-4 py-1.5 text-center text-xs text-amber-900 dark:bg-amber-900/50 dark:text-amber-100">
+          Demo-Modus – Daten liegen nur in diesem Browser.
+        </div>
+      )}
+      <aside className="fixed bottom-0 left-0 z-30 hidden w-[17rem] flex-col border-r border-navy-100 bg-white px-5 py-5 dark:border-navy-800 dark:bg-navy-950 lg:flex" style={{ top: demo ? 28 : 0 }}>
+        <Logo to="/app" className="px-1 py-1" />
+        <nav className="mt-8 space-y-1.5" aria-label="App-Navigation">
           {NAV.map(({ to, label, icon: Icon, end }) => (
-            <NavLink key={to} to={to} end={end} className={({ isActive }) => `flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition ${isActive ? 'bg-navy-900 text-white dark:bg-navy-800' : 'text-navy-600 hover:bg-navy-50 dark:text-navy-300 dark:hover:bg-navy-800'}`}>
-              <Icon className="h-4 w-4" />{label}
+            <NavLink key={to} to={to} end={end} className={({ isActive }) => `flex items-center gap-3 rounded-xl px-4 py-3 text-[15px] font-medium transition ${isActive ? 'bg-accent-500 font-semibold text-navy-950' : 'text-navy-600 hover:bg-navy-50 dark:text-white/90 dark:hover:bg-navy-900'}`}>
+              <Icon className="h-5 w-5" strokeWidth={1.8} />{label}
             </NavLink>
           ))}
         </nav>
-        <div className="rounded-xl border border-navy-100 p-3 text-xs dark:border-navy-800">
-          <p className="truncate font-medium">{profile?.full_name || user?.email}</p>
-          <p className="muted">Plan: <span className="font-semibold">{plan.name}</span></p>
-          <a href={`mailto:${SITE.supportEmail}`} className="mt-1 block text-accent-700 dark:text-accent-400">{SITE.supportEmail}</a>
-        </div>
-        <div className="mt-3 flex items-center justify-between">
-          <ThemeToggle />
-          <button onClick={signOut} className="btn-ghost px-2 py-1.5 text-xs"><LogOut className="h-4 w-4" />Abmelden</button>
-        </div>
+        {usage && (
+          <div className="mt-6 border-t border-navy-100 pt-6 dark:border-navy-800">
+            <p className="text-[15px] font-medium">{usage.used} von {usage.limit} Videos genutzt</p>
+            <div className="mt-3 h-3 overflow-hidden rounded-full bg-navy-100 dark:bg-navy-800" role="progressbar" aria-valuenow={usage.used} aria-valuemax={usage.limit}>
+              <div className="h-full rounded-full bg-accent-500" style={{ width: `${Math.min(100, (usage.used / usage.limit) * 100)}%` }} />
+            </div>
+            {usage.plan.id === 'free' && <Link to="/preise" className="mt-3 inline-block text-sm font-semibold text-accent-700 dark:text-accent-500">Plan wählen →</Link>}
+          </div>
+        )}
+        <a href={`mailto:${SITE.supportEmail}`} className="mt-auto text-xs muted hover:underline">{SITE.supportEmail}</a>
       </aside>
 
-      <header className="sticky top-0 z-30 flex h-14 items-center justify-between border-b border-navy-100 bg-white/90 px-4 backdrop-blur dark:border-navy-800 dark:bg-navy-900/90 lg:hidden">
-        <Logo to="/app" />
-        <div className="flex items-center gap-1">
-          <NavLink to="/app/serien/neu" className="btn-icon" aria-label="Neue Serie"><Plus className="h-5 w-5" /></NavLink>
-          <ThemeToggle />
-          <button onClick={signOut} className="btn-icon" aria-label="Abmelden"><LogOut className="h-4 w-4" /></button>
-        </div>
-      </header>
+      <div className="lg:pl-[17rem]">
+        <header className="sticky top-0 z-20 flex h-16 items-center justify-between border-b border-navy-100 bg-white/90 px-4 backdrop-blur dark:border-navy-800 dark:bg-navy-950/90 sm:px-6 lg:justify-end">
+          <div className="lg:hidden"><Logo to="/app" /></div>
+          <div className="flex items-center gap-2 sm:gap-4">
+            <a href={`mailto:${SITE.supportEmail}?subject=Hilfe%20TrueReel`} className="btn-icon h-10 w-10" aria-label="Hilfe" title="Hilfe & Support"><HelpCircle className="h-6 w-6" strokeWidth={1.6} /></a>
+            <Link to="/app/kalender" className="btn-icon h-10 w-10" aria-label="Geplante Posts" title="Geplante Posts"><Bell className="h-6 w-6" strokeWidth={1.6} /></Link>
+            <ProfileMenu />
+          </div>
+        </header>
+        <main className="pb-24 lg:pb-10">
+          <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:py-8"><Outlet /></div>
+        </main>
+      </div>
 
-      <main className="pb-24 lg:pb-10 lg:pl-64">
-        <div className="mx-auto max-w-6xl px-4 py-6 sm:px-6 lg:py-10"><Outlet /></div>
-      </main>
-
-      <nav className="fixed inset-x-0 bottom-0 z-30 grid grid-cols-4 border-t border-navy-100 bg-white pb-[env(safe-area-inset-bottom)] dark:border-navy-800 dark:bg-navy-900 lg:hidden" aria-label="App-Navigation mobil">
+      <nav className="fixed inset-x-0 bottom-0 z-30 grid grid-cols-4 border-t border-navy-100 bg-white pb-[env(safe-area-inset-bottom)] dark:border-navy-800 dark:bg-navy-950 lg:hidden" aria-label="App-Navigation mobil">
         {NAV.map(({ to, label, short, icon: Icon, end }) => (
-          <NavLink key={to} to={to} end={end} className={({ isActive }) => `flex flex-col items-center gap-1 py-2.5 text-[11px] font-medium ${isActive ? 'text-accent-700 dark:text-accent-400' : 'text-navy-500 dark:text-navy-300'}`}>
+          <NavLink key={to} to={to} end={end} className={({ isActive }) => `flex flex-col items-center gap-1 py-2.5 text-[11px] font-medium ${isActive ? 'text-accent-700 dark:text-accent-500' : 'text-navy-500 dark:text-navy-300'}`}>
             <Icon className="h-5 w-5" />{short || label}
           </NavLink>
         ))}
@@ -79,8 +125,8 @@ export function PageHeader({ title, sub, actions }) {
   return (
     <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
       <div>
-        <h1 className="text-2xl font-bold sm:text-3xl">{title}</h1>
-        {sub && <p className="mt-1 text-sm muted">{sub}</p>}
+        <h1 className="text-3xl font-extrabold tracking-tight sm:text-4xl">{title}</h1>
+        {sub && <p className="mt-1.5 text-base muted sm:text-lg">{sub}</p>}
       </div>
       {actions && <div className="flex flex-wrap gap-2">{actions}</div>}
     </div>

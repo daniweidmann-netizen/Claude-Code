@@ -29,7 +29,7 @@ export function useImages(project) {
   return useMemo(() => (s) => get(s), [get, version]); // eslint-disable-line react-hooks/exhaustive-deps
 }
 
-export default function Player({ framed = false, project, autoPlay = false, initialMuted = false, loop = false, controls = true, watermark = false, className = '', onTime }) {
+export default function Player({ seekRequest, framed = false, project, autoPlay = false, initialMuted = false, loop = false, controls = true, watermark = false, className = '', onTime }) {
   const canvasRef = useRef(null);
   const [playing, setPlaying] = useState(false);
   const [muted, setMuted] = useState(initialMuted);
@@ -164,6 +164,14 @@ export default function Player({ framed = false, project, autoPlay = false, init
     draw(v);
     if (st.current.playing) play(v);
   };
+
+  // Sprung zu einer Szene (z. B. aus der Szenenliste)
+  useEffect(() => {
+    if (!seekRequest) return;
+    st.current.t = seekRequest.time; setT(seekRequest.time); draw(seekRequest.time);
+    if (seekRequest.play) play(seekRequest.time);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [seekRequest?.nonce]);
 
   const toggleMute = () => {
     const was = st.current.playing;
