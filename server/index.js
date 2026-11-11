@@ -129,6 +129,16 @@ app.delete('/api/account', authenticate, async (req, res) => {
         removed += gone.length;
       }
     }
+    // Exportierte MP4s (privater Bucket "renders", Ordner = Nutzer-ID)
+    for (;;) {
+      const { data: files, error: listErr } = await admin.storage.from('renders').list(req.user.id, { limit: 100 });
+      if (listErr) throw new Error(`Liste renders: ${listErr.message}`);
+      if (!files?.length) break;
+      const { data: gone, error: rmErr } = await admin.storage.from('renders').remove(files.map((f) => `${req.user.id}/${f.name}`));
+      if (rmErr) throw new Error(`Löschen renders: ${rmErr.message}`);
+      if (!gone?.length) throw new Error('Löschen renders: keine Datei entfernt');
+      removed += gone.length;
+    }
   } catch (e) {
     console.error('[account] Dateien konnten nicht gelöscht werden:', e.message);
     return res.status(500).json({ error: 'Deine Dateien konnten nicht gelöscht werden. Bitte versuche es erneut oder kontaktiere den Support.', detail: e.message });
