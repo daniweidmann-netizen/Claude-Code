@@ -2,10 +2,15 @@
 import { generateScript, fillImages } from '../video/generate.js';
 import { scriptToProject } from '../video/project.js';
 import { saveVideo, uploadMedia } from './store.js';
+import { splitOwnText } from '../../shared/mockScripts.js';
 import { synthesize } from '../video/tts.js';
 
-export async function createVideoForEpisode(user, series, episode, onStatus) {
+export async function createVideoForEpisode(user, series, episode, onStatus, custom = {}) {
+  onStatus?.(custom.ownText ? 'Dein Text wird in Szenen aufgeteilt …' : 'Skript wird geschrieben …');
   const script = await generateScript({
+    idea: custom.idea || undefined,
+    notes: custom.notes || undefined,
+    ownText: custom.ownText || undefined,
     niche: series.niche,
     topic: series.topic,
     language: series.language,
@@ -14,6 +19,16 @@ export async function createVideoForEpisode(user, series, episode, onStatus) {
     episodeTitle: episode?.title,
     targetSeconds: series.target_seconds || 65,
   });
+  // Eigener Text muss wortgetreu bleiben – sonst lokale Aufteilung verwenden (Bildbeschreibungen der KI behalten)
+  if (custom.ownText) {
+    const norm = (t) => String(t || '').replace(/\s+/g, ' ').trim();
+    const joined = norm([script.hook, ...(script.scenes || []).map((x) => x.text), script.cta].filter(Boolean).join(' '));
+    if (joined !== norm(custom.ownText)) {
+      const local = splitOwnText(custom.ownText, script.title);
+      local.scenes = local.scenes.map((sc, i) => ({ ...sc, visual: script.scenes?.[i]?.visual || sc.visual }));
+      Object.assign(script, { ...local, archiveQuery: script.archiveQuery, motif: script.motif || local.motif });
+    }
+  }
   const project = scriptToProject(script, {
     niche: series.niche,
     language: series.language,
@@ -29,8 +44,8 @@ export async function createVideoForEpisode(user, series, episode, onStatus) {
   return saveVideo({
     user_id: user.id,
     series_id: series.id,
-    title: script.title || episode?.title || series.title,
-    episode_key: episode?.key || null,
+    title: custom.title || script.title || episode?.title || series.title,
+    episode_key: episode?.key || (custom.idea || custom.ownText ? `eigene-${Date.now()}` : null),
     status: 'draft',
     project: withVoice,
     platforms: series.platforms || [],

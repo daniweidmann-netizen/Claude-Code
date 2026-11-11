@@ -200,8 +200,33 @@ export function mockSeriesPlan({ niche, topic, language }) {
   };
 }
 
-export function mockScript({ niche, topic, language, episodeKey, episodeTitle }) {
+// Eigenen Text ohne KI in Szenen aufteilen (Absätze, sonst je 2 Sätze)
+export function splitOwnText(text, title) {
+  const clean = String(text || '').replace(/\r/g, '').trim();
+  let parts = clean.split(/\n\s*\n/).map((p) => p.replace(/\s+/g, ' ').trim()).filter(Boolean);
+  if (parts.length < 3) {
+    const sentences = clean.replace(/\s+/g, ' ').match(/[^.!?…]+[.!?…]+["“”»«)]*|[^.!?…]+$/g)?.map((x) => x.trim()).filter(Boolean) || [clean];
+    parts = [];
+    for (let i = 0; i < sentences.length; i += 2) parts.push(sentences.slice(i, i + 2).join(' '));
+    if (parts.length && sentences.length > 1 && sentences[0].length < 140) {
+      const [first, ...rest] = sentences; parts = [first]; for (let i = 0; i < rest.length; i += 2) parts.push(rest.slice(i, i + 2).join(' '));
+    }
+  }
+  const [hook, ...scenes] = parts;
+  return {
+    title: title || hook.slice(0, 60),
+    motif: 'city',
+    hook,
+    scenes: (scenes.length ? scenes : ['']).filter(Boolean).map((t) => ({ text: t, visual: t.split(/\s+/).slice(0, 6).join(' ') })),
+    cta: '',
+    notice: null,
+  };
+}
+
+export function mockScript({ niche, topic, language, episodeKey, episodeTitle, idea, ownText }) {
   const l = pickLang(language);
+  if (ownText) return splitOwnText(ownText, episodeTitle);
+  if (idea) topic = idea.slice(0, 80);
   const h = HISTORY.find((x) => x.id === episodeKey) || (niche === 'history' ? HISTORY[0] : null);
   if (h) return { ...(h[l] || h.en), motif: h.motif, archiveQuery: h.archiveQuery, notice: null };
   const t = topic || episodeTitle || 'Thema';

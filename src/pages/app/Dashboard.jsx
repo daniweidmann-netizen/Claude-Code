@@ -1,5 +1,7 @@
 import { Link, Navigate } from 'react-router-dom';
-import { Film, Layers, CalendarClock, CheckCircle2, BarChart3, Plus, ArrowRight } from 'lucide-react';
+import { Film, Layers, CalendarClock, CheckCircle2, BarChart3, Plus, ArrowRight, Lightbulb } from 'lucide-react';
+import { useState } from 'react';
+import IdeaDialog from '../../components/IdeaDialog.jsx';
 import { useAuth } from '../../context/AuthContext.jsx';
 import { useAppData } from '../../lib/useAppData.js';
 import { computeUsage } from '../../lib/usage.js';
@@ -28,6 +30,7 @@ function Stat({ icon: Icon, label, value, sub, children }) {
 export default function Dashboard() {
   const { profile } = useAuth();
   const { series, videos, loading, error } = useAppData();
+  const [ideaOpen, setIdeaOpen] = useState(false);
   if (loading) return <Spinner className="h-6 w-6 text-accent-500" />;
   if (!series.length && !profile?.onboarding_done) return <Navigate to="/app/onboarding" replace />;
 
@@ -43,8 +46,12 @@ export default function Dashboard() {
       <PageHeader
         title={`Hallo${profile?.full_name ? `, ${profile.full_name.split(' ')[0]}` : ''} 👋`}
         sub="Dein Überblick über Serien, Posts und Verbrauch."
-        actions={<Link to="/app/serien/neu" className="btn-primary"><Plus className="h-4 w-4" />Neue Serie</Link>}
+        actions={<>
+          {series.length > 0 && <button onClick={() => setIdeaOpen(true)} className="btn-primary"><Lightbulb className="h-4 w-4" />Eigene Video-Idee</button>}
+          <Link to="/app/serien/neu" className={series.length ? 'btn-outline' : 'btn-primary'}><Plus className="h-4 w-4" />Neue Serie</Link>
+        </>}
       />
+      {ideaOpen && <IdeaDialog allSeries={series} onClose={() => setIdeaOpen(false)} canCreate={usage.remaining > 0} limitText={usage.plan.id === 'free' ? 'Dein Gratis-Video ist aufgebraucht. Wähle einen Plan unter „Konto“.' : 'Dein monatliches Kontingent ist aufgebraucht.'} />}
       {error && <Notice tone="error" className="mb-4">{error}</Notice>}
       {usage.plan.id === 'free' && (
         <Notice tone="info" className="mb-6 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">

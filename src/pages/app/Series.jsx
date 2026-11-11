@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
-import { Plus, Trash2, Film, Save, Wand2 } from 'lucide-react';
+import { Plus, Trash2, Film, Save, Wand2, Lightbulb } from 'lucide-react';
+import IdeaDialog from '../../components/IdeaDialog.jsx';
 import { useAuth } from '../../context/AuthContext.jsx';
 import { useAppData } from '../../lib/useAppData.js';
 import { PageHeader } from '../../components/AppLayout.jsx';
@@ -51,6 +52,7 @@ export function SeriesDetail() {
   const [draft, setDraft] = useState(null);
   const [busy, setBusy] = useState(null);
   const [msg, setMsg] = useState(null);
+  const [ideaOpen, setIdeaOpen] = useState(() => new URLSearchParams(window.location.search).has('idee'));
   useEffect(() => { if (series) setDraft({ ...series, schedule: normalizeSchedule(series.schedule) }); }, [series]);
 
   if (loading) return <Spinner className="h-6 w-6 text-accent-500" />;
@@ -85,7 +87,11 @@ export function SeriesDetail() {
 
   return (
     <>
-      <PageHeader title={series.title} sub={`${niche?.emoji} ${niche?.label} · ${series.description || ''}`} actions={<button onClick={remove} className="btn-danger"><Trash2 className="h-4 w-4" />Löschen</button>} />
+      <PageHeader title={series.title} sub={`${niche?.emoji} ${niche?.label} · ${series.description || ''}`} actions={<>
+        <button onClick={() => setIdeaOpen(true)} className="btn-primary"><Lightbulb className="h-4 w-4" />Eigene Idee / eigener Text</button>
+        <button onClick={remove} className="btn-danger"><Trash2 className="h-4 w-4" />Löschen</button>
+      </>} />
+      {ideaOpen && <IdeaDialog series={series} onClose={() => setIdeaOpen(false)} canCreate={usage.remaining > 0} limitText={usage.plan.id === 'free' ? 'Dein Gratis-Video ist aufgebraucht. Wähle einen Plan unter „Konto“.' : 'Dein monatliches Kontingent ist aufgebraucht.'} />}
       {msg && <Notice tone={msg.tone} className="mb-4">{msg.text}</Notice>}
       <div className="grid gap-6 lg:grid-cols-3">
         <section className="space-y-6 lg:col-span-2">

@@ -91,14 +91,25 @@ export default {
       planSchema,
     );
   },
-  async writeScript({ niche, topic, language, episodeTitle, seriesTitle, targetSeconds = 65 }) {
+  async writeScript({ niche, topic, language, episodeTitle, seriesTitle, targetSeconds = 65, idea, notes, ownText }) {
+    const lang = LANG_NAMES[language] || 'Deutsch';
+    if (ownText) {
+      // Eigener Text: wortgetreu übernehmen, nur aufteilen und Bildbeschreibungen ergänzen
+      return ask(
+        `Der Nutzer hat sein Skript selbst geschrieben. Übernimm den Text WORTWÖRTLICH – nichts umformulieren, kürzen, ergänzen oder übersetzen, auch keine Rechtschreibung ändern.\nAufgabe: Teile ihn in hook (erster Satz bzw. erste Aussage), scenes (je 1–3 Sätze, in Originalreihenfolge) und cta (letzter Satz, falls er wie ein Abschluss/Aufruf klingt – sonst leerer String). Zusammen müssen hook + scenes + cta exakt den Originaltext ergeben.\nErgänze pro Szene "visual" (englische Bildbeschreibung), dazu title (kurz, in der Sprache des Textes), motif und archiveQuery.\n\n<nutzertext>\n${String(ownText).slice(0, 6000)}\n</nutzertext>`,
+        scriptSchema,
+      );
+    }
     // Erfahrungswert gesprochenes Tempo (inkl. Pausen): ca. 2,0–2,3 Wörter pro Sekunde
     const t = Math.min(180, Math.max(15, Number(targetSeconds) || 65));
     const minWords = Math.round(t * 2.0);
     const maxWords = Math.round(t * 2.3);
     const scenes = t >= 80 ? '6–8' : t >= 55 ? '5–7' : '3–4';
+    const ideaBlock = idea
+      ? `\nDer Nutzer hat eine EIGENE Video-Idee – setze genau diese um:\n<idee>${String(idea).slice(0, 1500)}</idee>${notes ? `\nHinweise/Fakten des Nutzers, die vorkommen sollen (auf Plausibilität achten, nichts Falsches übernehmen):\n<hinweise>${String(notes).slice(0, 3000)}</hinweise>` : ''}`
+      : '';
     return ask(
-      `Schreibe das Skript für eine Folge.\n${NICHE_HINT[niche] || ''}\nSerie: ${seriesTitle || topic || niche}\nFolge: ${episodeTitle || topic}\nNische: ${niche}\nSprache: ${LANG_NAMES[language] || 'Deutsch'}\nAufbau: hook, ${scenes} scenes, cta.\nGewünschte Videolänge: ${t} Sekunden → insgesamt ${minWords}–${maxWords} Wörter (Hook + Szenen + CTA). ${t >= 60 ? 'Wichtig: Das Video muss über 60 Sekunden lang sein – lieber etwas mehr als zu wenig Text.' : ''}`,
+      `Schreibe das Skript für eine Folge.\n${NICHE_HINT[niche] || ''}${ideaBlock}\nSerie: ${seriesTitle || topic || niche}\nFolge: ${idea ? '(aus der Idee ableiten)' : episodeTitle || topic}\nNische: ${niche}\nSprache: ${lang}\nAufbau: hook, ${scenes} scenes, cta.\nGewünschte Videolänge: ${t} Sekunden → insgesamt ${minWords}–${maxWords} Wörter (Hook + Szenen + CTA). ${t >= 60 ? 'Wichtig: Das Video muss über 60 Sekunden lang sein – lieber etwas mehr als zu wenig Text.' : ''}`,
       scriptSchema,
     );
   },
