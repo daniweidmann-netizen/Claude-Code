@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link, NavLink, Outlet, useLocation } from 'react-router-dom';
-import { Menu, X, Mail } from 'lucide-react';
+import { Menu, X, Mail, ShieldCheck } from 'lucide-react';
 import { Logo, ThemeToggle, LangSwitch, StripeBadge } from './ui.jsx';
 import { useI18n } from '../i18n/index.jsx';
 import { useAuth } from '../context/AuthContext.jsx';
@@ -14,19 +14,17 @@ function Navbar() {
   const loc = useLocation();
   useEffect(() => setOpen(false), [loc]);
   const links = [
-    ['/#how', t('nav.how')],
     ['/#features', t('nav.features')],
-    ['/#examples', t('nav.examples')],
     ['/preise', t('nav.pricing')],
     ['/#faq', t('nav.faq')],
   ];
   return (
-    <header className="sticky top-0 z-40 border-b border-navy-100/70 bg-white/80 backdrop-blur dark:border-navy-800/70 dark:bg-navy-950/80">
+    <header className="sticky top-0 z-40 border-b border-navy-100/70 bg-white/85 backdrop-blur dark:border-navy-800 dark:bg-navy-950/85">
       <nav className="container-x flex h-16 items-center justify-between" aria-label="Hauptnavigation">
         <Logo />
         <div className="hidden items-center gap-1 md:flex">
           {links.map(([href, label]) => (
-            <a key={href} href={href} className="rounded-lg px-3 py-2 text-sm font-medium text-navy-600 hover:text-navy-900 dark:text-navy-300 dark:hover:text-white">{label}</a>
+            <a key={href} href={href} className="rounded-lg px-4 py-2 text-[15px] font-medium text-navy-600 hover:text-navy-950 dark:text-white/90 dark:hover:text-white">{label}</a>
           ))}
         </div>
         <div className="flex items-center gap-2">
@@ -65,10 +63,24 @@ function Navbar() {
   );
 }
 
+function TrustBar() {
+  return (
+    <div className="border-t border-navy-100 bg-navy-50 dark:border-navy-800 dark:bg-navy-900">
+      <div className="container-x grid gap-4 py-6 text-sm text-navy-600 dark:text-navy-200 sm:grid-cols-3 sm:divide-x sm:divide-navy-200 dark:sm:divide-navy-700">
+        <div className="flex items-center justify-center gap-3"><span className="text-xl font-black tracking-tight text-navy-950 dark:text-white">stripe</span>Zahlung via Stripe</div>
+        <div className="flex items-center justify-center gap-3"><ShieldCheck className="h-6 w-6" strokeWidth={1.6} />DSGVO/DSG-konform</div>
+        <a href={`mailto:${SITE.contactEmail}`} className="flex items-center justify-center gap-3 hover:text-navy-950 dark:hover:text-white"><Mail className="h-6 w-6" strokeWidth={1.6} />{SITE.contactEmail}</a>
+      </div>
+    </div>
+  );
+}
+
 export function Footer() {
   const { t } = useI18n();
   return (
-    <footer className="border-t border-navy-100 bg-navy-50/50 dark:border-navy-800 dark:bg-navy-950">
+    <>
+    <TrustBar />
+    <footer className="border-t border-navy-100 bg-white dark:border-navy-800 dark:bg-navy-950">
       <div className="container-x grid gap-10 py-12 sm:grid-cols-2 lg:grid-cols-4">
         <div className="space-y-3">
           <Logo />
@@ -105,6 +117,7 @@ export function Footer() {
         © {new Date().getFullYear()} {SITE.name}. {t('footer.rights')}
       </div>
     </footer>
+    </>
   );
 }
 

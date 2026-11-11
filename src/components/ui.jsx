@@ -10,13 +10,13 @@ export function LogoMark({ className = 'h-8 w-8', simple = false }) {
   return (
     <svg viewBox="0 0 100 100" className={className} aria-hidden="true">
       <defs>
-        <linearGradient id={`trg${id}`} x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor="#5ef0c0" /><stop offset="1" stopColor="#12b98a" /></linearGradient>
+        <linearGradient id={`trg${id}`} x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor="#dcf86f" /><stop offset="1" stopColor="#b5dc22" /></linearGradient>
       </defs>
-      {!simple && <rect x="38" y="10" width="40" height="66" rx="12" fill="#7d93bf" opacity=".45" transform="rotate(10 58 43)" />}
-      {!simple && <rect x="30" y="16" width="40" height="68" rx="12" fill="#3a5080" opacity=".7" transform="rotate(4 50 50)" />}
+      {!simple && <rect x="38" y="10" width="40" height="66" rx="12" fill="#8b919c" opacity=".45" transform="rotate(10 58 43)" />}
+      {!simple && <rect x="30" y="16" width="40" height="68" rx="12" fill="#4f5560" opacity=".75" transform="rotate(4 50 50)" />}
       <g transform="rotate(-6 50 52)">
         <rect x="22" y="18" width="56" height="68" rx="13" fill={`url(#trg${id})`} />
-        <path d="M43 40.6v18.8c0 2.3 2.5 3.7 4.5 2.5l15-9.4c1.8-1.1 1.8-3.8 0-4.9l-15-9.4c-2-1.2-4.5.2-4.5 2.4z" fill="#0a1024" />
+        <path d="M43 40.6v18.8c0 2.3 2.5 3.7 4.5 2.5l15-9.4c1.8-1.1 1.8-3.8 0-4.9l-15-9.4c-2-1.2-4.5.2-4.5 2.4z" fill="#1b1e23" />
       </g>
     </svg>
   );
@@ -26,7 +26,7 @@ export function Logo({ to = '/', className = '' }) {
   return (
     <Link to={to} className={`flex items-center gap-2 ${className}`} aria-label="TrueReel Startseite">
       <LogoMark className="h-9 w-9" />
-      <span className="text-xl font-black tracking-[-0.04em]" aria-hidden="true">true<span className="text-accent-600 dark:text-accent-400">reel</span></span>
+      <span className="text-xl font-black tracking-[-0.04em]" aria-hidden="true">true<span className="text-accent-700 dark:text-accent-500">reel</span></span>
     </Link>
   );
 }
@@ -73,7 +73,7 @@ export function TrustRow({ className = '' }) {
   return (
     <ul className={`flex flex-wrap items-center gap-x-5 gap-y-2 text-sm text-navy-600 dark:text-navy-300 ${className}`}>
       {items.map(([Icon, label]) => (
-        <li key={label} className="flex items-center gap-1.5"><Icon className="h-4 w-4 text-accent-600 dark:text-accent-400" />{label}</li>
+        <li key={label} className="flex items-center gap-1.5"><Icon className="h-4 w-4 text-accent-700 dark:text-accent-400" />{label}</li>
       ))}
       <li><StripeBadge /></li>
     </ul>

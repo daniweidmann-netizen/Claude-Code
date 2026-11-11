@@ -6,7 +6,7 @@
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <link rel="manifest" href="/manifest.webmanifest" />
-    <meta name="theme-color" content="#0a1024" />
+    <meta name="theme-color" content="#1b1e23" />
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="TrueReel" />
     <meta property="og:title" content="TrueReel – Faceless Videos, die laufen" />
@@ -19,7 +19,7 @@
       // Theme vor dem ersten Paint setzen (verhindert Aufblitzen)
       try {
         var t = localStorage.getItem('tr-theme');
-        if (t === 'dark' || (!t && matchMedia('(prefers-color-scheme: dark)').matches)) document.documentElement.classList.add('dark');
+        if (t !== 'light') document.documentElement.classList.add('dark'); // Dunkel ist Standard
       } catch (e) {}
     </script>
   </head>

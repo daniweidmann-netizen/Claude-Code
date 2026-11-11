@@ -10,12 +10,12 @@ import { StripeBadge, Spinner, Notice } from './ui.jsx';
 export function IntervalToggle({ interval, setInterval }) {
   const { t } = useI18n();
   return (
-    <div className="inline-flex rounded-xl border border-navy-200 bg-white p-1 text-sm font-semibold dark:border-navy-700 dark:bg-navy-900" role="radiogroup" aria-label="Abrechnungsintervall">
+    <div className="inline-flex rounded-2xl border border-navy-200 bg-white p-1 text-base font-semibold dark:border-navy-700 dark:bg-navy-950" role="radiogroup" aria-label="Abrechnungsintervall">
       {['monthly', 'yearly'].map((i) => (
         <button key={i} role="radio" aria-checked={interval === i} onClick={() => setInterval(i)}
-          className={`flex items-center gap-2 rounded-lg px-4 py-2 transition ${interval === i ? 'bg-navy-900 text-white dark:bg-white dark:text-navy-900' : 'text-navy-600 dark:text-navy-300'}`}>
+          className={`flex items-center gap-2 rounded-xl px-6 py-2.5 transition ${interval === i ? 'bg-navy-100 text-navy-950 dark:bg-navy-800 dark:text-white' : 'text-navy-600 dark:text-white/80'}`}>
           {t(`pricing.${i}`)}
-          {i === 'yearly' && <span className="rounded-md bg-accent-100 px-1.5 py-0.5 text-xs text-accent-800">{t('pricing.save')}</span>}
+          {i === 'yearly' && <span className="font-bold text-accent-700 dark:text-accent-500">{t('pricing.save')}</span>}
         </button>
       ))}
     </div>
@@ -39,43 +39,61 @@ export function PricingTable({ interval, currentPlan }) {
   return (
     <>
       {error && <Notice tone="error" className="mb-4">{error}</Notice>}
-      <div className="grid gap-6 lg:grid-cols-3">
+      <div className="grid gap-5 lg:grid-cols-3">
         {PLANS.map((plan) => {
           const p = priceFor(plan, interval);
           const isCurrent = currentPlan === plan.id;
+          const hot = plan.popular;
           return (
-            <div key={plan.id} className={`card relative flex flex-col p-6 ${plan.popular ? 'border-2 border-accent-500 dark:border-accent-500 lg:-my-3 lg:py-9' : ''}`}>
-              {plan.popular && (
-                <span className="absolute -top-3 left-1/2 inline-flex -translate-x-1/2 items-center gap-1 rounded-full bg-accent-500 px-3 py-1 text-xs font-bold text-navy-950">
-                  <Sparkles className="h-3 w-3" />{t('pricing.popular')}
-                </span>
-              )}
-              <h3 className="text-lg font-semibold">{plan.name}</h3>
-              <div className="mt-4 flex items-baseline gap-1">
-                <span className="text-4xl font-bold tabular-nums">{formatUSD(p.perMonth, p.perMonth % 1 ? 2 : 0)}</span>
-                <span className="muted">{t('pricing.perMonth')}</span>
+            <div key={plan.id} className={`relative flex flex-col rounded-2xl p-7 ${hot ? 'bg-accent-500 text-navy-950' : 'card'}`}>
+              <div className="flex items-start justify-between gap-3">
+                <h3 className="text-3xl font-extrabold tracking-tight">{plan.name}</h3>
+                {hot && <span className="rounded-full bg-navy-950 px-3 py-1 text-xs font-bold text-white">{t('pricing.popular')}</span>}
               </div>
-              <p className="mt-1 h-5 text-xs muted">
-                {interval === 'yearly' ? `${formatUSD(p.billed)} ${t('pricing.billedYearly')}` : ''}
-              </p>
-              <p className="mt-3 text-sm font-medium text-accent-700 dark:text-accent-400">
-                ≈ {formatUSD(costPerVideo(plan, interval))} {t('pricing.perVideo')}
-              </p>
-              <ul className="mt-6 flex-1 space-y-3 text-sm">
+              <div className="mt-3 flex items-baseline gap-1">
+                <span className="text-5xl font-extrabold tracking-tight tabular-nums">{formatUSD(p.perMonth, p.perMonth % 1 ? 2 : 0)}</span>
+                <span className={`text-xl ${hot ? 'text-navy-900' : 'muted'}`}>/{t('pricing.perMonth').replace('/ ', '')}</span>
+              </div>
+              <p className={`mt-1 h-5 text-xs ${hot ? 'text-navy-800' : 'muted'}`}>{interval === 'yearly' ? `${formatUSD(p.billed)} ${t('pricing.billedYearly')}` : ''}</p>
+              <ul className="mt-4 flex-1 space-y-3 text-[15px]">
                 {plan.featureKeys.map((k) => (
-                  <li key={k} className="flex gap-2"><Check className="mt-0.5 h-4 w-4 shrink-0 text-accent-600" />{t(k)}</li>
+                  <li key={k} className="flex gap-2.5"><Check className={`mt-0.5 h-5 w-5 shrink-0 ${hot ? 'text-navy-950' : 'text-accent-700 dark:text-accent-500'}`} strokeWidth={2.5} />{t(k)}</li>
                 ))}
               </ul>
               <button onClick={() => choose(plan.id)} disabled={busy || isCurrent}
-                className={`mt-8 w-full ${plan.popular ? 'btn-primary' : 'btn-dark'}`}>
+                className={`btn mt-7 w-full py-3 text-base ${hot ? 'bg-navy-950 text-white hover:bg-navy-800' : 'btn-outline'}`}>
                 {busy === plan.id && <Spinner />}
                 {isCurrent ? 'Aktueller Plan' : t('pricing.choose')}
               </button>
+              <p className={`mt-3 text-center text-sm ${hot ? 'text-navy-900' : 'muted'}`}>{t('trust.cancel')}</p>
             </div>
           );
         })}
       </div>
     </>
+  );
+}
+
+export function CostTable({ interval }) {
+  const { t } = useI18n();
+  return (
+    <div>
+      <h3 className="mb-4 text-3xl font-extrabold tracking-tight">{t('pricing.perVideo') === 'per video' ? 'Cost per video' : 'Kosten pro Video'}</h3>
+      <div className="card overflow-hidden p-0">
+        <table className="w-full text-left text-[15px]">
+          <thead><tr className="border-b border-navy-100 text-sm muted dark:border-navy-800"><th className="px-6 py-4 font-medium">Plan</th><th className="px-6 py-4 font-medium">Videos/Monat</th><th className="px-6 py-4 font-medium">{t('pricing.perVideo') === 'per video' ? 'Cost per video' : 'Kosten pro Video'}</th></tr></thead>
+          <tbody>
+            {PLANS.map((plan) => (
+              <tr key={plan.id} className="border-b border-navy-100 last:border-0 dark:border-navy-800">
+                <td className="px-6 py-4 font-bold">{plan.name}</td>
+                <td className="px-6 py-4 tabular-nums">{plan.videosPerMonth}</td>
+                <td className="px-6 py-4 font-bold tabular-nums">{formatUSD(costPerVideo(plan, interval))}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
   );
 }
 
@@ -157,7 +175,8 @@ export function PricingSection({ showCalculator = true, currentPlan }) {
           <a href="/registrieren" className="btn-outline">{t('pricing.freeCta')}</a>
         </div>
       </div>
-      {showCalculator && <div className="mt-12"><CostCalculator interval={interval} /></div>}
+      {showCalculator && <div className="mt-14"><CostTable interval={interval} /></div>}
+      {showCalculator && <div className="mt-10"><CostCalculator interval={interval} /></div>}
     </div>
   );
 }

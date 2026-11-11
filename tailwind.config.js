@@ -8,19 +8,21 @@ export default {
         sans: ['"Inter Variable"', 'Inter', 'system-ui', 'sans-serif'],
       },
       colors: {
+        // "navy" = neutrales Anthrazit (Name aus Kompatibilitätsgründen beibehalten)
         navy: {
-          50: '#f3f6fb', 100: '#e4eaf4', 200: '#c9d4e8', 300: '#9fb2d3',
-          400: '#6f88b8', 500: '#4c679c', 600: '#3a5080', 700: '#2e3f66',
-          800: '#1c2847', 900: '#111a33', 950: '#0a1024',
+          50: '#f5f6f7', 100: '#e9ebee', 200: '#d3d6dc', 300: '#a9aeb8',
+          400: '#8b919c', 500: '#6b717d', 600: '#4f5560', 700: '#3b414a',
+          800: '#30353d', 900: '#262a31', 950: '#1b1e23',
         },
+        // Akzent: Limettengrün
         accent: {
-          50: '#ecfdf6', 100: '#d1faea', 200: '#a6f3d6', 300: '#6de8bf',
-          400: '#33d4a3', 500: '#12b98a', 600: '#079671', 700: '#08785d',
-          800: '#0b5f4b', 900: '#0b4e3f',
+          50: '#f8fde6', 100: '#effbc9', 200: '#e2f79a', 300: '#d6f566',
+          400: '#d6f566', 500: '#c9f03f', 600: '#a6c925', 700: '#6b8512',
+          800: '#546814', 900: '#465716',
         },
       },
       boxShadow: {
-        soft: '0 1px 2px rgb(10 16 36 / 0.04), 0 8px 24px -8px rgb(10 16 36 / 0.12)',
+        soft: '0 1px 2px rgb(0 0 0 / 0.04), 0 8px 24px -8px rgb(0 0 0 / 0.18)',
       },
     },
   },

@@ -66,7 +66,7 @@ export default function AppLayout() {
 
       <nav className="fixed inset-x-0 bottom-0 z-30 grid grid-cols-4 border-t border-navy-100 bg-white pb-[env(safe-area-inset-bottom)] dark:border-navy-800 dark:bg-navy-900 lg:hidden" aria-label="App-Navigation mobil">
         {NAV.map(({ to, label, short, icon: Icon, end }) => (
-          <NavLink key={to} to={to} end={end} className={({ isActive }) => `flex flex-col items-center gap-1 py-2.5 text-[11px] font-medium ${isActive ? 'text-accent-600 dark:text-accent-400' : 'text-navy-500 dark:text-navy-300'}`}>
+          <NavLink key={to} to={to} end={end} className={({ isActive }) => `flex flex-col items-center gap-1 py-2.5 text-[11px] font-medium ${isActive ? 'text-accent-700 dark:text-accent-400' : 'text-navy-500 dark:text-navy-300'}`}>
             <Icon className="h-5 w-5" />{short || label}
           </NavLink>
         ))}

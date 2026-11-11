@@ -376,7 +376,7 @@ export default function Editor() {
                 <h3 className="font-semibold">2. Freigeben & planen</h3>
                 {video.status === 'scheduled' ? (
                   <>
-                    <p className="mt-1 flex items-center gap-2 text-sm"><CalendarCheck className="h-4 w-4 text-accent-600" />Geplant für <strong>{video.scheduled_at ? fmtDateTime(video.scheduled_at) : '—'}</strong> auf {(video.platforms || []).join(', ') || 'keiner Plattform'}</p>
+                    <p className="mt-1 flex items-center gap-2 text-sm"><CalendarCheck className="h-4 w-4 text-accent-700" />Geplant für <strong>{video.scheduled_at ? fmtDateTime(video.scheduled_at) : '—'}</strong> auf {(video.platforms || []).join(', ') || 'keiner Plattform'}</p>
                     <div className="mt-3 grid gap-3 sm:grid-cols-[1fr_auto]">
                       <input type="datetime-local" className="input" aria-label="Zeitpunkt ändern"
                         value={video.scheduled_at ? new Date(new Date(video.scheduled_at).getTime() - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, 16) : ''}
@@ -385,7 +385,7 @@ export default function Editor() {
                     </div>
                   </>
                 ) : video.status === 'posted' ? (
-                  <p className="mt-1 flex items-center gap-2 text-sm"><CheckCircle2 className="h-4 w-4 text-accent-600" />Gepostet.</p>
+                  <p className="mt-1 flex items-center gap-2 text-sm"><CheckCircle2 className="h-4 w-4 text-accent-700" />Gepostet.</p>
                 ) : (
                   <>
                     <p className="mt-1 text-sm muted">{series?.require_approval ? 'Nichts geht ohne deine Freigabe live. Prüfe die Vorschau und gib das Video frei – es wird dann im nächsten freien Slot deines Zeitplans gepostet.' : 'Auto-Post ist aktiv: Nach dem Export wird das Video automatisch eingeplant.'}</p>

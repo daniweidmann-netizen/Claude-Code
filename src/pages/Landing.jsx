@@ -2,10 +2,10 @@ import { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import {
   ArrowRight, Layers, FileText, Image, Mic, Captions, Music, Scissors, CalendarClock, Download, LayoutDashboard,
-  Tag, MousePointerClick, Eye, Languages, Mail,
+  Tag, MousePointerClick, Eye, Languages, Mail, Search, PenSquare, Send, Heart, MessageCircle, Share2,
 } from 'lucide-react';
 import { useI18n } from '../i18n/index.jsx';
-import { PhoneFrame, TrustRow } from '../components/ui.jsx';
+import { PhoneFrame } from '../components/ui.jsx';
 import { PricingSection, FAQ } from '../components/Pricing.jsx';
 import Player from '../video/Player.jsx';
 import { scriptToProject } from '../video/project.js';
@@ -22,31 +22,63 @@ function useExampleProject(key, lang) {
   }, [key, lang]);
 }
 
+// Beispielvideo für das Handy im Hero (Fotos: Pixabay, frei nutzbar)
+const DEMO_SCRIPT = {
+  de: { hook: 'Manchmal braucht es nur einen neuen Blick.', scenes: ['Tief in den Bergen liegt ein See, den kaum jemand kennt.', 'Der Weg ist steil – aber oben wartet eine Ruhe, die du kaum noch findest.', 'Und genau dort merkst du: Es hat sich gelohnt.'], cta: 'Würdest du diesen Ort auf deine Liste setzen?' },
+  en: { hook: 'Sometimes all it takes is a new perspective.', scenes: ['Deep in the mountains lies a lake almost nobody knows.', 'The trail is steep – but at the top waits a calm you rarely find.', 'And right there you realise: it was worth it.'], cta: 'Would you put this place on your list?' },
+};
+const DEMO_IMAGES = ['/demo/scene4.jpg', '/demo/scene1.jpg', '/demo/scene0.jpg', '/demo/scene2.jpg', '/demo/scene3.jpg'];
+
+function useHeroProject(lang) {
+  return useMemo(() => {
+    const d = DEMO_SCRIPT[lang] || DEMO_SCRIPT.de;
+    const p = scriptToProject({ title: 'Demo', hook: d.hook, scenes: d.scenes.map((text) => ({ text })), cta: d.cta }, { language: lang, artStyle: 'realistic', captions: { style: 'karaoke', highlight: '#c9f03f', position: 'bottom' }, music: { trackId: 'calm' } });
+    p.scenes.forEach((sc, i) => { sc.imageUrl = DEMO_IMAGES[i % DEMO_IMAGES.length]; sc.seed = 100 + i; });
+    return p;
+  }, [lang]);
+}
+
+// Handy im Stil einer Kurzvideo-App (ohne erfundene Like-Zahlen)
+function HeroPhone({ project }) {
+  const { lang } = useI18n();
+  const [follow, forYou] = lang === 'en' ? ['Following', 'For You'] : ['Folge ich', 'Für dich'];
+  return (
+    <div className="relative mx-auto w-full max-w-[300px] rounded-[2.8rem] border-[9px] border-navy-800 bg-black shadow-2xl ring-1 ring-white/10">
+      <div className="absolute left-1/2 top-2 z-20 h-6 w-24 -translate-x-1/2 rounded-full bg-black" aria-hidden="true" />
+      <div className="relative overflow-hidden rounded-[2.2rem]">
+        <Player project={project} autoPlay initialMuted loop controls={false} />
+        <div className="pointer-events-none absolute inset-x-0 top-0 flex items-center justify-center gap-4 bg-gradient-to-b from-black/50 to-transparent pb-6 pt-9 text-[13px] font-semibold text-white/70">
+          <span>{follow}</span><span className="border-b-2 border-white pb-0.5 text-white">{forYou}</span>
+          <Search className="absolute right-4 h-4 w-4 text-white" />
+        </div>
+        <div className="pointer-events-none absolute bottom-24 right-3 flex flex-col items-center gap-5 text-white drop-shadow">
+          <Heart className="h-7 w-7 fill-white" /><MessageCircle className="h-7 w-7 fill-white" /><Share2 className="h-6 w-6" />
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function Hero() {
   const { t, lang } = useI18n();
-  const project = useExampleProject('history', lang);
+  const project = useHeroProject(lang);
   return (
     <section className="relative overflow-hidden">
-      <div className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(ellipse_at_top_right,rgba(51,212,163,0.18),transparent_55%)]" aria-hidden="true" />
-      <div className="container-x grid items-center gap-12 py-14 sm:py-20 lg:grid-cols-[1.15fr_1fr]">
+      <div className="container-x grid items-center gap-12 py-12 sm:py-16 lg:grid-cols-[1.25fr_1fr]">
         <div>
-          <span className="chip"><span className="h-1.5 w-1.5 rounded-full bg-accent-500" />{t('hero.badge')}</span>
-          <h1 className="mt-5 text-4xl font-extrabold leading-[1.08] sm:text-5xl lg:text-6xl">
-            {t('hero.title1')}<br /><span className="text-accent-600 dark:text-accent-400">{t('hero.title2')}</span>
+          <h1 className="text-[2.6rem] font-extrabold leading-[1.04] tracking-[-0.03em] sm:text-6xl lg:text-[4.6rem]">
+            {t('hero.title1')}<br />{t('hero.title2')}
           </h1>
-          <p className="mt-5 max-w-xl text-lg muted">{t('hero.sub')}</p>
+          <p className="mt-6 max-w-xl text-lg text-navy-500 dark:text-navy-300 sm:text-xl">{t('hero.sub')}</p>
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-            <Link to="/registrieren" className="btn-primary px-6 py-3 text-base">{t('hero.cta')}<ArrowRight className="h-4 w-4" /></Link>
-            <Link to="/preise" className="btn-outline px-6 py-3 text-base">{t('hero.cta2')}</Link>
+            <Link to="/registrieren" className="btn-primary px-8 py-3.5 text-base">{t('hero.cta')}</Link>
+            <Link to="/preise" className="btn-outline px-8 py-3.5 text-base">{t('hero.cta2')}</Link>
           </div>
           <p className="mt-3 text-sm muted">{t('hero.note')}</p>
-          <TrustRow className="mt-8" />
         </div>
-        <div className="relative">
-          <PhoneFrame>
-            <Player project={project} autoPlay initialMuted loop controls={false} />
-          </PhoneFrame>
-          <p className="mt-4 text-center text-xs muted">{t('examples.note')}</p>
+        <div>
+          <HeroPhone project={project} />
+          <p className="mt-3 text-center text-[11px] muted">{lang === 'en' ? 'Example video · Photos: Pixabay' : 'Beispielvideo · Fotos: Pixabay'}</p>
         </div>
       </div>
     </section>
@@ -55,22 +87,25 @@ function Hero() {
 
 function HowItWorks() {
   const { t } = useI18n();
+  const icons = [Search, PenSquare, Send];
   return (
-    <section id="how" className="section scroll-mt-16 bg-navy-50/60 dark:bg-navy-900/40">
+    <section id="how" className="scroll-mt-16 pb-16 sm:pb-24">
       <div className="container-x">
-        <div className="mx-auto max-w-2xl text-center">
-          <p className="eyebrow">{t('nav.how')}</p>
-          <h2 className="h2 mt-2">{t('how.title')}</h2>
-          <p className="mt-3 muted">{t('how.sub')}</p>
-        </div>
-        <ol className="mt-12 grid gap-6 md:grid-cols-3">
-          {[1, 2, 3].map((n) => (
-            <li key={n} className="card p-6">
-              <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-navy-900 text-lg font-bold text-accent-400 dark:bg-navy-800">{n}</span>
-              <h3 className="mt-4 text-lg font-semibold">{t(`how.s${n}.t`)}</h3>
-              <p className="mt-2 text-sm muted">{t(`how.s${n}.d`)}</p>
-            </li>
-          ))}
+        <h2 className="h2">{t('how.title')}</h2>
+        <ol className="mt-6 grid gap-4 md:grid-cols-3">
+          {[1, 2, 3].map((n, i) => {
+            const Icon = icons[i];
+            return (
+              <li key={n} className="card flex items-start gap-4 p-6">
+                <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-accent-500 text-lg font-extrabold text-navy-950">{n}</span>
+                <div className="min-w-0 flex-1">
+                  <h3 className="text-lg font-bold">{t(`how.s${n}.t`)}</h3>
+                  <p className="mt-1 text-sm muted">{t(`how.s${n}.d`)}</p>
+                </div>
+                <Icon className="h-7 w-7 shrink-0 text-navy-400 dark:text-white" strokeWidth={1.6} />
+              </li>
+            );
+          })}
         </ol>
       </div>
     </section>
@@ -95,7 +130,7 @@ function Features() {
         <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
           {FEATURES.map(([k, Icon]) => (
             <div key={k} className="card p-5">
-              <Icon className="h-6 w-6 text-accent-600 dark:text-accent-400" />
+              <Icon className="h-6 w-6 text-accent-700 dark:text-accent-400" />
               <h3 className="mt-3 font-semibold">{t(`f.${k}.t`)}</h3>
               <p className="mt-1.5 text-sm muted">{t(`f.${k}.d`)}</p>
             </div>

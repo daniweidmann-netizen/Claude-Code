@@ -59,7 +59,7 @@ export function VoicePicker({ language, voiceId, onChange }) {
       <div className="grid gap-3 sm:grid-cols-2">
         {VOICES.map((v) => (
           <div key={v.id} className={`option flex items-center justify-between ${voiceId === v.id ? 'option-active' : ''}`} onClick={() => onChange({ voiceId: v.id })} role="button" tabIndex={0} onKeyDown={(e) => e.key === 'Enter' && onChange({ voiceId: v.id })} aria-pressed={voiceId === v.id}>
-            <span className="flex items-center gap-2 text-sm font-semibold">{voiceId === v.id && <Check className="h-4 w-4 text-accent-600" />}{v.label}</span>
+            <span className="flex items-center gap-2 text-sm font-semibold">{voiceId === v.id && <Check className="h-4 w-4 text-accent-700" />}{v.label}</span>
             <button type="button" className="btn-outline px-3 py-1.5 text-xs" onClick={(e) => { e.stopPropagation(); preview(v.id); }}>
               {playing === v.id ? <Square className="h-3 w-3" /> : <Play className="h-3 w-3" />}Vorhören
             </button>

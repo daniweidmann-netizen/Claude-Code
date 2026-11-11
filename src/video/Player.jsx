@@ -8,7 +8,7 @@ import { speak, stopSpeaking } from './tts.js';
 const PW = 540, PH = 960;
 
 export function useImages(project) {
-  const [, setVersion] = useState(0);
+  const [version, setVersion] = useState(0);
   const imgs = useRef(new Map());
   useEffect(() => {
     project?.scenes.forEach((s) => {
@@ -21,10 +21,12 @@ export function useImages(project) {
       }
     });
   }, [project]);
-  return useCallback((s) => {
+  const get = useCallback((s) => {
     const img = s.imageUrl && imgs.current.get(s.imageUrl);
     return img && img.complete && img.naturalWidth ? img : null;
   }, []);
+  // neue Funktions-Identität, sobald ein Bild geladen ist → Vorschau zeichnet neu
+  return useMemo(() => (s) => get(s), [get, version]); // eslint-disable-line react-hooks/exhaustive-deps
 }
 
 export default function Player({ framed = false, project, autoPlay = false, initialMuted = false, loop = false, controls = true, watermark = false, className = '', onTime }) {
@@ -119,8 +121,11 @@ export default function Player({ framed = false, project, autoPlay = false, init
   const play = useCallback(async (from = st.current.t) => {
     if (!tl.total) return;
     if (from >= tl.total - 0.05) from = 0;
-    if (!mutedRef.current) unlockAudio(); // synchron im Fingertipp – wichtig für iOS
-    try { await audioCtx().resume(); } catch {}
+    if (!mutedRef.current) {
+      unlockAudio(); // synchron im Fingertipp – wichtig für iOS
+      // Ohne Fingertipp bleibt resume() hängen – nie länger als kurz darauf warten
+      try { await Promise.race([audioCtx().resume(), new Promise((r) => setTimeout(r, 300))]); } catch {}
+    }
     stopAudio();
     st.current.playing = true;
     st.current.playId = (st.current.playId || 0) + 1;
