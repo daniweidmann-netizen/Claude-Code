@@ -1,6 +1,6 @@
 // Vorbereitete Social-API-Module. OAuth-URLs und Token-Austausch sind umgesetzt,
 // das eigentliche Hochladen ist als klar markierter Stub vorbereitet (App-Review nötig).
-const env = (k) => process.env[k] || '';
+const env = (k) => (process.env[k] || '').trim(); // trim: eingefügte Werte enthalten oft Zeilenumbrüche
 
 export const PLATFORMS = {
   tiktok: {
