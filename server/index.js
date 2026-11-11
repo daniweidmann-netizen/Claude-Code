@@ -7,7 +7,7 @@ import os from 'node:os';
 import { fileURLToPath } from 'node:url';
 import { config, stripeEnabled, supabaseEnabled } from './config.js';
 import { authenticate, getProfile, admin } from './supabaseAdmin.js';
-import { provider, providerStatus, providerDiagnose, historyImageProvider } from './providers/index.js';
+import { provider, providerStatus, providerDiagnose, historyImageProvider, fallbackImageProvider } from './providers/index.js';
 import { ffmpegAvailable, transcodeToMp4 } from './providers/render.js';
 import stripeRouter, { webhookHandler } from './stripe.js';
 import socialRouter from './social/router.js';
@@ -73,7 +73,16 @@ app.post('/api/generate/image', authenticate, handle(async (req) => {
       if (r.imageUrl) return { ...r, provider: 'wikimedia' };
     } catch (e) { console.warn('[wikimedia]', e.message); }
   }
-  return { ...(await provider('image').generate(req.body)), provider: provider('image').name };
+  const main = provider('image');
+  try {
+    const r = await main.generate(req.body);
+    if (r.imageUrl || main.name === 'pixabay' || !process.env.PIXABAY_API_KEY) return { ...r, provider: main.name };
+  } catch (e) {
+    if (main.name === 'pixabay' || !process.env.PIXABAY_API_KEY) throw e;
+    console.warn(`[image:${main.name}] ${e.message} → Pixabay`);
+  }
+  // Rückfall: Stockfoto, damit jede Szene ein Bild bekommt
+  return { ...(await fallbackImageProvider.generate(req.body)), provider: 'pixabay' };
 }));
 app.post('/api/generate/voice', authenticate, handle(async (req) => {
   const text = String(req.body?.text || '').slice(0, 1200);

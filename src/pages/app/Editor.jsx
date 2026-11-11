@@ -11,7 +11,7 @@ import { VOICES, CAPTION_FONTS, CAPTION_STYLES, MUSIC_TRACKS, MONETIZATION_MIN_S
 import { getPlan } from '../../config/plans.js';
 import Player from '../../video/Player.jsx';
 import { newSeed, timeline, scriptToProject } from '../../video/project.js';
-import { generateImage, regenerateScript } from '../../video/generate.js';
+import { fillImages, generateImage, regenerateScript } from '../../video/generate.js';
 import { synthesize, speak, stopSpeaking } from '../../video/tts.js';
 import { recordVideo, toMp4, download } from '../../video/exporter.js';
 import { CaptionStylePicker, MusicPicker, ArtStylePicker, VoicePicker, ArtThumb } from '../../components/Pickers.jsx';
@@ -104,14 +104,8 @@ export default function Editor() {
 
   const regenAllImages = async () => {
     setBusy('images'); setMsg(null);
-    const next = [];
-    const used = [];
-    for (const s of scenes) {
-      const seed = newSeed();
-      const r = await generateImage({ prompt: s.visual || s.text, style: project.artStyle, seed, userId: user.id, niche: project.niche || series?.niche, archiveQuery: project.archiveQuery, exclude: used });
-      if (r.credit?.url) used.push(r.credit.url);
-      next.push({ ...s, seed, imageUrl: r.imageUrl || null, credit: r.credit || null });
-    }
+    const reseeded = { ...project, niche: project.niche || series?.niche, scenes: scenes.map((s) => ({ ...s, seed: newSeed() })) };
+    const next = (await fillImages(reseeded, user.id)).project.scenes.map((s) => (s.imageUrl ? s : { ...s, imageUrl: null, credit: null }));
     updateProject({ scenes: next });
     if (!next.some((s) => s.imageUrl)) setMsg({ tone: 'info', text: tr("Kein Bildmodell verbunden – Platzhalter-Grafiken wurden neu gemischt.") });
     setBusy(null);

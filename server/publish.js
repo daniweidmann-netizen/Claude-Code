@@ -20,7 +20,7 @@ function describe(video, series) {
     '',
     '#Shorts',
     '',
-    'Erstellt mit TrueReel. Sprecherstimme und Skript wurden mit KI erzeugt.',
+    'Erstellt mit TrueReel. Skript, Sprecherstimme und Bilder wurden (teilweise) mit KI erzeugt.',
     credits.length ? `\nBildquellen:\n${credits.join('\n')}` : '',
   ].join('\n').trim();
 }

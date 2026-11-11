@@ -43,3 +43,4 @@ export function providerStatus() {
 }
 
 export const historyImageProvider = imageWikimedia;
+export const fallbackImageProvider = imagePixabay;

@@ -36,15 +36,24 @@ export const regenerateScript = (input) => withFallback('/generate/script/previe
 
 // Holt für alle Szenen Bilder (falls ein Bild-Modul verbunden ist). Fehler einzelner Szenen sind unkritisch.
 export async function fillImages(project, userId, onProgress) {
-  const scenes = [];
+  // Mehrere Szenen gleichzeitig (KI-Bilder brauchen je ~15 s); Reihenfolge bleibt erhalten.
+  const list = project.scenes;
+  const scenes = new Array(list.length);
   const used = [];
   let found = 0;
-  for (const [i, s] of project.scenes.entries()) {
-    onProgress?.(i, project.scenes.length);
-    const r = await generateImage({ prompt: s.visual || s.text, style: project.artStyle, seed: s.seed, userId, niche: project.niche, archiveQuery: project.archiveQuery, exclude: used });
-    if (r.credit?.url) used.push(r.credit.url);
-    if (r.imageUrl) found++;
-    scenes.push(r.imageUrl ? { ...s, imageUrl: r.imageUrl, credit: r.credit || null } : s);
-  }
+  let done = 0;
+  let next = 0;
+  const worker = async () => {
+    while (next < list.length) {
+      const i = next++;
+      const s = list[i];
+      const r = await generateImage({ prompt: s.visual || s.text, style: project.artStyle, seed: s.seed, userId, niche: project.niche, archiveQuery: project.archiveQuery, exclude: [...used] });
+      if (r.credit?.url) used.push(r.credit.url);
+      if (r.imageUrl) found++;
+      scenes[i] = r.imageUrl ? { ...s, imageUrl: r.imageUrl, credit: r.credit || null } : s;
+      onProgress?.(++done, list.length);
+    }
+  };
+  await Promise.all(Array.from({ length: Math.min(4, list.length) }, worker));
   return { project: { ...project, scenes }, found, provider: found ? 'ok' : 'none' };
 }
