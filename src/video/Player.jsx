@@ -35,7 +35,7 @@ export default function Player({ framed = false, project, autoPlay = false, init
   const [t, setT] = useState(0);
   const tl = useMemo(() => (project ? timeline(project) : { items: [], total: 0 }), [project]);
   const getImage = useImages(project);
-  const st = useRef({ raf: 0, startAt: 0, music: null, sceneId: null, audio: null, t: 0 });
+  const st = useRef({ raf: 0, startAt: 0, music: null, sceneId: null, voices: [], playId: 0, t: 0 });
 
   const draw = useCallback((time) => {
     const ctx = canvasRef.current?.getContext('2d');
@@ -44,13 +44,38 @@ export default function Player({ framed = false, project, autoPlay = false, init
 
   useEffect(() => { draw(st.current.t); }, [draw]);
 
+  // Sprachaufnahmen vorab dekodieren (Web Audio) – iOS erlaubt sonst nur eine Aufnahme pro Fingertipp
+  useEffect(() => {
+    project?.scenes.forEach((sc) => { if (sc.audioUrl) decodeUrl(sc.audioUrl).catch(() => {}); });
+  }, [project]);
+
   const stopAudio = () => {
     try { st.current.music?.stop(); } catch {}
     st.current.music = null;
-    st.current.audio?.pause();
-    st.current.audio = null;
+    (st.current.voices || []).forEach((v) => { try { v.stop(); } catch {} });
+    st.current.voices = [];
     st.current.sceneId = null;
     stopSpeaking();
+  };
+
+  // Alle Szenen-Aufnahmen auf der Web-Audio-Zeitachse einplanen
+  const startVoices = async (playId) => {
+    if (mutedRef.current || !project) return;
+    const ctx = audioCtx();
+    for (const item of tl.items) {
+      if (!item.scene.audioUrl) continue;
+      let buf;
+      try { buf = await decodeUrl(item.scene.audioUrl); } catch { continue; }
+      if (!st.current.playing || st.current.playId !== playId) return;
+      const elapsed = performance.now() / 1000 - st.current.startAt;
+      const offset = Math.max(0, elapsed - item.start);
+      if (offset >= buf.duration) continue;
+      const src = ctx.createBufferSource();
+      src.buffer = buf;
+      src.connect(ctx.destination);
+      src.start(ctx.currentTime + Math.max(0, item.start - elapsed), offset);
+      st.current.voices.push(src);
+    }
   };
 
   const startMusic = async (from) => {
@@ -75,14 +100,10 @@ export default function Player({ framed = false, project, autoPlay = false, init
   const voiceForScene = (item, time) => {
     if (mutedRef.current || st.current.sceneId === item.scene.id) return;
     st.current.sceneId = item.scene.id;
-    st.current.audio?.pause();
     stopSpeaking();
     const offset = time - item.start;
     if (item.scene.audioUrl) {
-      const a = new Audio(item.scene.audioUrl);
-      a.currentTime = Math.max(0, offset);
-      a.play().catch(() => {});
-      st.current.audio = a;
+      // wird über startVoices (Web Audio) abgespielt
     } else if (offset < 0.6) {
       speak(item.scene.text, { lang: project.language, voiceId: item.scene.voiceId || project.voiceId });
     }
@@ -102,14 +123,17 @@ export default function Player({ framed = false, project, autoPlay = false, init
     try { await audioCtx().resume(); } catch {}
     stopAudio();
     st.current.playing = true;
+    st.current.playId = (st.current.playId || 0) + 1;
+    st.current.voices = [];
     st.current.startAt = performance.now() / 1000 - from;
     setPlaying(true);
     startMusic(from);
+    startVoices(st.current.playId);
     const tick = () => {
       if (!st.current.playing) return;
       let time = performance.now() / 1000 - st.current.startAt;
       if (time >= tl.total) {
-        if (loop) { stopAudio(); st.current.startAt = performance.now() / 1000; time = 0; startMusic(0); }
+        if (loop) { stopAudio(); st.current.startAt = performance.now() / 1000; time = 0; startMusic(0); startVoices(st.current.playId); }
         else { st.current.t = tl.total; setT(tl.total); draw(tl.total - 0.001); pause(); return; }
       }
       st.current.t = time;
