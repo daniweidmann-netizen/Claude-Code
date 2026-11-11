@@ -11,7 +11,11 @@ export const managedPayments = process.env.STRIPE_MANAGED_PAYMENTS !== 'false';
 
 async function ensureCustomer(user) {
   const profile = await getProfile(user.id);
-  if (profile?.stripe_customer_id) return profile.stripe_customer_id;
+  if (profile?.stripe_customer_id) {
+    // Kunde kann aus einem anderen Stripe-Konto (oder gelöscht) sein → dann neu anlegen
+    const existing = await stripe.customers.retrieve(profile.stripe_customer_id).catch(() => null);
+    if (existing && !existing.deleted) return existing.id;
+  }
   const customer = await stripe.customers.create({ email: user.email, metadata: { user_id: user.id } });
   if (admin) await admin.from('profiles').update({ stripe_customer_id: customer.id }).eq('id', user.id);
   return customer.id;
