@@ -1,9 +1,7 @@
 import { SITE } from '../../config/site.js';
-import { Notice } from '../../components/ui.jsx';
 import { useI18n } from '../../i18n/index.jsx';
 
 const C = SITE.company;
-const P = ({ children }) => <span className="placeholder">{children}</span>;
 
 function LegalPage({ title, updated, children }) {
   const { lang, setLang } = useI18n();
@@ -12,12 +10,7 @@ function LegalPage({ title, updated, children }) {
     <div className="section">
       <article className="container-x prose-legal max-w-3xl">
         <h1 className="text-3xl font-bold sm:text-4xl">{title}</h1>
-        <p className="mt-2 text-sm muted">{en ? 'Last updated' : 'Stand'}: <P>{updated || (en ? '[date]' : '[Datum]')}</P></p>
-        <Notice tone="warn" className="mt-6">
-          {en
-            ? 'Template: replace the placeholders highlighted in yellow and have the text reviewed by a lawyer before going live.'
-            : 'Vorlage: Gelb markierte Platzhalter ersetzen und den Text vor dem Livegang von einer Fachperson (Anwalt/Anwältin) prüfen lassen.'}
-        </Notice>
+        <p className="mt-2 text-sm muted">{en ? 'Last updated' : 'Stand'}: {updated || (en ? '12 November 2026' : '12. November 2026')}</p>
         <p className="mt-4 text-sm muted">
           {en ? <>This is an English translation for convenience. In case of discrepancies, the <button className="underline" onClick={() => setLang('de')}>German version</button> prevails.</>
               : <>An English version is available: <button className="underline" onClick={() => setLang('en')}>English</button></>}
@@ -52,14 +45,14 @@ function DatenschutzDe() {
       <p className="mt-6">Diese Erklärung informiert dich darüber, wie {SITE.name} personenbezogene Daten bearbeitet – gemäss der EU-Datenschutz-Grundverordnung (DSGVO) und dem Schweizer Datenschutzgesetz (DSG).</p>
       <h2>1. Verantwortliche Stelle</h2>
       <p>{C.legalName}, Inhaber: {C.representative}, {C.street}, {C.zipCity}, {C.country} · <a className="underline" href={`mailto:${SITE.contactEmail}`}>{SITE.contactEmail}</a></p>
-      <p>EU-Vertretung nach Art. 27 DSGVO (falls Sitz ausserhalb der EU): <P>[Name, Anschrift oder „nicht erforderlich“]</P></p>
+      <p>EU-Vertretung nach Art. 27 DSGVO: Derzeit ist keine Vertretung bestellt, da wir personenbezogene Daten nur gelegentlich und ohne umfangreiche Verarbeitung besonderer Datenkategorien bearbeiten (Art. 27 Abs. 2 lit. a DSGVO). Anfragen aus der EU beantworten wir direkt unter der oben genannten E-Mail-Adresse.</p>
       <h2>2. Welche Daten wir bearbeiten</h2>
       <ul>
         <li><strong>Konto:</strong> E-Mail, Name (optional), Passwort-Hash, Login über Google (nur E-Mail und Name).</li>
         <li><strong>Inhalte:</strong> Serien, Skripte, Einstellungen, erzeugte Bilder, Audios und Videos.</li>
         <li><strong>Zahlungen:</strong> über Stripe. Wir erhalten keine vollständigen Kartendaten, nur Status, Plan und Rechnungsdaten.</li>
         <li><strong>Social-Verbindungen:</strong> Zugriffstokens für TikTok, Instagram/Meta und YouTube/Google – ausschliesslich zum Posten in deinem Auftrag.</li>
-        <li><strong>Technische Daten:</strong> IP-Adresse, Zeitpunkte, Browsertyp (Server-Logs, max. <P>[14]</P> Tage).</li>
+        <li><strong>Technische Daten:</strong> IP-Adresse, Zeitpunkte, Browsertyp (Server-Logs, max. 30 Tage).</li>
       </ul>
       <h2>3. Zwecke und Rechtsgrundlagen</h2>
       <ul>
@@ -71,13 +64,16 @@ function DatenschutzDe() {
       <h2>4. Auftragsverarbeiter und Empfänger</h2>
       <ul>
         <li><strong>Supabase</strong> (Datenbank, Authentifizierung) – Region: EU (Stockholm, Schweden)</li>
-        <li><strong>Stripe</strong> (Zahlungsabwicklung)</li>
-        <li><strong>KI-Anbieter</strong> für Skript, Bild und Stimme: <P>[z. B. Anthropic, OpenAI, ElevenLabs]</P> – es werden nur die für die Generierung nötigen Texte übermittelt.</li>
-        <li><strong>Hosting</strong>: <P>[Anbieter, Region]</P></li>
-        <li><strong>Social-Plattformen</strong> (TikTok, Meta, Google) – nur wenn du sie verbindest.</li>
+        <li><strong>Stripe</strong> (Stripe Payments Europe Ltd., Irland, und Stripe, Inc., USA) – Zahlungsabwicklung. Über „Managed Payments“ tritt Stripe als Verkäufer gegenüber dir auf (Merchant of Record) und bearbeitet dafür Zahlungs-, Rechnungs- und Steuerdaten in eigener Verantwortung.</li>
+        <li><strong>Anthropic</strong> (USA) – Erstellung der Video-Skripte. Übermittelt werden Thema, Stichpunkte und Skripttext.</li>
+        <li><strong>OpenAI</strong> (USA) – Sprecherstimme und KI-Bilder. Übermittelt werden Skripttext und Bildbeschreibungen.</li>
+        <li><strong>Pixabay</strong> (Deutschland) und <strong>Wikimedia Commons</strong> (USA) – Bildsuche. Übermittelt werden nur Suchbegriffe.</li>
+        <li><strong>Brevo</strong> (Frankreich) – Versand von System-E-Mails (Bestätigung, Passwort).</li>
+        <li><strong>Hosting</strong>: Render Services, Inc. (USA), Server-Region Frankfurt (Deutschland)</li>
+        <li><strong>Social-Plattformen</strong> (Google/YouTube, TikTok, Meta) – nur wenn du sie verbindest und ein Video postest.</li>
       </ul>
       <h2>5. Übermittlung ins Ausland</h2>
-      <p>Einige Anbieter sitzen in den USA. Die Übermittlung erfolgt auf Basis von Angemessenheitsbeschlüssen (z. B. EU-US / Swiss-US Data Privacy Framework) oder Standardvertragsklauseln. <P>[pro Anbieter prüfen]</P></p>
+      <p>Einige Anbieter (Stripe, Anthropic, OpenAI, Render, Wikimedia, Google) sitzen in den USA. Die Übermittlung erfolgt, soweit der Anbieter zertifiziert ist, auf Basis des EU-US bzw. Swiss-US Data Privacy Framework, ansonsten auf Basis der Standardvertragsklauseln der EU-Kommission (vom EDÖB anerkannt). Wir übermitteln jeweils nur die Daten, die für den konkreten Zweck nötig sind.</p>
       <h2>6. Speicherdauer</h2>
       <p>Kontodaten speichern wir, bis du dein Konto löschst. Rechnungsdaten bewahren wir gemäss gesetzlichen Fristen auf (CH: 10 Jahre, DE: bis zu 10 Jahre).</p>
       <h2>7. Deine Rechte</h2>
@@ -109,13 +105,13 @@ function AGBDe() {
         <li>Eigene Uploads (Musik, Stimme) nur, wenn du die nötigen Rechte besitzt.</li>
       </ul>
       <h2>7. Rechte an Inhalten</h2>
-      <p>Du darfst die mit {SITE.name} erstellten Videos – auch kommerziell – nutzen. Wir nutzen deine Inhalte nur zur Erbringung des Dienstes. <P>[Regelung zu Modelltraining festlegen: z. B. „Wir verwenden deine Inhalte nicht zum Training von KI-Modellen.“]</P></p>
+      <p>Du darfst die mit {SITE.name} erstellten Videos – auch kommerziell – nutzen. Wir nutzen deine Inhalte nur zur Erbringung des Dienstes. Wir verwenden deine Inhalte nicht zum Training von KI-Modellen.</p>
       <h2>8. Verfügbarkeit und Haftung</h2>
-      <p>Wir bemühen uns um eine hohe Verfügbarkeit, garantieren aber keinen unterbrechungsfreien Betrieb. Die Haftung ist im gesetzlich zulässigen Rahmen auf Vorsatz und grobe Fahrlässigkeit beschränkt. <P>[rechtlich prüfen]</P></p>
+      <p>Wir bemühen uns um eine hohe Verfügbarkeit, garantieren aber keinen unterbrechungsfreien Betrieb. Die Haftung ist im gesetzlich zulässigen Rahmen auf Vorsatz und grobe Fahrlässigkeit beschränkt.</p>
       <h2>9. Änderungen</h2>
       <p>Wir informieren rechtzeitig per E-Mail über Änderungen dieser AGB. Du kannst in diesem Fall jederzeit kündigen.</p>
       <h2>10. Anwendbares Recht und Gerichtsstand</h2>
-      <p><P>[z. B. Schweizer Recht, Gerichtsstand Zürich – zwingende Verbraucherschutzvorschriften des Wohnsitzstaates bleiben vorbehalten]</P></p>
+      <p>Es gilt Schweizer Recht unter Ausschluss des UN-Kaufrechts. Gerichtsstand ist der Sitz des Anbieters (Grafstal, Kanton Zürich). Zwingende Verbraucherschutzvorschriften deines Wohnsitzstaates sowie ein dort zwingender Gerichtsstand für Verbraucher bleiben vorbehalten.</p>
     </LegalPage>
   );
 }
@@ -130,13 +126,14 @@ function RueckerstattungDe() {
         <li>Bereits begonnene Abrechnungsperioden werden grundsätzlich nicht anteilig erstattet.</li>
       </ul>
       <h2>Zufriedenheitsregel</h2>
-      <p><P>[Option festlegen, z. B.: „Wenn du innerhalb von 7 Tagen nach deiner ersten Zahlung nicht zufrieden bist und höchstens 2 Videos exportiert hast, erstatten wir dir den vollen Betrag. Schreib einfach an support@…“]</P></p>
+      <p>Wenn du innerhalb von 7 Tagen nach deiner ersten Zahlung nicht zufrieden bist und höchstens 2 Videos exportiert hast, erstatten wir dir den vollen Betrag. Schreib einfach an <a className="underline" href={`mailto:${SITE.supportEmail}`}>{SITE.supportEmail}</a>.</p>
       <h2>Widerrufsrecht für Verbraucher in der EU</h2>
-      <p>Verbraucher in der EU haben grundsätzlich ein 14-tägiges Widerrufsrecht. Bei digitalen Dienstleistungen erlischt es, wenn wir mit deiner ausdrücklichen Zustimmung vor Ablauf der Frist mit der Leistung begonnen haben und du deine Kenntnis davon bestätigt hast. <P>[Widerrufsbelehrung + Muster-Widerrufsformular ergänzen, Zustimmung im Checkout einholen]</P></p>
+      <p>Verbraucher in der EU haben grundsätzlich ein 14-tägiges Widerrufsrecht. Bei digitalen Dienstleistungen erlischt es, wenn wir mit deiner ausdrücklichen Zustimmung vor Ablauf der Frist mit der Leistung begonnen haben und du deine Kenntnis davon bestätigt hast.</p>
+      <p>Mit dem Abschluss eines Abos verlangst du ausdrücklich, dass wir sofort mit der Leistung beginnen, und nimmst zur Kenntnis, dass dein Widerrufsrecht damit erlischt. Möchtest du vorher widerrufen, genügt eine eindeutige Erklärung per E-Mail an <a className="underline" href={`mailto:${SITE.supportEmail}`}>{SITE.supportEmail}</a>, zum Beispiel: „Hiermit widerrufe ich meinen Vertrag über das TrueReel-Abo, abgeschlossen am [Datum], Name, E-Mail-Adresse des Kontos.“</p>
       <h2>Doppelte Abbuchung oder Fehler</h2>
       <p>Bei technischen Fehlern oder doppelten Zahlungen erstatten wir selbstverständlich vollständig.</p>
       <h2>Kontakt</h2>
-      <p><a className="underline" href={`mailto:${SITE.supportEmail}`}>{SITE.supportEmail}</a> – wir antworten in der Regel innerhalb von <P>[2 Werktagen]</P>.</p>
+      <p><a className="underline" href={`mailto:${SITE.supportEmail}`}>{SITE.supportEmail}</a> – wir antworten in der Regel innerhalb von 2 Werktagen.</p>
     </LegalPage>
   );
 }
@@ -147,7 +144,7 @@ function ImpressumEn() {
     <LegalPage title="Legal notice (Impressum)">
       <h2>Provider</h2>
       <p>{C.legalName}<br />Owner: {C.representative}<br />{C.street}<br />{C.zipCity}<br />Switzerland</p>
-      <p>Legal form: business in formation (not yet registered)</p>
+      <p>Legal form: sole proprietorship (not entered in the commercial register)</p>
       <h2>Contact</h2>
       <p>Email: <a className="underline" href={`mailto:${SITE.contactEmail}`}>{SITE.contactEmail}</a>{C.phone && <><br />Phone: {C.phone}</>}</p>
       <h2>Register & tax</h2>
@@ -166,14 +163,14 @@ function DatenschutzEn() {
       <p className="mt-6">This policy explains how {SITE.name} processes personal data – in line with the EU General Data Protection Regulation (GDPR) and the Swiss Federal Act on Data Protection (FADP).</p>
       <h2>1. Controller</h2>
       <p>{C.legalName}, owner: {C.representative}, {C.street}, {C.zipCity}, Switzerland · <a className="underline" href={`mailto:${SITE.contactEmail}`}>{SITE.contactEmail}</a></p>
-      <p>EU representative under Art. 27 GDPR (if established outside the EU): <P>[name, address or “not required”]</P></p>
+      <p>EU representative under Art. 27 GDPR: no representative is currently appointed, as we process personal data only occasionally and without large-scale processing of special categories of data (Art. 27(2)(a) GDPR). We answer requests from the EU directly at the email address above.</p>
       <h2>2. What data we process</h2>
       <ul>
         <li><strong>Account:</strong> email, name (optional), password hash, Google sign-in (email and name only).</li>
         <li><strong>Content:</strong> series, scripts, settings, generated images, audio and videos.</li>
         <li><strong>Payments:</strong> via Stripe. We never receive full card details – only status, plan and billing data.</li>
         <li><strong>Social connections:</strong> access tokens for TikTok, Instagram/Meta and YouTube/Google – used only to post on your behalf.</li>
-        <li><strong>Technical data:</strong> IP address, timestamps, browser type (server logs, max. <P>[14]</P> days).</li>
+        <li><strong>Technical data:</strong> IP address, timestamps, browser type (server logs, max. 30 days).</li>
       </ul>
       <h2>3. Purposes and legal bases</h2>
       <ul>
@@ -185,13 +182,16 @@ function DatenschutzEn() {
       <h2>4. Processors and recipients</h2>
       <ul>
         <li><strong>Supabase</strong> (database, authentication) – region: EU (Stockholm, Sweden)</li>
-        <li><strong>Stripe</strong> (payment processing)</li>
-        <li><strong>AI providers</strong> for script, images and voice: <P>[e.g. Anthropic, OpenAI, ElevenLabs]</P> – only the texts needed for generation are transmitted.</li>
-        <li><strong>Hosting</strong>: <P>[provider, region]</P></li>
-        <li><strong>Social platforms</strong> (TikTok, Meta, Google) – only if you connect them.</li>
+        <li><strong>Stripe</strong> (Stripe Payments Europe Ltd., Ireland, and Stripe, Inc., USA) – payment processing. Through “Managed Payments”, Stripe acts as the seller to you (merchant of record) and processes payment, invoice and tax data under its own responsibility.</li>
+        <li><strong>Anthropic</strong> (USA) – writing video scripts. We transmit the topic, notes and script text.</li>
+        <li><strong>OpenAI</strong> (USA) – voiceover and AI images. We transmit script text and image descriptions.</li>
+        <li><strong>Pixabay</strong> (Germany) and <strong>Wikimedia Commons</strong> (USA) – image search. Only search terms are transmitted.</li>
+        <li><strong>Brevo</strong> (France) – sending system emails (confirmation, password).</li>
+        <li><strong>Hosting</strong>: Render Services, Inc. (USA), server region Frankfurt (Germany)</li>
+        <li><strong>Social platforms</strong> (Google/YouTube, TikTok, Meta) – only if you connect them and post a video.</li>
       </ul>
       <h2>5. Transfers abroad</h2>
-      <p>Some providers are based in the USA. Transfers are based on adequacy decisions (e.g. EU-US / Swiss-US Data Privacy Framework) or standard contractual clauses. <P>[check per provider]</P></p>
+      <p>Some providers (Stripe, Anthropic, OpenAI, Render, Wikimedia, Google) are based in the USA. Where the provider is certified, transfers are based on the EU-US or Swiss-US Data Privacy Framework; otherwise on the European Commission's standard contractual clauses (recognised by the FDPIC). We only transmit the data needed for the specific purpose.</p>
       <h2>6. Retention</h2>
       <p>We store account data until you delete your account. Billing records are kept for the statutory periods (CH: 10 years, DE: up to 10 years).</p>
       <h2>7. Your rights</h2>
@@ -223,13 +223,13 @@ function AGBEn() {
         <li>Upload your own material (music, voice) only if you hold the necessary rights.</li>
       </ul>
       <h2>7. Rights to content</h2>
-      <p>You may use the videos created with {SITE.name} – including commercially. We use your content only to provide the service. <P>[define model-training policy, e.g. “We do not use your content to train AI models.”]</P></p>
+      <p>You may use the videos created with {SITE.name} – including commercially. We use your content only to provide the service. We do not use your content to train AI models.</p>
       <h2>8. Availability and liability</h2>
-      <p>We strive for high availability but do not guarantee uninterrupted operation. To the extent permitted by law, liability is limited to intent and gross negligence. <P>[legal review]</P></p>
+      <p>We strive for high availability but do not guarantee uninterrupted operation. To the extent permitted by law, liability is limited to intent and gross negligence.</p>
       <h2>9. Changes</h2>
       <p>We will inform you of changes to these terms by email in good time. In that case you may cancel at any time.</p>
       <h2>10. Governing law and jurisdiction</h2>
-      <p><P>[e.g. Swiss law, place of jurisdiction Zurich – mandatory consumer protection rules of your country of residence remain unaffected]</P></p>
+      <p>Swiss law applies, excluding the UN Convention on Contracts for the International Sale of Goods. The place of jurisdiction is the provider's seat (Grafstal, Canton of Zurich). Mandatory consumer protection rules of your country of residence, and any mandatory consumer place of jurisdiction there, remain unaffected.</p>
     </LegalPage>
   );
 }
@@ -244,13 +244,14 @@ function RueckerstattungEn() {
         <li>Billing periods that have already started are generally not refunded pro rata.</li>
       </ul>
       <h2>Satisfaction rule</h2>
-      <p><P>[define option, e.g.: “If you're not satisfied within 7 days of your first payment and have exported no more than 2 videos, we'll refund the full amount. Just write to support@…”]</P></p>
+      <p>If you're not satisfied within 7 days of your first payment and have exported no more than 2 videos, we'll refund the full amount. Just write to <a className="underline" href={`mailto:${SITE.supportEmail}`}>{SITE.supportEmail}</a>.</p>
       <h2>Right of withdrawal for EU consumers</h2>
-      <p>Consumers in the EU generally have a 14-day right of withdrawal. For digital services it expires once we have started the service with your express consent before the end of the period and you have acknowledged this. <P>[add withdrawal notice + model withdrawal form, obtain consent at checkout]</P></p>
+      <p>Consumers in the EU generally have a 14-day right of withdrawal. For digital services it expires once we have started the service with your express consent before the end of the period and you have acknowledged this.</p>
+      <p>By starting a subscription you expressly request that we begin the service immediately and acknowledge that your right of withdrawal thereby expires. If you want to withdraw before that, a clear statement by email to <a className="underline" href={`mailto:${SITE.supportEmail}`}>{SITE.supportEmail}</a> is enough, for example: “I hereby withdraw from my contract for the TrueReel subscription concluded on [date], name, email address of the account.”</p>
       <h2>Double charges or errors</h2>
       <p>For technical errors or duplicate payments we will of course refund in full.</p>
       <h2>Contact</h2>
-      <p><a className="underline" href={`mailto:${SITE.supportEmail}`}>{SITE.supportEmail}</a> – we usually reply within <P>[2 business days]</P>.</p>
+      <p><a className="underline" href={`mailto:${SITE.supportEmail}`}>{SITE.supportEmail}</a> – we usually reply within 2 business days.</p>
     </LegalPage>
   );
 }

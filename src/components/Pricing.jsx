@@ -157,13 +157,14 @@ export function FAQ() {
 }
 
 export function PricingSection({ showCalculator = true, currentPlan }) {
-  const { t } = useI18n();
+  const { t, lang } = useI18n();
   const [interval, setInterval] = useState('monthly');
   return (
     <div>
       <div className="mb-10 flex flex-col items-center gap-4 text-center">
         <IntervalToggle interval={interval} setInterval={setInterval} />
-        <p className="text-xs muted">{t('pricing.vat')} {interval === 'yearly' && `(${Math.round(YEARLY_DISCOUNT * 100)} % Rabatt)`}</p>
+        <p className="text-xs muted">{t('pricing.vat')} {interval === 'yearly' && `(${Math.round(YEARLY_DISCOUNT * 100)} % ${lang === 'de' ? 'Rabatt' : 'off'})`}</p>
+        <p className="mt-1 text-xs muted">{t('pricing.withdrawal')}</p>
       </div>
       <PricingTable interval={interval} currentPlan={currentPlan} />
       <div className="mt-8 flex flex-col items-center justify-between gap-4 rounded-2xl border border-dashed border-navy-200 p-6 text-center dark:border-navy-700 sm:flex-row sm:text-left">

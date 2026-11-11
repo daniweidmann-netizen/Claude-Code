@@ -68,6 +68,7 @@ export default {
   'pricing.freeTitle': 'Erst testen?',
   'pricing.freeText': 'Erstelle 1 Video gratis – ohne Kreditkarte. Gratis-Videos haben ein kleines Wasserzeichen.',
   'pricing.freeCta': 'Gratis starten',
+  'pricing.withdrawal': 'Mit dem Kauf beginnen wir sofort mit der Leistung; ein gesetzliches Widerrufsrecht erlischt damit. Stattdessen gilt unsere 7-Tage-Zufriedenheitsregel (siehe Rückerstattung).',
   'pricing.vat': 'Preise in USD. Allfällige MWST/USt wird im Checkout ausgewiesen.',
 
   'plan.hobby.f1': '3 Videos pro Woche',

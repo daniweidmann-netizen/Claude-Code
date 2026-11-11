@@ -7,7 +7,7 @@ export const SITE = {
   supportEmail: 'daniweidmann@icloud.com',
   company: {
     legalName: 'Truereel',
-    legalForm: 'Projekt in Gründung (noch keine eingetragene Rechtsform)',
+    legalForm: 'Einzelunternehmen (nicht im Handelsregister eingetragen)',
     street: 'Chriesiweg 4',
     zipCity: '8310 Grafstal',
     country: 'Schweiz',

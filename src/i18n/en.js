@@ -67,6 +67,7 @@ export default {
   'pricing.freeTitle': 'Want to try first?',
   'pricing.freeText': 'Create 1 video for free – no credit card. Free videos include a small watermark.',
   'pricing.freeCta': 'Start free',
+  'pricing.withdrawal': 'With your purchase we start the service immediately, so any statutory right of withdrawal expires. Our 7-day satisfaction rule applies instead (see refund policy).',
   'pricing.vat': 'Prices in USD. Applicable VAT is shown at checkout.',
 
   'plan.hobby.f1': '3 videos per week',
