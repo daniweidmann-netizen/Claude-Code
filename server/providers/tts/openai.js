@@ -11,7 +11,7 @@ const TEMPO = Number(process.env.VOICE_TEMPO || 1.18);
 function speedUp(buf) {
   if (!(TEMPO > 0.5 && TEMPO < 2) || TEMPO === 1) return Promise.resolve(buf);
   return new Promise((resolve) => {
-    const p = spawn(config.ffmpegPath, ['-loglevel', 'error', '-i', 'pipe:0', '-filter:a', `atempo=${TEMPO}`, '-c:a', 'libmp3lame', '-b:a', '128k', '-f', 'mp3', 'pipe:1']);
+    const p = spawn(config.ffmpegPath, ['-loglevel', 'error', '-i', 'pipe:0', '-filter:a', `atempo=${TEMPO}`, '-map_metadata', '-1', '-c:a', 'libmp3lame', '-b:a', '128k', '-id3v2_version', '0', '-write_xing', '0', '-f', 'mp3', 'pipe:1']);
     const out = [];
     p.stdout.on('data', (d) => out.push(d));
     p.on('error', () => resolve(buf)); // kein FFmpeg → Originaltempo
