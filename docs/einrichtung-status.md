@@ -57,7 +57,7 @@ und Stripe Tax / Steuerregistrierung vor dem Livegang prüfen.
 
 ---
 
-# Live: https://truereel-der5.onrender.com (Render Free, Frankfurt)
+# Live: https://truereel.ch (Render Free, Frankfurt; alt: https://truereel-der5.onrender.com)
 
 Getestet am Live-System:
 - Startseite (~1,4 s), Registrierung, Login, Onboarding, Video mit 6 Pixabay-Bildern

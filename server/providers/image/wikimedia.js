@@ -3,7 +3,7 @@
 // trotzdem wird die Quelle angegeben. Doku: https://commons.wikimedia.org/w/api.php
 const API = 'https://commons.wikimedia.org/w/api.php';
 // Wikimedia verlangt einen aussagekräftigen User-Agent (https://meta.wikimedia.org/wiki/User-Agent_policy)
-const HEADERS = { 'User-Agent': 'TrueReel/1.0 (https://truereel-der5.onrender.com) video-tool' };
+const HEADERS = { 'User-Agent': 'TrueReel/1.0 (https://truereel.ch) video-tool' };
 
 const FREE = /^(public domain|pd|cc0|cc-zero)/i;
 const stripHtml = (s) => String(s || '').replace(/<[^>]+>/g, '').replace(/\s+/g, ' ').trim();

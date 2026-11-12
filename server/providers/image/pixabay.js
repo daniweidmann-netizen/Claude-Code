@@ -26,7 +26,7 @@ async function search(params) {
 }
 
 const wait = (ms) => new Promise((r) => setTimeout(r, ms));
-const HEADERS = { 'User-Agent': 'TrueReel/1.0 (+https://truereel-der5.onrender.com)' };
+const HEADERS = { 'User-Agent': 'TrueReel/1.0 (+https://truereel.ch)' };
 
 // Pixabays CDN drosselt schnelle Folge-Downloads (429) → mit Pause erneut versuchen
 async function toDataUrl(src) {

@@ -52,6 +52,8 @@ services:
         value: medium
       - key: PIXABAY_API_KEY   # pixabay.com/api/docs
         sync: false
+      - key: APP_URL   # eigene Domain (Links, Stripe-Rückkehr, OAuth-Callbacks)
+        value: https://truereel.ch
       - key: TTS_PROVIDER
         value: openai
       - key: OPENAI_API_KEY   # GEHEIM: platform.openai.com/api-keys (sk-…)
