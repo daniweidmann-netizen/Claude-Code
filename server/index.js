@@ -177,6 +177,13 @@ app.use((req, res, next) => {
   next();
 });
 
+// Kurzadressen für Profile ohne anklickbaren Link: truereel.ch/tiktok → Startseite mit ?ref=tiktok (Statistik)
+app.get(/^\/(tiktok|instagram|insta|youtube|yt|reddit|whatsapp|facebook|fb|x|linkedin)\/?$/i, (req, res) => {
+  const map = { insta: 'instagram', yt: 'youtube', fb: 'facebook' };
+  const src = req.params[0].toLowerCase();
+  res.redirect(302, `/?ref=${map[src] || src}`);
+});
+
 // Produktion: gebautes Frontend ausliefern
 const dist = path.join(__dirname, '..', 'dist');
 if (fs.existsSync(dist)) {
