@@ -14,13 +14,14 @@ export function ProductReveal({ result }: { result: ProductResult }) {
   const img = p?.image;
 
   return (
-    <section id="produkt" aria-labelledby="product-title" className="relative isolate overflow-hidden bg-night py-[clamp(6rem,11vw,10rem)]">
-      <div className="absolute inset-0 -z-10 bg-[radial-gradient(70%_60%_at_25%_45%,#3c296599,transparent_70%)]" />
+    <section id="produkt" aria-labelledby="product-title" className="relative isolate overflow-hidden bg-night transition-colors duration-1000 webgl:bg-transparent py-[clamp(6rem,11vw,10rem)]">
+      <div className="absolute inset-0 -z-10 bg-[radial-gradient(70%_60%_at_25%_45%,#3c296599,transparent_70%)] webgl:hidden" />
       <div className="wrap grid gap-12 lg:grid-cols-12 lg:gap-6">
         {/* Stage */}
         <div className="relative lg:col-span-6 lg:col-start-1">
-          <Moon className="absolute -left-[12%] -top-[10%] w-[48%] opacity-70" />
-          <div className="arch relative mx-auto aspect-[4/5] w-full max-w-[640px]">
+          <Moon className="absolute -left-[12%] -top-[10%] w-[48%] opacity-70 webgl:hidden" />
+          <div className="relative mx-auto aspect-[4/5] w-full max-w-[640px] touch-pan-y select-none webgl:cursor-grab webgl:active:cursor-grabbing" data-stage="product" data-stage-fit="0.84" data-drag="pouch">
+          <div className="arch absolute inset-0 webgl:hidden">
             <Image
               src={img?.url ?? "/assets/images/posters/packshot-temp-b.jpg"}
               alt={img?.altText ?? "Vireli Night Gummies Mixed Berry – Beutel"}
@@ -29,7 +30,14 @@ export function ProductReveal({ result }: { result: ProductResult }) {
               className="object-cover object-[50%_45%]"
             />
           </div>
-          {!img && <PreviewBadge className="absolute bottom-4 left-4">Temporärer Packshot · 3D-Präsentation folgt</PreviewBadge>}
+          <p className="t-caps pointer-events-none absolute inset-x-0 bottom-2 hidden text-center text-[10px] text-ivory/50 webgl:block">← Ziehen zum Drehen →</p>
+          </div>
+          {!img && (
+            <PreviewBadge className="absolute bottom-4 left-4">
+              <span className="webgl:hidden">Temporärer Packshot</span>
+              <span className="hidden webgl:inline">Provisorisches 3D-Modell · Textur aus Shop-Foto</span>
+            </PreviewBadge>
+          )}
         </div>
 
         {/* Purchase panel */}

@@ -3,7 +3,7 @@ import { Logo } from "./Logo";
 
 export function Footer() {
   return (
-    <footer data-header="light" className="bg-ivory text-ink [color-scheme:light]">
+    <footer data-header="light" className="relative z-[1] bg-ivory text-ink [color-scheme:light]">
       <div className="wrap pb-[max(2rem,env(safe-area-inset-bottom))] pt-[clamp(4.5rem,9vw,8rem)]">
         <div className="grid gap-14 lg:grid-cols-12 lg:gap-6">
           <p className="t-title lg:col-span-7">

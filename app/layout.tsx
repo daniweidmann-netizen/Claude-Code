@@ -6,6 +6,7 @@ import { Header } from "@/components/Header";
 import { Menu } from "@/components/Menu";
 import { CartDrawer } from "@/components/CartDrawer";
 import { Motion, motionBootScript } from "@/motion/Motion";
+import { ExperienceMount } from "@/webgl/ExperienceMount";
 import { isShopifyConfigured } from "@/commerce/client";
 
 const serif = Instrument_Serif({ subsets: ["latin"], weight: "400", style: ["normal", "italic"], variable: "--font-instrument-serif", display: "swap" });
@@ -38,7 +39,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <Header />
         <Menu />
         <CartDrawer connected={connected} />
-        <main id="top">{children}</main>
+        <ExperienceMount />
+        <main id="top" className="relative z-[1]">{children}</main>
         <Footer />
         <div className="grain" aria-hidden="true" />
         <Motion />

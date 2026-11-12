@@ -12,8 +12,8 @@ const NODES = [
 
 export function Berries() {
   return (
-    <section id="beeren" aria-labelledby="berries-title" className="relative isolate overflow-hidden bg-midnight py-[clamp(6rem,14vw,13rem)]">
-      <NightSky className="absolute inset-0 -z-10 h-full w-full opacity-60" count={60} seed={23} />
+    <section id="beeren" aria-labelledby="berries-title" className="relative isolate overflow-hidden bg-midnight transition-colors duration-1000 webgl:bg-transparent py-[clamp(6rem,14vw,13rem)]">
+      <NightSky className="absolute inset-0 -z-10 h-full w-full opacity-60 webgl:hidden" count={60} seed={23} />
       <div className="wrap">
         <p className="t-caps chapter-index text-lavender" data-n="02">
           <span className="rule" />
@@ -21,7 +21,7 @@ export function Berries() {
         </p>
 
         <h2 id="berries-title" className="sr-only">{berries.title}</h2>
-        <div aria-hidden="true" className="relative mt-10 select-none">
+        <div aria-hidden="true" className="relative mt-10 select-none" data-stage="berries" data-stage-fit="0.42">
           <p className="t-display text-[clamp(4.5rem,24vw,19rem)] leading-[0.82]" data-reveal="lines">Mixed</p>
           <p className="t-display text-right text-[clamp(4.5rem,24vw,19rem)] italic leading-[0.82] text-lavender" data-reveal="lines" data-reveal-delay="0.12">
             Berry
@@ -48,9 +48,9 @@ export function Berries() {
         </div>
 
         <div className="mt-[clamp(4rem,9vw,8rem)] grid gap-10 lg:grid-cols-12 lg:gap-6">
-          <PlaceholderMedia id="HF-02" label="Berry World" className="aspect-[4/5] rounded-sm sm:aspect-[16/9] lg:col-span-8 lg:aspect-[21/10]">
-            <div className="absolute inset-x-0 bottom-0 h-1/2 opacity-80"><Hills className="h-full w-full" /></div>
-            <div className="absolute inset-0 grid place-items-center">
+          <PlaceholderMedia id="HF-02" label="Berry World" className="webgl:!bg-none webgl:ring-1 webgl:ring-lavender/15 aspect-[4/5] rounded-sm sm:aspect-[16/9] lg:col-span-8 lg:aspect-[21/10]">
+            <div className="absolute inset-x-0 bottom-0 h-1/2 opacity-80 webgl:hidden"><Hills className="h-full w-full" /></div>
+            <div className="absolute inset-0 grid place-items-center webgl:hidden">
               <div className="flex gap-[6%] opacity-90">
                 {NODES.map((n, i) => (
                   <span

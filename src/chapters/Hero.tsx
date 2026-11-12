@@ -8,10 +8,10 @@ import { PreviewBadge } from "@/components/PreviewBadge";
 
 export function Hero() {
   return (
-    <section id="nacht" aria-labelledby="hero-title" className="relative isolate min-h-[100svh] overflow-hidden bg-midnight">
+    <section id="nacht" aria-labelledby="hero-title" className="relative isolate min-h-[100svh] overflow-hidden bg-midnight webgl:bg-transparent">
       {/* Sky */}
-      <div className="absolute inset-0 -z-10 bg-[radial-gradient(120%_90%_at_75%_10%,#1e1161_0%,#0d1030_38%,#05060f_72%)]" />
-      <NightSky className="absolute inset-0 -z-10 h-full w-full" count={110} />
+      <div className="absolute inset-0 -z-10 transition-opacity duration-[1500ms] webgl:opacity-0 bg-[radial-gradient(120%_90%_at_75%_10%,#1e1161_0%,#0d1030_38%,#05060f_72%)]" />
+      <NightSky className="absolute inset-0 -z-10 h-full w-full transition-opacity duration-1000 webgl:opacity-0" count={110} />
       <div className="absolute inset-x-0 bottom-0 -z-10 h-[38vh] min-h-[220px]" data-parallax="0.12">
         <Hills className="h-full w-full" />
       </div>
@@ -19,8 +19,10 @@ export function Hero() {
       <div className="wrap relative grid min-h-[100svh] grid-cols-1 content-end gap-y-6 pb-10 pt-[calc(var(--header-h)+var(--bar-h)+1.5rem)] lg:grid-cols-12 lg:content-center lg:gap-x-6 lg:pb-24">
         {/* Visual: arch portal + eclipse moon */}
         <div className="relative col-span-1 mr-0 ml-auto w-[min(54vw,380px)] sm:mx-auto lg:order-2 lg:col-span-5 lg:col-start-8 lg:mx-0 lg:w-full lg:max-w-[520px] lg:justify-self-end">
-          <Moon className="absolute -left-[46%] -top-[6%] w-[72%] opacity-90 sm:-left-auto sm:-right-[22%] sm:-top-[18%] sm:w-[78%] lg:-right-[28%] lg:-top-[20%]" />
-          <div className="arch relative aspect-[3/4] w-full shadow-[0_40px_120px_-20px_rgba(87,68,211,0.45)]" data-reveal="fade" data-reveal-delay="0.3">
+          <Moon className="absolute transition-opacity duration-700 webgl:opacity-0 -left-[46%] -top-[6%] w-[72%] opacity-90 sm:-left-auto sm:-right-[22%] sm:-top-[18%] sm:w-[78%] lg:-right-[28%] lg:-top-[20%]" />
+          <div className="relative aspect-[3/4] w-full" data-stage="hero" data-stage-fit="0.9">
+          <div className="absolute inset-0" data-reveal="fade" data-reveal-delay="0.3">
+          <div className="arch absolute inset-0 shadow-[0_40px_120px_-20px_rgba(87,68,211,0.45)] transition-opacity duration-[1200ms] webgl:opacity-0">
             <Image
               src="/assets/images/posters/packshot-temp-b.jpg"
               alt="Vireli Night Gummies Mixed Berry – Beutel mit Beeren und Gummies bei Nacht"
@@ -33,8 +35,13 @@ export function Hero() {
             />
             <div className="absolute inset-0 bg-[linear-gradient(180deg,transparent_55%,rgba(5,6,15,0.55))]" />
           </div>
+          </div>
+          </div>
           <div className="absolute -bottom-3 left-1/2 hidden -translate-x-1/2 lg:block">
-            <PreviewBadge className="whitespace-nowrap">Temporärer Packshot</PreviewBadge>
+            <PreviewBadge className="whitespace-nowrap">
+              <span className="webgl:hidden">Temporärer Packshot</span>
+              <span className="hidden webgl:inline">Provisorisches 3D-Modell</span>
+            </PreviewBadge>
           </div>
         </div>
 

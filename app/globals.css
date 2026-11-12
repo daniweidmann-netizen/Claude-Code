@@ -1,5 +1,8 @@
 @import "tailwindcss";
 
+/* Active once the WebGL world has loaded (html.webgl) */
+@custom-variant webgl (&:where(.webgl, .webgl *));
+
 /* ─────────────────────────────────────────────────────────────
    VIRELI — design tokens  (see DESIGN_DIRECTION.md §3–5)
    ───────────────────────────────────────────────────────────── */
