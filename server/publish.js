@@ -34,7 +34,8 @@ export async function publishVideo(videoId, { userId } = {}) {
   const { data: video } = await q.maybeSingle();
   if (!video) throw new Error('Video nicht gefunden.');
   if (!video.video_path) throw new Error('Noch kein exportiertes MP4 gespeichert – bitte zuerst exportieren.');
-  const platforms = video.platforms?.length ? video.platforms : [];
+  // Nur Plattformen mit aktivem Upload (TikTok/Instagram: App-Review ausstehend → übersprungen)
+  const platforms = (video.platforms || []).filter((pl) => PLATFORMS[pl]?.available);
   if (!platforms.length) throw new Error('Für diese Serie ist keine Plattform ausgewählt.');
   const { data: series } = video.series_id ? await admin.from('series').select('*').eq('id', video.series_id).maybeSingle() : { data: null };
 

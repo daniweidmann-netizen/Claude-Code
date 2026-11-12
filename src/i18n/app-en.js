@@ -1,5 +1,8 @@
 // English versions of the app texts. Key = German original (see tr() in index.jsx).
 export default {
+  "bald verfügbar": "coming soon",
+  "Bald verfügbar": "Coming soon",
+  "Bis dahin: Video exportieren und in der App selbst hochladen.": "Until then: export the video and upload it in the app yourself.",
   "Statistik": "Statistics",
   "Besucher pro Tag": "Visitors per day",
   "Besucher": "Visitors",

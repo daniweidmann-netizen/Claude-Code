@@ -155,11 +155,12 @@ export function PlatformPicker({ value = [], onChange, max = 3 }) {
   return (
     <div className="grid gap-2 sm:grid-cols-3">
       {PLATFORMS.map((p) => {
-        const on = value.includes(p.id);
-        const disabled = !on && value.length >= max;
+        const on = value.includes(p.id) && !p.soon;
+        const disabled = p.soon || (!on && value.filter((x) => !PLATFORMS.find((q) => q.id === x)?.soon).length >= max);
         return (
-          <button key={p.id} type="button" disabled={disabled} onClick={() => onChange(on ? value.filter((x) => x !== p.id) : [...value, p.id])} className={`option p-3 text-sm font-semibold disabled:opacity-40 ${on ? 'option-active' : ''}`} aria-pressed={on}>
+          <button key={p.id} type="button" disabled={disabled} onClick={() => onChange(on ? value.filter((x) => x !== p.id) : [...value.filter((x) => !PLATFORMS.find((q) => q.id === x)?.soon), p.id])} className={`option p-3 text-sm font-semibold disabled:opacity-50 ${on ? 'option-active' : ''}`} aria-pressed={on}>
             {tr(p.label)}
+            {p.soon && <span className="ml-2 rounded-full bg-navy-100 px-2 py-0.5 text-[11px] font-semibold text-navy-600 dark:bg-navy-800 dark:text-navy-200">{tr('bald verfügbar')}</span>}
           </button>
         );
       })}

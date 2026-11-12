@@ -209,8 +209,9 @@ export default function Account() {
             const c = conns.find((x) => x.platform === p.id);
             return (
               <li key={p.id} className="flex items-center justify-between gap-3 py-3">
-                <div><p className="font-medium">{tr(p.label)}</p><p className="text-xs muted">{c ? `${tr("Verbunden")}${c.account_name ? ` · ${c.account_name}` : ''}` : tr("Nicht verbunden")}</p></div>
-                {c ? <button className="btn-outline text-xs" onClick={() => disconnect(p.id)}><Unlink className="h-4 w-4" />{tr("Trennen")}</button>
+                <div><p className="font-medium">{tr(p.label)}</p><p className="text-xs muted">{c ? `${tr("Verbunden")}${c.account_name ? ` · ${c.account_name}` : ''}` : p.soon ? tr('Bis dahin: Video exportieren und in der App selbst hochladen.') : tr("Nicht verbunden")}</p></div>
+                {p.soon && !c ? <span className="rounded-full bg-navy-100 px-3 py-1 text-xs font-semibold text-navy-600 dark:bg-navy-800 dark:text-navy-200">{tr('Bald verfügbar')}</span>
+                  : c ? <button className="btn-outline text-xs" onClick={() => disconnect(p.id)}><Unlink className="h-4 w-4" />{tr("Trennen")}</button>
                   : <button className="btn-dark text-xs" onClick={() => connect(p.id)} disabled={!!busy}>{busy === `c-${p.id}` ? <Spinner /> : <Link2 className="h-4 w-4" />}{tr("Verbinden")}</button>}
               </li>
             );

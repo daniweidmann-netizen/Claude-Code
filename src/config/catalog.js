@@ -70,8 +70,8 @@ export const POST_FREQUENCIES = [
 ];
 
 export const PLATFORMS = [
-  { id: 'tiktok', label: 'TikTok' },
-  { id: 'instagram', label: 'Instagram Reels' },
+  { id: 'tiktok', label: 'TikTok', soon: true }, // Auto-Posting: App-Review ausstehend
+  { id: 'instagram', label: 'Instagram Reels', soon: true },
   { id: 'youtube', label: 'YouTube Shorts' },
 ];
 
