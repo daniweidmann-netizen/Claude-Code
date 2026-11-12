@@ -79,6 +79,14 @@ export default function Editor() {
   });
   const updateScene = (sid, patch) => updateProject({ scenes: video.project.scenes.map((s) => (s.id === sid ? { ...s, ...patch } : s)) });
 
+  // Nach einem Stimmenwechsel automatisch das echte KI-Voiceover erzeugen (statt Gerätestimme)
+  const [voicePending, setVoicePending] = useState(false);
+  useEffect(() => {
+    if (voicePending && !busy) { setVoicePending(false); genVoice({ onlyMissing: true }); }
+  }, [voicePending, busy]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  const previewRef = useRef(null);
+
   if (msg?.tone === 'error' && !video) return <Notice tone="error">{msg.text}</Notice>;
   if (!video) return <Spinner className="h-6 w-6 text-accent-500" />;
   const project = video.project;
@@ -111,11 +119,12 @@ export default function Editor() {
     setBusy(null);
   };
 
-  const genVoice = async () => {
+  const genVoice = async ({ onlyMissing = false } = {}) => {
     setBusy('voice'); setMsg(null);
     const next = [];
     let any = false;
     for (const s of scenes) {
+      if (onlyMissing && s.audioUrl) { next.push(s); continue; }
       const r = await synthesize(s.text, { lang: project.language, voiceId: s.voiceId || project.voiceId });
       if (r) any = true;
       next.push(r ? { ...s, audioUrl: await uploadMedia(user.id, r.audioUrl, 'audio'), audioDuration: r.duration } : s);
@@ -125,6 +134,19 @@ export default function Editor() {
       ? { tone: 'success', text: tr("KI-Voiceover erzeugt. Szenenlängen wurden an die Sprechdauer angepasst.") }
       : { tone: 'info', text: tr("Kein TTS-Anbieter verbunden (TTS_PROVIDER). Die Vorschau nutzt die Browser-Stimme; der Export enthält dann nur Musik und Untertitel.") });
     setBusy(null);
+  };
+
+  // Hörprobe: vorhandenes KI-Audio der gewählten Szene, sonst Beispiel der gewählten Stimme
+  const previewVoice = () => {
+    stopSpeaking();
+    if (previewRef.current) { previewRef.current.pause(); previewRef.current = null; return; }
+    const scene = sel || scenes[0];
+    const lang = ['de', 'de-CH', 'en', 'fr', 'it', 'es'].includes(project.language) ? project.language : 'de';
+    const src = scene?.audioUrl || `/voices/${scene?.voiceId || project.voiceId}-${lang}.mp3`;
+    const a = new Audio(src);
+    previewRef.current = a;
+    a.onended = () => { previewRef.current = null; };
+    a.play().catch(() => { previewRef.current = null; });
   };
 
   const rewrite = async () => {
@@ -276,7 +298,7 @@ export default function Editor() {
                 <label className="mb-1.5 block font-bold" htmlFor={`txt-${sc.id}`}>{sceneLabel(sc, i)}</label>
                 <textarea id={`txt-${sc.id}`} className={`input min-h-[84px] resize-y text-[15px] leading-relaxed ${sc.id === sel?.id ? 'border-accent-500 dark:border-accent-500' : ''}`}
                   value={sc.text} onFocus={() => setSelected(sc.id)}
-                  onChange={(e) => updateScene(sc.id, { text: e.target.value, audioUrl: null, audioDuration: null })} />
+                  onChange={(e) => updateScene(sc.id, { text: e.target.value, audioUrl: null, audioDuration: null })} onBlur={() => setVoicePending(true)} />
               </div>
             ))}
           </div>
@@ -313,7 +335,7 @@ export default function Editor() {
                     <div className="mt-3 space-y-2 border-t border-navy-100 pt-3 dark:border-navy-700">
                       <input className="input py-2 text-xs" value={sc.visual || ''} placeholder={tr("Bildbeschreibung (englisch, für die Bildsuche)")} onChange={(e) => updateScene(sc.id, { visual: e.target.value })} aria-label={tr("Bildbeschreibung")} />
                       <div className="flex flex-wrap items-center gap-1.5">
-                        <select className="input w-auto flex-1 py-2 text-xs" value={sc.voiceId || ''} onChange={(e) => updateScene(sc.id, { voiceId: e.target.value || null, audioUrl: null, audioDuration: null })} aria-label={tr("Stimme dieser Szene")}>
+                        <select className="input w-auto flex-1 py-2 text-xs" value={sc.voiceId || ''} onChange={(e) => { updateScene(sc.id, { voiceId: e.target.value || null, audioUrl: null, audioDuration: null }); setVoicePending(true); }} aria-label={tr("Stimme dieser Szene")}>
                           <option value="">{tr("Stimme: Standard")}</option>
                           {VOICES.map((v) => <option key={v.id} value={v.id}>{tr(v.label)}</option>)}
                         </select>
@@ -340,11 +362,11 @@ export default function Editor() {
             <div className="mt-5 space-y-3">
               <div className="grid grid-cols-[1fr_auto] gap-2">
                 <label className="input flex items-center gap-2 py-0 pr-1"><Mic className="h-5 w-5 shrink-0" />
-                  <select className="w-full bg-transparent py-3 text-[15px] focus:outline-none" value={project.voiceId} onChange={(e) => updateProject({ voiceId: e.target.value, scenes: scenes.map((x) => ({ ...x, audioUrl: x.voiceId ? x.audioUrl : null, audioDuration: x.voiceId ? x.audioDuration : null })) })} aria-label={tr("Stimme")}>
+                  <select className="w-full bg-transparent py-3 text-[15px] focus:outline-none" value={project.voiceId} onChange={(e) => { updateProject({ voiceId: e.target.value, scenes: scenes.map((x) => ({ ...x, audioUrl: x.voiceId ? x.audioUrl : null, audioDuration: x.voiceId ? x.audioDuration : null })) }); setVoicePending(true); }} aria-label={tr("Stimme")}>
                     {VOICES.map((v) => <option key={v.id} value={v.id}>{tr('Stimme')}: {tr(v.label)}</option>)}
                   </select>
                 </label>
-                <button className="btn-outline px-4" onClick={() => speak(sel?.text || scenes[0].text, { lang: project.language, voiceId: sel?.voiceId || project.voiceId })}><Play className="h-4 w-4 fill-current" />{tr("Vorhören")}</button>
+                <button className="btn-outline px-4" onClick={previewVoice}><Play className="h-4 w-4 fill-current" />{tr("Vorhören")}</button>
               </div>
               <label className="input flex items-center gap-2 py-0 pr-1"><Captions className="h-5 w-5 shrink-0" />
                 <select className="w-full bg-transparent py-3 text-[15px] focus:outline-none" value={project.captions.style} onChange={(e) => updateProject({ captions: { ...project.captions, style: e.target.value } })} aria-label={tr("Untertitel-Stil")}>
@@ -426,7 +448,7 @@ export default function Editor() {
           )}
           {tab === 'voice' && (
             <div className="space-y-5">
-              <VoicePicker language={project.language} voiceId={project.voiceId} onChange={(p) => updateProject({ ...p, scenes: scenes.map((x) => ({ ...x, audioUrl: null, audioDuration: null })) })} />
+              <VoicePicker language={project.language} voiceId={project.voiceId} onChange={(p) => { updateProject({ ...p, scenes: scenes.map((x) => ({ ...x, audioUrl: null, audioDuration: null })) }); setVoicePending(true); }} />
               <div className="flex flex-wrap items-center gap-3">
                 <button className="btn-primary" onClick={genVoice} disabled={!!busy}>{busy === 'voice' ? <Spinner /> : <Mic className="h-4 w-4" />}{tr("KI-Voiceover erzeugen")}</button>
                 <span className="text-xs muted">{tr('Anbieter')}: {health?.providers?.tts || 'offline'}</span>

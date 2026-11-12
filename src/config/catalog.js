@@ -32,7 +32,7 @@ export const LANGUAGES = [
 export const VOICES = [
   { id: 'calm-m', label: 'Ruhig (m)', pitch: 0.95, rate: 1.0, gender: 'male', providerVoice: { elevenlabs: 'pNInz6obpgDQGcFmaJgB', openai: 'onyx' } },
   { id: 'clear-m', label: 'Klar (m)', pitch: 1.0, rate: 1.0, gender: 'male', providerVoice: { elevenlabs: 'pNInz6obpgDQGcFmaJgB', openai: 'ash' } },
-  { id: 'story-m', label: 'Erzähler (m)', pitch: 0.85, rate: 0.95, gender: 'male', providerVoice: { elevenlabs: 'VR6AewLTigWG4xSOukaG', openai: 'verse' } },
+  { id: 'story-m', label: 'Erzähler (m)', pitch: 0.85, rate: 0.95, gender: 'male', providerVoice: { elevenlabs: 'VR6AewLTigWG4xSOukaG', openai: 'echo' } },
   { id: 'warm-f', label: 'Warm (w)', pitch: 1.05, rate: 1.0, gender: 'female', providerVoice: { elevenlabs: 'EXAVITQu4vr4xnSDxMaL', openai: 'coral' } },
   { id: 'soft-f', label: 'Sanft (w)', pitch: 1.0, rate: 0.97, gender: 'female', providerVoice: { elevenlabs: 'EXAVITQu4vr4xnSDxMaL', openai: 'sage' } },
   { id: 'energy-f', label: 'Energisch (w)', pitch: 1.15, rate: 1.1, gender: 'female', providerVoice: { elevenlabs: 'MF3mGyEYCl7XYWbV9V6O', openai: 'nova' } },
