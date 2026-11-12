@@ -5,3 +5,4 @@ dist
 server/.renders
 *.log
 .DS_Store
+samples/
