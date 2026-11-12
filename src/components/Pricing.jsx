@@ -5,6 +5,7 @@ import { PLANS, priceFor, costPerVideo, formatUSD, YEARLY_DISCOUNT } from '../co
 import { useI18n } from '../i18n/index.jsx';
 import { useAuth } from '../context/AuthContext.jsx';
 import { startCheckout } from '../lib/billing.js';
+import { api } from '../lib/api.js';
 import { StripeBadge, Spinner, Notice } from './ui.jsx';
 import { translate as tr } from '../i18n/index.jsx';
 
@@ -177,8 +178,49 @@ export function PricingSection({ showCalculator = true, currentPlan }) {
           <a href="/registrieren" className="btn-outline">{t('pricing.freeCta')}</a>
         </div>
       </div>
+      <CinematicInterest />
       {showCalculator && <div className="mt-14"><CostTable interval={interval} /></div>}
       {showCalculator && <div className="mt-10"><CostCalculator interval={interval} /></div>}
+    </div>
+  );
+}
+
+// Interesse am geplanten Cinematic-Plan (echte KI-Videoclips) erfassen – testet die Nachfrage, bevor er gebaut wird
+function CinematicInterest() {
+  const { user } = useAuth();
+  const { lang } = useI18n();
+  const [email, setEmail] = useState('');
+  const [state, setState] = useState('idle'); // idle | busy | done | error
+  const [error, setError] = useState('');
+  const submit = async (e) => {
+    e?.preventDefault();
+    setState('busy'); setError('');
+    try {
+      await api('/waitlist', { method: 'POST', body: { feature: 'cinematic', email: user?.email || email, lang } });
+      setState('done');
+    } catch (err) { setError(err.message); setState('error'); }
+  };
+  return (
+    <div className="mt-6 rounded-2xl border border-navy-100 bg-navy-50 p-6 dark:border-navy-700 dark:bg-navy-900 sm:flex sm:items-center sm:justify-between sm:gap-6">
+      <div className="max-w-xl">
+        <p className="flex items-center gap-2 font-semibold"><Sparkles className="h-4 w-4 text-accent-700 dark:text-accent-400" />{tr('Cinematic-Plan – bald verfügbar')}</p>
+        <p className="mt-1 text-sm muted">{tr('Jede Szene als echter KI-Videoclip statt Standbild – für noch mehr Wirkung. Etwa 15–20 Videos pro Monat. Interesse? Wir informieren dich, sobald es ihn gibt.')}</p>
+      </div>
+      <div className="mt-4 shrink-0 sm:mt-0">
+        {state === 'done' ? (
+          <p className="flex items-center gap-2 text-sm font-semibold text-accent-700 dark:text-accent-400"><Check className="h-4 w-4" />{tr('Danke! Du bist auf der Liste.')}</p>
+        ) : user ? (
+          <button className="btn-dark" onClick={submit} disabled={state === 'busy'}>{state === 'busy' && <Spinner />}{tr('Interesse anmelden')}</button>
+        ) : (
+          <form onSubmit={submit} className="flex flex-col gap-2 sm:flex-row">
+            <label className="sr-only" htmlFor="cine-mail">{tr('E-Mail')}</label>
+            <input id="cine-mail" type="email" required autoComplete="email" placeholder={tr('Deine E-Mail')} className="input sm:w-56" value={email} onChange={(e) => setEmail(e.target.value)} />
+            <button className="btn-dark" disabled={state === 'busy'}>{state === 'busy' && <Spinner />}{tr('Interesse anmelden')}</button>
+          </form>
+        )}
+        {error && <p className="mt-2 text-xs text-red-600 dark:text-red-400">{error}</p>}
+        {state !== 'done' && <p className="mt-2 text-xs muted">{tr('Nur eine E-Mail zum Start, kein Newsletter.')}</p>}
+      </div>
     </div>
   );
 }

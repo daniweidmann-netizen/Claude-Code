@@ -26,6 +26,8 @@ const EXACT = {
   'Unbekannte Plattform': 'Unknown platform',
   'Unbekannter Plan': 'Unknown plan',
   'Kein Zugriff': 'No access',
+  'Bitte gib eine gültige E-Mail-Adresse ein.': 'Please enter a valid email address.',
+  'Zu viele Versuche. Bitte später erneut.': 'Too many attempts. Please try again later.',
   'Du hast bereits ein aktives Abo. Planwechsel bitte über „Zahlungsdaten & Rechnungen“.': 'You already have an active subscription. Please change plans via “Payment details & invoices”.',
   'Meta-Token fehlgeschlagen': 'Meta token request failed',
   'TikTok-Token fehlgeschlagen': 'TikTok token request failed',

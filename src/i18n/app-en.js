@@ -1,5 +1,13 @@
 // English versions of the app texts. Key = German original (see tr() in index.jsx).
 export default {
+  "Cinematic-Plan – bald verfügbar": "Cinematic plan – coming soon",
+  "Jede Szene als echter KI-Videoclip statt Standbild – für noch mehr Wirkung. Etwa 15–20 Videos pro Monat. Interesse? Wir informieren dich, sobald es ihn gibt.": "Every scene as a real AI video clip instead of a still image – for even more impact. Around 15–20 videos per month. Interested? We’ll let you know when it launches.",
+  "Danke! Du bist auf der Liste.": "Thanks! You’re on the list.",
+  "Interesse anmelden": "Count me in",
+  "Deine E-Mail": "Your email",
+  "Nur eine E-Mail zum Start, kein Newsletter.": "One email at launch, no newsletter.",
+  "Interesse Cinematic-Plan": "Cinematic plan interest",
+  "Einträge insgesamt": "sign-ups in total",
   "Klar (m)": "Clear (m)",
   "Sanft (w)": "Soft (f)",
   "Video herunterladen (MP4)": "Download video (MP4)",

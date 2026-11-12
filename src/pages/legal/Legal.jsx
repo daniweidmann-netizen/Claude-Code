@@ -52,6 +52,7 @@ function DatenschutzDe() {
         <li><strong>Inhalte:</strong> Serien, Skripte, Einstellungen, erzeugte Bilder, Audios und Videos.</li>
         <li><strong>Zahlungen:</strong> über Stripe. Wir erhalten keine vollständigen Kartendaten, nur Status, Plan und Rechnungsdaten.</li>
         <li><strong>Social-Verbindungen:</strong> Zugriffstokens für TikTok, Instagram/Meta und YouTube/Google – ausschliesslich zum Posten in deinem Auftrag.</li>
+        <li><strong>Interessentenliste:</strong> Wenn du dich für eine geplante Funktion (z. B. den Cinematic-Plan) einträgst, speichern wir deine E-Mail-Adresse, um dich einmalig über den Start zu informieren. Austragen jederzeit per E-Mail an uns.</li>
         <li><strong>Technische Daten:</strong> IP-Adresse, Zeitpunkte, Browsertyp (Server-Logs, max. 30 Tage).</li>
       </ul>
       <h2>3. Zwecke und Rechtsgrundlagen</h2>
@@ -175,6 +176,7 @@ function DatenschutzEn() {
         <li><strong>Content:</strong> series, scripts, settings, generated images, audio and videos.</li>
         <li><strong>Payments:</strong> via Stripe. We never receive full card details – only status, plan and billing data.</li>
         <li><strong>Social connections:</strong> access tokens for TikTok, Instagram/Meta and YouTube/Google – used only to post on your behalf.</li>
+        <li><strong>Interest list:</strong> if you sign up for a planned feature (e.g. the Cinematic plan), we store your email address to inform you once about its launch. You can be removed at any time by emailing us.</li>
         <li><strong>Technical data:</strong> IP address, timestamps, browser type (server logs, max. 30 days).</li>
       </ul>
       <h2>3. Purposes and legal bases</h2>

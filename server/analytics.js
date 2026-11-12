@@ -10,7 +10,7 @@ const router = express.Router();
 const SECRET = process.env.ANALYTICS_SECRET || process.env.SUPABASE_SERVICE_ROLE_KEY || crypto.randomBytes(32).toString('hex');
 const OWN_HOSTS = /(^|\.)truereel\.ch$|onrender\.com$|^localhost$/;
 const BOTS = /bot|crawl|spider|slurp|facebookexternalhit|preview|headless|lighthouse|pingdom|uptime|monitor|curl|wget|python|node-fetch|axios/i;
-const TYPES = new Set(['pageview', 'signup', 'checkout']);
+const TYPES = new Set(['pageview', 'signup', 'checkout', 'waitlist']);
 
 const today = () => new Date().toISOString().slice(0, 10);
 const clip = (v, n = 120) => (v == null ? null : String(v).slice(0, n));
@@ -64,6 +64,27 @@ router.post('/track', express.json({ limit: '4kb' }), async (req, res) => {
   }).then(() => {}, () => {});
 });
 
+// Interessentenliste (z. B. Cinematic-Plan). E-Mail wird nur für die Info zum Start genutzt.
+const EMAIL = /^[^\s@]{1,64}@[^\s@]{1,190}\.[a-z]{2,24}$/i;
+const recent = new Map(); // einfache Bremse gegen Spam: max. 5 Einträge pro Besucher und Tag
+router.post('/waitlist', express.json({ limit: '2kb' }), async (req, res) => {
+  if (!admin) return res.json({ ok: true, demo: true });
+  const email = String(req.body?.email || '').trim().toLowerCase();
+  if (!EMAIL.test(email)) return res.status(400).json({ error: 'Bitte gib eine gültige E-Mail-Adresse ein.' });
+  const v = visitorHash(req);
+  const n = (recent.get(v) || 0) + 1;
+  recent.set(v, n);
+  if (recent.size > 5000) recent.clear();
+  if (n > 5) return res.status(429).json({ error: 'Zu viele Versuche. Bitte später erneut.' });
+  let userId = null;
+  const token = (req.headers.authorization || '').replace(/^Bearer /, '');
+  if (token) userId = (await admin.auth.getUser(token)).data?.user?.id || null;
+  const feature = ['cinematic'].includes(req.body?.feature) ? req.body.feature : 'cinematic';
+  await admin.from('waitlist').upsert({ feature, email, user_id: userId, lang: clip(req.body?.lang, 5) }, { onConflict: 'feature,email', ignoreDuplicates: true });
+  await recordEvent('waitlist', { req, path: `/waitlist/${feature}` });
+  res.json({ ok: true });
+});
+
 // Auswertung – nur für Admins (profiles.is_admin)
 router.get('/stats', authenticate, async (req, res) => {
   if (!admin) return res.json({ demo: true });
@@ -96,6 +117,7 @@ router.get('/stats', authenticate, async (req, res) => {
   const signups = rows.filter((r) => r.type === 'signup').length;
   const purchases = rows.filter((r) => r.type === 'purchase');
   const visitors = visitorsOf(views);
+  const { count: waitlist } = await admin.from('waitlist').select('id', { count: 'exact', head: true });
   res.json({
     days,
     totals: {
@@ -104,6 +126,7 @@ router.get('/stats', authenticate, async (req, res) => {
       purchases: purchases.length,
       revenue: purchases.reduce((s, r) => s + Number(r.value || 0), 0),
       signupRate: visitors ? signups / visitors : 0,
+      waitlist: waitlist || 0,
     },
     daily: Object.entries(byDay).map(([date, d]) => ({ date, views: d.views, visitors: d.visitors.size, signups: d.signups, purchases: d.purchases })),
     pages: count(views, 'path'),

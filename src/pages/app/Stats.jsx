@@ -98,11 +98,12 @@ export default function Stats() {
       {data?.demo && <Notice>{tr('Im Demo-Modus gibt es keine Statistik.')}</Notice>}
       {data?.totals && (
         <div className="space-y-5">
-          <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
+          <div className="grid grid-cols-2 gap-4 lg:grid-cols-5">
             <Tile label={tr('Besucher')} value={fmt(data.totals.visitors)} hint={`${fmt(data.totals.pageviews)} ${tr('Seitenaufrufe')}`} />
             <Tile label={tr('Registrierungen')} value={fmt(data.totals.signups)} hint={`${fmt(data.totals.signupRate * 100, 1)} % ${tr('der Besucher')}`} />
             <Tile label={tr('Checkout gestartet')} value={fmt(data.totals.checkouts)} />
             <Tile label={tr('Käufe')} value={fmt(data.totals.purchases)} hint={`$${fmt(data.totals.revenue, 2)} ${tr('Umsatz')}`} />
+            <Tile label={tr('Interesse Cinematic-Plan')} value={fmt(data.totals.waitlist)} hint={tr('Einträge insgesamt')} />
           </div>
           <DailyChart daily={data.daily} />
           <div className="grid gap-5 lg:grid-cols-3">
