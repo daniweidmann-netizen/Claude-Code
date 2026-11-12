@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
-import { Plus, Trash2, Film, Save, Wand2, Lightbulb } from 'lucide-react';
+import { Plus, Trash2, Film, Save, Wand2, Lightbulb, Download } from 'lucide-react';
+import { renderDownloadUrl } from '../../lib/store.js';
 import IdeaDialog from '../../components/IdeaDialog.jsx';
 import { useAuth } from '../../context/AuthContext.jsx';
 import { useAppData } from '../../lib/useAppData.js';
@@ -124,10 +125,11 @@ export function SeriesDetail() {
             {!videos.length && <p className="p-4 text-sm muted">{tr("Noch keine Videos.")}</p>}
             <ul className="divide-y divide-navy-100 dark:divide-navy-800">
               {videos.map((v) => (
-                <li key={v.id}><Link to={`/app/video/${v.id}`} className="flex items-center justify-between gap-3 p-4 hover:bg-navy-50 dark:hover:bg-navy-800/40">
+                <li key={v.id} className="flex items-center gap-1 pr-2 hover:bg-navy-50 dark:hover:bg-navy-800/40"><Link to={`/app/video/${v.id}`} className="flex min-w-0 flex-1 items-center justify-between gap-3 p-4">
                   <span className="flex min-w-0 items-center gap-2"><Film className="h-4 w-4 shrink-0 muted" /><span className="truncate text-sm font-medium">{v.title}</span></span>
                   <span className="flex shrink-0 items-center gap-2 text-xs muted">{v.scheduled_at && fmtDateTime(v.scheduled_at)}<StatusBadge status={v.status} /></span>
-                </Link></li>
+                </Link>
+                {v.video_path && <DownloadButton video={v} />}</li>
               ))}
             </ul>
           </div>
@@ -150,5 +152,25 @@ export function SeriesDetail() {
         </aside>
       </div>
     </>
+  );
+}
+
+function DownloadButton({ video }) {
+  const [busy, setBusy] = useState(false);
+  const go = async () => {
+    setBusy(true);
+    try {
+      const name = `${(video.title || 'truereel').replace(/[^\w\-äöüÄÖÜ ]+/g, '').trim() || 'truereel'}.mp4`;
+      const url = await renderDownloadUrl(video.video_path, name);
+      const a = document.createElement('a');
+      a.href = url; a.download = name; a.rel = 'noopener';
+      document.body.appendChild(a); a.click(); a.remove();
+    } catch (e) { alert(`${tr('Download fehlgeschlagen:')} ${e.message}`); }
+    setBusy(false);
+  };
+  return (
+    <button type="button" className="btn-icon h-10 w-10 shrink-0" onClick={go} disabled={busy} aria-label={tr('Video herunterladen (MP4)')} title={tr('Video herunterladen (MP4)')}>
+      {busy ? <Spinner /> : <Download className="h-5 w-5" />}
+    </button>
   );
 }

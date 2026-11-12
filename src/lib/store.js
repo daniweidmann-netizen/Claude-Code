@@ -66,7 +66,7 @@ export async function deleteSeries(id) {
 // ── Videos ─────────────────────────────────────────────
 // status: draft | ready (gerendert) | pending_approval | scheduled | posted | failed
 // Listen laden ohne das (grosse) Projekt-JSON – das braucht nur der Editor (getVideo).
-const VIDEO_LIST_COLUMNS = 'id,user_id,series_id,title,episode_key,status,platforms,scheduled_at,posted_at,created_at,updated_at';
+const VIDEO_LIST_COLUMNS = 'id,user_id,series_id,title,episode_key,status,platforms,scheduled_at,posted_at,created_at,updated_at,video_path';
 
 export async function listVideos(userId, seriesId, { full = false } = {}) {
   if (DEMO_MODE) return read(LS.videos).filter((v) => v.user_id === userId && (!seriesId || v.series_id === seriesId));
@@ -111,6 +111,14 @@ export async function uploadMedia(userId, dataUrl, kind = 'images') {
   const { error } = await supabase.storage.from('media').upload(path, blob, { contentType: blob.type, cacheControl: '31536000' });
   if (error) { console.warn('Upload fehlgeschlagen, nutze Data-URL', error.message); return dataUrl; }
   return supabase.storage.from('media').getPublicUrl(path).data.publicUrl;
+}
+
+// Gespeichertes MP4 herunterladen: zeitlich begrenzter Link (10 Min.) auf die private Datei
+export async function renderDownloadUrl(path, filename) {
+  if (DEMO_MODE || !path) return null;
+  const { data, error } = await supabase.storage.from('renders').createSignedUrl(path, 600, { download: filename || true });
+  if (error) throw new Error(error.message);
+  return data.signedUrl;
 }
 
 // Exportiertes MP4 für das Auto-Posting im privaten Bucket "renders" ablegen

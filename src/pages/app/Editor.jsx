@@ -3,10 +3,10 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import {
   ArrowDown, ArrowUp, GripVertical, ImagePlus, Mic, Plus, RefreshCw, Trash2, CalendarCheck, CheckCircle2,
-  Upload, Undo2, ArrowLeft, PenSquare, Film, Eye, Play, Captions, Music, Info, Send, Layers, ChevronDown,
+  Upload, Download, Undo2, ArrowLeft, PenSquare, Film, Eye, Play, Captions, Music, Info, Send, Layers, ChevronDown,
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext.jsx';
-import { getVideo, getSeries, saveVideo, deleteVideo, listVideos, uid, uploadMedia, uploadRender } from '../../lib/store.js';
+import { getVideo, getSeries, saveVideo, deleteVideo, listVideos, uid, uploadMedia, uploadRender, renderDownloadUrl } from '../../lib/store.js';
 import { VOICES, CAPTION_FONTS, CAPTION_STYLES, MUSIC_TRACKS, MONETIZATION_MIN_SECONDS } from '../../config/catalog.js';
 import { getPlan } from '../../config/plans.js';
 import Player from '../../video/Player.jsx';
@@ -139,6 +139,18 @@ export default function Editor() {
   };
 
   const addScene = () => updateProject({ scenes: [...scenes.slice(0, -1), { id: uid(), role: 'story', text: tr("Neuer Text …"), visual: '', seed: newSeed(), imageUrl: null, audioUrl: null, voiceId: null }, scenes.at(-1)] });
+
+  const downloadSaved = async () => {
+    setBusy('download'); setMsg(null);
+    try {
+      const name = `${(video.title || 'truereel').replace(/[^\w\-äöüÄÖÜ ]+/g, '').trim() || 'truereel'}.mp4`;
+      const url = await renderDownloadUrl(video.video_path, name);
+      const a = document.createElement('a');
+      a.href = url; a.download = name; a.rel = 'noopener';
+      document.body.appendChild(a); a.click(); a.remove();
+    } catch (e) { setMsg({ tone: 'error', text: `${tr('Download fehlgeschlagen:')} ${e.message}` }); }
+    setBusy(null);
+  };
 
   const exportVideo = async () => {
     setBusy('export'); setProgress(0); setMsg(null);
@@ -346,6 +358,11 @@ export default function Editor() {
                 </select>
               </label>
               <button className="btn-primary w-full py-3.5 text-base" onClick={exportVideo} disabled={!!busy}>{['export', 'transcode', 'voice'].includes(busy) ? <Spinner /> : <Upload className="h-5 w-5" />}{tr("Exportieren 1080p")}</button>
+              {video.video_path && (
+                <button className="btn-outline w-full py-3 text-base" onClick={downloadSaved} disabled={!!busy}>
+                  {busy === 'download' ? <Spinner /> : <Download className="h-5 w-5" />}{tr('Video herunterladen (MP4)')}
+                </button>
+              )}
               {busy === 'voice' && <p className="flex items-center gap-2 text-sm"><Spinner />{tr("Voiceover wird erzeugt …")}</p>}
               {(busy === 'export' || busy === 'transcode') && (
                 <div>
