@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
 import { Play, Square, Check } from 'lucide-react';
-import { ART_STYLES, VOICES, LANGUAGES, CAPTION_STYLES, MUSIC_TRACKS, PLATFORMS, POST_FREQUENCIES } from '../config/catalog.js';
+import { VOICE_SAMPLE_VERSION, ART_STYLES, VOICES, LANGUAGES, CAPTION_STYLES, MUSIC_TRACKS, PLATFORMS, POST_FREQUENCIES } from '../config/catalog.js';
 import { renderArt } from '../video/art.js';
-import { speak, stopSpeaking } from '../video/tts.js';
+import { stopSpeaking } from '../video/tts.js';
 import { previewMusic, stopMusicPreview, unlockAudio } from '../video/audio.js';
 import { translate as tr } from '../i18n/index.jsx';
 
@@ -30,17 +30,10 @@ export function ArtStylePicker({ value, onChange, motif }) {
   );
 }
 
-const SAMPLE = {
-  de: "Wusstest du, dass Kleopatra näher an der Mondlandung lebte als am Bau der Pyramiden?",
-  'de-CH': "Wusstest du, dass Kleopatra näher an der Mondlandung lebte als am Bau der Pyramiden?",
-  en: "Did you know Cleopatra lived closer to the Moon landing than to the building of the pyramids?",
-  fr: "Savais-tu que Cléopâtre a vécu plus près de l’alunissage que de la construction des pyramides ?",
-  it: "Sapevi che Cleopatra visse più vicino allo sbarco sulla Luna che alla costruzione delle piramidi?",
-  es: "¿Sabías que Cleopatra vivió más cerca de la llegada a la Luna que de la construcción de las pirámides?",
-};
 
 export function VoicePicker({ language, voiceId, onChange }) {
   const [playing, setPlaying] = useState(null);
+  const [failed, setFailed] = useState(false);
   const audioRef = useRef(null);
   const stopAll = () => { stopSpeaking(); if (audioRef.current) { audioRef.current.pause(); audioRef.current = null; } };
   useEffect(() => stopAll, []);
@@ -50,14 +43,12 @@ export function VoicePicker({ language, voiceId, onChange }) {
     if (playing === id) return setPlaying(null);
     setPlaying(id);
     const lang = LANGUAGES.some((l) => l.id === language) ? language : 'de';
-    const a = new Audio(`/voices/${id}-${lang}.mp3`);
+    const a = new Audio(`/voices/${id}-${lang}.mp3?v=${VOICE_SAMPLE_VERSION}`);
     audioRef.current = a;
+    setFailed(false);
     a.onended = () => setPlaying(null);
-    a.play().catch(() => {
-      // Rückfall: Gerätestimme, falls die Datei nicht lädt
-      unlockAudio();
-      speak(SAMPLE[language] || SAMPLE.de, { lang: language, voiceId: id, onEnd: () => setPlaying(null) });
-    });
+    // Kein Rückfall auf die Gerätestimme – die klingt anders als im Video und verwirrt nur
+    a.play().catch(() => { setPlaying(null); setFailed(true); });
   };
   return (
     <div className="space-y-4">
@@ -78,6 +69,7 @@ export function VoicePicker({ language, voiceId, onChange }) {
         ))}
       </div>
       <p className="text-xs muted">{tr("Hörprobe mit der echten KI-Stimme – so klingt sie auch im fertigen Video.")}</p>
+      {failed && <p className="text-xs text-amber-700 dark:text-amber-300">{tr("Die Hörprobe konnte nicht abgespielt werden. Prüfe, ob dein Handy auf lautlos steht, und tippe nochmals.")}</p>}
     </div>
   );
 }

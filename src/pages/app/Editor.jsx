@@ -7,7 +7,7 @@ import {
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext.jsx';
 import { getVideo, getSeries, saveVideo, deleteVideo, listVideos, uid, uploadMedia, uploadRender, renderDownloadUrl } from '../../lib/store.js';
-import { VOICES, CAPTION_FONTS, CAPTION_STYLES, MUSIC_TRACKS, MONETIZATION_MIN_SECONDS } from '../../config/catalog.js';
+import { VOICE_SAMPLE_VERSION, VOICES, CAPTION_FONTS, CAPTION_STYLES, MUSIC_TRACKS, MONETIZATION_MIN_SECONDS } from '../../config/catalog.js';
 import { getPlan } from '../../config/plans.js';
 import Player from '../../video/Player.jsx';
 import { newSeed, timeline, scriptToProject } from '../../video/project.js';
@@ -142,7 +142,7 @@ export default function Editor() {
     if (previewRef.current) { previewRef.current.pause(); previewRef.current = null; return; }
     const scene = sel || scenes[0];
     const lang = ['de', 'de-CH', 'en', 'fr', 'it', 'es'].includes(project.language) ? project.language : 'de';
-    const src = scene?.audioUrl || `/voices/${scene?.voiceId || project.voiceId}-${lang}.mp3`;
+    const src = scene?.audioUrl || `/voices/${scene?.voiceId || project.voiceId}-${lang}.mp3?v=${VOICE_SAMPLE_VERSION}`;
     const a = new Audio(src);
     previewRef.current = a;
     a.onended = () => { previewRef.current = null; };

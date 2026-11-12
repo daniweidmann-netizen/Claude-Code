@@ -208,7 +208,8 @@ if (fs.existsSync(dist)) {
   const html = fs.readFileSync(path.join(dist, 'index.html'), 'utf8')
     .replace('<head>', `<head><script>window.__TRUEREEL_CONFIG__=${publicConfig}</script>`)
     .replace('content="/og-image.png"', `content="${config.appUrl}/og-image.png"`); // Social-Vorschau braucht absolute URL
-  const sendIndex = (req, res) => res.type('html').send(renderHtml(html, req.path, config.appUrl));
+  // HTML nie zwischenspeichern → nach einem Update lädt jeder sofort die neue App-Version
+  const sendIndex = (req, res) => res.set('Cache-Control', 'no-cache').type('html').send(renderHtml(html, req.path, config.appUrl));
   app.get('/sitemap.xml', (_req, res) => res.type('application/xml').send(sitemap(config.appUrl)));
   app.get('/robots.txt', (_req, res) => res.type('text/plain').send(robots(config.appUrl)));
   app.get('/', sendIndex);

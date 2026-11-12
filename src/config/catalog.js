@@ -19,6 +19,9 @@ export const ART_STYLES = [
   { id: 'stock', label: 'Stock-Footage' },
 ];
 
+// Version der Hörproben in /public/voices (bei neuen Aufnahmen erhöhen → kein alter Cache)
+export const VOICE_SAMPLE_VERSION = 3;
+
 export const LANGUAGES = [
   { id: 'de', label: 'Deutsch', bcp47: 'de-DE' },
   { id: 'de-CH', label: 'Deutsch (Schweiz)', bcp47: 'de-CH' },

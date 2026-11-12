@@ -1,5 +1,6 @@
 // English versions of the app texts. Key = German original (see tr() in index.jsx).
 export default {
+  "Die Hörprobe konnte nicht abgespielt werden. Prüfe, ob dein Handy auf lautlos steht, und tippe nochmals.": "The sample could not be played. Check that your phone is not on silent and tap again.",
   "Hörprobe mit der echten KI-Stimme – so klingt sie auch im fertigen Video.": "Sample of the real AI voice \u2013 this is how it sounds in the finished video.",
   "Figuren-Geschichten": "Character stories",
   "Eine erfundene Hauptfigur erlebt in jeder Folge ein neues Abenteuer – immer mit demselben Gesicht.": "An invented main character goes through a new adventure in every episode – always with the same face.",
