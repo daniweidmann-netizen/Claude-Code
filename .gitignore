@@ -1,0 +1,27 @@
+# dependencies & build
+node_modules/
+.next/
+out/
+dist/
+coverage/
+*.tsbuildinfo
+next-env.d.ts
+
+# env — only .env.example is committed
+.env
+.env*.local
+.env.production
+.env.development
+
+# raw Higgsfield masters & large source files (keep in cloud storage)
+higgsfield/
+*.mov
+*.prores
+*.blend1
+
+# OS / editor
+.DS_Store
+.vercel
+.idea/
+.vscode/*
+!.vscode/extensions.json
