@@ -6,7 +6,7 @@ import { config } from '../../config.js';
 
 // Etwas zügigeres Sprechtempo wirkt in Kurzvideos lebendiger. Das Modell ignoriert
 // Tempo-Vorgaben, darum wird das fertige Audio mit FFmpeg (atempo, Tonhöhe bleibt) beschleunigt.
-const TEMPO = Number(process.env.VOICE_TEMPO || 1.08);
+const TEMPO = Number(process.env.VOICE_TEMPO || 1.12);
 
 function speedUp(buf) {
   if (!(TEMPO > 0.5 && TEMPO < 2) || TEMPO === 1) return Promise.resolve(buf);
