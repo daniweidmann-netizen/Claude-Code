@@ -1,5 +1,7 @@
 // English versions of the app texts. Key = German original (see tr() in index.jsx).
 export default {
+  "Klar (m)": "Clear (m)",
+  "Sanft (w)": "Soft (f)",
   "Video herunterladen (MP4)": "Download video (MP4)",
   "Download fehlgeschlagen:": "Download failed:",
   "Inhaber-Konto: unbegrenzt": "Owner account: unlimited",

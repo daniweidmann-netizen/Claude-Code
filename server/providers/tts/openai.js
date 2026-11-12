@@ -13,9 +13,11 @@ const LANG_HINT = {
 
 // Stil-Anweisungen auf Englisch (sprachneutral) – die Sprache selbst steuert LANG_HINT
 const STYLE = {
-  'calm-m': 'Calm, warm narrator like a good documentary. Natural pauses, never rushed.',
+  'calm-m': 'Calm, warm male narrator like a good documentary. Natural pauses, never rushed.',
+  'clear-m': 'Clear, confident male narrator. Friendly and direct, like a popular explainer channel.',
+  'story-m': 'Gripping storyteller, slightly mysterious, building suspense and emphasizing key words.',
   'warm-f': 'Warm, friendly female narrator. Lively but not exaggerated.',
-  'story-m': 'Gripping storyteller, slightly mysterious, emphasizing key words.',
+  'soft-f': 'Soft, calm female narrator. Relaxed, trustworthy and pleasant to listen to.',
   'energy-f': 'Energetic and motivating like a social media creator, but easy to understand.',
 };
 
@@ -30,7 +32,7 @@ export default {
         model: process.env.OPENAI_TTS_MODEL || 'gpt-4o-mini-tts',
         voice: preset.providerVoice.openai,
         input: text,
-        instructions: `${LANG_HINT[language] || LANG_HINT.de} ${STYLE[preset.id] || ''} This is the voiceover for a short vertical social media video. Use the pronunciation of a native speaker of that language.`,
+        instructions: `${LANG_HINT[language] || LANG_HINT.de} ${STYLE[preset.id] || ''} This is the voiceover for a short vertical social media video. Sound like a native speaker of that language with a natural rhythm: short pauses after each sentence, light emphasis on the key words, varied intonation. Never sound robotic, monotone or overly dramatic.`,
         response_format: 'mp3',
       }),
     });
