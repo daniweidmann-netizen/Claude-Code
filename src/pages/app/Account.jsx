@@ -139,7 +139,7 @@ export default function Account() {
     } catch (e) { setMsg({ tone: 'error', text: e.message }); }
   };
 
-  const hasSub = plan.id !== 'free';
+  const hasSub = plan.id !== 'free' && !profile?.owner;
   const price = hasSub ? priceFor(plan, profile?.billing_interval || 'monthly') : null;
 
   return (
@@ -152,8 +152,8 @@ export default function Account() {
           <div className="flex items-start justify-between gap-4">
             <div>
               <p className="text-sm muted">{tr("Aktueller Plan")}</p>
-              <p className="mt-1 text-2xl font-bold">{plan.name}</p>
-              {hasSub ? (
+              <p className="mt-1 text-2xl font-bold">{profile?.owner ? tr('Inhaber') : plan.name}</p>
+              {profile?.owner ? <p className="mt-1 text-sm muted">{tr('Alle Pro-Funktionen, unbegrenzte Videos, kein Wasserzeichen – gratis.')}</p> : hasSub ? (
                 <p className="mt-1 text-sm muted">
                   {formatUSD(price.perMonth)} {tr('/ Monat')}{profile.billing_interval === 'yearly' ? ` · ${tr('jährlich')} ${formatUSD(price.billed)}` : ''}
                   {profile.current_period_end && <> · {profile.cancel_at_period_end ? tr("endet am") : tr("verlängert sich am")} {new Date(profile.current_period_end).toLocaleDateString(getLocale())}</>}

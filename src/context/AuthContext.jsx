@@ -40,7 +40,9 @@ export function AuthProvider({ children }) {
     }
     const { data, error } = await supabase.from('profiles').select('*').eq('id', u.id).maybeSingle();
     if (error) console.error(error);
-    const p = data || defaultProfile(u);
+    let p = data || defaultProfile(u);
+    // Inhaber-Konto (profiles.is_admin): alle Pro-Funktionen, unbegrenzt, ohne Abo
+    if (p.is_admin) p = { ...p, plan: 'pro', owner: true };
     setProfile(p);
     return p;
   }, []);

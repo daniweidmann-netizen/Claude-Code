@@ -137,7 +137,7 @@ export default function Dashboard() {
       )}
 
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-        <Stat icon={Play} label={tr("Videos diesen Monat")} value={usage.used} sub={tr('von {n}', { n: usage.limit })} />
+        <Stat icon={Play} label={tr("Videos diesen Monat")} value={usage.used} sub={usage.owner ? tr('unbegrenzt') : tr('von {n}', { n: usage.limit })} />
         <Stat icon={CalendarDays} label={tr("Geplante Posts")} value={upcoming.length} sub={upcoming[0] ? tr('nächster {d}', { d: fmtDateTime(upcoming[0].scheduled_at) }) : null} />
         <Stat icon={Layers} label={tr("Aktive Serien")} value={activeSeries.length} />
         <Stat icon={Eye} label={tr("Ansichten")} value="–" sub={tr("nach dem ersten Post")} />

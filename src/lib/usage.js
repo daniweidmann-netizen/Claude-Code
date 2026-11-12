@@ -16,6 +16,11 @@ export function periodStart(profile) {
 
 export function computeUsage(profile, videos) {
   const plan = getPlan(profile?.plan);
+  if (profile?.owner) {
+    const start = new Date(new Date().getFullYear(), new Date().getMonth(), 1);
+    const used = videos.filter((v) => new Date(v.created_at) >= start).length;
+    return { plan, used, limit: Infinity, remaining: Infinity, label: 'diesen Monat', owner: true };
+  }
   if (plan.id === FREE_PLAN.id) {
     const used = Math.max(profile?.free_videos_used || 0, videos.length);
     return { plan, used, limit: 1, remaining: Math.max(0, 1 - used), label: 'Gratis-Test' };
@@ -26,5 +31,6 @@ export function computeUsage(profile, videos) {
 }
 
 export function seriesLimitReached(profile, seriesCount) {
+  if (profile?.owner) return false;
   return seriesCount >= getPlan(profile?.plan).limits.series;
 }

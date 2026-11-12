@@ -1,5 +1,9 @@
 // English versions of the app texts. Key = German original (see tr() in index.jsx).
 export default {
+  "Inhaber-Konto: unbegrenzt": "Owner account: unlimited",
+  "unbegrenzt": "unlimited",
+  "Inhaber": "Owner",
+  "Alle Pro-Funktionen, unbegrenzte Videos, kein Wasserzeichen – gratis.": "All Pro features, unlimited videos, no watermark – free.",
   "bald verfügbar": "coming soon",
   "Bald verfügbar": "Coming soon",
   "Bis dahin: Video exportieren und in der App selbst hochladen.": "Until then: export the video and upload it in the app yourself.",

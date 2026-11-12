@@ -58,6 +58,7 @@ app.get('/api/health', (_req, res) => {
 async function checkQuota(req, res, next) {
   if (!admin) return next();
   const profile = await getProfile(req.user.id);
+  if (profile?.is_admin) return next(); // Inhaber-Konto: unbegrenzt
   const plan = profile?.plan || 'free';
   const quota = PLAN_QUOTAS[plan];
   const since = plan === 'free' ? new Date(0) : new Date(new Date().getFullYear(), new Date().getMonth(), 1);

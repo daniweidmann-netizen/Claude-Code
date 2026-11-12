@@ -89,10 +89,11 @@ export default function AppLayout() {
         </nav>
         {usage && (
           <div className="mt-6 border-t border-navy-100 pt-6 dark:border-navy-800">
+            {usage.owner ? <p className="text-[15px] font-medium">{tr('Inhaber-Konto: unbegrenzt')}</p> : <>
             <p className="text-[15px] font-medium">{tr('{used} von {limit} Videos genutzt', { used: usage.used, limit: usage.limit })}</p>
             <div className="mt-3 h-3 overflow-hidden rounded-full bg-navy-100 dark:bg-navy-800" role="progressbar" aria-valuenow={usage.used} aria-valuemax={usage.limit}>
               <div className="h-full rounded-full bg-accent-500" style={{ width: `${Math.min(100, (usage.used / usage.limit) * 100)}%` }} />
-            </div>
+            </div></>}
             {usage.plan.id === 'free' && <Link to="/preise" className="mt-3 inline-block text-sm font-semibold text-accent-700 dark:text-accent-500">{tr("Plan wählen →")}</Link>}
           </div>
         )}
