@@ -14,6 +14,8 @@ import Calendar from './pages/app/Calendar.jsx';
 import Account from './pages/app/Account.jsx';
 import { Impressum, Datenschutz, AGB, Rueckerstattung } from './pages/legal/Legal.jsx';
 import { translate as tr } from './i18n/index.jsx';
+import { track } from './lib/analytics.js';
+import Stats from './pages/app/Stats.jsx';
 
 function ScrollManager() {
   const { pathname, hash } = useLocation();
@@ -24,6 +26,7 @@ function ScrollManager() {
     }
     window.scrollTo(0, 0);
   }, [pathname, hash]);
+  useEffect(() => { track('pageview', pathname); }, [pathname]);
   return null;
 }
 
@@ -63,6 +66,7 @@ export default function App() {
           <Route path="video/:id" element={<Editor />} />
           <Route path="kalender" element={<Calendar />} />
           <Route path="account" element={<Account />} />
+          <Route path="statistik" element={<Stats />} />
         </Route>
       </Routes>
     </>

@@ -2,6 +2,7 @@ import express from 'express';
 import Stripe from 'stripe';
 import { config, stripeEnabled, planFromPrice } from './config.js';
 import { admin, authenticate, getProfile } from './supabaseAdmin.js';
+import { recordEvent } from './analytics.js';
 
 export const stripe = stripeEnabled()
   ? new Stripe(config.stripeKey, process.env.NODE_USE_ENV_PROXY ? { httpClient: Stripe.createFetchHttpClient() } : {})
@@ -96,6 +97,7 @@ export async function webhookHandler(req, res) {
       case 'checkout.session.completed': {
         const s = event.data.object;
         if (s.subscription) await syncSubscription(await stripe.subscriptions.retrieve(s.subscription));
+        if (event.livemode) await recordEvent('purchase', { path: '/checkout', value: (s.amount_total || 0) / 100 });
         break;
       }
       case 'customer.subscription.created':

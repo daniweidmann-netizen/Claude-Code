@@ -1,7 +1,9 @@
 import { api } from './api.js';
+import { track } from './analytics.js';
 
 export async function startCheckout(plan, interval) {
   const r = await api('/stripe/checkout', { method: 'POST', body: { plan, interval } });
+  track('checkout', `/checkout/${plan}`);
   window.location.href = r.url;
 }
 

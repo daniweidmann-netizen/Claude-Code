@@ -60,6 +60,7 @@ function DatenschutzDe() {
         <li>Abrechnung und gesetzliche Aufbewahrungspflichten (Art. 6 Abs. 1 lit. c DSGVO).</li>
         <li>Sicherheit und Missbrauchsverhinderung (berechtigtes Interesse, Art. 6 Abs. 1 lit. f DSGVO).</li>
       </ul>
+      <p>Für eine anonyme Besucherstatistik zählen wir Seitenaufrufe ohne Cookies und ohne Drittanbieter: gespeichert werden die aufgerufene Seite, die Herkunftsseite (nur Domain), Gerätetyp und Sprache. Zur Unterscheidung von Besuchern wird aus IP-Adresse und Browserkennung ein Prüfwert gebildet, der sich täglich ändert; die IP-Adresse selbst speichern wir nicht. Die Daten werden nach 13 Monaten gelöscht (berechtigtes Interesse, Art. 6 Abs. 1 lit. f DSGVO). Wenn dein Browser „Do Not Track“ sendet, zählen wir dich nicht.</p>
       <p>Wir verwenden keine Tracking- oder Werbe-Cookies. Lokaler Browser-Speicher wird nur für Anmeldung, Sprache und Darstellung (hell/dunkel) genutzt. Die Schrift „Inter“ wird von unserem eigenen Server geladen, nicht von Google.</p>
       <h2>4. Auftragsverarbeiter und Empfänger</h2>
       <ul>
@@ -182,6 +183,7 @@ function DatenschutzEn() {
         <li>Billing and statutory retention obligations (Art. 6(1)(c) GDPR).</li>
         <li>Security and abuse prevention (legitimate interest, Art. 6(1)(f) GDPR).</li>
       </ul>
+      <p>For anonymous visitor statistics we count page views without cookies and without third parties: we store the page viewed, the referring site (domain only), device type and language. To tell visitors apart, a check value is derived from IP address and browser identifier that changes daily; we do not store the IP address itself. Data is deleted after 13 months (legitimate interest, Art. 6(1)(f) GDPR). If your browser sends “Do Not Track”, we don't count you.</p>
       <p>We don't use tracking or advertising cookies. Local browser storage is used only for sign-in, language and appearance (light/dark). The “Inter” font is served from our own server, not from Google.</p>
       <h2>4. Processors and recipients</h2>
       <ul>

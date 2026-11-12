@@ -1,3 +1,4 @@
+import { track } from '../lib/analytics.js';
 import { useState } from 'react';
 import { Link, Navigate, useNavigate, useSearchParams } from 'react-router-dom';
 import { useI18n } from '../i18n/index.jsx';
@@ -98,6 +99,7 @@ export function Register() {
     setBusy(true); setMsg(null);
     try {
       const r = await signUp(form);
+      track('signup', '/registrieren');
       if (r.needsConfirmation) setMsg({ tone: 'success', text: t('auth.checkMail') });
       else navigate(next);
     } catch (err) { setMsg({ tone: 'error', text: err.message }); }

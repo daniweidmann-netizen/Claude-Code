@@ -18,6 +18,7 @@ import socialRouter from './social/router.js';
 import { startScheduler } from './scheduler.js';
 import { publishVideo, publishDue } from './publish.js';
 import { PLAN_QUOTAS } from './quotas.js';
+import analyticsRouter from './analytics.js';
 
 const app = express();
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -27,6 +28,7 @@ app.post('/api/stripe/webhook', express.raw({ type: 'application/json' }), webho
 
 app.use(cors({ origin: config.appUrl }));
 app.use(express.json({ limit: '2mb' }));
+app.use('/api', analyticsRouter); // /api/track, /api/stats
 
 let hasFfmpeg = false;
 ffmpegAvailable().then((ok) => { hasFfmpeg = ok; });
