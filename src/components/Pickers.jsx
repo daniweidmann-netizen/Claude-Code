@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { Play, Square, Check } from 'lucide-react';
 import { ART_STYLES, VOICES, LANGUAGES, CAPTION_STYLES, MUSIC_TRACKS, PLATFORMS, POST_FREQUENCIES } from '../config/catalog.js';
 import { renderArt } from '../video/art.js';
-import { speak, stopSpeaking, browserTTSAvailable, hasHighQualityVoice } from '../video/tts.js';
+import { speak, stopSpeaking } from '../video/tts.js';
 import { previewMusic, stopMusicPreview, unlockAudio } from '../video/audio.js';
 import { translate as tr } from '../i18n/index.jsx';
 
@@ -41,13 +41,23 @@ const SAMPLE = {
 
 export function VoicePicker({ language, voiceId, onChange }) {
   const [playing, setPlaying] = useState(null);
-  useEffect(() => () => stopSpeaking(), []);
+  const audioRef = useRef(null);
+  const stopAll = () => { stopSpeaking(); if (audioRef.current) { audioRef.current.pause(); audioRef.current = null; } };
+  useEffect(() => stopAll, []);
+  // Hörprobe mit der echten KI-Stimme (vorab erzeugte Beispiele in /public/voices, gleiches Tempo wie im Video)
   const preview = (id) => {
-    stopSpeaking();
+    stopAll();
     if (playing === id) return setPlaying(null);
-    unlockAudio();
     setPlaying(id);
-    speak(SAMPLE[language] || SAMPLE.de, { lang: language, voiceId: id, onEnd: () => setPlaying(null) });
+    const lang = LANGUAGES.some((l) => l.id === language) ? language : 'de';
+    const a = new Audio(`/voices/${id}-${lang}.mp3`);
+    audioRef.current = a;
+    a.onended = () => setPlaying(null);
+    a.play().catch(() => {
+      // Rückfall: Gerätestimme, falls die Datei nicht lädt
+      unlockAudio();
+      speak(SAMPLE[language] || SAMPLE.de, { lang: language, voiceId: id, onEnd: () => setPlaying(null) });
+    });
   };
   return (
     <div className="space-y-4">
@@ -67,15 +77,7 @@ export function VoicePicker({ language, voiceId, onChange }) {
           </div>
         ))}
       </div>
-      <p className="text-xs muted">
-        {browserTTSAvailable() ? tr("Vorschau mit der Stimme deines Geräts. ") : tr("Dein Browser bietet keine Vorschau-Stimme. ")}
-        {tr("Im fertigen Video wird die gewählte KI-Stimme des verbundenen Sprach-Anbieters verwendet.")}
-      </p>
-      {browserTTSAvailable() && !hasHighQualityVoice(language) && (
-        <p className="text-xs muted">
-          {tr("Tipp für eine natürlichere Vorschau: iPhone → Einstellungen → Bedienungshilfen → Gesprochene Inhalte → Stimmen → Deutsch → eine Stimme mit „Premium“ oder „Erweitert“ laden. Am Mac: Systemeinstellungen → Bedienungshilfen → Gesprochene Inhalte.")}
-        </p>
-      )}
+      <p className="text-xs muted">{tr("Hörprobe mit der echten KI-Stimme – so klingt sie auch im fertigen Video.")}</p>
     </div>
   );
 }
