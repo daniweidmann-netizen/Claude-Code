@@ -8,7 +8,7 @@ import { NICHES, DEFAULT_CAPTIONS, VIDEO_LENGTHS, DEFAULT_TARGET_SECONDS } from 
 import { getPlan } from '../../config/plans.js';
 import { ArtStylePicker, VoicePicker, SchedulePicker, PlatformPicker, CaptionStylePicker } from '../../components/Pickers.jsx';
 import { Notice, Spinner, Toggle } from '../../components/ui.jsx';
-import { planSeries } from '../../video/generate.js';
+import { planSeries, createCharacter } from '../../video/generate.js';
 import { saveSeries } from '../../lib/store.js';
 import { createVideoForEpisode } from '../../lib/videoFlow.js';
 import { computeUsage, seriesLimitReached } from '../../lib/usage.js';
@@ -27,7 +27,7 @@ export default function SeriesWizard() {
   const [busy, setBusy] = useState('');
   const [error, setError] = useState('');
   const [d, setD] = useState({
-    niche: 'history', topic: '', artStyle: 'cinematic', captionStyle: 'karaoke',
+    niche: 'history', topic: '', character: '', artStyle: 'cinematic', captionStyle: 'karaoke',
     language: getLang(), voiceId: 'calm-m',
     schedule: DEFAULT_SCHEDULE, platforms: [], requireApproval: true, targetSeconds: DEFAULT_TARGET_SECONDS,
   });
@@ -40,13 +40,18 @@ export default function SeriesWizard() {
   const limitReached = seriesLimitReached(profile, series.length);
   const usage = computeUsage(profile, videos);
 
-  const canNext = step !== 0 || d.niche !== 'custom' || d.topic.trim().length > 2;
+  const canNext = step !== 0 || ((d.niche !== 'custom' || d.topic.trim().length > 2) && (d.niche !== 'characters' || d.character.trim().length > 5));
 
   const finish = async () => {
     setError('');
     try {
       setBusy(tr("Die KI plant deine Serie …"));
-      const planRes = await planSeries({ niche: d.niche, topic: d.topic, language: d.language });
+      const planRes = await planSeries({ niche: d.niche, topic: d.topic, language: d.language, character: d.niche === 'characters' ? d.character : undefined });
+      let character = null;
+      if (d.niche === 'characters') {
+        setBusy(tr('Deine Hauptfigur wird gezeichnet …'));
+        character = await createCharacter({ description: d.character.trim(), style: d.artStyle, userId: user.id }).catch(() => null);
+      }
       const s = await saveSeries({
         user_id: user.id,
         title: planRes.title,
@@ -63,6 +68,7 @@ export default function SeriesWizard() {
         require_approval: d.requireApproval,
         target_seconds: d.targetSeconds,
         episodes: planRes.episodes,
+        character,
         active: true,
       });
       if (isOnboarding) await updateProfile({ onboarding_done: true });
@@ -118,7 +124,20 @@ export default function SeriesWizard() {
                 </button>
               ))}
             </div>
-            {(d.niche === 'custom' || !nicheReady(NICHES.find((n) => n.id === d.niche))) && (
+            {d.niche === 'characters' && (
+              <div className="mt-5 space-y-4">
+                <div>
+                  <label className="label" htmlFor="character">{tr('Deine Hauptfigur *')}</label>
+                  <textarea id="character" className="input min-h-[96px]" maxLength={600} placeholder={tr('z. B. junge Frau Ende 20, kurze rote Haare, Sommersprossen, grüne Regenjacke, mutig und neugierig')} value={d.character} onChange={(e) => set({ character: e.target.value })} />
+                  <p className="mt-1 text-xs muted">{tr('Aussehen, Kleidung, Charakter. Die KI zeichnet daraus eine erfundene Person, die in jeder Folge gleich aussieht. Keine echten Personen.')}</p>
+                </div>
+                <div>
+                  <label className="label" htmlFor="topic-ch">{tr('Genre / Thema (optional)')}</label>
+                  <input id="topic-ch" className="input" placeholder={tr('z. B. Mystery in einer Kleinstadt, Abenteuer in den Alpen')} value={d.topic} onChange={(e) => set({ topic: e.target.value })} />
+                </div>
+              </div>
+            )}
+            {d.niche !== 'characters' && (d.niche === 'custom' || !nicheReady(NICHES.find((n) => n.id === d.niche))) && (
               <div className="mt-5">
                 <label className="label" htmlFor="topic">{d.niche === 'custom' ? tr("Dein Thema") : tr("Thema präzisieren (optional)")}</label>
                 <input id="topic" className="input" placeholder={tr("z. B. Erfindungen aus der Schweiz")} value={d.topic} onChange={(e) => set({ topic: e.target.value })} />

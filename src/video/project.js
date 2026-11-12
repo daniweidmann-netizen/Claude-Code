@@ -26,6 +26,7 @@ export function scriptToProject(script, settings) {
     captions: { ...DEFAULT_CAPTIONS, ...(settings.captions || {}) },
     music: { trackId: 'calm', volume: 0.35, customUrl: null, ...(settings.music || {}) },
     notice: script.notice || null,
+    character: settings.character?.imageUrl ? { description: settings.character.description || '', imageUrl: settings.character.imageUrl } : null,
     scenes: scenes.map((s) => ({ id: uid(), seed: newSeed(), imageUrl: null, audioUrl: null, audioDuration: null, voiceId: null, ...s })),
   };
 }

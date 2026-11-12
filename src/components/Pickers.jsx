@@ -19,7 +19,7 @@ export function ArtThumb({ style, seed = 4242, motif = 'pyramid', className = ''
 
 export function ArtStylePicker({ value, onChange, motif }) {
   return (
-    <div className="grid grid-cols-3 gap-3 sm:grid-cols-5">
+    <div className="grid grid-cols-3 gap-3 sm:grid-cols-6">
       {ART_STYLES.map((s) => (
         <button key={s.id} type="button" onClick={() => onChange(s.id)} className={`option flex flex-col items-center gap-2 p-2 ${value === s.id ? 'option-active' : ''}`} aria-pressed={value === s.id}>
           <ArtThumb style={s.id} motif={motif} className="h-auto w-full" />

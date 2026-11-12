@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { Plus, Trash2, Film, Save, Wand2, Lightbulb, Download } from 'lucide-react';
 import { renderDownloadUrl } from '../../lib/store.js';
+import { createCharacter } from '../../video/generate.js';
 import IdeaDialog from '../../components/IdeaDialog.jsx';
 import { useAuth } from '../../context/AuthContext.jsx';
 import { useAppData } from '../../lib/useAppData.js';
@@ -136,6 +137,7 @@ export function SeriesDetail() {
         </section>
 
         <aside className="card space-y-5 p-5">
+          {series.niche === 'characters' && <CharacterCard series={series} onSaved={reload} />}
           <h2 className="font-semibold">{tr("Einstellungen")}</h2>
           <div><label className="label" htmlFor="s-title">{tr("Titel")}</label><input id="s-title" className="input" value={draft.title} onChange={(e) => set({ title: e.target.value })} /></div>
           <div className="grid grid-cols-2 gap-3">
@@ -172,5 +174,34 @@ function DownloadButton({ video }) {
     <button type="button" className="btn-icon h-10 w-10 shrink-0" onClick={go} disabled={busy} aria-label={tr('Video herunterladen (MP4)')} title={tr('Video herunterladen (MP4)')}>
       {busy ? <Spinner /> : <Download className="h-5 w-5" />}
     </button>
+  );
+}
+
+// Figuren-Geschichten: Hauptfigur der Serie (Referenzbild) anzeigen, ändern, neu zeichnen
+function CharacterCard({ series, onSaved }) {
+  const { user } = useAuth();
+  const [desc, setDesc] = useState(series.character?.description || '');
+  const [busy, setBusy] = useState(false);
+  const [err, setErr] = useState('');
+  const redraw = async () => {
+    setBusy(true); setErr('');
+    try {
+      const character = await createCharacter({ description: desc.trim(), style: series.art_style, userId: user.id });
+      await saveSeries({ ...series, character });
+      await onSaved?.();
+    } catch (e) { setErr(e.message); }
+    setBusy(false);
+  };
+  return (
+    <div className="space-y-3 border-b border-navy-100 pb-5 dark:border-navy-800">
+      <h2 className="font-semibold">{tr('Hauptfigur')}</h2>
+      {series.character?.imageUrl
+        ? <img src={series.character.imageUrl} alt={tr('Hauptfigur')} className="aspect-[2/3] w-32 rounded-xl object-cover" />
+        : <p className="text-sm muted">{tr('Noch keine Figur gezeichnet.')}</p>}
+      <textarea className="input min-h-[80px] text-sm" maxLength={600} value={desc} onChange={(e) => setDesc(e.target.value)} aria-label={tr('Beschreibung der Hauptfigur')} />
+      <button className="btn-outline w-full text-sm" onClick={redraw} disabled={busy || desc.trim().length < 5}>{busy ? <Spinner /> : null}{series.character?.imageUrl ? tr('Figur neu zeichnen') : tr('Figur zeichnen')}</button>
+      {err && <p className="text-xs text-red-600 dark:text-red-400">{err}</p>}
+      <p className="text-xs muted">{tr('Gilt für neu erstellte Videos. Bei bestehenden Videos im Editor „Alle Bilder neu“ tippen.')}</p>
+    </div>
   );
 }

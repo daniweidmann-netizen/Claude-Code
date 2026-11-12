@@ -19,6 +19,7 @@ export async function createVideoForEpisode(user, series, episode, onStatus, cus
     episodeKey: episode?.key,
     episodeTitle: episode?.title,
     targetSeconds: series.target_seconds || 65,
+    character: series.character?.description || undefined,
   });
   // Eigener Text muss wortgetreu bleiben – sonst lokale Aufteilung verwenden (Bildbeschreibungen der KI behalten)
   if (custom.ownText) {
@@ -37,6 +38,7 @@ export async function createVideoForEpisode(user, series, episode, onStatus, cus
     artStyle: series.art_style,
     captions: series.captions,
     music: series.music,
+    character: series.character,
   });
   onStatus?.(tr('Bilder werden gesucht …'));
   const withImages = (await fillImages(project, user.id).catch(() => null))?.project || project;

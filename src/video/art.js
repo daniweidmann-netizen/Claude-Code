@@ -32,6 +32,11 @@ const PALETTES = {
     ['#3fb8ff', '#b8f2ff', '#ffef5c', '#2a7fd4', '#1b4fa3', '#141414'],
     ['#2d1e5c', '#ff5d73', '#ffe066', '#7a2e8e', '#3e1a60', '#111111', true],
   ],
+  manga: [
+    ['#f2f2f2', '#c8c8c8', '#ffffff', '#8a8a8a', '#4a4a4a', '#111111'],
+    ['#e6e6e6', '#9a9a9a', '#ffffff', '#6e6e6e', '#3a3a3a', '#0d0d0d'],
+    ['#2a2a2a', '#6a6a6a', '#f5f5f5', '#4a4a4a', '#262626', '#0a0a0a', true],
+  ],
   cinematic: [
     ['#0e2938', '#e0783e', '#ffd49b', '#1f4552', '#14313c', '#071820'],
     ['#091a26', '#2f5d6e', '#f2c48d', '#163845', '#0e2832', '#050f15', true],
@@ -141,7 +146,7 @@ export function renderArt(seed, style = 'cinematic', kind = 'city') {
   const r = rng(seed);
   const pals = PALETTES[style] || PALETTES.cinematic;
   const [top, bottom, sun, far, mid, near, night] = pals[Math.floor(r() * pals.length)];
-  const comic = style === 'comic', anime = style === 'anime';
+  const comic = style === 'comic' || style === 'manga', anime = style === 'anime';
 
   const sky = ctx.createLinearGradient(0, 0, 0, h * 0.75);
   sky.addColorStop(0, top); sky.addColorStop(1, bottom);

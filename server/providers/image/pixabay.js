@@ -5,7 +5,7 @@
 const API = 'https://pixabay.com/api/';
 
 // Illustrations-Stile suchen Illustrationen, alle anderen Fotos
-const IMAGE_TYPE = { anime: 'illustration', comic: 'illustration' };
+const IMAGE_TYPE = { anime: 'illustration', comic: 'illustration', manga: 'illustration' };
 
 const STOPWORDS = new Set(['a', 'an', 'the', 'of', 'in', 'on', 'at', 'with', 'and', 'or', 'to', 'by', 'for', 'from', 'over', 'under', 'into', 'after', 'before', 'its', 'their', 'scene']);
 

@@ -24,6 +24,7 @@ const NICHE_HINT = {
   horror: 'Nische Horror: FIKTIVE Kurzgeschichte mit Spannungsbogen; keine realen Personen, Orte nur allgemein; im CTA als fiktiv kennzeichnen.',
   reddit: 'Nische Community-Stories: eigene FIKTIVE Alltagsgeschichte im Stil einer Erzählung aus dem Netz – keine echten Posts kopieren, keine echten Nutzernamen; im CTA als fiktiv kennzeichnen.',
   custom: 'Eigenes Thema des Nutzers: sachlich korrekt bleiben, bei Unsicherheit vorsichtig formulieren.',
+  characters: 'Nische Figuren-Geschichten: FIKTIVE Geschichte mit EINER wiederkehrenden Hauptfigur, die in jeder Folge etwas erlebt (Spannung, Gefühl, Wendung). Keine realen Personen. Bildbeschreibungen (visual) zeigen die Hauptfigur in Aktion und nennen sie immer „the main character“; Aussehen der Figur NICHT neu beschreiben, nur Handlung, Ort, Licht und Stimmung.',
 };
 
 const scriptSchema = {
@@ -85,13 +86,13 @@ async function ask(prompt, schema) {
 
 export default {
   name: 'anthropic',
-  async planSeries({ niche, topic, language, count = 6 }) {
+  async planSeries({ niche, topic, language, count = 6, character }) {
     return ask(
-      `Plane eine Kurzvideo-Serie mit ${count} Folgen.\n${NICHE_HINT[niche] || ''}\nNische: ${niche}\nThema: ${topic || '(frei innerhalb der Nische)'}\nSprache der Titel: ${LANG_NAMES[language] || 'Deutsch'}\nJede Folge braucht einen eindeutigen key (kebab-case), einen packenden Titel und ein passendes Bildmotiv.`,
+      `Plane eine Kurzvideo-Serie mit ${count} Folgen.\n${NICHE_HINT[niche] || ''}\nNische: ${niche}\nThema: ${topic || '(frei innerhalb der Nische)'}\nSprache der Titel: ${LANG_NAMES[language] || 'Deutsch'}${character ? `\nHauptfigur der Serie: ${String(character).slice(0, 600)}` : ''}\nJede Folge braucht einen eindeutigen key (kebab-case), einen packenden Titel und ein passendes Bildmotiv.`,
       planSchema,
     );
   },
-  async writeScript({ niche, topic, language, episodeTitle, seriesTitle, targetSeconds = 65, idea, notes, ownText }) {
+  async writeScript({ niche, topic, language, episodeTitle, seriesTitle, targetSeconds = 65, idea, notes, ownText, character }) {
     const lang = LANG_NAMES[language] || 'Deutsch';
     if (ownText) {
       // Eigener Text: wortgetreu übernehmen, nur aufteilen und Bildbeschreibungen ergänzen
@@ -109,7 +110,7 @@ export default {
       ? `\nDer Nutzer hat eine EIGENE Video-Idee – setze genau diese um:\n<idee>${String(idea).slice(0, 1500)}</idee>${notes ? `\nHinweise/Fakten des Nutzers, die vorkommen sollen (auf Plausibilität achten, nichts Falsches übernehmen):\n<hinweise>${String(notes).slice(0, 3000)}</hinweise>` : ''}`
       : '';
     return ask(
-      `Schreibe das Skript für eine Folge.\n${NICHE_HINT[niche] || ''}${ideaBlock}\nSerie: ${seriesTitle || topic || niche}\nFolge: ${idea ? '(aus der Idee ableiten)' : episodeTitle || topic}\nNische: ${niche}\nSprache: ${lang}\nAufbau: hook, ${scenes} scenes, cta.\nGewünschte Videolänge: ${t} Sekunden → insgesamt ${minWords}–${maxWords} Wörter (Hook + Szenen + CTA). ${t >= 60 ? 'Wichtig: Das Video muss über 60 Sekunden lang sein – lieber etwas mehr als zu wenig Text.' : ''}`,
+      `Schreibe das Skript für eine Folge.\n${NICHE_HINT[niche] || ''}${ideaBlock}\nSerie: ${seriesTitle || topic || niche}\nFolge: ${idea ? '(aus der Idee ableiten)' : episodeTitle || topic}\nNische: ${niche}\nSprache: ${lang}\nAufbau: hook, ${scenes} scenes, cta.\nGewünschte Videolänge: ${t} Sekunden → insgesamt ${minWords}–${maxWords} Wörter (Hook + Szenen + CTA). ${t >= 60 ? 'Wichtig: Das Video muss über 60 Sekunden lang sein – lieber etwas mehr als zu wenig Text.' : ''}${character ? `\nHauptfigur (immer dieselbe Person, im visual als „the main character“ bezeichnen): ${String(character).slice(0, 600)}` : ''}`,
       scriptSchema,
     );
   },

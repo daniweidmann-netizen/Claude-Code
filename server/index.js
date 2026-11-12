@@ -20,6 +20,7 @@ import { publishVideo, publishDue } from './publish.js';
 import { PLAN_QUOTAS } from './quotas.js';
 import analyticsRouter from './analytics.js';
 import { renderHtml, sitemap, robots } from './seo.js';
+import { createCharacter, generateWithCharacter } from './providers/image/openai.js';
 
 const app = express();
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -85,6 +86,14 @@ app.post('/api/generate/image', authenticate, handle(async (req) => {
       if (r.imageUrl) return { ...r, provider: 'wikimedia' };
     } catch (e) { console.warn('[wikimedia]', e.message); }
   }
+  // Figuren-Geschichten: Szene aus dem Referenzbild der Hauptfigur ableiten (nur mit OpenAI-Bildmodul)
+  const ch = req.body?.character;
+  if (ch?.imageUrl && process.env.OPENAI_API_KEY && /^https:\/\//.test(ch.imageUrl)) {
+    try {
+      const r = await generateWithCharacter({ prompt: req.body.prompt, style: req.body.style, characterUrl: ch.imageUrl, characterDescription: ch.description });
+      if (r.imageUrl) return { ...r, provider: 'openai-character' };
+    } catch (e) { console.warn('[image:character]', e.message); }
+  }
   const main = provider('image');
   try {
     const r = await main.generate(req.body);
@@ -95,6 +104,12 @@ app.post('/api/generate/image', authenticate, handle(async (req) => {
   }
   // Rückfall: Stockfoto, damit jede Szene ein Bild bekommt
   return { ...(await fallbackImageProvider.generate(req.body)), provider: 'pixabay' };
+}));
+app.post('/api/generate/character', authenticate, handle(async (req) => {
+  if (!process.env.OPENAI_API_KEY) throw new Error('Kein Bildmodell verbunden.');
+  const description = String(req.body?.description || '').trim().slice(0, 600);
+  if (description.length < 3) throw new Error('Bitte beschreibe die Hauptfigur in ein paar Worten.');
+  return { ...(await createCharacter({ description, style: req.body?.style })), provider: 'openai' };
 }));
 app.post('/api/generate/voice', authenticate, handle(async (req) => {
   const text = String(req.body?.text || '').slice(0, 1200);
