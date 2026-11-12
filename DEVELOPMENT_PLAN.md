@@ -27,7 +27,13 @@ P0 Discovery ─► P1 Foundations ─► P2 3D look-dev ─► P3 Vertical slic
 * Architecture, design direction, asset guide, env template.
 * **Gate:** your approval + answers to §4 Open Questions.
 
-### P1 — Foundations
+### P1 — Foundations 🟡 (in progress — visual foundation done 2026-11-12)
+* ✅ Next.js 16 / React 19.3 / TS 6 / Tailwind 4 scaffold, design tokens, Instrument Serif + DM Sans (free fonts — swap if licensed fonts are chosen)
+* ✅ All six chapters as fully responsive DOM layout (no WebGL yet), header with light/dark switching, menu, cart drawer, mobile sticky buy bar, footer
+* ✅ Lenis + GSAP reveals (light), reduced-motion safe; no console errors; production build passes
+* ✅ Storefront client, product query (metafields `vireli.*`), cart Server Actions, checkout handoff via `cart.checkoutUrl`
+* ⏳ Connect real store (credentials), webhook revalidation, JSON-LD, `/produkt/[handle]`, legal pages, Vercel project
+* Temporary: logo = raster mask traced from store screenshot; packshot = store image (pack version B). Preview data clearly badged.
 * Scaffold Next.js 16 / TS / Tailwind 4, lint, format, CI, Vercel project + previews.
 * Design tokens (colour, type scale, spacing, eases), font loading, base layout, header, cart drawer.
 * Shopify: codegen, product query, metafields, Server Actions for cart, checkout handoff, webhook revalidation, `Product` JSON-LD.
