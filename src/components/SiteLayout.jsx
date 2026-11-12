@@ -77,7 +77,7 @@ function TrustBar() {
 }
 
 export function Footer() {
-  const { t } = useI18n();
+  const { t, lang } = useI18n();
   return (
     <>
     <TrustBar />
@@ -94,6 +94,7 @@ export function Footer() {
             <li><a href="/#features">{t('nav.features')}</a></li>
             <li><Link to="/preise">{t('nav.pricing')}</Link></li>
             <li><a href="/#faq">{t('nav.faq')}</a></li>
+            <li><Link to={lang === 'de' ? '/ratgeber' : '/guides'}>{lang === 'de' ? 'Ratgeber' : 'Guides'}</Link></li>
             <li><Link to="/registrieren">{t('nav.start')}</Link></li>
           </ul>
         </div>

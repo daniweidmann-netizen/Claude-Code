@@ -32,5 +32,13 @@
   .prose-legal h3 { @apply mt-5 mb-1 font-semibold; }
   .prose-legal p, .prose-legal li { @apply text-sm leading-relaxed text-navy-700 dark:text-navy-200; }
   .prose-legal ul { @apply ml-5 list-disc space-y-1; }
+  .prose-guide h2 { @apply mt-10 mb-3 text-2xl font-bold tracking-tight; }
+  .prose-guide h3 { @apply mt-6 mb-2 text-lg font-semibold; }
+  .prose-guide p { @apply my-4 text-[17px] leading-relaxed text-navy-700 dark:text-navy-100; }
+  .prose-guide li { @apply text-[17px] leading-relaxed text-navy-700 dark:text-navy-100; }
+  .prose-guide ul { @apply my-4 ml-6 list-disc space-y-2; }
+  .prose-guide ol { @apply my-4 ml-6 list-decimal space-y-2; }
+  .prose-guide a { @apply font-medium text-accent-700 underline dark:text-accent-400; }
+  .prose-guide strong { @apply font-semibold text-navy-950 dark:text-white; }
   .placeholder { @apply rounded bg-amber-100 px-1 text-amber-900 dark:bg-amber-900/40 dark:text-amber-200; }
 }

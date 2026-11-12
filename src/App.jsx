@@ -16,6 +16,7 @@ import { Impressum, Datenschutz, AGB, Rueckerstattung } from './pages/legal/Lega
 import { translate as tr } from './i18n/index.jsx';
 import { track } from './lib/analytics.js';
 import Stats from './pages/app/Stats.jsx';
+import { GuideIndex, GuidePage } from './pages/Guides.jsx';
 
 function ScrollManager() {
   const { pathname, hash } = useLocation();
@@ -53,6 +54,10 @@ export default function App() {
           <Route path="datenschutz" element={<Datenschutz />} />
           <Route path="agb" element={<AGB />} />
           <Route path="rueckerstattung" element={<Rueckerstattung />} />
+          <Route path="guides" element={<GuideIndex lang="en" />} />
+          <Route path="guides/:slug" element={<GuidePage lang="en" />} />
+          <Route path="ratgeber" element={<GuideIndex lang="de" />} />
+          <Route path="ratgeber/:slug" element={<GuidePage lang="de" />} />
           <Route path="*" element={<NotFound />} />
         </Route>
         <Route path="login" element={<Login />} />

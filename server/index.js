@@ -19,6 +19,7 @@ import { startScheduler } from './scheduler.js';
 import { publishVideo, publishDue } from './publish.js';
 import { PLAN_QUOTAS } from './quotas.js';
 import analyticsRouter from './analytics.js';
+import { renderHtml, sitemap, robots } from './seo.js';
 
 const app = express();
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -167,6 +168,15 @@ app.delete('/api/account', authenticate, async (req, res) => {
   res.json({ ok: true, filesRemoved: removed });
 });
 
+// Alte onrender-Adresse → eigene Domain (keine doppelten Inhalte für Google). /api bleibt erreichbar (Stripe-Webhook).
+app.use((req, res, next) => {
+  const host = req.headers.host || '';
+  if (/\.onrender\.com$/.test(host) && /^https:\/\//.test(config.appUrl) && !config.appUrl.includes(host) && !req.path.startsWith('/api/') && req.method === 'GET') {
+    return res.redirect(301, config.appUrl + req.originalUrl);
+  }
+  next();
+});
+
 // Produktion: gebautes Frontend ausliefern
 const dist = path.join(__dirname, '..', 'dist');
 if (fs.existsSync(dist)) {
@@ -175,7 +185,9 @@ if (fs.existsSync(dist)) {
   const html = fs.readFileSync(path.join(dist, 'index.html'), 'utf8')
     .replace('<head>', `<head><script>window.__TRUEREEL_CONFIG__=${publicConfig}</script>`)
     .replace('content="/og-image.png"', `content="${config.appUrl}/og-image.png"`); // Social-Vorschau braucht absolute URL
-  const sendIndex = (_req, res) => res.type('html').send(html);
+  const sendIndex = (req, res) => res.type('html').send(renderHtml(html, req.path, config.appUrl));
+  app.get('/sitemap.xml', (_req, res) => res.type('application/xml').send(sitemap(config.appUrl)));
+  app.get('/robots.txt', (_req, res) => res.type('text/plain').send(robots(config.appUrl)));
   app.get('/', sendIndex);
   app.use(express.static(dist, { index: false, maxAge: '1h' }));
   app.get(/^\/(?!api\/).*/, sendIndex);
