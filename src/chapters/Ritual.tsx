@@ -19,7 +19,7 @@ export function Ritual() {
             </div>
             {/* the single warm light on the site */}
             <div className="absolute bottom-[-20%] left-[8%] h-[80%] w-[50%] rounded-full bg-[radial-gradient(closest-side,#e3a26055,#e3a26014_60%,transparent)]" />
-            <div className="absolute left-[30%] top-[46%] h-[56%] w-[34%] -translate-x-1/2 -translate-y-1/2 sm:left-[52%] sm:top-1/2 sm:h-[74%] sm:w-[22%]" data-stage="ritual" data-stage-fit="0.9" />
+            <div className="absolute left-[30%] top-[46%] h-[56%] w-[34%] -translate-x-1/2 -translate-y-1/2 sm:left-[60%] sm:top-[44%] sm:h-[70%] sm:w-[22%]" data-stage="ritual" data-stage-fit="0.9" />
             <div className="absolute inset-0 bg-[linear-gradient(180deg,transparent_45%,#05060fdd)]" />
           </PlaceholderMedia>
           <h2 id="ritual-title" className="t-display absolute bottom-[8%] left-[5%] max-w-[12ch]" data-reveal="lines">

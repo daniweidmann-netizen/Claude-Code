@@ -15,7 +15,7 @@ export function Finale({ result }: { result: ProductResult }) {
         <div className="relative w-[min(70vw,460px)] aspect-square" data-stage="finale" data-stage-fit="0.78">
           <Moon className="absolute inset-0 transition-opacity duration-700 webgl:opacity-0" />
         </div>
-        <h2 id="finale-title" className="t-display -mt-[min(14vw,90px)] webgl:mt-2">
+        <h2 id="finale-title" className="t-display -mt-[min(14vw,90px)] webgl:mt-14 sm:webgl:mt-6">
           <span className="block" data-reveal="lines">{finale.title[0]}</span>
           <span className="block italic text-lavender" data-reveal="lines" data-reveal-delay="0.1">{finale.title[1]}</span>
         </h2>

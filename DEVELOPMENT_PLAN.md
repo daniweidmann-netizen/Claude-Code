@@ -41,6 +41,14 @@ P0 Discovery ─► P1 Foundations ─► P2 3D look-dev ─► P3 Vertical slic
 * Legal page shells (content supplied by you / Shopify policies).
 * **Deliverable:** a plain but elegant, working storefront on a preview URL: add to cart → Shopify checkout.
 
+### 3D experience — implemented 2026-11-12 (P2–P6 provisional)
+* One persistent R3F canvas behind the DOM chapters (`src/webgl/`). The `Director` maps DOM anchors (`data-stage="hero|berries|product|ritual|finale"`) to 3D poses, so the pouch travels with the responsive layout.
+* World: mood-blended sky shader, stars, star dust, shader crescent moon, moon/rim/sweep/ember lights, procedural environment (no HDR download), bloom + vignette (tier ≥ 2), depth of field + gummy transmission (tier 3).
+* Objects (all PROVISIONAL, procedural): pouch with the original front artwork from the store photo (`public/assets/textures/pouch-front-temp.webp`, back = plain foil, rotation limited); strawberry, raspberry, blackberry, blueberry; fluted gummy matched to the store photo.
+* Chapters: hero constellation, berry fly-through (02), product plinth + halo + drag-to-rotate (04), warm lamp ritual (05), eclipse finale (06).
+* Performance: 3D chunk (~300 kB gz) loads after `load`/idle; tiers 1–3 (`?tier=0..3` to force); PerformanceMonitor adapts DPR; rendering pauses behind opaque light sections; reduced motion / Save-Data / no WebGL2 → original DOM design.
+* Replace when available: pouch GLB from dieline, scanned berries, real gummy model (see ASSET_GUIDE §5).
+
 ### P2 — 3D pipeline & look-dev
 * Asset pipeline scripts (gltf-transform: meshopt, KTX2, LODs) + asset manifest.
 * Pouch model from the real dieline; gummy model from macro photos; berry set.

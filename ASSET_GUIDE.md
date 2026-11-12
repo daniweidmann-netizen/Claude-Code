@@ -121,6 +121,13 @@ Pipeline: Blender → glTF → `gltf-transform` (dedup, prune, meshopt, KTX2 via
 
 ---
 
+### Currently in use (provisional, 2026-11-12)
+| Asset | Current stand-in | Replace with |
+| --- | --- | --- |
+| Pouch | Procedural geometry + `textures/pouch-front-temp.webp` (front artwork cut unmodified from the store packshot, version B; two empty foil corners filled where berries/gummies overlapped the photo) | Blender model + print-file textures (front & back) |
+| Berries | Procedural (`src/webgl/objects/geometry.ts`) | Scanned / modelled GLBs |
+| Gummy | Procedural fluted lathe, colour from store photo | Model from macro photos |
+
 ## 6. Placeholder policy
 
 | Missing | Placeholder |

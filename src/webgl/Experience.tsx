@@ -14,6 +14,9 @@ import { Moon3D } from "./objects/Moon3D";
 import { Pouch } from "./objects/Pouch";
 import { Lights } from "./objects/Lights";
 import { Effects } from "./objects/Effects";
+import { Satellites } from "./objects/Satellites";
+import { BerryField } from "./objects/BerryField";
+import { ProductStage } from "./objects/ProductStage";
 
 /** Marks the 3D layer as ready once all suspended assets have loaded. */
 function Ready({ onReady }: { onReady: () => void }) {
@@ -56,9 +59,12 @@ export default function Experience({ tier, paused, onReady }: { tier: Tier; paus
       <Stars count={q.stars} />
       <Dust count={q.dust} />
       <Moon3D />
+      <ProductStage />
       <Lights />
       <Suspense fallback={null}>
         <Pouch segments={q.segments} />
+        <Satellites seg={q.segments} transmission={q.transmission} />
+        <BerryField count={q.fieldBerries} seg={q.segments * 0.8} transmission={false} />
         <Ready onReady={onReady} />
       </Suspense>
       <Effects tier={tier} />
