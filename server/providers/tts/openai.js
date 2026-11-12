@@ -1,6 +1,25 @@
 // Voice-Modul über die OpenAI Speech API (gpt-4o-mini-tts).
 // Das Modell versteht Sprech-Anweisungen (instructions) – damit klingt es natürlicher.
+import { spawn } from 'node:child_process';
 import { VOICES } from '../../../src/config/catalog.js';
+import { config } from '../../config.js';
+
+// Etwas zügigeres Sprechtempo wirkt in Kurzvideos lebendiger. Das Modell ignoriert
+// Tempo-Vorgaben, darum wird das fertige Audio mit FFmpeg (atempo, Tonhöhe bleibt) beschleunigt.
+const TEMPO = Number(process.env.VOICE_TEMPO || 1.08);
+
+function speedUp(buf) {
+  if (!(TEMPO > 0.5 && TEMPO < 2) || TEMPO === 1) return Promise.resolve(buf);
+  return new Promise((resolve) => {
+    const p = spawn(config.ffmpegPath, ['-loglevel', 'error', '-i', 'pipe:0', '-filter:a', `atempo=${TEMPO}`, '-c:a', 'libmp3lame', '-b:a', '128k', '-f', 'mp3', 'pipe:1']);
+    const out = [];
+    p.stdout.on('data', (d) => out.push(d));
+    p.on('error', () => resolve(buf)); // kein FFmpeg → Originaltempo
+    p.on('close', (code) => resolve(code === 0 && out.length ? Buffer.concat(out) : buf));
+    p.stdin.on('error', () => {});
+    p.stdin.end(buf);
+  });
+}
 
 const LANG_HINT = {
   de: 'Sprich klares, natürliches Hochdeutsch.',
@@ -40,7 +59,7 @@ export default {
       const detail = await res.text().catch(() => '');
       throw new Error(`TTS-Fehler ${res.status}${res.status === 429 ? ' (Guthaben/Limit prüfen)' : ''} ${detail.slice(0, 120)}`);
     }
-    const buf = Buffer.from(await res.arrayBuffer());
+    const buf = await speedUp(Buffer.from(await res.arrayBuffer()));
     return { audioUrl: `data:audio/mpeg;base64,${buf.toString('base64')}` };
   },
 };
