@@ -1,5 +1,8 @@
 // English versions of the app texts. Key = German original (see tr() in index.jsx).
 export default {
+  "Mit der YouTube-Verbindung akzeptierst du die": "By connecting YouTube you accept the",
+  "Nutzungsbedingungen von YouTube": "YouTube Terms of Service",
+  "Zugriff jederzeit widerrufbar unter": "You can revoke access at any time at",
   "{p} ist verbunden.": "{p} is connected.",
   "Verbindung mit {p} fehlgeschlagen.": "Connecting {p} failed.",
   "eigene": "own",

@@ -203,6 +203,7 @@ export default function Account() {
       <section className="mt-6 card p-5">
         <h2 className="font-semibold">{tr("Verbundene Plattformen")}</h2>
         <p className="mb-4 text-sm muted">{tr("TrueReel postet nur auf Plattformen, die du hier verbindest – und nur Videos, die du freigegeben hast (sofern Freigabe aktiv).")}</p>
+        <p className="mb-4 text-xs muted">{tr("Mit der YouTube-Verbindung akzeptierst du die")} <a className="underline" href="https://www.youtube.com/t/terms" target="_blank" rel="noreferrer">{tr("Nutzungsbedingungen von YouTube")}</a>. {tr("Zugriff jederzeit widerrufbar unter")} <a className="underline" href="https://myaccount.google.com/permissions" target="_blank" rel="noreferrer">myaccount.google.com/permissions</a>.</p>
         <ul className="divide-y divide-navy-100 dark:divide-navy-800">
           {PLATFORMS.map((p) => {
             const c = conns.find((x) => x.platform === p.id);
