@@ -3,8 +3,8 @@
 export const SITE = {
   name: 'TrueReel',
   claim: 'Faceless Videos, die laufen – ehrlich, einfach, automatisch.',
-  contactEmail: 'hello@truereel.ch',
-  supportEmail: 'hello@truereel.ch',
+  contactEmail: 'info@truereel.ch',
+  supportEmail: 'info@truereel.ch',
   social: {
     tiktok: 'https://www.tiktok.com/@truereel.ch',
     instagram: 'https://www.instagram.com/truereel.ch/',
