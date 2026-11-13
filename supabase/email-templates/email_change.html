@@ -7,12 +7,12 @@
 <tr><td style="font-size:22px;font-weight:700;padding-bottom:12px">E-Mail-Adresse ändern</td></tr>
 <tr><td style="font-size:15px;line-height:1.6;color:#3b414a;padding-bottom:24px">Bitte bestätige, dass deine TrueReel-Anmeldung künftig über diese E-Mail-Adresse laufen soll.</td></tr>
 <tr><td style="padding-bottom:24px"><a href="{{ .ConfirmationURL }}" style="display:inline-block;background:#c9f03f;color:#1b1e23;text-decoration:none;font-weight:700;font-size:15px;padding:12px 22px;border-radius:12px">Änderung bestätigen</a></td></tr>
-<tr><td style="font-size:12px;line-height:1.6;color:#6b717d">Du hast keine Änderung angefordert? Dann melde dich bitte bei uns: daniweidmann@icloud.com<br><br>Funktioniert der Knopf nicht? Kopiere diesen Link in deinen Browser:<br><span style="word-break:break-all">{{ .ConfirmationURL }}</span></td></tr>
+<tr><td style="font-size:12px;line-height:1.6;color:#6b717d">Du hast keine Änderung angefordert? Dann melde dich bitte bei uns: daniel.truereel@gmail.com<br><br>Funktioniert der Knopf nicht? Kopiere diesen Link in deinen Browser:<br><span style="word-break:break-all">{{ .ConfirmationURL }}</span></td></tr>
 {{ else }}
 <tr><td style="font-size:22px;font-weight:700;padding-bottom:12px">Change email address</td></tr>
 <tr><td style="font-size:15px;line-height:1.6;color:#3b414a;padding-bottom:24px">Please confirm that you want to use this email address to sign in to TrueReel from now on.</td></tr>
 <tr><td style="padding-bottom:24px"><a href="{{ .ConfirmationURL }}" style="display:inline-block;background:#c9f03f;color:#1b1e23;text-decoration:none;font-weight:700;font-size:15px;padding:12px 22px;border-radius:12px">Confirm change</a></td></tr>
-<tr><td style="font-size:12px;line-height:1.6;color:#6b717d">Didn't request a change? Please contact us: daniweidmann@icloud.com<br><br>Button not working? Copy this link into your browser:<br><span style="word-break:break-all">{{ .ConfirmationURL }}</span></td></tr>
+<tr><td style="font-size:12px;line-height:1.6;color:#6b717d">Didn't request a change? Please contact us: daniel.truereel@gmail.com<br><br>Button not working? Copy this link into your browser:<br><span style="word-break:break-all">{{ .ConfirmationURL }}</span></td></tr>
 {{ end }}
 </table>
 <p style="font-size:11px;color:#8b919c;margin-top:16px">TrueReel · Chriesiweg 4 · 8310 Grafstal · {{ if and .Data.lang (eq .Data.lang "de") }}Schweiz{{ else }}Switzerland{{ end }}</p>

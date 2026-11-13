@@ -3,8 +3,8 @@
 export const SITE = {
   name: 'TrueReel',
   claim: 'Faceless Videos, die laufen – ehrlich, einfach, automatisch.',
-  contactEmail: 'daniweidmann@icloud.com', // später durch eigene Domain-Adresse ersetzen
-  supportEmail: 'daniweidmann@icloud.com',
+  contactEmail: 'daniel.truereel@gmail.com',
+  supportEmail: 'daniel.truereel@gmail.com',
   social: {
     tiktok: 'https://www.tiktok.com/@truereel.ch',
     instagram: 'https://www.instagram.com/truereel.ch/',
