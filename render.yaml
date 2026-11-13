@@ -7,7 +7,7 @@ services:
   - type: web
     name: truereel
     runtime: docker
-    plan: free
+    plan: starter
     region: frankfurt
     branch: claude/truereel-saas-webapp-v9szoj
     healthCheckPath: /api/health
