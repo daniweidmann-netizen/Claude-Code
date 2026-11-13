@@ -3,6 +3,9 @@ import crypto from 'node:crypto';
 import { config } from '../config.js';
 import { admin, authenticate } from '../supabaseAdmin.js';
 import { PLATFORMS } from './platforms.js';
+import { encryptToken, encryptExistingTokens } from './tokenCrypto.js';
+
+encryptExistingTokens(admin);
 
 const router = express.Router();
 const SECRET = process.env.STATE_SECRET || crypto.randomBytes(32).toString('hex');
@@ -43,8 +46,8 @@ router.get('/:platform/callback', async (req, res) => {
         user_id: state.uid,
         platform,
         account_name: tok.account_id || null,
-        access_token: tok.access_token,
-        refresh_token: tok.refresh_token || null,
+        access_token: encryptToken(tok.access_token),
+        refresh_token: encryptToken(tok.refresh_token || null),
         expires_at: tok.expires_in ? new Date(Date.now() + tok.expires_in * 1000).toISOString() : null,
         updated_at: new Date().toISOString(),
       }, { onConflict: 'user_id,platform' });

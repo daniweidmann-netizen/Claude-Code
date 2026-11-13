@@ -2,6 +2,7 @@
 // Das MP4 liegt im privaten Storage-Bucket "renders" (Pfad in videos.video_path).
 import { admin } from './supabaseAdmin.js';
 import { PLATFORMS } from './social/platforms.js';
+import { decryptConnection, encryptFields } from './social/tokenCrypto.js';
 
 const CATEGORY = { history: '27', facts: '27', motivation: '22', horror: '24', reddit: '24', custom: '22' }; // 27 Bildung, 24 Unterhaltung, 22 Menschen & Blogs
 const TAGS = {
@@ -48,11 +49,12 @@ export async function publishVideo(videoId, { userId } = {}) {
     if (results[platform]?.id) continue; // schon gepostet
     const p = PLATFORMS[platform];
     try {
-      const { data: conn } = await admin.from('social_connections').select('*').eq('user_id', video.user_id).eq('platform', platform).maybeSingle();
+      const { data: stored } = await admin.from('social_connections').select('*').eq('user_id', video.user_id).eq('platform', platform).maybeSingle();
+      const conn = decryptConnection(stored);
       if (!conn) throw new Error(`${p?.label || platform} ist nicht verbunden.`);
       if (p.refresh) {
         const upd = await p.refresh(conn);
-        if (upd) { Object.assign(conn, upd); await admin.from('social_connections').update({ ...upd, updated_at: new Date().toISOString() }).eq('id', conn.id); }
+        if (upd) { Object.assign(conn, upd); await admin.from('social_connections').update({ ...encryptFields(upd), updated_at: new Date().toISOString() }).eq('id', conn.id); }
       }
       const r = await p.publish({
         connection: conn,
