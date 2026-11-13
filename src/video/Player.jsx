@@ -30,7 +30,7 @@ export function useImages(project) {
   return useMemo(() => (s) => get(s), [get, version]); // eslint-disable-line react-hooks/exhaustive-deps
 }
 
-export default function Player({ seekRequest, framed = false, project, autoPlay = false, initialMuted = false, loop = false, controls = true, watermark = false, className = '', onTime }) {
+export default function Player({ deviceVoice = false, seekRequest, framed = false, project, autoPlay = false, initialMuted = false, loop = false, controls = true, watermark = false, className = '', onTime }) {
   const canvasRef = useRef(null);
   const [playing, setPlaying] = useState(false);
   const [muted, setMuted] = useState(initialMuted);
@@ -107,7 +107,7 @@ export default function Player({ seekRequest, framed = false, project, autoPlay 
     const offset = time - item.start;
     if (item.scene.audioUrl) {
       // wird über startVoices (Web Audio) abgespielt
-    } else if (offset < 0.6) {
+    } else if (deviceVoice && offset < 0.6) {
       speak(item.scene.text, { lang: project.language, voiceId: item.scene.voiceId || project.voiceId });
     }
   };

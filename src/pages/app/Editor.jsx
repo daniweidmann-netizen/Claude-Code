@@ -86,6 +86,13 @@ export default function Editor() {
   }, [voicePending, busy]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const previewRef = useRef(null);
+  // Szenen ohne KI-Stimme (z. B. nach einem kurzen Server-Aussetzer) beim Öffnen automatisch nachvertonen
+  const healedRef = useRef(null);
+  useEffect(() => {
+    if (!video || !health || health.providers?.tts === 'mock' || healedRef.current === video.id) return;
+    healedRef.current = video.id;
+    if (video.project?.scenes?.some((s) => s.text?.trim() && !s.audioUrl)) setVoicePending(true);
+  }, [video, health]);
 
   if (msg?.tone === 'error' && !video) return <Notice tone="error">{msg.text}</Notice>;
   if (!video) return <Spinner className="h-6 w-6 text-accent-500" />;
@@ -358,7 +365,7 @@ export default function Editor() {
         <section className="card order-first p-5 lg:order-last lg:col-span-2 xl:order-none xl:col-span-1">
           <h2 className="mb-4 flex items-center gap-2 text-xl font-extrabold"><Eye className="h-5 w-5" />{tr("Vorschau")}</h2>
           <div className="xl:sticky xl:top-20">
-            <Player framed project={project} watermark={plan.id === 'free'} seekRequest={seekReq} />
+            <Player framed project={project} watermark={plan.id === 'free'} seekRequest={seekReq} deviceVoice={health?.providers?.tts === 'mock'} />
             <div className="mt-5 space-y-3">
               <div className="grid grid-cols-[1fr_auto] gap-2">
                 <label className="input flex items-center gap-2 py-0 pr-1"><Mic className="h-5 w-5 shrink-0" />

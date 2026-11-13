@@ -70,8 +70,8 @@ export async function fillVoice(project, userId) {
   for (const s of project.scenes) {
     if (s.audioUrl || !s.text?.trim()) { scenes.push(s); continue; }
     const r = await synthesize(s.text, { lang: project.language, voiceId: s.voiceId || project.voiceId });
-    if (!r) return project; // kein Anbieter verbunden → nichts ändern
-    scenes.push({ ...s, audioUrl: await uploadMedia(userId, r.audioUrl, 'audio'), audioDuration: r.duration });
+    // Fehlgeschlagene Szene ohne Stimme lassen (wird im Editor automatisch nachgeholt), Rest weiter vertonen
+    scenes.push(r ? { ...s, audioUrl: await uploadMedia(userId, r.audioUrl, 'audio'), audioDuration: r.duration } : s);
   }
   return { ...project, scenes };
 }

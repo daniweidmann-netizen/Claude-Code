@@ -46,9 +46,14 @@ export const stopSpeaking = () => browserTTSAvailable() && window.speechSynthesi
 
 // Server-TTS: liefert { audioUrl, duration } oder null, wenn nur Mock verfügbar ist.
 export async function synthesize(text, { lang, voiceId }) {
+  let r = null;
+  // Bis zu 3 Versuche: kurze Server-Aussetzer (z. B. Neustart nach Update) dürfen kein Video ohne Stimme erzeugen
+  for (let attempt = 0; attempt < 3 && !r; attempt++) {
+    if (attempt) await new Promise((res) => setTimeout(res, attempt * 2000));
+    try { r = await api('/generate/voice', { method: 'POST', body: { text, language: lang, voiceId } }); } catch { r = null; }
+  }
   try {
-    const r = await api('/generate/voice', { method: 'POST', body: { text, language: lang, voiceId } });
-    if (!r.audioUrl) return null;
+    if (!r?.audioUrl) return null;
     const duration = await new Promise((resolve) => {
       const a = new Audio(r.audioUrl);
       a.onloadedmetadata = () => resolve(a.duration);
