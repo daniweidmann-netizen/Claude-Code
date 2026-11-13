@@ -24,16 +24,19 @@ function Tile({ label, value, hint, tone }) {
 function Projection({ settings, current }) {
   const [counts, setCounts] = useState(() => Object.fromEntries(PLANS.map((p) => [p.id, { monthly: current?.[p.id]?.monthly || 0, yearly: current?.[p.id]?.yearly || 0 }])));
   const [usage, setUsage] = useState(100);
-  const pct = Number(settings.stripePercent || 0) / 100, fix = Number(settings.stripeFixed || 0), ai = Number(settings.aiCostPerVideo || 0);
+  const pct = Number(settings.stripePercent || 0) / 100, fix = Number(settings.stripeFixed || 0);
+  // KI-Kosten pro Video: Daily und Pro inkl. Premium-Stimme (ElevenLabs), Hobby nur Standard
+  const aiFor = (planId) => Number(settings.aiCostPerVideo || 0) + (['daily', 'pro'].includes(planId) ? Number(settings.premiumExtraPerVideo || 0) : 0);
   const fixedCosts = (settings.fixedCosts || []).reduce((s, f) => s + Number(f.amount || 0), 0);
   const rows = useMemo(() => PLANS.flatMap((p) => ['monthly', 'yearly'].map((interval) => {
     const n = Number(counts[p.id][interval]) || 0;
     const price = priceFor(p, interval);
     const revenue = n * price.perMonth;
     const fees = n * (interval === 'yearly' ? (price.billed * pct + fix) / 12 : price.billed * pct + fix);
+    const ai = aiFor(p.id);
     const aiCost = n * p.videosPerMonth * (usage / 100) * ai;
     return { plan: p, interval, n, revenue, fees, aiCost, net: revenue - fees - aiCost, perCustomer: n ? (revenue - fees - aiCost) / n : price.perMonth - (interval === 'yearly' ? (price.billed * pct + fix) / 12 : price.billed * pct + fix) - p.videosPerMonth * (usage / 100) * ai };
-  })), [counts, usage, pct, fix, ai]);
+  })), [counts, usage, pct, fix, settings]); // eslint-disable-line react-hooks/exhaustive-deps
   const sum = (k) => rows.reduce((s, r) => s + r[k], 0);
   const profit = sum('net') - fixedCosts;
   const set = (plan, interval, v) => setCounts((c) => ({ ...c, [plan]: { ...c[plan], [interval]: v } }));
@@ -88,7 +91,8 @@ function SettingsCard({ settings, onSaved }) {
   return (
     <section className="card space-y-4 p-5">
       <h2 className="font-semibold">{tr('Annahmen & Fixkosten')}</h2>
-      <div className="grid gap-3 sm:grid-cols-3">
+      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+        <label className="text-sm"><span className="label">{tr('Premium-Stimme pro Video ($)')}</span><input type="number" step="0.01" min="0" className="input" value={s.premiumExtraPerVideo ?? 0.1} onChange={(e) => setS({ ...s, premiumExtraPerVideo: e.target.value })} /></label>
         <label className="text-sm"><span className="label">{tr('KI-Kosten pro Video ($)')}</span><input type="number" step="0.01" min="0" className="input" value={s.aiCostPerVideo} onChange={(e) => setS({ ...s, aiCostPerVideo: e.target.value })} /></label>
         <label className="text-sm"><span className="label">{tr('Stripe-Gebühr (%)')}</span><input type="number" step="0.1" min="0" className="input" value={s.stripePercent} onChange={(e) => setS({ ...s, stripePercent: e.target.value })} /></label>
         <label className="text-sm"><span className="label">{tr('Stripe pro Zahlung ($)')}</span><input type="number" step="0.01" min="0" className="input" value={s.stripeFixed} onChange={(e) => setS({ ...s, stripeFixed: e.target.value })} /></label>
@@ -108,7 +112,7 @@ function SettingsCard({ settings, onSaved }) {
       </div>
       <button className="btn-primary" onClick={save} disabled={busy}>{busy ? <Spinner /> : <Save className="h-4 w-4" />}{tr('Speichern')}</button>
       {msg && <Notice tone={msg.tone}>{msg.text}</Notice>}
-      <p className="text-xs muted">{tr('Die KI-Kosten pro Video sind eine Schätzung. Die echten Kosten siehst du bei OpenAI unter „Usage“ – passe den Wert hier danach an.')}</p>
+      <p className="text-xs muted">{tr('Die KI-Kosten pro Video (Bilder, Standard-Stimme, Skript) und der Zuschlag für Premium-Stimmen (ElevenLabs) sind Schätzungen. Die echten Kosten siehst du bei OpenAI und ElevenLabs unter „Usage“ – passe die Werte hier danach an. Im Hochrechner rechnen Daily und Pro mit Premium-Stimmen.')}</p>
     </section>
   );
 }
@@ -140,7 +144,7 @@ export default function Finance() {
         <div className="space-y-6">
           <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
             <Tile label={tr('Einnahmen (netto)')} value={money(data.stripe.net, cur)} hint={tr('{n} Zahlungen · brutto {g} · Gebühren {f}', { n: data.stripe.payments, g: money(data.stripe.gross, cur), f: money(data.stripe.fees, cur) })} />
-            <Tile label={tr('KI-Kosten (geschätzt)')} value={money(data.aiCosts)} hint={tr('{n} Videos × {c}', { n: data.videos, c: money(data.settings.aiCostPerVideo) })} />
+            <Tile label={tr('KI-Kosten (geschätzt)')} value={money(data.aiCosts)} hint={`${tr('{n} Videos × {c}', { n: data.videos, c: money(data.settings.aiCostPerVideo) })}${data.premiumVideos ? ` + ${tr('{n} mit Premium-Stimme × {c}', { n: data.premiumVideos, c: money(data.settings.premiumExtraPerVideo) })}` : ''}`} />
             <Tile label={tr('Fixkosten')} value={money(data.fixedCosts)} hint={tr('pro Monat')} />
             <Tile label={tr('Gewinn')} value={money(data.profit, cur)} tone={data.profit < 0 ? 'neg' : ''} hint={tr('Einnahmen − KI-Kosten − Fixkosten')} />
           </div>

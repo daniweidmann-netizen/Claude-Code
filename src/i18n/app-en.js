@@ -1,5 +1,8 @@
 // English versions of the app texts. Key = German original (see tr() in index.jsx).
 export default {
+  "{n} mit Premium-Stimme × {c}": "{n} with premium voice × {c}",
+  "Premium-Stimme pro Video ($)": "Premium voice per video ($)",
+  "Die KI-Kosten pro Video (Bilder, Standard-Stimme, Skript) und der Zuschlag für Premium-Stimmen (ElevenLabs) sind Schätzungen. Die echten Kosten siehst du bei OpenAI und ElevenLabs unter „Usage“ – passe die Werte hier danach an. Im Hochrechner rechnen Daily und Pro mit Premium-Stimmen.": "The AI cost per video (images, standard voice, script) and the premium voice surcharge (ElevenLabs) are estimates. You can see the real costs at OpenAI and ElevenLabs under “Usage” – adjust the values here accordingly. The projection calculates Daily and Pro with premium voices.",
   "Daniel – warm (m)": "Daniel – warm (m)",
   "Noah – klar (m)": "Noah – clear (m)",
   "Fiete – locker (m)": "Fiete – casual (m)",
