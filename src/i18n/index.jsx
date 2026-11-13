@@ -33,7 +33,13 @@ function detect() {
     const saved = localStorage.getItem('tr-lang');
     if (saved && DICTS[saved]) return saved;
   } catch {}
-  return DEFAULT_LANG; // Englisch als Standard, Deutsch umschaltbar
+  // Deutschsprachige Browser bekommen direkt die deutsche Version (sonst übersetzt der Browser
+  // selbst – und macht aus „TrueReel“ z. B. „Echte Rolle“)
+  try {
+    const langs = navigator.languages?.length ? navigator.languages : [navigator.language];
+    if (langs.some((l) => /^de\b/i.test(l || ''))) return 'de';
+  } catch {}
+  return DEFAULT_LANG; // sonst Englisch, Deutsch umschaltbar
 }
 
 export function I18nProvider({ children }) {

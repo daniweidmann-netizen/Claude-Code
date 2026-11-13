@@ -27,7 +27,7 @@ export function Logo({ to = '/', className = '' }) {
   return (
     <Link to={to} className={`flex items-center gap-2 ${className}`} aria-label={tr("TrueReel Startseite")}>
       <LogoMark className="h-9 w-9" />
-      <span className="text-xl font-black tracking-[-0.04em]" aria-hidden="true">{tr("true")}<span className="text-accent-700 dark:text-accent-500">{tr("reel")}</span></span>
+      <span className="notranslate text-xl font-black tracking-[-0.04em]" translate="no" aria-hidden="true">{tr("true")}<span className="text-accent-700 dark:text-accent-500">{tr("reel")}</span></span>
     </Link>
   );
 }

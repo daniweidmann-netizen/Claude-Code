@@ -40,7 +40,7 @@ function indexBody(lang) {
   return `<main style="max-width:720px;margin:0 auto;padding:32px 16px;font-family:system-ui,sans-serif"><h1>${lang === 'de' ? 'Ratgeber' : 'Guides'}</h1><ul>${GUIDES.map((g) => `<li><a href="${GUIDE_BASE[lang]}/${g[lang].slug}">${esc(g[lang].title)}</a> – ${esc(g[lang].description)}</li>`).join('')}</ul></main>`;
 }
 
-export function renderHtml(template, path, appUrl) {
+export function renderHtml(template, path, appUrl, acceptLanguage = '') {
   const clean = path.split('?')[0].replace(/\/+$/, '') || '/';
   const meta = guideMeta(clean) || PAGES[clean] || null;
   let html = template;
@@ -61,7 +61,10 @@ export function renderHtml(template, path, appUrl) {
       .replace(/(<meta property="og:description" content=")[^"]*"/, `$1${esc(meta.description)}"`);
   }
   if (meta?.type) html = html.replace('<meta property="og:type" content="website" />', `<meta property="og:type" content="${meta.type}" />`);
-  if (meta?.lang) html = html.replace(/<html lang="\w+"/, `<html lang="${meta.lang}"`);
+  // Sprache ans Browser-Signal anpassen, damit kein automatisches Übersetzen angeboten wird
+  const browserDe = /^de\b/i.test(String(acceptLanguage).trim());
+  const pageLang = meta?.lang || (browserDe ? 'de' : null);
+  if (pageLang) html = html.replace(/<html lang="\w+"/, `<html lang="${pageLang}"`);
   html = html.replace('</head>', `${head.join('')}<meta property="og:url" content="${url}"></head>`);
   const body = meta?.body || (clean === '/guides' ? indexBody('en') : clean === '/ratgeber' ? indexBody('de') : null);
   if (body) html = html.replace('<div id="root"></div>', `<div id="root">${body}</div>`);
