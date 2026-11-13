@@ -19,7 +19,7 @@ Die Formulare sind auf Englisch. Die Texte unten können 1:1 kopiert werden.
 - [x] Branding: Startseite `https://truereel.ch`, Datenschutz `https://truereel.ch/datenschutz`, AGB `https://truereel.ch/agb`
 - [x] Datenschutzerklärung erwähnt YouTube API Services, Google-Datenschutzerklärung, YouTube-Nutzungsbedingungen, Widerruf über myaccount.google.com/permissions und die „Limited Use“-Regeln
 - [x] In der App steht beim Verbinden ein Hinweis auf die YouTube-Nutzungsbedingungen
-- [ ] **Demo-Video** (siehe unten) aufnehmen und auf YouTube als „Nicht gelistet“ hochladen
+- [x] **Demo-Video**: https://www.youtube.com/watch?v=gG9N6uQjKjY (nicht gelistet)
 
 ---
 
@@ -83,6 +83,14 @@ Angaben:
 **Demo video:** gleicher Link wie bei Schritt 1.
 
 ---
+
+## Status (13.11.2026)
+
+- [x] Branding von Google geprüft und veröffentlicht
+- [x] OAuth-Datenzugriff (youtube.upload, youtube.readonly) zur Prüfung eingereicht
+- [x] YouTube API Audit-Formular eingereicht (Standardkontingent 10'000, Nachweise 1–6 hochgeladen)
+- [x] OAuth-Tokens werden AES-256-GCM-verschlüsselt gespeichert
+- [ ] Antwort von Google abwarten (Mails an info@truereel.ch)
 
 ## Danach
 
