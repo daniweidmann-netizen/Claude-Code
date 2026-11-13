@@ -19,6 +19,7 @@ import { startScheduler } from './scheduler.js';
 import { publishVideo, publishDue } from './publish.js';
 import { PLAN_QUOTAS } from './quotas.js';
 import analyticsRouter from './analytics.js';
+import financeRouter from './finance.js';
 import { renderHtml, sitemap, robots } from './seo.js';
 import { createCharacter, generateWithCharacter } from './providers/image/openai.js';
 
@@ -31,6 +32,7 @@ app.post('/api/stripe/webhook', express.raw({ type: 'application/json' }), webho
 app.use(cors({ origin: config.appUrl }));
 app.use(express.json({ limit: '2mb' }));
 app.use('/api', analyticsRouter); // /api/track, /api/stats
+app.use('/api', financeRouter); // /api/finance (nur Inhaber)
 
 let hasFfmpeg = false;
 ffmpegAvailable().then((ok) => { hasFfmpeg = ok; });

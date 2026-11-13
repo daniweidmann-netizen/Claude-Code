@@ -57,6 +57,7 @@ function ProfileMenu() {
           <p className="truncate px-3 py-2 text-sm font-semibold">{name}</p>
           <Link to="/app/account" className="block rounded-lg px-3 py-2 text-sm hover:bg-navy-50 dark:hover:bg-navy-800" onClick={() => setOpen(false)}>{tr("Konto & Abrechnung")}</Link>
           {profile?.is_admin && <Link to="/app/statistik" className="block rounded-lg px-3 py-2 text-sm hover:bg-navy-50 dark:hover:bg-navy-800" onClick={() => setOpen(false)}>{tr("Statistik")}</Link>}
+          {profile?.is_admin && <Link to="/app/finanzen" className="block rounded-lg px-3 py-2 text-sm hover:bg-navy-50 dark:hover:bg-navy-800" onClick={() => setOpen(false)}>{tr("Finanzen")}</Link>}
           <div className="flex items-center justify-between px-3 py-2 text-sm"><span>{tr("Sprache")}</span><LangSwitch /></div>
           <button onClick={toggle} className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm hover:bg-navy-50 dark:hover:bg-navy-800">
             {theme === 'dark' ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}{theme === 'dark' ? tr('Hellmodus') : tr('Dunkelmodus')}

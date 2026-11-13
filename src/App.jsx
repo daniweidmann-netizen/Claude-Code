@@ -16,6 +16,7 @@ import { Impressum, Datenschutz, AGB, Rueckerstattung } from './pages/legal/Lega
 import { translate as tr } from './i18n/index.jsx';
 import { track } from './lib/analytics.js';
 import Stats from './pages/app/Stats.jsx';
+import Finance from './pages/app/Finance.jsx';
 import { GuideIndex, GuidePage } from './pages/Guides.jsx';
 
 function ScrollManager() {
@@ -72,6 +73,7 @@ export default function App() {
           <Route path="kalender" element={<Calendar />} />
           <Route path="account" element={<Account />} />
           <Route path="statistik" element={<Stats />} />
+          <Route path="finanzen" element={<Finance />} />
         </Route>
       </Routes>
     </>
