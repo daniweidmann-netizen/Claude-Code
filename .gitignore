@@ -7,3 +7,4 @@ server/.renders
 .DS_Store
 samples/
 .tmp-*
+youtube-audit/
