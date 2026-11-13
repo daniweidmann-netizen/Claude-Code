@@ -344,7 +344,7 @@ export default function Editor() {
                       <div className="flex flex-wrap items-center gap-1.5">
                         <select className="input w-auto flex-1 py-2 text-xs" value={sc.voiceId || ''} onChange={(e) => { updateScene(sc.id, { voiceId: e.target.value || null, audioUrl: null, audioDuration: null }); setVoicePending(true); }} aria-label={tr("Stimme dieser Szene")}>
                           <option value="">{tr("Stimme: Standard")}</option>
-                          {VOICES.map((v) => <option key={v.id} value={v.id}>{tr(v.label)}</option>)}
+                          {VOICES.map((v) => <option key={v.id} value={v.id}>{tr(v.label)}{v.premium ? ' ★' : ''}</option>)}
                         </select>
                         <button className="btn-outline px-2.5 py-2 text-xs" onClick={() => regenImage(sc)} disabled={!!busy}>{busy === `img-${sc.id}` ? <Spinner className="h-3.5 w-3.5" /> : <RefreshCw className="h-3.5 w-3.5" />}{tr("Bild")}</button>
                         <button className="btn-icon" onClick={() => move(i, i - 1)} disabled={i === 0} aria-label={tr("Nach oben")}><ArrowUp className="h-4 w-4" /></button>
@@ -370,7 +370,7 @@ export default function Editor() {
               <div className="grid grid-cols-[1fr_auto] gap-2">
                 <label className="input flex items-center gap-2 py-0 pr-1"><Mic className="h-5 w-5 shrink-0" />
                   <select className="w-full bg-transparent py-3 text-[15px] focus:outline-none" value={project.voiceId} onChange={(e) => { updateProject({ voiceId: e.target.value, scenes: scenes.map((x) => ({ ...x, audioUrl: x.voiceId ? x.audioUrl : null, audioDuration: x.voiceId ? x.audioDuration : null })) }); setVoicePending(true); }} aria-label={tr("Stimme")}>
-                    {VOICES.map((v) => <option key={v.id} value={v.id}>{tr('Stimme')}: {tr(v.label)}</option>)}
+                    {VOICES.map((v) => <option key={v.id} value={v.id}>{tr('Stimme')}: {tr(v.label)}{v.premium ? ' ★' : ''}</option>)}
                   </select>
                 </label>
                 <button className="btn-outline px-4" onClick={previewVoice}><Play className="h-4 w-4 fill-current" />{tr("Vorhören")}</button>

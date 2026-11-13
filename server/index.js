@@ -21,6 +21,8 @@ import { PLAN_QUOTAS } from './quotas.js';
 import analyticsRouter from './analytics.js';
 import financeRouter from './finance.js';
 import { renderHtml, sitemap, robots } from './seo.js';
+import elevenlabsTts from './providers/tts/elevenlabs.js';
+import { VOICES, PREMIUM_VOICE_PLANS } from '../src/config/catalog.js';
 import { createCharacter, generateWithCharacter } from './providers/image/openai.js';
 
 const app = express();
@@ -54,6 +56,7 @@ app.get('/api/health', (_req, res) => {
     stripeKeyType: (config.stripeKey.match(/^(sk|pk|rk|mk|whsec)_(test|live)?/)?.[0] || (config.stripeKey ? 'anderes Format' : 'leer')).replace(/_$/, ''),
     stripeAccount: stripeAccountId || null,
     stripeManagedPayments: managedPayments,
+    premiumVoices: !!process.env.ELEVENLABS_API_KEY,
   });
 });
 
@@ -115,6 +118,15 @@ app.post('/api/generate/character', authenticate, handle(async (req) => {
 }));
 app.post('/api/generate/voice', authenticate, handle(async (req) => {
   const text = String(req.body?.text || '').slice(0, 1200);
+  const preset = VOICES.find((v) => v.id === req.body?.voiceId);
+  // Premium-Stimme: ElevenLabs für Daily/Pro/Inhaber; sonst (oder bei Fehler) die ähnliche Standard-Stimme
+  if (preset?.premium && process.env.ELEVENLABS_API_KEY) {
+    const profile = req.demo ? null : await getProfile(req.user.id);
+    if (profile?.is_admin || PREMIUM_VOICE_PLANS.includes(profile?.plan)) {
+      try { return { ...(await elevenlabsTts.synthesize({ ...req.body, text })), provider: 'elevenlabs' }; }
+      catch (e) { console.warn('[tts:elevenlabs]', e.message, '→ Standard-Stimme'); }
+    }
+  }
   return { ...(await provider('tts').synthesize({ ...req.body, text })), provider: provider('tts').name };
 }));
 

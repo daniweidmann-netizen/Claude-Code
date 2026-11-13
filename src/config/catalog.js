@@ -20,7 +20,7 @@ export const ART_STYLES = [
 ];
 
 // Version der Hörproben in /public/voices (bei neuen Aufnahmen erhöhen → kein alter Cache)
-export const VOICE_SAMPLE_VERSION = 3;
+export const VOICE_SAMPLE_VERSION = 4;
 
 export const LANGUAGES = [
   { id: 'de', label: 'Deutsch', bcp47: 'de-DE' },
@@ -39,7 +39,14 @@ export const VOICES = [
   { id: 'warm-f', label: 'Warm (w)', pitch: 1.05, rate: 1.0, gender: 'female', providerVoice: { elevenlabs: 'EXAVITQu4vr4xnSDxMaL', openai: 'coral' } },
   { id: 'soft-f', label: 'Sanft (w)', pitch: 1.0, rate: 0.97, gender: 'female', providerVoice: { elevenlabs: 'EXAVITQu4vr4xnSDxMaL', openai: 'sage' } },
   { id: 'energy-f', label: 'Energisch (w)', pitch: 1.15, rate: 1.1, gender: 'female', providerVoice: { elevenlabs: 'MF3mGyEYCl7XYWbV9V6O', openai: 'nova' } },
+  // Premium-Stimmen (ElevenLabs) – in Daily und Pro. Fallback: ähnliche OpenAI-Stimme
+  { id: 'el-daniel', label: 'Daniel – warm (m)', premium: true, gender: 'male', providerVoice: { elevenlabs: 'jdKpAe6rxAe99tFGbsAc', openai: 'onyx' } },
+  { id: 'el-noah', label: 'Noah – klar (m)', premium: true, gender: 'male', providerVoice: { elevenlabs: 't7z7JVU64WYfp4GSw7aZ', openai: 'ash' } },
+  { id: 'el-fiete', label: 'Fiete – locker (m)', premium: true, gender: 'male', providerVoice: { elevenlabs: 'kHfXYCwbOq00KgBegten', openai: 'echo' } },
+  { id: 'el-clara', label: 'Clara – ruhig (w)', premium: true, gender: 'female', providerVoice: { elevenlabs: 'Wh9XzZGVJQVPkBBHqnp3', openai: 'sage' } },
+  { id: 'el-lola', label: 'Lola – lebendig (w)', premium: true, gender: 'female', providerVoice: { elevenlabs: 'SiMvlSW9cKKHDYT4BzOp', openai: 'coral' } },
 ];
+export const PREMIUM_VOICE_PLANS = ['daily', 'pro'];
 
 export const CAPTION_STYLES = [
   { id: 'karaoke', label: 'Karaoke', desc: 'Aktives Wort farbig hervorgehoben' },

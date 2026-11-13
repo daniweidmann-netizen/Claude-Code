@@ -1,25 +1,7 @@
 // Voice-Modul über die OpenAI Speech API (gpt-4o-mini-tts).
 // Das Modell versteht Sprech-Anweisungen (instructions) – damit klingt es natürlicher.
-import { spawn } from 'node:child_process';
 import { VOICES } from '../../../src/config/catalog.js';
-import { config } from '../../config.js';
-
-// Etwas zügigeres Sprechtempo wirkt in Kurzvideos lebendiger. Das Modell ignoriert
-// Tempo-Vorgaben, darum wird das fertige Audio mit FFmpeg (atempo, Tonhöhe bleibt) beschleunigt.
-const TEMPO = Number(process.env.VOICE_TEMPO || 1.18);
-
-function speedUp(buf) {
-  if (!(TEMPO > 0.5 && TEMPO < 2) || TEMPO === 1) return Promise.resolve(buf);
-  return new Promise((resolve) => {
-    const p = spawn(config.ffmpegPath, ['-loglevel', 'error', '-i', 'pipe:0', '-filter:a', `atempo=${TEMPO}`, '-map_metadata', '-1', '-c:a', 'libmp3lame', '-b:a', '128k', '-id3v2_version', '0', '-write_xing', '0', '-f', 'mp3', 'pipe:1']);
-    const out = [];
-    p.stdout.on('data', (d) => out.push(d));
-    p.on('error', () => resolve(buf)); // kein FFmpeg → Originaltempo
-    p.on('close', (code) => resolve(code === 0 && out.length ? Buffer.concat(out) : buf));
-    p.stdin.on('error', () => {});
-    p.stdin.end(buf);
-  });
-}
+import { speedUp } from './tempo.js';
 
 const LANG_HINT = {
   de: 'Sprich klares, natürliches Hochdeutsch.',
@@ -38,6 +20,11 @@ const STYLE = {
   'warm-f': 'Warm, friendly female narrator. Lively but not exaggerated.',
   'soft-f': 'Soft, calm female narrator. Relaxed, trustworthy and pleasant to listen to.',
   'energy-f': 'Energetic and motivating like a social media creator, but easy to understand.',
+  'el-daniel': 'Calm, warm male narrator like a good documentary.',
+  'el-noah': 'Clear, friendly young male narrator.',
+  'el-fiete': 'Relaxed, natural male creator voice, conversational.',
+  'el-clara': 'Calm, clear female narrator.',
+  'el-lola': 'Lively, fresh female social media voice.',
 };
 
 export default {

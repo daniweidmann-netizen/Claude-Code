@@ -1,5 +1,12 @@
 // English versions of the app texts. Key = German original (see tr() in index.jsx).
 export default {
+  "Daniel – warm (m)": "Daniel – warm (m)",
+  "Noah – klar (m)": "Noah – clear (m)",
+  "Fiete – locker (m)": "Fiete – casual (m)",
+  "Clara – ruhig (w)": "Clara – calm (f)",
+  "Lola – lebendig (w)": "Lola – lively (f)",
+  "Premium": "Premium",
+  "Premium-Stimmen (besonders natürlich) sind in den Plänen Daily und Pro enthalten.": "Premium voices (especially natural) are included in the Daily and Pro plans.",
   "Finanzen": "Finances",
   "Hochrechner": "Projection",
   "Trag ein, wie viele Kunden du pro Plan hast oder erwartest. Alles wird sofort berechnet (pro Monat, in USD).": "Enter how many customers you have or expect per plan. Everything is calculated instantly (per month, in USD).",

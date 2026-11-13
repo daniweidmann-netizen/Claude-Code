@@ -1,8 +1,10 @@
 import { useEffect, useRef, useState } from 'react';
 import { Play, Square, Check } from 'lucide-react';
-import { VOICE_SAMPLE_VERSION, ART_STYLES, VOICES, LANGUAGES, CAPTION_STYLES, MUSIC_TRACKS, PLATFORMS, POST_FREQUENCIES } from '../config/catalog.js';
+import { VOICE_SAMPLE_VERSION, PREMIUM_VOICE_PLANS, ART_STYLES, VOICES, LANGUAGES, CAPTION_STYLES, MUSIC_TRACKS, PLATFORMS, POST_FREQUENCIES } from '../config/catalog.js';
 import { renderArt } from '../video/art.js';
 import { stopSpeaking } from '../video/tts.js';
+import { useAuth } from '../context/AuthContext.jsx';
+import { Link } from 'react-router-dom';
 import { previewMusic, stopMusicPreview, unlockAudio } from '../video/audio.js';
 import { translate as tr } from '../i18n/index.jsx';
 
@@ -32,6 +34,8 @@ export function ArtStylePicker({ value, onChange, motif }) {
 
 
 export function VoicePicker({ language, voiceId, onChange }) {
+  const { profile } = useAuth();
+  const premiumOk = !!profile?.owner || PREMIUM_VOICE_PLANS.includes(profile?.plan);
   const [playing, setPlaying] = useState(null);
   const [failed, setFailed] = useState(false);
   const audioRef = useRef(null);
@@ -60,8 +64,8 @@ export function VoicePicker({ language, voiceId, onChange }) {
       </div>
       <div className="grid gap-3 sm:grid-cols-2">
         {VOICES.map((v) => (
-          <div key={v.id} className={`option flex items-center justify-between ${voiceId === v.id ? 'option-active' : ''}`} onClick={() => onChange({ voiceId: v.id })} role="button" tabIndex={0} onKeyDown={(e) => e.key === 'Enter' && onChange({ voiceId: v.id })} aria-pressed={voiceId === v.id}>
-            <span className="flex items-center gap-2 text-sm font-semibold">{voiceId === v.id && <Check className="h-4 w-4 text-accent-700" />}{tr(v.label)}</span>
+          <div key={v.id} className={`option flex items-center justify-between ${voiceId === v.id ? 'option-active' : ''} ${v.premium && !premiumOk ? 'opacity-70' : ''}`} onClick={() => (!v.premium || premiumOk) && onChange({ voiceId: v.id })} role="button" tabIndex={0} onKeyDown={(e) => e.key === 'Enter' && (!v.premium || premiumOk) && onChange({ voiceId: v.id })} aria-pressed={voiceId === v.id} aria-disabled={v.premium && !premiumOk}>
+            <span className="flex items-center gap-2 text-sm font-semibold">{voiceId === v.id && <Check className="h-4 w-4 text-accent-700" />}{tr(v.label)}{v.premium && <span className="rounded-full bg-accent-500 px-2 py-0.5 text-[10px] font-bold uppercase text-navy-950">{tr('Premium')}</span>}</span>
             <button type="button" className="btn-outline px-3 py-1.5 text-xs" onClick={(e) => { e.stopPropagation(); preview(v.id); }}>
               {playing === v.id ? <Square className="h-3 w-3" /> : <Play className="h-3 w-3" />}{tr("Vorhören")}
             </button>
@@ -69,6 +73,7 @@ export function VoicePicker({ language, voiceId, onChange }) {
         ))}
       </div>
       <p className="text-xs muted">{tr("Hörprobe mit der echten KI-Stimme – so klingt sie auch im fertigen Video.")}</p>
+      {!premiumOk && <p className="text-xs muted">{tr('Premium-Stimmen (besonders natürlich) sind in den Plänen Daily und Pro enthalten.')} <Link to="/preise" className="font-semibold underline">{tr('Pläne ansehen')}</Link></p>}
       {failed && <p className="text-xs text-amber-700 dark:text-amber-300">{tr("Die Hörprobe konnte nicht abgespielt werden. Prüfe, ob dein Handy auf lautlos steht, und tippe nochmals.")}</p>}
     </div>
   );
