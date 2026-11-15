@@ -43,11 +43,13 @@ router.get('/finance', authenticate, requireAdmin, async (req, res) => {
     }
 
     // 2) Aktive Abos (ohne Inhaber-Konto) und wiederkehrender Monatsumsatz (MRR)
-    const { data: profiles } = await admin.from('profiles').select('plan,billing_interval,subscription_status,cancel_at_period_end,is_admin');
+    const { data: profiles } = await admin.from('profiles').select('plan,billing_interval,subscription_status,cancel_at_period_end,is_admin,stripe_customer_id');
     const subs = { hobby: { monthly: 0, yearly: 0 }, daily: { monthly: 0, yearly: 0 }, pro: { monthly: 0, yearly: 0 } };
     let freeUsers = 0;
     for (const p of profiles || []) {
       if (p.is_admin) continue;
+      // Manuell freigeschaltete Konten ohne Stripe-Kunde (z. B. Test-Zugang für die Google-Prüfung) zählen nicht als Abo
+      if (p.plan !== 'free' && !p.stripe_customer_id) continue;
       if (subs[p.plan] && ['active', 'trialing', 'past_due'].includes(p.subscription_status)) subs[p.plan][p.billing_interval === 'yearly' ? 'yearly' : 'monthly']++;
       else freeUsers++;
     }
