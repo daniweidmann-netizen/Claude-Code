@@ -21,6 +21,7 @@ import { PLAN_QUOTAS } from './quotas.js';
 import analyticsRouter from './analytics.js';
 import financeRouter from './finance.js';
 import { renderHtml, sitemap, robots } from './seo.js';
+import { sendReminders, reminderRouter } from './reminders.js';
 import elevenlabsTts from './providers/tts/elevenlabs.js';
 import { VOICES, PREMIUM_VOICE_PLANS } from '../src/config/catalog.js';
 import { createCharacter, generateWithCharacter } from './providers/image/openai.js';
@@ -57,6 +58,7 @@ app.get('/api/health', (_req, res) => {
     stripeAccount: stripeAccountId || null,
     stripeManagedPayments: managedPayments,
     premiumVoices: !!process.env.ELEVENLABS_API_KEY,
+    reminderEmails: !!process.env.BREVO_API_KEY,
   });
 });
 
@@ -154,8 +156,10 @@ app.post('/api/videos/:id/publish', authenticate, async (req, res) => {
 });
 // Vom Supabase-Zeitplaner aufgerufen; verarbeitet nur bereits freigegebene, fällige Posts
 app.post('/api/cron/publish', async (_req, res) => {
+  sendReminders().catch((e) => console.error('[reminder]', e.message)); // höchstens einmal pro Stunde
   try { res.json(await publishDue()); } catch (e) { res.status(500).json({ error: e.message }); }
 });
+app.use('/api', reminderRouter);
 
 app.use('/api/stripe', stripeRouter);
 app.use('/api/social', socialRouter);

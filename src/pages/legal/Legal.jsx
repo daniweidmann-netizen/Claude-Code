@@ -70,7 +70,7 @@ function DatenschutzDe() {
         <li><strong>Anthropic</strong> (USA) – Erstellung der Video-Skripte. Übermittelt werden Thema, Stichpunkte und Skripttext.</li>
         <li><strong>OpenAI</strong> (USA) – Sprecherstimme und KI-Bilder. Übermittelt werden Skripttext und Bildbeschreibungen.</li>
         <li><strong>Pixabay</strong> (Deutschland) und <strong>Wikimedia Commons</strong> (USA) – Bildsuche. Übermittelt werden nur Suchbegriffe.</li>
-        <li><strong>Brevo</strong> (Frankreich) – Versand von System-E-Mails (Bestätigung, Passwort).</li>
+        <li><strong>Brevo</strong> (Frankreich) – Versand von System-E-Mails (Bestätigung, Passwort) und einer einmaligen Erinnerung, wenn du ein Video erstellt, aber noch nicht exportiert hast. Von der Erinnerung kannst du dich über den Link in der Mail abmelden.</li>
         <li><strong>Hosting</strong>: Render Services, Inc. (USA), Server-Region Frankfurt (Deutschland)</li>
         <li><strong>Social-Plattformen</strong> (Google/YouTube, TikTok, Meta) – nur wenn du sie verbindest und ein Video postest.</li>
       </ul>
@@ -202,7 +202,7 @@ function DatenschutzEn() {
         <li><strong>Anthropic</strong> (USA) – writing video scripts. We transmit the topic, notes and script text.</li>
         <li><strong>OpenAI</strong> (USA) – voiceover and AI images. We transmit script text and image descriptions.</li>
         <li><strong>Pixabay</strong> (Germany) and <strong>Wikimedia Commons</strong> (USA) – image search. Only search terms are transmitted.</li>
-        <li><strong>Brevo</strong> (France) – sending system emails (confirmation, password).</li>
+        <li><strong>Brevo</strong> (France) – sending system emails (confirmation, password) and a one-time reminder if you created a video but have not exported it yet. You can unsubscribe from the reminder via the link in the email.</li>
         <li><strong>Hosting</strong>: Render Services, Inc. (USA), server region Frankfurt (Germany)</li>
         <li><strong>Social platforms</strong> (Google/YouTube, TikTok, Meta) – only if you connect them and post a video.</li>
       </ul>
