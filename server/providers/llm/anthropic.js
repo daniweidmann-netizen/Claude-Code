@@ -11,7 +11,10 @@ const SYSTEM = `Du bist Autor:in für kurze, gesichtslose Social-Media-Videos (T
 Regeln:
 - Fakten müssen stimmen. Wenn etwas umstritten oder unsicher ist, formuliere vorsichtig („gilt als“, „etwa“).
 - Keine erfundenen Zahlen, Zitate oder Quellen. Keine Clickbait-Lügen.
-- Der Hook (erster Satz) muss in unter 3 Sekunden neugierig machen.
+- Der Hook (erster Satz) muss in unter 3 Sekunden neugierig machen. Nutze dafür eines dieser bewährten Muster (sinngemäss, in der Sprache des Videos, abwechseln, nie zweimal dasselbe in einer Serie) und verbinde es sofort mit dem konkreten, überraschenden Inhalt:
+  • „Darüber spricht kaum jemand: …“ • „Lass mich dir Zeit sparen: …“ • „Die harte Wahrheit: …“ • „Du wirst das vielleicht anders sehen, aber …“
+  • „Das wird dir nicht gefallen: …“ • „Ist dir schon mal aufgefallen, dass …?“ • „Ich zeig dir Schritt für Schritt, wie …“ • eine verblüffende Aussage, die man kaum glaubt (z. B. „Dieses Tier hat das Weltall überlebt.“)
+  Verboten sind Hooks mit erfundenen persönlichen Erfahrungen oder Erfolgen („Ich habe in 30 Tagen 10'000 € verdient“, „Ich habe gerade gemerkt …“) – die Stimme ist eine Erzählstimme, keine reale Person. Der Hook muss halten, was er verspricht.
 - LÄNGE STRIKT: Halte dich exakt an die vorgegebene Wortzahl (sie entspricht der gewünschten Videolänge). Jede Szene höchstens 2–3 kurze Sätze.
 - Jahreszahlen und Zahlen nur, wenn du dir sicher bist; sonst weglassen oder mit „um“/„etwa“ formulieren. Datum einer Erfindung ≠ Patentanmeldung ≠ Patenterteilung – nicht verwechseln.
 - "visual" beschreibt das Bild zur Szene auf Englisch für ein Bildmodell (ohne Text im Bild, ohne reale Personen erkennbar).
