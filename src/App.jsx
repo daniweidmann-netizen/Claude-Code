@@ -18,6 +18,7 @@ import { track } from './lib/analytics.js';
 import Stats from './pages/app/Stats.jsx';
 import Finance from './pages/app/Finance.jsx';
 import { GuideIndex, GuidePage } from './pages/Guides.jsx';
+import Business from './pages/Business.jsx';
 
 function ScrollManager() {
   const { pathname, hash } = useLocation();
@@ -51,6 +52,8 @@ export default function App() {
         <Route element={<SiteLayout />}>
           <Route index element={<Landing />} />
           <Route path="preise" element={<PricingPage />} />
+          <Route path="firmen" element={<Business />} />
+          <Route path="business" element={<Business />} />
           <Route path="impressum" element={<Impressum />} />
           <Route path="datenschutz" element={<Datenschutz />} />
           <Route path="agb" element={<AGB />} />

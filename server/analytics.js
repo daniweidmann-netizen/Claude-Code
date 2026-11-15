@@ -10,7 +10,7 @@ const router = express.Router();
 const SECRET = process.env.ANALYTICS_SECRET || process.env.SUPABASE_SERVICE_ROLE_KEY || crypto.randomBytes(32).toString('hex');
 const OWN_HOSTS = /(^|\.)truereel\.ch$|onrender\.com$|^localhost$/;
 const BOTS = /bot|crawl|spider|slurp|facebookexternalhit|preview|headless|lighthouse|pingdom|uptime|monitor|curl|wget|python|node-fetch|axios/i;
-const TYPES = new Set(['pageview', 'signup', 'checkout', 'waitlist']);
+const TYPES = new Set(['pageview', 'signup', 'checkout', 'waitlist']); // 'lead' nur serverseitig (Firmen-Anfrage)
 // Antworten auf „Wie hast du von TrueReel erfahren?“ bei der Registrierung
 const SIGNUP_SOURCES = new Set(['tiktok', 'instagram', 'youtube', 'google', 'friends', 'other'])
 

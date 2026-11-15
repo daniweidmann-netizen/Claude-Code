@@ -6,6 +6,8 @@ const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replac
 
 const PAGES = {
   '/': { title: 'TrueReel – Faceless videos that perform', description: 'TrueReel creates faceless short videos for TikTok, Instagram Reels and YouTube Shorts – with AI script, voiceover, captions and auto-posting. 3 free videos, no credit card.' },
+  '/firmen': { title: 'Kurzvideos für Firmen – TrueReel', description: 'Wir produzieren jeden Monat Kurzvideos für TikTok, Instagram Reels und YouTube Shorts für dein Unternehmen. Ab CHF 290 pro Monat, monatlich kündbar, kostenloses Beispielvideo.' },
+  '/business': { title: 'Short videos for businesses – TrueReel', description: 'Monthly short videos for TikTok, Instagram Reels and YouTube Shorts for your business. From CHF 290 per month, cancel monthly, free sample video.' },
   '/preise': { title: 'Pricing – TrueReel', description: 'Transparent pricing for faceless short videos: Hobby, Daily and Pro. Cancel any time. Try 3 videos free, no credit card.' },
   '/guides': { title: 'Guides – TrueReel', description: 'Practical, honest guides for faceless short-video creators on TikTok, Reels and YouTube Shorts.', lang: 'en', alt: '/ratgeber' },
   '/ratgeber': { title: 'Ratgeber – TrueReel', description: 'Praktische, ehrliche Ratgeber für Faceless-Kurzvideos auf TikTok, Reels und YouTube Shorts.', lang: 'de', alt: '/guides' },
@@ -73,7 +75,7 @@ export function renderHtml(template, path, appUrl, acceptLanguage = '') {
 
 export function sitemap(appUrl) {
   const today = new Date().toISOString().slice(0, 10);
-  const urls = [['/', today], ['/preise', today], ['/guides', today], ['/ratgeber', today],
+  const urls = [['/', today], ['/preise', today], ['/firmen', today], ['/business', today], ['/guides', today], ['/ratgeber', today],
     ...GUIDES.flatMap((g) => ['en', 'de'].map((l) => [`${GUIDE_BASE[l]}/${g[l].slug}`, g[l].updated])),
     ['/impressum', today], ['/datenschutz', today], ['/agb', today], ['/rueckerstattung', today]];
   return `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls.map(([u, d]) => `  <url><loc>${appUrl}${u === '/' ? '/' : u}</loc><lastmod>${d}</lastmod></url>`).join('\n')}\n</urlset>\n`;

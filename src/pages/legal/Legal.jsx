@@ -78,6 +78,8 @@ function DatenschutzDe() {
       <p>Einige Anbieter (Stripe, Anthropic, OpenAI, Render, Wikimedia, Google) sitzen in den USA. Die Übermittlung erfolgt, soweit der Anbieter zertifiziert ist, auf Basis des EU-US bzw. Swiss-US Data Privacy Framework, ansonsten auf Basis der Standardvertragsklauseln der EU-Kommission (vom EDÖB anerkannt). Wir übermitteln jeweils nur die Daten, die für den konkreten Zweck nötig sind.</p>
       <h2>6. Speicherdauer</h2>
       <p>Kontodaten speichern wir, bis du dein Konto löschst. Rechnungsdaten bewahren wir gemäss gesetzlichen Fristen auf (CH: 10 Jahre, DE: bis zu 10 Jahre).</p>
+      <h2>Anfragen für den Video-Service für Firmen</h2>
+      <p>Wenn du über das Formular auf der Seite „Für Firmen“ eine Anfrage sendest, speichern wir Name, Firma, E-Mail, optional Telefon, Branche, gewünschtes Paket und deine Nachricht, um deine Anfrage zu beantworten und ein Angebot zu erstellen. Die Anfrage wird uns per E-Mail (über Brevo) zugestellt. Kommt kein Auftrag zustande, löschen wir die Angaben spätestens nach 12 Monaten.</p>
       <h2>YouTube-Verbindung (YouTube API Services)</h2>
       <p>Wenn du deinen YouTube-Kanal verbindest, nutzt TrueReel die YouTube API Services von Google. Wir erhalten damit nur die Berechtigungen, die du im Google-Dialog bestätigst.</p>
       <ul>
@@ -210,6 +212,8 @@ function DatenschutzEn() {
       <p>Some providers (Stripe, Anthropic, OpenAI, Render, Wikimedia, Google) are based in the USA. Where the provider is certified, transfers are based on the EU-US or Swiss-US Data Privacy Framework; otherwise on the European Commission's standard contractual clauses (recognised by the FDPIC). We only transmit the data needed for the specific purpose.</p>
       <h2>6. Retention</h2>
       <p>We store account data until you delete your account. Billing records are kept for the statutory periods (CH: 10 years, DE: up to 10 years).</p>
+      <h2>Requests for the video service for businesses</h2>
+      <p>When you send a request via the form on the “For businesses” page, we store your name, company, email, optionally phone, industry, chosen package and your message to answer your request and prepare an offer. The request is delivered to us by email (via Brevo). If no contract results, we delete the details after 12 months at the latest.</p>
       <h2>YouTube connection (YouTube API Services)</h2>
       <p>When you connect your YouTube channel, TrueReel uses Google's YouTube API Services. We only receive the permissions you confirm in Google's dialog.</p>
       <ul>

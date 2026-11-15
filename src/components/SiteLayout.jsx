@@ -17,7 +17,7 @@ const InstagramIcon = (props) => (
 
 
 function Navbar() {
-  const { t } = useI18n();
+  const { t, lang } = useI18n();
   const { user } = useAuth();
   const [open, setOpen] = useState(false);
   const loc = useLocation();
@@ -25,6 +25,7 @@ function Navbar() {
   const links = [
     ['/#features', t('nav.features')],
     ['/preise', t('nav.pricing')],
+    [lang === 'de' ? '/firmen' : '/business', lang === 'de' ? 'Für Firmen' : 'For businesses'],
     ['/#faq', t('nav.faq')],
   ];
   return (
@@ -101,6 +102,7 @@ export function Footer() {
           <ul className="space-y-2 text-sm muted">
             <li><a href="/#features">{t('nav.features')}</a></li>
             <li><Link to="/preise">{t('nav.pricing')}</Link></li>
+            <li><Link to={lang === 'de' ? '/firmen' : '/business'}>{lang === 'de' ? 'Für Firmen' : 'For businesses'}</Link></li>
             <li><a href="/#faq">{t('nav.faq')}</a></li>
             <li><Link to={lang === 'de' ? '/ratgeber' : '/guides'}>{lang === 'de' ? 'Ratgeber' : 'Guides'}</Link></li>
             <li><Link to="/registrieren">{t('nav.start')}</Link></li>
