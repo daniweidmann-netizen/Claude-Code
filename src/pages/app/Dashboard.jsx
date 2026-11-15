@@ -116,7 +116,7 @@ export default function Dashboard() {
   const now = Date.now();
   const upcoming = videos.filter((v) => v.status === 'scheduled' && new Date(v.scheduled_at) > now);
   const activeSeries = series.filter((s) => s.active !== false);
-  const limitText = usage.plan.id === 'free' ? tr("Dein Gratis-Video ist aufgebraucht. Wähle einen Plan unter „Konto“.") : tr("Dein monatliches Kontingent ist aufgebraucht.");
+  const limitText = usage.plan.id === 'free' ? tr("Deine Gratis-Videos sind aufgebraucht. Wähle einen Plan unter „Konto“.") : tr("Dein monatliches Kontingent ist aufgebraucht.");
 
   return (
     <>
@@ -131,7 +131,7 @@ export default function Dashboard() {
       {error && <Notice tone="error" className="mb-4">{error}</Notice>}
       {usage.plan.id === 'free' && (
         <Notice tone="info" className="mb-6 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-          <span>{tr('Gratis-Test: {n} von 1 Video verfügbar. Gratis-Exporte haben ein kleines Wasserzeichen.', { n: usage.remaining })}</span>
+          <span>{tr('Gratis-Test: {n} von 3 Videos verfügbar. Gratis-Exporte haben ein kleines Wasserzeichen.', { n: usage.remaining })}</span>
           <Link to="/preise" className="btn-primary shrink-0 px-3 py-1.5 text-xs">{tr("Pläne ansehen")}</Link>
         </Notice>
       )}

@@ -23,7 +23,8 @@ export function computeUsage(profile, videos) {
   }
   if (plan.id === FREE_PLAN.id) {
     const used = Math.max(profile?.free_videos_used || 0, videos.length);
-    return { plan, used, limit: 1, remaining: Math.max(0, 1 - used), label: 'Gratis-Test' };
+    const limit = FREE_PLAN.limits.freeVideos;
+    return { plan, used, limit, remaining: Math.max(0, limit - used), label: 'Gratis-Test' };
   }
   const start = periodStart(profile);
   const used = videos.filter((v) => new Date(v.created_at) >= start).length;

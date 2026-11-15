@@ -5,8 +5,8 @@ import { GUIDES, GUIDE_BASE, findGuide, guideHtml } from '../shared/guides.js';
 const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 
 const PAGES = {
-  '/': { title: 'TrueReel – Faceless videos that perform', description: 'TrueReel creates faceless short videos for TikTok, Instagram Reels and YouTube Shorts – with AI script, voiceover, captions and auto-posting. 1 free video, no credit card.' },
-  '/preise': { title: 'Pricing – TrueReel', description: 'Transparent pricing for faceless short videos: Hobby, Daily and Pro. Cancel any time. Try 1 video free, no credit card.' },
+  '/': { title: 'TrueReel – Faceless videos that perform', description: 'TrueReel creates faceless short videos for TikTok, Instagram Reels and YouTube Shorts – with AI script, voiceover, captions and auto-posting. 3 free videos, no credit card.' },
+  '/preise': { title: 'Pricing – TrueReel', description: 'Transparent pricing for faceless short videos: Hobby, Daily and Pro. Cancel any time. Try 3 videos free, no credit card.' },
   '/guides': { title: 'Guides – TrueReel', description: 'Practical, honest guides for faceless short-video creators on TikTok, Reels and YouTube Shorts.', lang: 'en', alt: '/ratgeber' },
   '/ratgeber': { title: 'Ratgeber – TrueReel', description: 'Praktische, ehrliche Ratgeber für Faceless-Kurzvideos auf TikTok, Reels und YouTube Shorts.', lang: 'de', alt: '/guides' },
   '/impressum': { title: 'Impressum – TrueReel' },

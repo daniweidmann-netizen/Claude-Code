@@ -66,7 +66,7 @@ export function SeriesDetail() {
   const niche = NICHES.find((n) => n.id === series.niche);
 
   const create = async (ep) => {
-    if (usage.remaining <= 0) return setMsg({ tone: 'warn', text: usage.plan.id === 'free' ? tr("Dein Gratis-Video ist aufgebraucht. Wähle einen Plan unter „Konto“.") : tr("Dein monatliches Kontingent ist aufgebraucht.") });
+    if (usage.remaining <= 0) return setMsg({ tone: 'warn', text: usage.plan.id === 'free' ? tr("Deine Gratis-Videos sind aufgebraucht. Wähle einen Plan unter „Konto“.") : tr("Dein monatliches Kontingent ist aufgebraucht.") });
     setBusy(ep.key); setMsg(null);
     try {
       const v = await createVideoForEpisode(user, series, ep);
@@ -94,7 +94,7 @@ export function SeriesDetail() {
         <button onClick={() => setIdeaOpen(true)} className="btn-primary"><Lightbulb className="h-4 w-4" />{tr("Eigene Idee / eigener Text")}</button>
         <button onClick={remove} className="btn-danger"><Trash2 className="h-4 w-4" />{tr("Löschen")}</button>
       </>} />
-      {ideaOpen && <IdeaDialog series={series} onClose={() => setIdeaOpen(false)} canCreate={usage.remaining > 0} limitText={usage.plan.id === 'free' ? tr("Dein Gratis-Video ist aufgebraucht. Wähle einen Plan unter „Konto“.") : tr("Dein monatliches Kontingent ist aufgebraucht.")} />}
+      {ideaOpen && <IdeaDialog series={series} onClose={() => setIdeaOpen(false)} canCreate={usage.remaining > 0} limitText={usage.plan.id === 'free' ? tr("Deine Gratis-Videos sind aufgebraucht. Wähle einen Plan unter „Konto“.") : tr("Dein monatliches Kontingent ist aufgebraucht.")} />}
       {msg && <Notice tone={msg.tone} className="mb-4">{msg.text}</Notice>}
       <div className="grid gap-6 lg:grid-cols-3">
         <section className="space-y-6 lg:col-span-2">

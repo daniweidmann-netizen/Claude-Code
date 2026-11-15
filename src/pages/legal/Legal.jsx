@@ -106,7 +106,7 @@ function AGBDe() {
       <h2>2. Leistungen</h2>
       <p>{SITE.name} erstellt mithilfe von KI kurze Videos (Skript, Bilder, Stimme, Untertitel, Musik) und kann diese auf verbundene Plattformen posten. Der Umfang richtet sich nach dem gewählten Plan. Wir schulden keine bestimmte Reichweite, Aufrufzahl oder Einnahmen.</p>
       <h2>3. Gratis-Test</h2>
-      <p>Neue Nutzer können 1 Video kostenlos und ohne Zahlungsmittel erstellen. Gratis-Exporte enthalten ein Wasserzeichen.</p>
+      <p>Neue Nutzer können 3 Videos kostenlos und ohne Zahlungsmittel erstellen. Gratis-Exporte enthalten ein Wasserzeichen.</p>
       <h2>4. Preise, Zahlung, Laufzeit</h2>
       <p>Es gelten die auf der Preisseite angezeigten Preise. Abos verlängern sich automatisch um die gewählte Laufzeit (monatlich oder jährlich), bis sie gekündigt werden. Die Zahlung erfolgt über Stripe im Voraus.</p>
       <h2>5. Kündigung</h2>
@@ -135,7 +135,7 @@ function RueckerstattungDe() {
     <LegalPage title="Rückerstattungsrichtlinie">
       <h2>Kurz und ehrlich</h2>
       <ul>
-        <li>Teste zuerst gratis: 1 Video ohne Kreditkarte.</li>
+        <li>Teste zuerst gratis: 3 Videos ohne Kreditkarte.</li>
         <li>Kündigung jederzeit mit einem Klick; keine weitere Abbuchung danach.</li>
         <li>Bereits begonnene Abrechnungsperioden werden grundsätzlich nicht anteilig erstattet.</li>
       </ul>
@@ -238,7 +238,7 @@ function AGBEn() {
       <h2>2. Services</h2>
       <p>{SITE.name} uses AI to create short videos (script, images, voice, captions, music) and can post them to connected platforms. The scope depends on the chosen plan. We do not promise any particular reach, view count or income.</p>
       <h2>3. Free trial</h2>
-      <p>New users can create 1 video for free without a payment method. Free exports include a watermark.</p>
+      <p>New users can create 3 videos for free without a payment method. Free exports include a watermark.</p>
       <h2>4. Prices, payment, term</h2>
       <p>The prices shown on the pricing page apply. Subscriptions renew automatically for the chosen term (monthly or yearly) until cancelled. Payment is made in advance via Stripe.</p>
       <h2>5. Cancellation</h2>
@@ -267,7 +267,7 @@ function RueckerstattungEn() {
     <LegalPage title="Refund policy">
       <h2>Short and honest</h2>
       <ul>
-        <li>Try it free first: 1 video, no credit card.</li>
+        <li>Try it free first: 3 videos, no credit card.</li>
         <li>Cancel any time with one click; no further charges afterwards.</li>
         <li>Billing periods that have already started are generally not refunded pro rata.</li>
       </ul>

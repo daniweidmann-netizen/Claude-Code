@@ -70,7 +70,7 @@ async function checkQuota(req, res, next) {
   const since = plan === 'free' ? new Date(0) : new Date(new Date().getFullYear(), new Date().getMonth(), 1);
   const { count } = await admin.from('videos').select('id', { count: 'exact', head: true }).eq('user_id', req.user.id).gte('created_at', since.toISOString());
   if ((count ?? 0) >= quota) {
-    return res.status(402).json({ error: plan === 'free' ? 'Dein Gratis-Video ist aufgebraucht. Wähle einen Plan, um weiterzumachen.' : 'Monatliches Video-Kontingent erreicht.' });
+    return res.status(402).json({ error: plan === 'free' ? 'Deine Gratis-Videos sind aufgebraucht. Wähle einen Plan, um weiterzumachen.' : 'Monatliches Video-Kontingent erreicht.' });
   }
   next();
 }

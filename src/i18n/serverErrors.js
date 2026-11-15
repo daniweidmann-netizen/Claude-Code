@@ -3,6 +3,8 @@ import { getLang } from './index.jsx';
 // Der Server antwortet mit deutschen Fehlermeldungen; hier werden sie für die
 // englische Oberfläche übersetzt (exakte Texte und Muster mit variablen Teilen).
 const EXACT = {
+  'Deine Gratis-Videos sind aufgebraucht. Wähle einen Plan, um weiterzumachen.': 'Your free videos have been used. Choose a plan to continue.',
+  'Monatliches Video-Kontingent erreicht.': 'Monthly video quota reached.',
   'Antwort des KI-Modells war unvollständig. Bitte erneut versuchen.': 'The AI model returned an incomplete answer. Please try again.',
   'Das Thema wurde vom KI-Modell abgelehnt. Bitte wähle ein anderes Thema.': 'The AI model declined this topic. Please choose a different topic.',
   'Für diese Serie ist keine Plattform ausgewählt.': 'No platform is selected for this series.',

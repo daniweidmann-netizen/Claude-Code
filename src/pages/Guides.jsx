@@ -5,8 +5,8 @@ import { GUIDES, GUIDE_BASE, findGuide, guideHtml } from '../../shared/guides.js
 import { useI18n } from '../i18n/index.jsx';
 
 const TEXT = {
-  en: { title: 'Guides', sub: 'Practical, honest guides for faceless short-video creators.', read: 'Read guide', other: 'Diesen Ratgeber auf Deutsch lesen', updated: 'Updated', back: 'All guides', cta: 'Try TrueReel – 1 video free', notFound: 'Guide not found.' },
-  de: { title: 'Ratgeber', sub: 'Praktische, ehrliche Ratgeber für Faceless-Kurzvideos.', read: 'Ratgeber lesen', other: 'Read this guide in English', updated: 'Aktualisiert', back: 'Alle Ratgeber', cta: 'TrueReel testen – 1 Video gratis', notFound: 'Ratgeber nicht gefunden.' },
+  en: { title: 'Guides', sub: 'Practical, honest guides for faceless short-video creators.', read: 'Read guide', other: 'Diesen Ratgeber auf Deutsch lesen', updated: 'Updated', back: 'All guides', cta: 'Try TrueReel – 3 videos free', notFound: 'Guide not found.' },
+  de: { title: 'Ratgeber', sub: 'Praktische, ehrliche Ratgeber für Faceless-Kurzvideos.', read: 'Ratgeber lesen', other: 'Read this guide in English', updated: 'Aktualisiert', back: 'Alle Ratgeber', cta: 'TrueReel testen – 3 Videos gratis', notFound: 'Ratgeber nicht gefunden.' },
 };
 
 function useMeta(title, description) {

@@ -158,7 +158,7 @@ export default function Account() {
                   {formatUSD(price.perMonth)} {tr('/ Monat')}{profile.billing_interval === 'yearly' ? ` · ${tr('jährlich')} ${formatUSD(price.billed)}` : ''}
                   {profile.current_period_end && <> · {profile.cancel_at_period_end ? tr("endet am") : tr("verlängert sich am")} {new Date(profile.current_period_end).toLocaleDateString(getLocale())}</>}
                 </p>
-              ) : <p className="mt-1 text-sm muted">{tr("Gratis-Test: 1 Video inklusive, ohne Kreditkarte.")}</p>}
+              ) : <p className="mt-1 text-sm muted">{tr("Gratis-Test: 3 Videos inklusive, ohne Kreditkarte.")}</p>}
               {profile?.cancel_at_period_end && <p className="mt-2 inline-flex rounded-full bg-amber-100 px-2 py-0.5 text-xs font-semibold text-amber-900">{tr("Gekündigt – keine weitere Abbuchung")}</p>}
             </div>
             <StripeBadge />

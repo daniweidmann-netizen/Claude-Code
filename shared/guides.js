@@ -327,7 +327,7 @@ At a natural narration speed of about 2–2.5 words per second, 70 seconds is ro
 
 ## How TrueReel handles length
 
-In TrueReel you choose the target length per series. The recommended setting is 60–75 seconds: the AI writes enough material for the full length, and the editor warns you if a video is shorter than one minute. [Try it with one free video](/registrieren).
+In TrueReel you choose the target length per series. The recommended setting is 60–75 seconds: the AI writes enough material for the full length, and the editor warns you if a video is shorter than one minute. [Try it with three free videos](/registrieren).
 `,
     },
     de: {
@@ -365,7 +365,7 @@ Bei natürlichem Sprechtempo von etwa 2–2,5 Wörtern pro Sekunde sind 70 Sekun
 
 ## So hilft TrueReel bei der Länge
 
-In TrueReel wählst du die Ziellänge pro Serie. Empfohlen sind 60–75 Sekunden: Die KI schreibt genug Inhalt für die ganze Länge, und der Editor warnt, wenn ein Video kürzer als eine Minute ist. [Teste es mit einem Gratis-Video](/registrieren).
+In TrueReel wählst du die Ziellänge pro Serie. Empfohlen sind 60–75 Sekunden: Die KI schreibt genug Inhalt für die ganze Länge, und der Editor warnt, wenn ein Video kürzer als eine Minute ist. [Teste es mit drei Gratis-Videos](/registrieren).
 `,
     },
   },

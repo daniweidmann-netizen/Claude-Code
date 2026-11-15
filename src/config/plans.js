@@ -34,8 +34,8 @@ export const FREE_PLAN = {
   id: 'free',
   name: 'Test',
   monthly: 0,
-  videosPerMonth: 1,
-  limits: { freeVideos: 1, series: 1, platforms: 0, customUploads: false },
+  videosPerMonth: 3,
+  limits: { freeVideos: 3, series: 1, platforms: 0, customUploads: false },
 };
 
 export const getPlan = (id) => PLANS.find((p) => p.id === id) || FREE_PLAN;
