@@ -1,5 +1,11 @@
 // English versions of the app texts. Key = German original (see tr() in index.jsx).
 export default {
+  "Nächste Schritte": "Next steps",
+  "Dein Video ist fertig 🎉 – so geht es weiter": "Your video is ready 🎉 – here's what's next",
+  "Vorschau ansehen und bei Bedarf Text oder Bilder anpassen.": "Watch the preview and adjust text or images if needed.",
+  "Auf „Exportieren 1080p“ tippen – das dauert etwa so lange wie das Video.": "Tap “Export 1080p” – it takes about as long as the video.",
+  "Video herunterladen und auf TikTok, Instagram oder YouTube posten.": "Download the video and post it on TikTok, Instagram or YouTube.",
+  "Jetzt exportieren": "Export now",
   "Wie hast du von TrueReel erfahren?": "How did you hear about TrueReel?",
   "freiwillig": "optional",
   "Bitte wählen": "Please choose",

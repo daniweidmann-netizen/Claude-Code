@@ -294,6 +294,18 @@ export default function Editor() {
         </Notice>
       )}
       {msg && <Notice tone={msg.tone} className="mb-4">{msg.text}</Notice>}
+      {!video.video_path && scenes.length > 0 && scenes.every((x) => x.imageUrl) && (
+        <section className="card mb-5 border-2 border-accent-500 p-5" aria-label={tr("Nächste Schritte")}>
+          <h2 className="text-lg font-extrabold">{tr("Dein Video ist fertig 🎉 – so geht es weiter")}</h2>
+          <ol className="mt-3 grid gap-2 text-sm sm:grid-cols-3">
+            <li className="flex gap-2"><span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-accent-500 text-xs font-bold text-navy-950">1</span>{tr("Vorschau ansehen und bei Bedarf Text oder Bilder anpassen.")}</li>
+            <li className="flex gap-2"><span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-accent-500 text-xs font-bold text-navy-950">2</span>{tr("Auf „Exportieren 1080p“ tippen – das dauert etwa so lange wie das Video.")}</li>
+            <li className="flex gap-2"><span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-accent-500 text-xs font-bold text-navy-950">3</span>{tr("Video herunterladen und auf TikTok, Instagram oder YouTube posten.")}</li>
+          </ol>
+          <button className="btn-primary mt-4 w-full sm:w-auto" onClick={exportVideo} disabled={!!busy}>{['export', 'transcode', 'voice'].includes(busy) ? <Spinner /> : <Upload className="h-5 w-5" />}{tr("Jetzt exportieren")}</button>
+        </section>
+      )}
+
 
       <div className="grid gap-5 lg:grid-cols-2 xl:grid-cols-[1fr_1fr_400px]">
         {/* ── Skript ── */}
