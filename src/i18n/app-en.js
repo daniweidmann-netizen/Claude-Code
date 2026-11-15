@@ -1,5 +1,6 @@
 // English versions of the app texts. Key = German original (see tr() in index.jsx).
 export default {
+  "Für Firmen": "For businesses",
   "Nächste Schritte": "Next steps",
   "Dein Video ist fertig 🎉 – so geht es weiter": "Your video is ready 🎉 – here's what's next",
   "Vorschau ansehen und bei Bedarf Text oder Bilder anpassen.": "Watch the preview and adjust text or images if needed.",
