@@ -73,6 +73,8 @@ function TopList({ title, rows, total, empty }) {
   );
 }
 
+const SOURCE_LABEL = { tiktok: 'TikTok', instagram: 'Instagram', youtube: 'YouTube', google: 'Google-Suche', friends: 'Freunde / Empfehlung', other: 'Sonstiges', none: 'Keine Angabe' };
+
 export default function Stats() {
   const [days, setDays] = useState(30);
   const [data, setData] = useState(null);
@@ -111,6 +113,7 @@ export default function Stats() {
             <TopList title={tr('Seiten')} rows={data.pages} total={data.totals.pageviews} empty={tr('Noch keine Daten.')} />
             <TopList title={tr('Geräte')} rows={data.devices} total={data.totals.pageviews} empty={tr('Noch keine Daten.')} />
           </div>
+          <TopList title={tr('Wie haben neue Nutzer von TrueReel erfahren?')} rows={(data.signupSources || []).map((r) => ({ ...r, name: tr(SOURCE_LABEL[r.name] || r.name) }))} total={data.totals.signups} empty={tr('Noch keine Registrierungen mit Angabe.')} />
           <p className="text-xs muted">{tr('Tipp: Hänge an Links in deinen Profilen ?ref=tiktok, ?ref=reddit usw. an – dann siehst du unter „Herkunft“ genau, welcher Kanal Besucher bringt.')}</p>
         </div>
       )}

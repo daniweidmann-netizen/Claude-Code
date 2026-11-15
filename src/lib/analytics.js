@@ -4,10 +4,10 @@ import { getLang } from '../i18n/index.jsx';
 
 let first = true;
 
-export function track(type = 'pageview', path = window.location.pathname) {
+export function track(type = 'pageview', path = window.location.pathname, extra = {}) {
   try {
     if (navigator.doNotTrack === '1' || /localhost|127\.0\.0\.1/.test(window.location.hostname)) return;
-    const body = { type, path, lang: getLang() };
+    const body = { type, path, lang: getLang(), ...(extra.source ? { source: extra.source } : {}) };
     if (first && type === 'pageview') {
       const q = new URLSearchParams(window.location.search);
       Object.assign(body, {

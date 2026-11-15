@@ -11,6 +11,8 @@ const SECRET = process.env.ANALYTICS_SECRET || process.env.SUPABASE_SERVICE_ROLE
 const OWN_HOSTS = /(^|\.)truereel\.ch$|onrender\.com$|^localhost$/;
 const BOTS = /bot|crawl|spider|slurp|facebookexternalhit|preview|headless|lighthouse|pingdom|uptime|monitor|curl|wget|python|node-fetch|axios/i;
 const TYPES = new Set(['pageview', 'signup', 'checkout', 'waitlist']);
+// Antworten auf „Wie hast du von TrueReel erfahren?“ bei der Registrierung
+const SIGNUP_SOURCES = new Set(['tiktok', 'instagram', 'youtube', 'google', 'friends', 'other'])
 
 const today = () => new Date().toISOString().slice(0, 10);
 const clip = (v, n = 120) => (v == null ? null : String(v).slice(0, n));
@@ -55,7 +57,7 @@ router.post('/track', express.json({ limit: '4kb' }), async (req, res) => {
     type,
     path: normPath(b.path),
     referrer: refHost(b.referrer),
-    utm_source: clip(b.utm_source, 60),
+    utm_source: type === 'signup' ? clip(SIGNUP_SOURCES.has(b.source) ? b.source : null, 60) : clip(b.utm_source, 60),
     utm_medium: clip(b.utm_medium, 60),
     utm_campaign: clip(b.utm_campaign, 80),
     device: device(req.headers['user-agent']),
@@ -132,6 +134,7 @@ router.get('/stats', authenticate, async (req, res) => {
     pages: count(views, 'path'),
     sources: count(sources, 'src'),
     devices: count(views, 'device'),
+    signupSources: count(rows.filter((r) => r.type === 'signup').map((r) => ({ ...r, utm_source: r.utm_source || 'none' })), 'utm_source'),
   });
 });
 
