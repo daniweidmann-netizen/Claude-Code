@@ -16,7 +16,7 @@ const PAGES = {
   '/agb': { title: 'Terms / AGB – TrueReel' },
   '/rueckerstattung': { title: 'Refund policy / Rückerstattung – TrueReel' },
 };
-const NOINDEX = /^\/(app|login|registrieren)(\/|$)/;
+const NOINDEX = /^\/(beispiel|app|login|registrieren)(\/|$)/;
 
 function guideMeta(path) {
   const m = path.match(/^\/(guides|ratgeber)\/([\w-]+)\/?$/);
