@@ -24,7 +24,7 @@ import financeRouter from './finance.js';
 import { renderHtml, sitemap, robots } from './seo.js';
 import { sendReminders, reminderRouter } from './reminders.js';
 import elevenlabsTts from './providers/tts/elevenlabs.js';
-import { VOICES, PREMIUM_VOICE_PLANS } from '../src/config/catalog.js';
+import { VOICES, PREMIUM_VOICE_PLANS, PREMIUM_VOICE_LANGS } from '../src/config/catalog.js';
 import { createCharacter, generateWithCharacter } from './providers/image/openai.js';
 
 const app = express();
@@ -124,7 +124,7 @@ app.post('/api/generate/voice', authenticate, handle(async (req) => {
   const text = String(req.body?.text || '').slice(0, 1200);
   const preset = VOICES.find((v) => v.id === req.body?.voiceId);
   // Premium-Stimme: ElevenLabs für Daily/Pro/Inhaber; sonst (oder bei Fehler) die ähnliche Standard-Stimme
-  if (preset?.premium && process.env.ELEVENLABS_API_KEY) {
+  if (preset?.premium && process.env.ELEVENLABS_API_KEY && PREMIUM_VOICE_LANGS.includes(req.body?.language || 'de')) {
     const profile = req.demo ? null : await getProfile(req.user.id);
     if (profile?.is_admin || PREMIUM_VOICE_PLANS.includes(profile?.plan)) {
       try { return { ...(await elevenlabsTts.synthesize({ ...req.body, text })), provider: 'elevenlabs' }; }

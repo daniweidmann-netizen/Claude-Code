@@ -2,7 +2,7 @@
 import { VOICES } from '../../../src/config/catalog.js';
 import { speedUp } from './tempo.js';
 
-const LANG_CODE = { de: 'de', 'de-CH': 'de', en: 'en', fr: 'fr', it: 'it', es: 'es' };
+const LANG_CODE = { de: 'de', 'de-CH': 'de', en: 'en', fr: 'fr', it: 'it', es: 'es', pt: 'pt', hr: 'hr', tr: 'tr' };
 
 export default {
   name: 'elevenlabs',

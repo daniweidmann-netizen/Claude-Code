@@ -4,7 +4,7 @@ import Anthropic from '@anthropic-ai/sdk';
 const MODEL = process.env.ANTHROPIC_MODEL || 'claude-opus-5-5';
 const client = new Anthropic(); // liest ANTHROPIC_API_KEY
 
-const LANG_NAMES = { de: 'Deutsch', 'de-CH': 'Deutsch in Schweizer Schreibweise (ss statt ß)', en: 'English', fr: 'Français', it: 'Italiano', es: 'Español' };
+const LANG_NAMES = { de: 'Deutsch', 'de-CH': 'Deutsch in Schweizer Schreibweise (ss statt ß)', en: 'English', fr: 'Français', it: 'Italiano', es: 'Español', pt: 'Português (europeu)', hr: 'Hrvatski (kroatisch)', sr: 'Srpski (serbisch, in lateinischer Schrift)', bs: 'Bosanski (bosnisch)', sq: 'Shqip (albanisch)', tr: 'Türkçe (türkisch)' };
 const MOTIFS = ['pyramid', 'temple', 'castle', 'tower', 'wall', 'ship', 'field', 'city'];
 
 const SYSTEM = `Du bist Autor:in für kurze, gesichtslose Social-Media-Videos (TikTok, Reels, Shorts, 30–50 Sekunden).

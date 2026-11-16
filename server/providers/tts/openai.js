@@ -10,6 +10,12 @@ const LANG_HINT = {
   fr: 'Parle un français naturel et clair.',
   it: 'Parla un italiano naturale e chiaro.',
   es: 'Habla un español natural y claro.',
+  pt: 'Speak natural, clear European Portuguese.',
+  hr: 'Speak natural, clear Croatian with correct Croatian pronunciation.',
+  sr: 'Speak natural, clear Serbian with correct Serbian pronunciation.',
+  bs: 'Speak natural, clear Bosnian with correct Bosnian pronunciation.',
+  sq: 'Speak natural, clear Albanian with correct Albanian pronunciation.',
+  tr: 'Speak natural, clear Turkish with correct Turkish pronunciation.',
 };
 
 // Stil-Anweisungen auf Englisch (sprachneutral) – die Sprache selbst steuert LANG_HINT

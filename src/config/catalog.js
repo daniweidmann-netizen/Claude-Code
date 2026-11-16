@@ -29,7 +29,15 @@ export const LANGUAGES = [
   { id: 'fr', label: 'Français', bcp47: 'fr-FR' },
   { id: 'it', label: 'Italiano', bcp47: 'it-IT' },
   { id: 'es', label: 'Español', bcp47: 'es-ES' },
+  { id: 'pt', label: 'Português', bcp47: 'pt-PT' },
+  { id: 'hr', label: 'Hrvatski', bcp47: 'hr-HR' },
+  { id: 'sr', label: 'Srpski', bcp47: 'sr-Latn-RS' },
+  { id: 'bs', label: 'Bosanski', bcp47: 'bs-BA' },
+  { id: 'sq', label: 'Shqip', bcp47: 'sq-AL' },
+  { id: 'tr', label: 'Türkçe', bcp47: 'tr-TR' },
 ];
+// Sprachen, die die Premium-Stimmen (ElevenLabs multilingual v2) offiziell beherrschen; sonst ähnliche Standard-Stimme
+export const PREMIUM_VOICE_LANGS = ['de', 'de-CH', 'en', 'fr', 'it', 'es', 'pt', 'hr', 'tr'];
 
 // Stimmen-Presets. "providerVoice" wird vom TTS-Modul auf echte Stimmen gemappt.
 export const VOICES = [
