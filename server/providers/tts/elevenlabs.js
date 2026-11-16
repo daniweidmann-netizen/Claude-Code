@@ -2,11 +2,28 @@
 import { VOICES } from '../../../src/config/catalog.js';
 import { speedUp } from './tempo.js';
 
+// ElevenLabs erlaubt im Starter-Plan nur wenige gleichzeitige Anfragen → Warteschlange (max. 2 parallel), bei 429 kurz warten und erneut
+let active = 0; const waiting = [];
+const acquire = () => new Promise((r) => { if (active < 2) { active++; r(); } else waiting.push(r); });
+const release = () => { const n = waiting.shift(); if (n) n(); else active--; };
+
 const LANG_CODE = { de: 'de', 'de-CH': 'de', en: 'en', fr: 'fr', it: 'it', es: 'es', pt: 'pt', hr: 'hr', tr: 'tr' };
 
 export default {
   name: 'elevenlabs',
-  async synthesize({ text, voiceId, language = 'de' }) {
+  async synthesize(args) {
+    await acquire();
+    try {
+      for (let i = 0; ; i++) {
+        try { return await synth(args); }
+        catch (e) { if (i < 3 && /TTS-Fehler 429/.test(e.message)) { await new Promise((r) => setTimeout(r, 1500 * (i + 1))); continue; } throw e; }
+      }
+    } finally { release(); }
+  },
+};
+
+async function synth({ text, voiceId, language = 'de' }) {
+  {
     const preset = VOICES.find((v) => v.id === voiceId) || VOICES[0];
     const res = await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${preset.providerVoice.elevenlabs}?output_format=mp3_44100_128`, {
       method: 'POST',
@@ -24,5 +41,5 @@ export default {
     }
     const buf = await speedUp(Buffer.from(await res.arrayBuffer()));
     return { audioUrl: `data:audio/mpeg;base64,${buf.toString('base64')}` };
-  },
-};
+  }
+}
