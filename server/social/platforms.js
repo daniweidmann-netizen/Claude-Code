@@ -81,7 +81,7 @@ export const PLATFORMS = {
     async publish({ connection, file, title, description, tags = [], categoryId = '22' }) {
       const meta = (synthetic) => JSON.stringify({
         snippet: { title: title.slice(0, 95), description: description.slice(0, 4900), tags: tags.slice(0, 15), categoryId, defaultLanguage: undefined },
-        status: { privacyStatus: env('YOUTUBE_PRIVACY') || 'private', selfDeclaredMadeForKids: false, ...(synthetic ? { containsSyntheticMedia: true } : {}) },
+        status: { privacyStatus: env('YOUTUBE_PRIVACY') || 'public', selfDeclaredMadeForKids: false, ...(synthetic ? { containsSyntheticMedia: true } : {}) },
       });
       let init;
       for (const synthetic of [true, false]) { // Feld für KI-Kennzeichnung; falls die API es ablehnt, ohne
