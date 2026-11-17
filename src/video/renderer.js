@@ -13,10 +13,15 @@ function drawCover(ctx, src, W, H, zoom, panX, panY) {
 
 function drawScene(ctx, project, item, t, W, H, getImage) {
   const s = item.scene;
-  const p = Math.min(1, Math.max(0, (t - item.start) / item.duration));
+  const local = t - item.start;
+  const p = Math.min(1, Math.max(0, local / item.duration));
   const dir = s.seed % 4;
-  const zoom = (dir % 2 ? 1.0 + 0.08 * p : 1.08 - 0.08 * p);
-  const pan = (dir < 2 ? 1 : -1) * 0.02 * (p - 0.5);
+  // Mehr Bewegung: stärkerer Zoom; erste Szene startet mit einem schnellen „Punch-in“
+  let zoom = (dir % 2 ? 1.0 + 0.12 * p : 1.12 - 0.12 * p);
+  if (item.index === 0) zoom = 1.18 - 0.18 * Math.min(1, local / 0.6) ** 0.5 + 0.10 * p;
+  // Lange Szenen: in der Mitte ein Schnitt auf einen engeren Bildausschnitt (wirkt wie ein zweiter Kamerawinkel)
+  if (item.duration > 4.2 && p > 0.5) zoom *= 1.22;
+  const pan = (dir < 2 ? 1 : -1) * 0.03 * (p - 0.5) + (item.duration > 4.2 && p > 0.5 ? (dir % 2 ? 0.04 : -0.04) : 0);
   const img = getImage?.(s);
   if (img) drawCover(ctx, img, W, H, zoom, pan, 0);
   else {
@@ -136,6 +141,33 @@ export function drawCaptions(ctx, project, item, t, W, H) {
   });
 }
 
+// Grosser Titel in den ersten Sekunden – damit Zuschauer sofort wissen, worum es geht
+const TITLE_SECONDS = 2.8;
+function drawTitleCard(ctx, project, tl, t, W, H) {
+  const text = String(project.hookTitle || project.title || '').trim();
+  if (!text || t > TITLE_SECONDS) return;
+  const k = W / VIDEO_W;
+  const appear = Math.min(1, t / 0.22);
+  const fade = t > TITLE_SECONDS - 0.35 ? (TITLE_SECONDS - t) / 0.35 : 1;
+  const sc = 0.86 + 0.14 * (1 - (1 - appear) ** 3);
+  ctx.save();
+  ctx.globalAlpha = Math.max(0, Math.min(1, appear, fade));
+  ctx.font = `900 ${Math.round(86 * k)}px Inter, sans-serif`;
+  const words = text.split(/\s+/).map((w) => ({ text: w }));
+  const lines = wrap(ctx, words, W * 0.8).map((l) => l.map((w) => w.text).join(' ')).slice(0, 4);
+  const lh = 100 * k; const padX = 34 * k; const padY = 22 * k;
+  const blockH = lines.length * lh + padY * 2;
+  const cy = H * 0.3;
+  ctx.translate(W / 2, cy); ctx.scale(sc, sc); ctx.translate(-W / 2, -cy);
+  const maxW = Math.max(...lines.map((l) => ctx.measureText(l).width));
+  ctx.fillStyle = '#cbef3f';
+  roundRect(ctx, W / 2 - maxW / 2 - padX, cy - blockH / 2, maxW + padX * 2, blockH, 28 * k);
+  ctx.fill();
+  ctx.fillStyle = '#14171f'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+  lines.forEach((l, i) => ctx.fillText(l, W / 2, cy - blockH / 2 + padY + lh * (i + 0.5)));
+  ctx.restore();
+}
+
 export function drawFrame(ctx, project, tl, t, { W = VIDEO_W, H = VIDEO_H, getImage, watermark = false } = {}) {
   ctx.fillStyle = '#000';
   ctx.fillRect(0, 0, W, H);
@@ -157,6 +189,7 @@ export function drawFrame(ctx, project, tl, t, { W = VIDEO_W, H = VIDEO_H, getIm
   ctx.fillRect(0, H * 0.55, W, H * 0.45);
 
   drawCaptions(ctx, project, item, t, W, H);
+  if (project.titleCard !== false) drawTitleCard(ctx, project, tl, t, W, H);
 
   if (watermark) {
     const k = W / VIDEO_W;

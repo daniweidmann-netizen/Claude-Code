@@ -484,6 +484,7 @@ export default function Editor() {
                 <div><label className="label" htmlFor="c-col">{tr("Textfarbe")}</label><input id="c-col" type="color" className="h-10 w-full cursor-pointer rounded-lg" value={project.captions.color} onChange={(e) => updateProject({ captions: { ...project.captions, color: e.target.value } })} /></div>
                 <div><label className="label" htmlFor="c-hi">{tr("Hervorhebung")}</label><input id="c-hi" type="color" className="h-10 w-full cursor-pointer rounded-lg" value={project.captions.highlight} onChange={(e) => updateProject({ captions: { ...project.captions, highlight: e.target.value } })} /></div>
                 <div className="flex items-end"><Toggle id="c-up" checked={project.captions.uppercase} onChange={(uppercase) => updateProject({ captions: { ...project.captions, uppercase } })} label={tr("GROSSBUCHSTABEN")} /></div>
+                <div className="flex items-end"><Toggle id="c-title" checked={project.titleCard !== false} onChange={(titleCard) => updateProject({ titleCard })} label={tr("Grosser Titel am Anfang")} /></div>
               </div>
             </div>
           )}

@@ -38,9 +38,9 @@ export function estimateDuration(text) {
 
 export function timeline(project) {
   let t = 0;
-  const items = project.scenes.map((s) => {
+  const items = project.scenes.map((s, index) => {
     const d = s.audioDuration ? s.audioDuration + 0.25 : estimateDuration(s.text);
-    const item = { scene: s, start: t, end: t + d, duration: d };
+    const item = { scene: s, index, start: t, end: t + d, duration: d };
     t += d;
     return item;
   });

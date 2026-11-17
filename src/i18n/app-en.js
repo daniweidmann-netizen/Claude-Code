@@ -1,5 +1,6 @@
 // English versions of the app texts. Key = German original (see tr() in index.jsx).
 export default {
+  "Grosser Titel am Anfang": "Big title at the start",
   "Für Firmen": "For businesses",
   "Nächste Schritte": "Next steps",
   "Dein Video ist fertig 🎉 – so geht es weiter": "Your video is ready 🎉 – here's what's next",
