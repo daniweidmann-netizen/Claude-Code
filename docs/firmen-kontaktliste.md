@@ -41,7 +41,7 @@ E-Mail-Adressen aus den offiziellen Websites (Stand 17.11.2026). Spalte „Statu
 | 3 | Estilo Libre | info@estilo-libre.ch | eigene Website |
 | 4 | Villa Hair & Beauty | mail@villa-hair.ch | eigene Website |
 | 5 | Quantum CrossFit | info@quantumcrossfit.ch | eigene Website |
-| 6 | FRITZ bewegt mich | info@fritzbewegtmich.ch | eigene Website |
+| 6 | FRITZ bewegt mich | info@fritzbewegtmich.ch | ❌ kein Interesse (17.11.2026) |
 | 7 | Ladies Fitness Lounge | – | nichts gefunden → vorbeigehen / Instagram |
 | 8 | Restaurant Frieden | info@hotel-frieden.ch | eigene Website |
 | 9 | Restaurant Tanne | mail@restauranttanne.ch | eigene Website |
