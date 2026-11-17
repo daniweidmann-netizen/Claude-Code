@@ -325,9 +325,18 @@ The biggest mistake is filling 60 seconds with filler. Viewers notice and swipe 
 
 At a natural narration speed of about 2–2.5 words per second, 70 seconds is roughly 150–170 words.
 
+## Grow first, then monetize
+
+TikTok only pays for videos over one minute – but a brand-new account usually grows faster with short videos of 15–25 seconds, because more people watch them to the end. Many successful faceless creators therefore work in two phases:
+
+1. **Grow:** post short videos daily until you have followers and steady views.
+2. **Monetize:** switch to videos over 60 seconds once the account qualifies for the Creator Rewards Program (requirements and availability depend on your country – check TikTok Studio).
+
+Long videos only pay off if people keep watching. Open with a question instead of the answer, add a new hook every 15–20 seconds ("But that's not even the strangest part…") and reveal the payoff at the end.
+
 ## How TrueReel handles length
 
-In TrueReel you choose the target length per series. The recommended setting is 60–75 seconds: the AI writes enough material for the full length, and the editor warns you if a video is shorter than one minute. [Try it with three free videos](/registrieren).
+In TrueReel you choose the target length per series – short for growth, 60+ seconds for monetization. Every video starts with a big title in the first seconds, and for longer videos the AI automatically adds new hooks along the way. The recommended setting is 60–75 seconds: the AI writes enough material for the full length, and the editor warns you if a video is shorter than one minute. [Try it with three free videos](/registrieren).
 `,
     },
     de: {
@@ -363,9 +372,18 @@ Der grösste Fehler: 60 Sekunden mit Füllmaterial zu füllen. Zuschauer merken 
 
 Bei natürlichem Sprechtempo von etwa 2–2,5 Wörtern pro Sekunde sind 70 Sekunden rund 150–170 Wörter.
 
+## Erst wachsen, dann monetarisieren
+
+TikTok bezahlt nur Videos über einer Minute – ein neuer Account wächst aber meist schneller mit kurzen Videos von 15–25 Sekunden, weil mehr Leute sie bis zum Ende schauen. Viele erfolgreiche Faceless-Creator arbeiten deshalb in zwei Phasen:
+
+1. **Wachsen:** täglich kurze Videos posten, bis Follower und regelmässige Aufrufe da sind.
+2. **Monetarisieren:** auf Videos über 60 Sekunden umstellen, sobald der Account für das Creator Rewards Program infrage kommt (Voraussetzungen und Verfügbarkeit hängen vom Land ab – in TikTok Studio prüfen).
+
+Lange Videos lohnen sich nur, wenn die Leute dranbleiben. Starte mit einer Frage statt mit der Antwort, setze alle 15–20 Sekunden einen neuen Haken („Aber das ist noch nicht das Verrückteste …“) und löse erst am Schluss auf.
+
 ## So hilft TrueReel bei der Länge
 
-In TrueReel wählst du die Ziellänge pro Serie. Empfohlen sind 60–75 Sekunden: Die KI schreibt genug Inhalt für die ganze Länge, und der Editor warnt, wenn ein Video kürzer als eine Minute ist. [Teste es mit drei Gratis-Videos](/registrieren).
+In TrueReel wählst du die Ziellänge pro Serie – kurz zum Wachsen, 60+ Sekunden zum Monetarisieren. Jedes Video startet mit einem grossen Titel in den ersten Sekunden, und bei längeren Videos baut die KI automatisch neue Haken ein. Empfohlen sind 60–75 Sekunden: Die KI schreibt genug Inhalt für die ganze Länge, und der Editor warnt, wenn ein Video kürzer als eine Minute ist. [Teste es mit drei Gratis-Videos](/registrieren).
 `,
     },
   },

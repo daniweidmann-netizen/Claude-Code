@@ -141,7 +141,7 @@ export function CostCalculator({ interval }) {
 export function FAQ() {
   const { t } = useI18n();
   const [open, setOpen] = useState(0);
-  const items = [1, 2, 3, 4, 5, 6, 7, 8];
+  const items = [1, 2, 3, 4, 5, 6, 7, 8, 9];
   return (
     <div className="divide-y divide-navy-100 rounded-2xl border border-navy-100 dark:divide-navy-800 dark:border-navy-800">
       {items.map((i, idx) => (

@@ -108,7 +108,9 @@ export default {
   'faq.7.q': 'Wo werden meine Daten gespeichert?',
   'faq.7.a': 'Wir arbeiten DSGVO- und DSG-konform. Details zu Speicherorten und Auftragsverarbeitern findest du in der Datenschutzerklärung.',
   'faq.8.q': 'Welche Sprachen werden unterstützt?',
-  'faq.8.a': 'Voiceover und Skripte in Deutsch (inkl. Schweizer Schreibweise), Englisch, Französisch, Italienisch und Spanisch.',
+  'faq.8.a': 'Voiceover und Skripte in Deutsch (inkl. Schweizer Schreibweise), Englisch, Französisch, Italienisch, Spanisch, Portugiesisch, Kroatisch, Serbisch, Bosnisch, Albanisch und Türkisch.',
+  'faq.9.q': 'Kurze Videos oder über 60 Sekunden?',
+  'faq.9.a': 'Beides. Zum Wachsen eines neuen Accounts funktionieren kurze Videos (15–25 s) meist besser, weil sie öfter zu Ende geschaut werden. Für die TikTok-Monetarisierung braucht es Videos über 60 Sekunden – TrueReel baut dafür automatisch Zwischen-Haken ein, damit die Leute dranbleiben. Die Länge stellst du pro Serie ein.',
 
   'cta.title': 'Bereit für dein erstes Video?',
   'cta.sub': 'In wenigen Minuten erstellt. Gratis, ohne Kreditkarte.',
