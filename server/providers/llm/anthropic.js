@@ -29,6 +29,7 @@ const NICHE_HINT = {
   horror: 'Nische Horror: FIKTIVE Kurzgeschichte mit Spannungsbogen; keine realen Personen, Orte nur allgemein; im CTA als fiktiv kennzeichnen.',
   reddit: 'Nische Community-Stories: eigene FIKTIVE Alltagsgeschichte im Stil einer Erzählung aus dem Netz – keine echten Posts kopieren, keine echten Nutzernamen; im CTA als fiktiv kennzeichnen.',
   custom: 'Eigenes Thema des Nutzers: sachlich korrekt bleiben, bei Unsicherheit vorsichtig formulieren.',
+  pov: 'Nische POV-Zeitreise (Trend-Format): Der Zuschauer erlebt in der Du-Form einen Tag in einer bestimmten Epoche und an einem bestimmten Ort (z. B. „POV: Du lebst im Jahr 1347 in Florenz“). Hook beginnt mit „POV:“ und nennt Jahr und Ort. Jede Szene beschreibt ein konkretes, sinnliches Alltagsdetail (Essen, Arbeit, Kleidung, Gerüche, Gefahren, Hygiene) – nur gut belegte historische Fakten, keine Klischees als Tatsachen. Spannung durch Überraschungen („Das Wasser trinkst du lieber nicht – warum, merkst du gleich“). Bildbeschreibungen (visual) sind Ich-Perspektive-Aufnahmen (first-person point of view, eigene Hände/Füsse teils sichtbar) in der jeweiligen Epoche, keine erkennbaren realen Personen.',
   characters: 'Nische Figuren-Geschichten: FIKTIVE Geschichte mit EINER wiederkehrenden Hauptfigur, die in jeder Folge etwas erlebt (Spannung, Gefühl, Wendung). Keine realen Personen. Bildbeschreibungen (visual) zeigen die Hauptfigur in Aktion und nennen sie immer „the main character“; Aussehen der Figur NICHT neu beschreiben, nur Handlung, Ort, Licht und Stimmung.',
 };
 

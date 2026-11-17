@@ -1,5 +1,9 @@
 // English versions of the app texts. Key = German original (see tr() in index.jsx).
 export default {
+  "POV: Zeitreise": "POV: Time travel",
+  "Du erlebst den Alltag in einer anderen Epoche – aus der Ich-Perspektive. Ein beliebtes Trend-Format.": "You experience daily life in another era – from a first-person view. A popular trend format.",
+  "Epoche oder Ort (optional)": "Era or place (optional)",
+  "z. B. Mittelalter, altes Rom, Schweiz um 1900 – leer lassen für Abwechslung": "e.g. Middle Ages, ancient Rome, Switzerland around 1900 – leave empty for variety",
   "Grosser Titel am Anfang": "Big title at the start",
   "Für Firmen": "For businesses",
   "Nächste Schritte": "Next steps",

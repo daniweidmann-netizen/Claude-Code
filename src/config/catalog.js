@@ -6,6 +6,7 @@ export const NICHES = [
   { id: 'facts', label: 'Fakten', emoji: '💡', ready: false, desc: 'Wissen in 30 Sekunden – Natur, Technik, Alltag.' },
   { id: 'horror', label: 'Horror-Stories', emoji: '👻', ready: false, desc: 'Gruselige Kurzgeschichten mit Spannungsbogen.' },
   { id: 'reddit', label: 'Reddit-Stories', emoji: '💬', ready: false, desc: 'Erzählte Community-Geschichten (eigene Texte).' },
+  { id: 'pov', label: 'POV: Zeitreise', emoji: '⏳', ready: true, desc: 'Du erlebst den Alltag in einer anderen Epoche – aus der Ich-Perspektive. Ein beliebtes Trend-Format.' },
   { id: 'characters', label: 'Figuren-Geschichten', emoji: '🧑‍🎤', ready: true, desc: 'Eine erfundene Hauptfigur erlebt in jeder Folge ein neues Abenteuer – immer mit demselben Gesicht.' },
   { id: 'custom', label: 'Eigenes Thema', emoji: '✍️', ready: true, desc: 'Du gibst das Thema vor, die KI plant die Serie.' },
 ];
