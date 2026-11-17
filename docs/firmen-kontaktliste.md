@@ -1,7 +1,7 @@
 # Kontaktliste – mögliche Firmenkunden (Region Grafstal / Effretikon / Lindau)
 
 Stand: 16.11.2026 · Quelle: öffentliche Verzeichnisse (local.ch, search.ch, Tripadvisor u. a.). Angaben vor dem Kontakt kurz prüfen.
-Spalte „Status“ selbst nachführen: offen → kontaktiert → Antwort → Beispielvideo → Kunde / kein Interesse.
+E-Mail-Adressen aus den offiziellen Websites (Stand 17.11.2026). Spalte „Status“ selbst nachführen: offen → kontaktiert → Antwort → Beispielvideo → Kunde / kein Interesse.
 
 | # | Firma | Branche | Ort / Adresse | Idee fürs Beispielvideo | Status |
 |---|---|---|---|---|---|
@@ -30,3 +30,24 @@ Spalte „Status“ selbst nachführen: offen → kontaktiert → Antwort → Be
 - **Persönlich, einzeln** anschreiben (Instagram-DM, Kontaktformular der Firma, Telefon oder vorbeigehen) – **keine Massen-E-Mails**. In der Schweiz sind unaufgeforderte Werbe-Massenmails verboten (UWG).
 - Lokale Betriebe am besten **vorbeigehen** (ausserhalb der Stosszeiten) und das Beispielvideo auf dem Handy zeigen.
 - Vor dem Kontakt kurz auf Google/Instagram prüfen: Gibt es Reels? Wann war der letzte Post? → im Gespräch erwähnen.
+
+
+## E-Mail-Adressen (in Gmail-Entwürfen eingetragen)
+
+| # | Firma | E-Mail | Quelle / Hinweis |
+|---|---|---|---|
+| 1 | Coiffeur F | – | keine offizielle Adresse gefunden → anrufen 052 343 01 55 oder vorbeigehen |
+| 2 | Coiffeursalon OPtimum | info@coiffeur-optimum.ch | eigene Website |
+| 3 | Estilo Libre | info@estilo-libre.ch | eigene Website |
+| 4 | Villa Hair & Beauty | mail@villa-hair.ch | eigene Website |
+| 5 | Quantum CrossFit | info@quantumcrossfit.ch | eigene Website |
+| 6 | FRITZ bewegt mich | info@fritzbewegtmich.ch | eigene Website |
+| 7 | Ladies Fitness Lounge | – | nichts gefunden → vorbeigehen / Instagram |
+| 8 | Restaurant Frieden | info@hotel-frieden.ch | eigene Website |
+| 9 | Restaurant Tanne | mail@restauranttanne.ch | eigene Website |
+| 10 | Vietdura | rh@vietdura.ch | Impressum (Standort Tagelswangen) |
+| 11 | Villa Barone | – | nur Kontaktformular villa-barone-effretikon.ch/kontakt bzw. 052 343 96 96 |
+| 12 | Bäckerei Vuaillat | info@vuaillat.ch | Hauptsitz Uster (gilt für alle Filialen) |
+| 13 | Bäckerei Schreiner | – | nur alte Adresse gefunden, Betrieb evtl. übernommen → 052 343 11 23 |
+| 14 | Garage Beeler | info@garage-beeler.ch | nur Verzeichnisse, nicht auf eigener Website bestätigt |
+| 15 | Schreinerei Büchel | info@buechel-schreinerei.ch | eigene Website |
