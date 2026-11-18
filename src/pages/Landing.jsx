@@ -149,6 +149,25 @@ function Showcase() {
   );
 }
 
+function BusinessTeaser() {
+  const { lang } = useI18n();
+  const en = lang === 'en';
+  return (
+    <section className="section pt-0">
+      <div className="container-x">
+        <div className="card flex flex-col items-start gap-5 border-2 border-accent-500 p-6 sm:flex-row sm:items-center sm:justify-between sm:p-8">
+          <div>
+            <p className="eyebrow">{en ? 'For businesses' : 'Für Firmen'}</p>
+            <h2 className="mt-1 text-2xl font-bold sm:text-3xl">{en ? 'No time? We make the videos for your business.' : 'Keine Zeit? Wir machen die Videos für dein Unternehmen.'}</h2>
+            <p className="mt-2 muted">{en ? '8 to 30 short videos a month for TikTok, Reels and Shorts – from CHF 290, cancel monthly, free sample video first.' : '8 bis 30 Kurzvideos pro Monat für TikTok, Reels und Shorts – ab CHF 290, monatlich kündbar, zuerst ein Gratis-Beispielvideo.'}</p>
+          </div>
+          <Link to={en ? '/business' : '/firmen'} className="btn-primary shrink-0 px-6 py-3.5 text-base">{en ? 'See packages' : 'Pakete ansehen'}<ArrowRight className="h-4 w-4" /></Link>
+        </div>
+      </div>
+    </section>
+  );
+}
+
 function Features() {
   const { t } = useI18n();
   return (
@@ -264,6 +283,7 @@ export default function Landing() {
       <Showcase />
       <HowItWorks />
       <Features />
+      <BusinessTeaser />
       <Different />
       <SocialProof />
       <section id="pricing" className="section scroll-mt-16">
