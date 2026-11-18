@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import {
   ArrowRight, Layers, FileText, Image, Mic, Captions, Music, Scissors, CalendarClock, Download, LayoutDashboard,
@@ -40,18 +40,13 @@ function useHeroProject(lang) {
 }
 
 // Handy im Stil einer Kurzvideo-App (ohne erfundene Like-Zahlen)
-function HeroPhone({ project }) {
+function HeroPhone() {
   const { lang } = useI18n();
-  const [follow, forYou] = lang === 'en' ? ['Following', 'For You'] : ['Folge ich', 'Für dich'];
   return (
     <div className="relative mx-auto w-full max-w-[300px] rounded-[2.8rem] border-[9px] border-navy-800 bg-black shadow-2xl ring-1 ring-white/10">
       <div className="absolute left-1/2 top-2 z-20 h-6 w-24 -translate-x-1/2 rounded-full bg-black" aria-hidden="true" />
       <div className="relative overflow-hidden rounded-[2.2rem]">
-        <Player project={project} autoPlay initialMuted loop controls={false} />
-        <div className="pointer-events-none absolute inset-x-0 top-0 flex items-center justify-center gap-4 bg-gradient-to-b from-black/50 to-transparent pb-6 pt-9 text-[13px] font-semibold text-white/70">
-          <span>{follow}</span><span className="border-b-2 border-white pb-0.5 text-white">{forYou}</span>
-          <Search className="absolute right-4 h-4 w-4 text-white" />
-        </div>
+        <video className="block aspect-[9/16] w-full object-cover" src="/showcase/restaurant-pizza.mp4" poster="/showcase/restaurant-pizza.jpg" autoPlay muted loop playsInline preload="auto" aria-label={lang === 'en' ? 'Example video made with TrueReel' : 'Beispielvideo, erstellt mit TrueReel'} />
         <div className="pointer-events-none absolute bottom-24 right-3 flex flex-col items-center gap-5 text-white drop-shadow">
           <Heart className="h-7 w-7 fill-white" /><MessageCircle className="h-7 w-7 fill-white" /><Share2 className="h-6 w-6" />
         </div>
@@ -62,7 +57,6 @@ function HeroPhone({ project }) {
 
 function Hero() {
   const { t, lang } = useI18n();
-  const project = useHeroProject(lang);
   return (
     <section className="relative overflow-hidden">
       <div className="container-x grid items-center gap-12 py-12 sm:py-16 lg:grid-cols-[1.25fr_1fr]">
@@ -78,8 +72,8 @@ function Hero() {
           <p className="mt-3 text-sm muted">{t('hero.note')}</p>
         </div>
         <div>
-          <HeroPhone project={project} />
-          <p className="mt-3 text-center text-[11px] muted">{lang === 'en' ? 'Example video · Photos: Pixabay' : 'Beispielvideo · Fotos: Pixabay'}</p>
+          <HeroPhone />
+          <p className="mt-3 text-center text-[11px] muted">{lang === 'en' ? 'Example video · images and voice AI-generated' : 'Beispielvideo · Bilder und Stimme KI-generiert'}</p>
         </div>
       </div>
     </section>
@@ -114,9 +108,46 @@ function HowItWorks() {
 }
 
 const FEATURES = [
-  ['series', Layers], ['script', FileText], ['visuals', Image], ['voice', Mic], ['captions', Captions],
-  ['music', Music], ['editor', Scissors], ['posting', CalendarClock], ['export', Download], ['dashboard', LayoutDashboard],
+  ['script', FileText], ['visuals', Image], ['voice', Mic], ['captions', Captions], ['posting', CalendarClock],
 ];
+
+const SHOWCASE = [
+  ['fitness-ruecken', 'Fitness', 'DE'], ['restaurant-pho', 'Restaurant', 'DE'], ['kravata-hr', 'Geschichte', 'HR'],
+  ['coiffeur-brautfrisur', 'Coiffeur', 'DE'], ['garage-winterreifen', 'Garage', 'DE'], ['baeckerei-brot', 'Bäckerei', 'DE'],
+  ['schreinerei-holz', 'Handwerk', 'DE'], ['coiffeur-keratin', 'Beauty', 'DE'],
+];
+function ShowcaseVideo({ id, label, lang }) {
+  const ref = useRef(null);
+  useEffect(() => {
+    const v = ref.current; if (!v || !('IntersectionObserver' in window)) return undefined;
+    const io = new IntersectionObserver(([e]) => { if (e.isIntersecting) v.play().catch(() => {}); else v.pause(); }, { threshold: 0.4 });
+    io.observe(v); return () => io.disconnect();
+  }, []);
+  return (
+    <figure className="w-40 shrink-0 snap-start sm:w-auto">
+      <video ref={ref} className="aspect-[9/16] w-full rounded-2xl bg-black object-cover shadow-lg ring-1 ring-white/10" src={`/showcase/${id}.mp4`} poster={`/showcase/${id}.jpg`} muted loop playsInline preload="none" />
+      <figcaption className="mt-2 flex items-center justify-between text-xs muted"><span>{tr(label)}</span><span className="rounded bg-navy-100 px-1.5 py-0.5 font-semibold dark:bg-navy-800">{lang}</span></figcaption>
+    </figure>
+  );
+}
+function Showcase() {
+  const { lang } = useI18n();
+  return (
+    <section id="beispiele" className="section scroll-mt-16">
+      <div className="container-x">
+        <div className="mx-auto max-w-2xl text-center">
+          <p className="eyebrow">{lang === 'en' ? 'Examples' : 'Beispiele'}</p>
+          <h2 className="h2 mt-2">{lang === 'en' ? 'Made with TrueReel' : 'Mit TrueReel erstellt'}</h2>
+          <p className="mt-3 muted">{lang === 'en' ? 'Every one of these videos was created in a few minutes – script, images, voice and captions. Images and voices are AI-generated.' : 'Jedes dieser Videos ist in wenigen Minuten entstanden – Skript, Bilder, Stimme und Untertitel. Bilder und Stimmen sind KI-generiert.'}</p>
+        </div>
+        <div className="-mx-4 mt-10 flex snap-x gap-4 overflow-x-auto px-4 pb-2 sm:mx-0 sm:grid sm:grid-cols-4 sm:overflow-visible sm:px-0">
+          {SHOWCASE.map(([id, label, l]) => <ShowcaseVideo key={id} id={id} label={label} lang={l} />)}
+        </div>
+        <div className="mt-8 text-center"><Link to="/registrieren" className="btn-primary px-8 py-3.5 text-base">{lang === 'en' ? 'Create your first video – free' : 'Dein erstes Video erstellen – gratis'}</Link></div>
+      </div>
+    </section>
+  );
+}
 
 function Features() {
   const { t } = useI18n();
@@ -230,9 +261,9 @@ export default function Landing() {
   return (
     <>
       <Hero />
+      <Showcase />
       <HowItWorks />
       <Features />
-      <Examples />
       <Different />
       <SocialProof />
       <section id="pricing" className="section scroll-mt-16">

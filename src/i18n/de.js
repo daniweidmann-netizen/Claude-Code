@@ -12,7 +12,7 @@ export default {
   'hero.badge': '3 Videos gratis · ohne Kreditkarte',
   'hero.title1': 'Faceless Videos,',
   'hero.title2': 'die laufen – ehrlich, einfach, automatisch.',
-  'hero.sub': 'Thema wählen, Skript prüfen, Video freigeben – TrueReel erstellt es und postet auf YouTube Shorts (TikTok & Reels bald verfügbar).',
+  'hero.sub': 'Vom Thema zum fertigen Video in wenigen Minuten: TrueReel schreibt das Skript, erstellt Bilder, Stimme und Untertitel – und postet auf Wunsch direkt auf YouTube Shorts.',
   'hero.cta': 'Kostenlos starten',
   'hero.cta2': 'Preise ansehen',
   'hero.note': 'Keine Kreditkarte · Jederzeit kündbar',
@@ -49,7 +49,7 @@ export default {
   'diff.1.t': 'Preise sind öffentlich', 'diff.1.d': 'Du siehst sofort, was es kostet – inklusive Kosten pro Video.',
   'diff.2.t': 'Kündigen mit einem Klick', 'diff.2.d': 'Direkt im Dashboard. Kein E-Mail-Pingpong, keine Hürden.',
   'diff.3.t': 'Vorschau vor dem Posten', 'diff.3.d': 'Standardmässig geht nichts ohne deine Freigabe live. Abschaltbar.',
-  'diff.4.t': 'Mehrsprachig ab Tag 1', 'diff.4.d': 'Deutsch inklusive Schweizer Schreibweise, dazu EN, FR, IT, ES.',
+  'diff.4.t': 'Mehrsprachig ab Tag 1', 'diff.4.d': '11 Sprachen – von Deutsch (inkl. Schweizer Schreibweise) über Englisch und Französisch bis Kroatisch und Türkisch.',
 
   'examples.title': 'Beispiele nach Nische',
   'examples.sub': 'So sehen Videos aus TrueReel aus. Die Vorschau unten wird live im Browser gerendert.',

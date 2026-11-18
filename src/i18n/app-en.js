@@ -1,5 +1,12 @@
 // English versions of the app texts. Key = German original (see tr() in index.jsx).
 export default {
+  "Beauty": "Beauty",
+  "Handwerk": "Crafts",
+  "Bäckerei": "Bakery",
+  "Garage": "Garage",
+  "Coiffeur": "Hair salon",
+  "Restaurant": "Restaurant",
+  "Fitness": "Fitness",
   "POV: Zeitreise": "POV: Time travel",
   "Du erlebst den Alltag in einer anderen Epoche – aus der Ich-Perspektive. Ein beliebtes Trend-Format.": "You experience daily life in another era – from a first-person view. A popular trend format.",
   "Epoche oder Ort (optional)": "Era or place (optional)",
