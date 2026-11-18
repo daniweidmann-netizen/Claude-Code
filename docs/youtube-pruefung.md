@@ -90,7 +90,10 @@ Angaben:
 - [x] OAuth-Datenzugriff (youtube.upload, youtube.readonly) zur Prüfung eingereicht
 - [x] YouTube API Audit-Formular eingereicht (Standardkontingent 10'000, Nachweise 1–6 hochgeladen)
 - [x] OAuth-Tokens werden AES-256-GCM-verschlüsselt gespeichert
-- [ ] Antwort von Google abwarten (Mails an info@truereel.ch)
+- [x] YouTube API Audit: von YouTube geschlossen – API-Uploads werden nicht automatisch privat (YOUTUBE_PRIVACY=public)
+- [x] **OAuth-Verifizierung genehmigt (18.11.2026)** für youtube.readonly und youtube.upload
+
+Wichtig: Änderungen am OAuth-Zustimmungsbildschirm (Name, Logo, Links, Scopes) erfordern eine neue Prüfung – nur ändern, wenn nötig.
 
 ## Danach
 
