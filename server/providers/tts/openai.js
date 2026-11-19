@@ -31,11 +31,13 @@ const STYLE = {
   'el-fiete': 'Relaxed, natural male creator voice, conversational.',
   'el-clara': 'Calm, clear female narrator.',
   'el-lola': 'Lively, fresh female social media voice.',
+  'el-brian': 'Deep, warm, comforting male storyteller, slow and emotional.',
 };
 
 export default {
   name: 'openai',
-  async synthesize({ text, voiceId, language = 'de' }) {
+  async synthesize({ text: raw, voiceId, language = 'de' }) {
+    const text = String(raw || '').replace(/\[[^\]]{1,30}\]\s*/g, '').trim();
     const preset = VOICES.find((v) => v.id === voiceId) || VOICES[0];
     const res = await fetch('https://api.openai.com/v1/audio/speech', {
       method: 'POST',

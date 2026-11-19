@@ -52,8 +52,11 @@ export function sceneAt(tl, t) {
 }
 
 // Wort-Timings innerhalb einer Szene (gewichtet nach Wortlänge)
+// Gefühls-Anweisungen für die Stimme wie [sad] oder [softly] erscheinen nicht in den Untertiteln
+export const stripVoiceTags = (text) => String(text || '').replace(/\[[^\]]{1,30}\]\s*/g, '').replace(/\s{2,}/g, ' ').trim();
+
 export function wordTimings(text, start, duration) {
-  const words = (text || '').split(/\s+/).filter(Boolean);
+  const words = stripVoiceTags(text).split(/\s+/).filter(Boolean);
   const usable = Math.max(0.5, duration - 0.35);
   const weights = words.map((w) => 0.6 + w.length * 0.12);
   const sum = weights.reduce((a, b) => a + b, 0) || 1;

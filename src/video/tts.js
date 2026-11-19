@@ -31,7 +31,7 @@ export const hasHighQualityVoice = (lang) => availableVoices(lang).some((v) => q
 export function speak(text, { lang = 'de', voiceId = 'calm-m', onEnd } = {}) {
   if (!browserTTSAvailable()) { onEnd?.(); return () => {}; }
   const preset = VOICES.find((v) => v.id === voiceId) || VOICES[0];
-  const u = new SpeechSynthesisUtterance(text);
+  const u = new SpeechSynthesisUtterance(String(text || '').replace(/\[[^\]]{1,30}\]\s*/g, ''));
   u.lang = LANGUAGES.find((l) => l.id === lang)?.bcp47 || 'de-DE';
   const v = pickVoice(lang, preset);
   if (v) u.voice = v;

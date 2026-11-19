@@ -13,7 +13,7 @@ const TAGS = {
 function describe(video, series) {
   const p = video.project || {};
   const scenes = p.scenes || [];
-  const hook = scenes[0]?.text || '';
+  const hook = String(scenes[0]?.text || '').replace(/\[[^\]]{1,30}\]\s*/g, '');
   const credits = [...new Map(scenes.filter((s) => s.credit).map((s) => [s.credit.url, s.credit])).values()]
     .map((c) => `• ${c.author} / ${c.source}${c.license ? ` (${c.license})` : ''}: ${c.url}`);
   return [
@@ -29,7 +29,7 @@ function describe(video, series) {
 // Bildunterschrift für TikTok/Instagram: Hook + Hinweis auf KI + Hashtags
 function captionFor(video) {
   const p = video.project || {};
-  const hook = p.scenes?.[0]?.text || video.title || '';
+  const hook = String(p.scenes?.[0]?.text || video.title || '').replace(/\[[^\]]{1,30}\]\s*/g, '');
   return `${hook}\n\n${video.title ? `${video.title}\n\n` : ''}#wusstestdu #fakten #fyp\n\nErstellt mit TrueReel · Bilder und Stimme KI-generiert`.slice(0, 2200);
 }
 

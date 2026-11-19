@@ -22,7 +22,7 @@ export const ART_STYLES = [
 ];
 
 // Version der Hörproben in /public/voices (bei neuen Aufnahmen erhöhen → kein alter Cache)
-export const VOICE_SAMPLE_VERSION = 4;
+export const VOICE_SAMPLE_VERSION = 5;
 
 export const LANGUAGES = [
   { id: 'de', label: 'Deutsch', bcp47: 'de-DE' },
@@ -55,6 +55,7 @@ export const VOICES = [
   { id: 'el-fiete', label: 'Fiete – locker (m)', premium: true, gender: 'male', providerVoice: { elevenlabs: 'kHfXYCwbOq00KgBegten', openai: 'echo' } },
   { id: 'el-clara', label: 'Clara – ruhig (w)', premium: true, gender: 'female', providerVoice: { elevenlabs: 'Wh9XzZGVJQVPkBBHqnp3', openai: 'sage' } },
   { id: 'el-lola', label: 'Lola – lebendig (w)', premium: true, gender: 'female', providerVoice: { elevenlabs: 'SiMvlSW9cKKHDYT4BzOp', openai: 'coral' } },
+  { id: 'el-brian', label: 'Brian – gefühlvoll (m, EN)', premium: true, gender: 'male', providerVoice: { elevenlabs: 'nPczCjzI2devNBz1zQrb', openai: 'onyx' } },
 ];
 export const PREMIUM_VOICE_PLANS = ['daily', 'pro'];
 
