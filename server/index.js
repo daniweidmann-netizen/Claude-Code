@@ -17,12 +17,13 @@ if (stripe) stripe.accounts.retrieve().then((a) => { stripeAccountId = a.id; }).
 import socialRouter from './social/router.js';
 import { startScheduler } from './scheduler.js';
 import { publishVideo, publishDue } from './publish.js';
-import { PLAN_QUOTAS } from './quotas.js';
+import { quotaFor } from './quotas.js';
 import analyticsRouter from './analytics.js';
 import businessRouter from './business.js';
 import reviewsRouter from './reviews.js';
 import affiliatesRouter from './affiliates.js';
 import financeRouter from './finance.js';
+import demoRouter from './demo.js';
 import { renderHtml, sitemap, robots } from './seo.js';
 import { sendReminders, reminderRouter } from './reminders.js';
 import elevenlabsTts from './providers/tts/elevenlabs.js';
@@ -42,6 +43,7 @@ app.use('/api', businessRouter); // /api/business-inquiry
 app.use('/api', reviewsRouter); // /api/reviews
 app.use('/api', affiliatesRouter); // /api/affiliate*
 app.use('/api', financeRouter); // /api/finance (nur Inhaber)
+app.use('/api', demoRouter); // /api/demo/script (Test ohne Konto)
 
 let hasFfmpeg = false;
 ffmpegAvailable().then((ok) => { hasFfmpeg = ok; });
@@ -74,7 +76,7 @@ async function checkQuota(req, res, next) {
   const profile = await getProfile(req.user.id);
   if (profile?.is_admin) return next(); // Inhaber-Konto: unbegrenzt
   const plan = profile?.plan || 'free';
-  const quota = PLAN_QUOTAS[plan];
+  const quota = quotaFor(profile);
   const since = plan === 'free' ? new Date(0) : new Date(new Date().getFullYear(), new Date().getMonth(), 1);
   const { count } = await admin.from('videos').select('id', { count: 'exact', head: true }).eq('user_id', req.user.id).gte('created_at', since.toISOString());
   if ((count ?? 0) >= quota) {

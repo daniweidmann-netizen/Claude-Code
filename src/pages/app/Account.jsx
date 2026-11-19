@@ -5,7 +5,7 @@ import { useAuth } from '../../context/AuthContext.jsx';
 import { PageHeader } from '../../components/AppLayout.jsx';
 import { Notice, Spinner, StripeBadge } from '../../components/ui.jsx';
 import { PricingSection } from '../../components/Pricing.jsx';
-import { getPlan, priceFor, formatUSD } from '../../config/plans.js';
+import { getPlan, priceFor, formatUSD, freeVideoLimit } from '../../config/plans.js';
 import { usePlatforms } from '../../lib/socialStatus.js';
 import { SITE } from '../../config/site.js';
 import { startCheckout, openPortal } from '../../lib/billing.js';
@@ -159,7 +159,7 @@ export default function Account() {
                   {formatUSD(price.perMonth)} {tr('/ Monat')}{profile.billing_interval === 'yearly' ? ` · ${tr('jährlich')} ${formatUSD(price.billed)}` : ''}
                   {profile.current_period_end && <> · {profile.cancel_at_period_end ? tr("endet am") : tr("verlängert sich am")} {new Date(profile.current_period_end).toLocaleDateString(getLocale())}</>}
                 </p>
-              ) : <p className="mt-1 text-sm muted">{tr("Gratis-Test: 3 Videos inklusive, ohne Kreditkarte.")}</p>}
+              ) : <p className="mt-1 text-sm muted">{tr("Gratis-Test: {n} Video(s) inklusive, ohne Kreditkarte.", { n: freeVideoLimit(profile) })}</p>}
               {profile?.cancel_at_period_end && <p className="mt-2 inline-flex rounded-full bg-amber-100 px-2 py-0.5 text-xs font-semibold text-amber-900">{tr("Gekündigt – keine weitere Abbuchung")}</p>}
             </div>
             <StripeBadge />

@@ -1,8 +1,8 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import {
   ArrowRight, Layers, FileText, Image, Mic, Captions, Music, Scissors, CalendarClock, Download, LayoutDashboard,
-  Tag, MousePointerClick, Eye, Languages, Mail, Search, PenSquare, Send, Heart, MessageCircle, Share2,
+  Tag, MousePointerClick, Sparkles, Megaphone, Eye, Languages, Mail, Search, PenSquare, Send, Heart, MessageCircle, Share2,
 } from 'lucide-react';
 import { useI18n } from '../i18n/index.jsx';
 import { PhoneFrame } from '../components/ui.jsx';
@@ -55,6 +55,68 @@ function HeroPhone() {
   );
 }
 
+// Test ohne Konto: Thema eingeben → Hook + Kurz-Skript sofort sehen
+const DEMO_TOPICS = { de: ['Warum Flamingos rosa sind', 'Der kürzeste Krieg der Geschichte', '3 Tipps für besseren Schlaf'], en: ['Why flamingos are pink', 'The shortest war in history', '3 tips for better sleep'] };
+function DemoBox() {
+  const { t, lang } = useI18n();
+  const navigate = useNavigate();
+  const [topic, setTopic] = useState('');
+  const [busy, setBusy] = useState(false);
+  const [res, setRes] = useState(null);
+  const [err, setErr] = useState('');
+  const resRef = useRef(null);
+  useEffect(() => { if (res) resRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, [res]);
+  const run = async (e, value) => {
+    e?.preventDefault();
+    const tp = (value ?? topic).trim();
+    if (tp.length < 3) return setErr(t('demo.short'));
+    setTopic(tp); setBusy(true); setErr(''); setRes(null);
+    try {
+      const r = await fetch('/api/demo/script', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ topic: tp, language: lang === 'en' ? 'en' : 'de' }) });
+      const j = await r.json().catch(() => ({}));
+      if (!r.ok) throw new Error(j.error ? tr(j.error) : t('demo.fail'));
+      setRes(j);
+    } catch (x) { setErr(x.message || t('demo.fail')); }
+    setBusy(false);
+  };
+  const toVideo = () => {
+    try { localStorage.setItem('tr-first-topic', JSON.stringify({ topic, at: Date.now() })); } catch { /* egal */ }
+    navigate('/registrieren');
+  };
+  return (
+    <div className="mt-8 max-w-xl">
+      <form onSubmit={run} className="card flex flex-col gap-2 p-2 sm:flex-row">
+        <label htmlFor="demo-topic" className="sr-only">{t('demo.label')}</label>
+        <input id="demo-topic" className="input flex-1 border-0 text-base" maxLength={120} placeholder={t('demo.placeholder')} value={topic} onChange={(e) => setTopic(e.target.value)} />
+        <button className="btn-primary px-5 py-3 text-base" disabled={busy}>{busy ? <span className="inline-block h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" /> : <Sparkles className="h-4 w-4" />}{t('demo.button')}</button>
+      </form>
+      {!res && !busy && (
+        <div className="mt-2 flex flex-wrap gap-2 text-xs">
+          <span className="muted">{t('demo.try')}</span>
+          {(DEMO_TOPICS[lang] || DEMO_TOPICS.de).map((x) => <button key={x} type="button" className="rounded-full border border-navy-200 px-2.5 py-1 hover:border-accent-500 dark:border-navy-700" onClick={() => run(null, x)}>{x}</button>)}
+        </div>
+      )}
+      {busy && <p className="mt-3 text-sm muted">{t('demo.busy')}</p>}
+      {err && <p className="mt-3 text-sm text-red-600 dark:text-red-400" role="alert">{err}</p>}
+      {res && (
+        <div ref={resRef} className="card mt-4 scroll-mt-20 p-5" aria-live="polite">
+          <p className="eyebrow">{t('demo.hook')}</p>
+          <p className="mt-1 text-xl font-bold leading-snug">{res.hook}</p>
+          <ol className="mt-4 space-y-2 text-sm">
+            {res.scenes.map((s, i) => <li key={i} className="flex gap-2"><span className="font-semibold text-accent-700 dark:text-accent-400">{i + 1}.</span><span>{s}</span></li>)}
+          </ol>
+          {res.cta && <p className="mt-3 text-sm muted">{res.cta}</p>}
+          <div className="mt-5 flex flex-col gap-2 sm:flex-row">
+            <button type="button" className="btn-primary px-6 py-3" onClick={toVideo}>{t('demo.toVideo')}<ArrowRight className="h-4 w-4" /></button>
+            <button type="button" className="btn-outline" onClick={() => { setRes(null); setTopic(''); }}>{t('demo.again')}</button>
+          </div>
+          <p className="mt-3 text-xs muted">{t('demo.note')}</p>
+        </div>
+      )}
+    </div>
+  );
+}
+
 function Hero() {
   const { t, lang } = useI18n();
   return (
@@ -65,11 +127,11 @@ function Hero() {
             {t('hero.title1')}<br />{t('hero.title2')}
           </h1>
           <p className="mt-6 max-w-xl text-lg text-navy-500 dark:text-navy-300 sm:text-xl">{t('hero.sub')}</p>
-          <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-            <Link to="/registrieren" className="btn-primary px-8 py-3.5 text-base">{t('hero.cta')}</Link>
-            <Link to="/preise" className="btn-outline px-8 py-3.5 text-base">{t('hero.cta2')}</Link>
-          </div>
-          <p className="mt-3 text-sm muted">{t('hero.note')}</p>
+          <DemoBox />
+          <p className="mt-4 text-sm muted">
+            <span className="mr-2 inline-block rounded-full bg-accent-500 px-2.5 py-0.5 text-xs font-bold text-navy-950">{t('hero.badge')}</span>
+            <Link to="/registrieren" className="font-semibold underline">{t('hero.cta')}</Link> · <Link to="/preise" className="underline">{t('hero.cta2')}</Link>
+          </p>
         </div>
         <div>
           <HeroPhone />
@@ -108,7 +170,7 @@ function HowItWorks() {
 }
 
 const FEATURES = [
-  ['script', FileText], ['visuals', Image], ['voice', Mic], ['captions', Captions], ['posting', CalendarClock],
+  ['script', FileText], ['visuals', Image], ['voice', Mic], ['captions', Captions], ['posting', CalendarClock], ['promo', Megaphone],
 ];
 
 const SHOWCASE = [
@@ -178,7 +240,7 @@ function Features() {
           <h2 className="h2 mt-2">{t('features.title')}</h2>
           <p className="mt-3 muted">{t('features.sub')}</p>
         </div>
-        <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
+        <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {FEATURES.map(([k, Icon]) => (
             <div key={k} className="card p-5">
               <Icon className="h-6 w-6 text-accent-700 dark:text-accent-400" />

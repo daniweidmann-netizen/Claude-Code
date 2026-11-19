@@ -30,12 +30,16 @@ export const PLANS = [
   },
 ];
 
+// Wer sich vor der Umstellung registriert hat, behält den Gratis-Test mit 3 Videos.
+export const LEGACY_FREE_BEFORE = '2026-11-20T00:00:00Z';
+export const freeVideoLimit = (profile) => (profile?.created_at && new Date(profile.created_at) < new Date(LEGACY_FREE_BEFORE) ? 3 : 1);
+
 export const FREE_PLAN = {
   id: 'free',
   name: 'Test',
   monthly: 0,
-  videosPerMonth: 3,
-  limits: { freeVideos: 3, series: 1, platforms: 0, customUploads: false },
+  videosPerMonth: 1,
+  limits: { freeVideos: 1, series: 1, platforms: 0, customUploads: false },
 };
 
 export const getPlan = (id) => PLANS.find((p) => p.id === id) || FREE_PLAN;

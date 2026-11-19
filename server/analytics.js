@@ -10,7 +10,7 @@ const router = express.Router();
 const SECRET = process.env.ANALYTICS_SECRET || process.env.SUPABASE_SERVICE_ROLE_KEY || crypto.randomBytes(32).toString('hex');
 const OWN_HOSTS = /(^|\.)truereel\.ch$|onrender\.com$|^localhost$/;
 const BOTS = /bot|crawl|spider|slurp|facebookexternalhit|preview|headless|lighthouse|pingdom|uptime|monitor|curl|wget|python|node-fetch|axios/i;
-const TYPES = new Set(['pageview', 'signup', 'checkout', 'waitlist']); // 'lead' nur serverseitig (Firmen-Anfrage)
+const TYPES = new Set(['pageview', 'signup', 'checkout', 'waitlist', 'source']); // 'lead' nur serverseitig (Firmen-Anfrage)
 // Antworten auf „Wie hast du von TrueReel erfahren?“ bei der Registrierung
 const SIGNUP_SOURCES = new Set(['tiktok', 'instagram', 'youtube', 'google', 'friends', 'other'])
 
@@ -57,7 +57,7 @@ router.post('/track', express.json({ limit: '4kb' }), async (req, res) => {
     type,
     path: normPath(b.path),
     referrer: refHost(b.referrer),
-    utm_source: type === 'signup' ? clip(SIGNUP_SOURCES.has(b.source) ? b.source : null, 60) : clip(b.utm_source, 60),
+    utm_source: type === 'signup' || type === 'source' ? clip(SIGNUP_SOURCES.has(b.source) ? b.source : null, 60) : clip(b.utm_source, 60),
     utm_medium: clip(b.utm_medium, 60),
     utm_campaign: clip(b.utm_campaign, 80),
     device: device(req.headers['user-agent']),
@@ -134,7 +134,12 @@ router.get('/stats', authenticate, async (req, res) => {
     pages: count(views, 'path'),
     sources: count(sources, 'src'),
     devices: count(views, 'device'),
-    signupSources: count(rows.filter((r) => r.type === 'signup').map((r) => ({ ...r, utm_source: r.utm_source || 'none' })), 'utm_source'),
+    // Herkunft: Antwort bei der Registrierung (alt) oder später im Dashboard (Typ „source“)
+    signupSources: (() => {
+      const answered = rows.filter((r) => (r.type === 'signup' || r.type === 'source') && r.utm_source);
+      const none = Math.max(0, signups - answered.length);
+      return count([...answered, ...Array.from({ length: none }, () => ({ utm_source: 'none' }))], 'utm_source');
+    })(),
   });
 });
 

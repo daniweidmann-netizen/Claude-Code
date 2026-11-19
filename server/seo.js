@@ -5,10 +5,10 @@ import { GUIDES, GUIDE_BASE, findGuide, guideHtml } from '../shared/guides.js';
 const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 
 const PAGES = {
-  '/': { title: 'TrueReel – Faceless videos that perform', description: 'TrueReel creates faceless short videos for TikTok, Instagram Reels and YouTube Shorts – with AI script, voiceover, captions and auto-posting. 3 free videos, no credit card.' },
+  '/': { title: 'TrueReel – Faceless videos that perform', description: 'TrueReel creates faceless short videos for TikTok, Instagram Reels and YouTube Shorts – with AI script, voiceover, captions and auto-posting. first video free, no credit card.' },
   '/firmen': { title: 'Kurzvideos für Firmen – TrueReel', description: 'Wir produzieren jeden Monat Kurzvideos für TikTok, Instagram Reels und YouTube Shorts für dein Unternehmen. Ab CHF 290 pro Monat, monatlich kündbar, kostenloses Beispielvideo.' },
   '/business': { title: 'Short videos for businesses – TrueReel', description: 'Monthly short videos for TikTok, Instagram Reels and YouTube Shorts for your business. From CHF 290 per month, cancel monthly, free sample video.' },
-  '/preise': { title: 'Pricing – TrueReel', description: 'Transparent pricing for faceless short videos: Hobby, Daily and Pro. Cancel any time. Try 3 videos free, no credit card.' },
+  '/preise': { title: 'Pricing – TrueReel', description: 'Transparent pricing for faceless short videos: Hobby, Daily and Pro. Cancel any time. Try your first video free, no credit card.' },
   '/guides': { title: 'Guides – TrueReel', description: 'Practical, honest guides for faceless short-video creators on TikTok, Reels and YouTube Shorts.', lang: 'en', alt: '/ratgeber' },
   '/ratgeber': { title: 'Ratgeber – TrueReel', description: 'Praktische, ehrliche Ratgeber für Faceless-Kurzvideos auf TikTok, Reels und YouTube Shorts.', lang: 'de', alt: '/guides' },
   '/impressum': { title: 'Impressum – TrueReel' },

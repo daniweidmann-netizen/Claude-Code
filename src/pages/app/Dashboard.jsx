@@ -7,6 +7,7 @@ import { computeUsage } from '../../lib/usage.js';
 import { Notice, Spinner } from '../../components/ui.jsx';
 import { ArtThumb } from '../../components/Pickers.jsx';
 import IdeaDialog from '../../components/IdeaDialog.jsx';
+import SourceCard from '../../components/SourceCard.jsx';
 import ReviewCard from '../../components/ReviewCard.jsx';
 import { STATUS_LABELS } from '../../lib/videoFlow.js';
 import { fmtDateTime, nextFreeSlot } from '../../lib/schedule.js';
@@ -130,10 +131,11 @@ export default function Dashboard() {
       </div>
       {ideaOpen && <IdeaDialog allSeries={series} onClose={() => setIdeaOpen(false)} canCreate={usage.remaining > 0} limitText={limitText} />}
       {error && <Notice tone="error" className="mb-4">{error}</Notice>}
+      <SourceCard profile={profile} />
       {!profile?.is_admin && <ReviewCard firstName={(profile?.full_name || '').split(' ')[0]} />}
       {usage.plan.id === 'free' && (
         <Notice tone="info" className="mb-6 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-          <span>{tr('Gratis-Test: {n} von 3 Videos verfügbar. Gratis-Exporte haben ein kleines Wasserzeichen.', { n: usage.remaining })}</span>
+          <span>{tr('Gratis-Test: {n} von {max} Video(s) verfügbar. Gratis-Exporte haben ein kleines Wasserzeichen.', { n: usage.remaining, max: usage.limit })}</span>
           <Link to="/preise" className="btn-primary shrink-0 px-3 py-1.5 text-xs">{tr("Pläne ansehen")}</Link>
         </Notice>
       )}

@@ -83,7 +83,6 @@ export function Login() {
   );
 }
 
-const SOURCES = [['tiktok', 'TikTok'], ['instagram', 'Instagram'], ['youtube', 'YouTube'], ['google', 'Google-Suche'], ['friends', 'Freunde / Empfehlung'], ['other', 'Sonstiges']];
 
 export function Register() {
   const { t } = useI18n();
@@ -101,7 +100,7 @@ export function Register() {
     setBusy(true); setMsg(null);
     try {
       const r = await signUp(form);
-      track('signup', '/registrieren', { source: form.source });
+      track('signup', '/registrieren');
       if (r.needsConfirmation) setMsg({ tone: 'success', text: t('auth.checkMail') });
       else navigate(next);
     } catch (err) { setMsg({ tone: 'error', text: err.message }); }
@@ -110,17 +109,9 @@ export function Register() {
 
   return (
     <AuthShell title={t('auth.registerTitle')} sub={t('auth.registerSub')}>
-      <div className="mb-5">
-        <label className="label" htmlFor="source">{tr("Wie hast du von TrueReel erfahren?")} <span className="font-normal muted">({tr("freiwillig")})</span></label>
-        <select id="source" className="input" value={form.source || ''} onChange={(e) => setForm({ ...form, source: e.target.value })}>
-          <option value="">{tr("Bitte wählen")}</option>
-          {SOURCES.map(([id, label]) => <option key={id} value={id}>{tr(label)}</option>)}
-        </select>
-      </div>
-      <button className="btn-outline w-full" onClick={() => { track('signup', '/registrieren/google', { source: form.source }); signInWithGoogle().catch((e) => setMsg({ tone: 'error', text: e.message })); }}><GoogleIcon />{t('auth.google')}</button>
+      <button className="btn-outline w-full" onClick={() => { track('signup', '/registrieren/google'); signInWithGoogle().catch((e) => setMsg({ tone: 'error', text: e.message })); }}><GoogleIcon />{t('auth.google')}</button>
       <div className="my-5 flex items-center gap-3 text-xs muted"><span className="h-px flex-1 bg-navy-100 dark:bg-navy-800" />{t('auth.or')}<span className="h-px flex-1 bg-navy-100 dark:bg-navy-800" /></div>
       <form onSubmit={submit} className="space-y-4">
-        <div><label className="label" htmlFor="name">{t('auth.name')}</label><input id="name" className="input" autoComplete="name" value={form.fullName} onChange={(e) => setForm({ ...form, fullName: e.target.value })} /></div>
         <div><label className="label" htmlFor="email">{t('auth.email')}</label><input id="email" type="email" required autoComplete="email" className="input" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} /></div>
         <div><label className="label" htmlFor="pw">{t('auth.password')}</label><input id="pw" type="password" required minLength={8} autoComplete="new-password" className="input" value={form.password} onChange={(e) => setForm({ ...form, password: e.target.value })} /><p className="mt-1 text-xs muted">{tr("Mindestens 8 Zeichen")}</p></div>
         {msg && <Notice tone={msg.tone}>{msg.text}</Notice>}

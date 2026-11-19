@@ -1,4 +1,4 @@
-import { getPlan, FREE_PLAN } from '../config/plans.js';
+import { getPlan, FREE_PLAN, freeVideoLimit } from '../config/plans.js';
 
 // Zählt "verbrauchte" Videos: jedes erzeugte Video-Projekt in der aktuellen Periode.
 export function periodStart(profile) {
@@ -23,7 +23,7 @@ export function computeUsage(profile, videos) {
   }
   if (plan.id === FREE_PLAN.id) {
     const used = Math.max(profile?.free_videos_used || 0, videos.length);
-    const limit = FREE_PLAN.limits.freeVideos;
+    const limit = freeVideoLimit(profile);
     return { plan, used, limit, remaining: Math.max(0, limit - used), label: 'Gratis-Test' };
   }
   const start = periodStart(profile);

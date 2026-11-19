@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { apiAvailable } from '../../lib/api.js';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { ArrowLeft, ArrowRight, Sparkles, ImagePlus, X } from 'lucide-react';
@@ -20,8 +20,8 @@ const STEPS = ['Nische', 'Stil', 'Stimme', 'Zeitplan'];
 
 // Vorlage für den Inhaber: Werbung für TrueReel selbst (nur echte, überprüfbare Fakten)
 const TRUEREEL_PROMO = {
-  de: { product: 'TrueReel', link: 'truereel.ch', audience: 'Creators, kleine Firmen und alle, die auf TikTok, Instagram oder YouTube wachsen wollen, ohne selbst vor die Kamera zu stehen', facts: 'Erstellt aus einem Thema automatisch fertige Kurzvideos: Skript, KI-Bilder, Stimme, Untertitel und Musik · gesichtslos, du musst nicht vor die Kamera · 13 Bildstile und viele Sprachen · Serien mit Zeitplan · kann Videos direkt auf YouTube hochladen · 3 Videos gratis testen, keine Kreditkarte nötig' },
-  en: { product: 'TrueReel', link: 'truereel.ch', audience: 'Creators, small businesses and anyone who wants to grow on TikTok, Instagram or YouTube without being on camera', facts: 'Turns a topic into finished short videos automatically: script, AI images, voice-over, captions and music · faceless, no camera needed · 13 visual styles and many languages · series with a posting schedule · can upload directly to YouTube · try 3 videos free, no credit card needed' },
+  de: { product: 'TrueReel', link: 'truereel.ch', audience: 'Creators, kleine Firmen und alle, die auf TikTok, Instagram oder YouTube wachsen wollen, ohne selbst vor die Kamera zu stehen', facts: 'Erstellt aus einem Thema automatisch fertige Kurzvideos: Skript, KI-Bilder, Stimme, Untertitel und Musik · gesichtslos, du musst nicht vor die Kamera · 13 Bildstile und viele Sprachen · Serien mit Zeitplan · kann Videos direkt auf YouTube hochladen · erstes Video gratis, keine Kreditkarte nötig; Hook und Skript ohne Konto auf truereel.ch testen' },
+  en: { product: 'TrueReel', link: 'truereel.ch', audience: 'Creators, small businesses and anyone who wants to grow on TikTok, Instagram or YouTube without being on camera', facts: 'Turns a topic into finished short videos automatically: script, AI images, voice-over, captions and music · faceless, no camera needed · 13 visual styles and many languages · series with a posting schedule · can upload directly to YouTube · first video free, no credit card needed; test hooks and scripts without an account on truereel.ch' },
 };
 
 export default function SeriesWizard() {
@@ -43,12 +43,24 @@ export default function SeriesWizard() {
   useEffect(() => { apiAvailable().then((h) => h?.providers?.llm && setLlm(h.providers.llm)); }, []);
   const nicheReady = (n) => n.ready || llm !== 'mock';
 
+  // Schnellstart: Thema aus dem Test auf der Startseite → erstes Video direkt erstellen
+  const finishRef = useRef(null);
+  const [quick, setQuick] = useState('');
+  const [photoBusy, setPhotoBusy] = useState(false);
+  useEffect(() => {
+    if (loading || !isOnboarding) return;
+    let first = null;
+    try { first = JSON.parse(localStorage.getItem('tr-first-topic') || 'null'); localStorage.removeItem('tr-first-topic'); } catch { /* egal */ }
+    if (!first?.topic || Date.now() - (first.at || 0) > 7 * 864e5) return;
+    setQuick(first.topic);
+    finishRef.current?.({ niche: 'custom', topic: String(first.topic).slice(0, 120) });
+  }, [loading]); // eslint-disable-line react-hooks/exhaustive-deps
+
   if (loading) return <Spinner className="h-6 w-6 text-accent-500" />;
   const limitReached = seriesLimitReached(profile, series.length);
   const usage = computeUsage(profile, videos);
 
   const setPromo = (patch) => setD((x) => ({ ...x, promo: { ...x.promo, ...patch } }));
-  const [photoBusy, setPhotoBusy] = useState(false);
   const addPhotos = async (e) => {
     const files = [...(e.target.files || [])].slice(0, 6 - d.photos.length);
     e.target.value = '';
@@ -69,35 +81,36 @@ export default function SeriesWizard() {
   };
   const canNext = step !== 0 || ((d.niche !== 'custom' || d.topic.trim().length > 2) && (d.niche !== 'characters' || d.character.trim().length > 5) && (d.niche !== 'promo' || (d.promo.product.trim().length > 1 && d.promo.facts.trim().length > 10)));
 
-  const finish = async () => {
+  const finish = async (o = {}) => {
+    const x = { ...d, ...o };
     setError('');
     try {
       setBusy(tr("Die KI plant deine Serie …"));
-      const topic = d.niche === 'promo' ? promoTopic() : d.topic;
-      const planRes = await planSeries({ niche: d.niche, topic, language: d.language, character: d.niche === 'characters' ? d.character : undefined });
+      const topic = x.niche === 'promo' ? promoTopic() : x.topic;
+      const planRes = await planSeries({ niche: x.niche, topic, language: x.language, character: x.niche === 'characters' ? x.character : undefined });
       let character = null;
-      if (d.niche === 'characters') {
+      if (x.niche === 'characters') {
         setBusy(tr('Deine Hauptfigur wird gezeichnet …'));
-        character = await createCharacter({ description: d.character.trim(), style: d.artStyle, userId: user.id }).catch(() => null);
+        character = await createCharacter({ description: x.character.trim(), style: x.artStyle, userId: user.id }).catch(() => null);
       }
       const s = await saveSeries({
         user_id: user.id,
         title: planRes.title,
         description: planRes.description,
-        niche: d.niche,
+        niche: x.niche,
         topic: topic || null,
-        language: d.language,
-        art_style: d.artStyle,
-        voice_id: d.voiceId,
-        captions: { ...DEFAULT_CAPTIONS, style: d.captionStyle },
-        music: { trackId: d.niche === 'promo' ? 'uplift' : ['history', 'pov'].includes(d.niche) ? 'epic' : 'calm', volume: 0.3 }, // Tiergeschichten: ruhige Flächen
-        schedule: d.schedule,
-        platforms: d.platforms,
-        require_approval: d.requireApproval,
-        target_seconds: d.targetSeconds,
+        language: x.language,
+        art_style: x.artStyle,
+        voice_id: x.voiceId,
+        captions: { ...DEFAULT_CAPTIONS, style: x.captionStyle },
+        music: { trackId: x.niche === 'promo' ? 'uplift' : ['history', 'pov'].includes(x.niche) ? 'epic' : 'calm', volume: 0.3 }, // Tiergeschichten: ruhige Flächen
+        schedule: x.schedule,
+        platforms: x.platforms,
+        require_approval: x.requireApproval,
+        target_seconds: x.targetSeconds,
         episodes: planRes.episodes,
         character,
-        product: d.niche === 'promo' && d.photos.length ? { images: d.photos.map((p, i) => ({ url: p.url, label: p.label.trim() || `Foto ${i + 1}` })) } : null,
+        product: x.niche === 'promo' && x.photos.length ? { images: x.photos.map((p, i) => ({ url: p.url, label: p.label.trim() || `Foto ${i + 1}` })) } : null,
         active: true,
       });
       if (isOnboarding) await updateProfile({ onboarding_done: true });
@@ -111,6 +124,8 @@ export default function SeriesWizard() {
       setBusy('');
     }
   };
+
+  finishRef.current = finish;
 
   if (limitReached) {
     return (
@@ -126,7 +141,7 @@ export default function SeriesWizard() {
         <div className="mb-6 text-center">
           <p className="eyebrow">{tr("Willkommen bei TrueReel")}</p>
           <h1 className="mt-1 text-2xl font-bold sm:text-3xl">{tr("Richten wir deine erste Serie ein")}</h1>
-          <p className="mt-1 text-sm muted">{tr("Vier kurze Schritte – alles lässt sich später ändern.")}</p>
+          <p className="mt-1 text-sm muted">{quick ? tr('Dein erstes Video zu „{t}“ wird gerade erstellt – das dauert etwa eine Minute.', { t: quick }) : tr("Vier kurze Schritte – alles lässt sich später ändern.")}</p>
         </div>
       )}
       {!isOnboarding && <h1 className="mb-6 text-2xl font-bold">{tr("Neue Serie")}</h1>}
