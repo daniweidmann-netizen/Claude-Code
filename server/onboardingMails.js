@@ -29,9 +29,9 @@ const MAILS = {
     ] },
     3: { subject: 'Mehr Videos mit weniger Aufwand', button: 'Pläne ansehen', path: '/app/account#plaene', paras: [
       'regelmässig posten ist das Wichtigste für Wachstum – und genau dafür ist TrueReel gebaut:',
-      '• Hobby ($24/Monat): 3 Videos pro Woche, ohne Wasserzeichen.',
-      '• Daily ($49/Monat): jeden Tag ein Video, bis zu 3 Serien.',
-      '• Pro ($89/Monat): 2 Videos pro Tag, eigene Musik und Fotos.',
+      '• Hobby (CHF 22 bzw. $24 pro Monat): 3 Videos pro Woche, ohne Wasserzeichen.',
+      '• Daily (CHF 44 bzw. $49 pro Monat): jeden Tag ein Video, bis zu 3 Serien.',
+      '• Pro (CHF 79 bzw. $89 pro Monat): 2 Videos pro Tag, eigene Musik und Fotos.',
       'Alle Pläne sind monatlich kündbar, mit einem Klick im Konto. Wenn du Fragen hast, antworte einfach auf diese Mail.',
     ] },
   },

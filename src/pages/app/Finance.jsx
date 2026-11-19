@@ -30,7 +30,7 @@ function Projection({ settings, current }) {
   const fixedCosts = (settings.fixedCosts || []).reduce((s, f) => s + Number(f.amount || 0), 0);
   const rows = useMemo(() => PLANS.flatMap((p) => ['monthly', 'yearly'].map((interval) => {
     const n = Number(counts[p.id][interval]) || 0;
-    const price = priceFor(p, interval);
+    const price = priceFor(p, interval, 'USD');
     const revenue = n * price.perMonth;
     const fees = n * (interval === 'yearly' ? (price.billed * pct + fix) / 12 : price.billed * pct + fix);
     const ai = aiFor(p.id);

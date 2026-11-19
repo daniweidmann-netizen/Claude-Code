@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Check, ChevronDown, Sparkles } from 'lucide-react';
-import { PLANS, priceFor, costPerVideo, formatUSD, YEARLY_DISCOUNT } from '../config/plans.js';
+import { PLANS, priceFor, costPerVideo, formatUSD, YEARLY_DISCOUNT, displayCurrency } from '../config/plans.js';
 import { useI18n } from '../i18n/index.jsx';
 import { useAuth } from '../context/AuthContext.jsx';
 import { startCheckout } from '../lib/billing.js';
@@ -164,7 +164,7 @@ export function PricingSection({ showCalculator = true, currentPlan }) {
     <div>
       <div className="mb-10 flex flex-col items-center gap-4 text-center">
         <IntervalToggle interval={interval} setInterval={setInterval} />
-        <p className="text-xs muted">{t('pricing.vat')} {interval === 'yearly' && `(${Math.round(YEARLY_DISCOUNT * 100)} % ${lang === 'de' ? 'Rabatt' : 'off'})`}</p>
+        <p className="text-xs muted">{t('pricing.vat').replace('{cur}', displayCurrency())} {interval === 'yearly' && `(${Math.round(YEARLY_DISCOUNT * 100)} % ${lang === 'de' ? 'Rabatt' : 'off'})`}</p>
         <p className="mt-1 text-xs muted">{t('pricing.withdrawal')}</p>
       </div>
       <PricingTable interval={interval} currentPlan={currentPlan} />

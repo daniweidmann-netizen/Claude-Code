@@ -70,7 +70,7 @@ export default {
   'pricing.freeText': 'Create your first video for free – no credit card. Free videos include a small watermark.',
   'pricing.freeCta': 'Start free',
   'pricing.withdrawal': 'With your purchase we start the service immediately, so any statutory right of withdrawal expires. Our 7-day satisfaction rule applies instead (see refund policy).',
-  'pricing.vat': 'Prices in USD. Applicable VAT is shown at checkout.',
+  'pricing.vat': 'Prices in {cur}. Applicable VAT is shown at checkout.',
 
   'plan.hobby.f1': '3 videos per week',
   'plan.hobby.f2': '1 series',
