@@ -17,6 +17,12 @@ import { translate as tr, getLang } from '../../i18n/index.jsx';
 
 const STEPS = ['Nische', 'Stil', 'Stimme', 'Zeitplan'];
 
+// Vorlage für den Inhaber: Werbung für TrueReel selbst (nur echte, überprüfbare Fakten)
+const TRUEREEL_PROMO = {
+  de: { product: 'TrueReel', link: 'truereel.ch', audience: 'Creators, kleine Firmen und alle, die auf TikTok, Instagram oder YouTube wachsen wollen, ohne selbst vor die Kamera zu stehen', facts: 'Erstellt aus einem Thema automatisch fertige Kurzvideos: Skript, KI-Bilder, Stimme, Untertitel und Musik · gesichtslos, du musst nicht vor die Kamera · 13 Bildstile und viele Sprachen · Serien mit Zeitplan · kann Videos direkt auf YouTube hochladen · 3 Videos gratis testen, keine Kreditkarte nötig' },
+  en: { product: 'TrueReel', link: 'truereel.ch', audience: 'Creators, small businesses and anyone who wants to grow on TikTok, Instagram or YouTube without being on camera', facts: 'Turns a topic into finished short videos automatically: script, AI images, voice-over, captions and music · faceless, no camera needed · 13 visual styles and many languages · series with a posting schedule · can upload directly to YouTube · try 3 videos free, no credit card needed' },
+};
+
 export default function SeriesWizard() {
   const { user, profile, updateProfile } = useAuth();
   const { series, videos, loading } = useAppData();
@@ -27,7 +33,7 @@ export default function SeriesWizard() {
   const [busy, setBusy] = useState('');
   const [error, setError] = useState('');
   const [d, setD] = useState({
-    niche: 'history', topic: '', character: '', artStyle: 'cinematic', captionStyle: 'karaoke',
+    niche: 'history', topic: '', character: '', promo: { product: '', link: '', facts: '', audience: '' }, artStyle: 'cinematic', captionStyle: 'karaoke',
     language: getLang(), voiceId: 'calm-m',
     schedule: DEFAULT_SCHEDULE, platforms: [], requireApproval: true, targetSeconds: DEFAULT_TARGET_SECONDS,
   });
@@ -40,13 +46,19 @@ export default function SeriesWizard() {
   const limitReached = seriesLimitReached(profile, series.length);
   const usage = computeUsage(profile, videos);
 
-  const canNext = step !== 0 || ((d.niche !== 'custom' || d.topic.trim().length > 2) && (d.niche !== 'characters' || d.character.trim().length > 5));
+  const setPromo = (patch) => setD((x) => ({ ...x, promo: { ...x.promo, ...patch } }));
+  const promoTopic = () => {
+    const p = d.promo;
+    return [`Produkt/Angebot: ${p.product.trim()}`, p.link.trim() && `Link: ${p.link.trim()}`, p.audience.trim() && `Zielgruppe: ${p.audience.trim()}`, `Fakten und Vorteile (nur diese verwenden): ${p.facts.trim()}`].filter(Boolean).join('\n');
+  };
+  const canNext = step !== 0 || ((d.niche !== 'custom' || d.topic.trim().length > 2) && (d.niche !== 'characters' || d.character.trim().length > 5) && (d.niche !== 'promo' || (d.promo.product.trim().length > 1 && d.promo.facts.trim().length > 10)));
 
   const finish = async () => {
     setError('');
     try {
       setBusy(tr("Die KI plant deine Serie …"));
-      const planRes = await planSeries({ niche: d.niche, topic: d.topic, language: d.language, character: d.niche === 'characters' ? d.character : undefined });
+      const topic = d.niche === 'promo' ? promoTopic() : d.topic;
+      const planRes = await planSeries({ niche: d.niche, topic, language: d.language, character: d.niche === 'characters' ? d.character : undefined });
       let character = null;
       if (d.niche === 'characters') {
         setBusy(tr('Deine Hauptfigur wird gezeichnet …'));
@@ -57,12 +69,12 @@ export default function SeriesWizard() {
         title: planRes.title,
         description: planRes.description,
         niche: d.niche,
-        topic: d.topic || null,
+        topic: topic || null,
         language: d.language,
         art_style: d.artStyle,
         voice_id: d.voiceId,
         captions: { ...DEFAULT_CAPTIONS, style: d.captionStyle },
-        music: { trackId: ['history', 'pov'].includes(d.niche) ? 'epic' : 'calm', volume: 0.3 }, // Tiergeschichten: ruhige Flächen
+        music: { trackId: d.niche === 'promo' ? 'uplift' : ['history', 'pov'].includes(d.niche) ? 'epic' : 'calm', volume: 0.3 }, // Tiergeschichten: ruhige Flächen
         schedule: d.schedule,
         platforms: d.platforms,
         require_approval: d.requireApproval,
@@ -143,13 +155,41 @@ export default function SeriesWizard() {
                 <input id="topic-animal" className="input" placeholder={tr('z. B. Hunde aus dem Tierheim, Strassenkatzen, ein alter Hund und sein Mensch')} value={d.topic} onChange={(e) => set({ topic: e.target.value })} />
               </div>
             )}
+            {d.niche === 'promo' && (
+              <div className="mt-5 space-y-4">
+                {profile?.is_admin && (
+                  <button type="button" className="btn-outline" onClick={() => setPromo(getLang() === 'de' ? TRUEREEL_PROMO.de : TRUEREEL_PROMO.en)}>
+                    <Sparkles className="h-4 w-4" />{tr('Vorlage: TrueReel (nur für dich sichtbar)')}
+                  </button>
+                )}
+                <div className="grid gap-4 sm:grid-cols-2">
+                  <div>
+                    <label className="label" htmlFor="promo-product">{tr('Produkt oder Angebot *')}</label>
+                    <input id="promo-product" className="input" maxLength={80} placeholder={tr('z. B. Café Sonne, Handyhüllen-Shop, Yoga-Kurs')} value={d.promo.product} onChange={(e) => setPromo({ product: e.target.value })} />
+                  </div>
+                  <div>
+                    <label className="label" htmlFor="promo-link">{tr('Link oder Ort (optional)')}</label>
+                    <input id="promo-link" className="input" maxLength={120} placeholder={tr('z. B. meinshop.ch oder „Bahnhofstrasse 5, Zürich“')} value={d.promo.link} onChange={(e) => setPromo({ link: e.target.value })} />
+                  </div>
+                </div>
+                <div>
+                  <label className="label" htmlFor="promo-audience">{tr('Für wen? (optional)')}</label>
+                  <input id="promo-audience" className="input" maxLength={120} placeholder={tr('z. B. Studierende, junge Familien, Hundebesitzer')} value={d.promo.audience} onChange={(e) => setPromo({ audience: e.target.value })} />
+                </div>
+                <div>
+                  <label className="label" htmlFor="promo-facts">{tr('Vorteile und Fakten *')}</label>
+                  <textarea id="promo-facts" className="input min-h-[110px]" maxLength={800} placeholder={tr('z. B. hausgemachte Kuchen jeden Tag frisch · Terrasse mit Seesicht · Mo–Sa ab 7 Uhr offen')} value={d.promo.facts} onChange={(e) => setPromo({ facts: e.target.value })} />
+                  <p className="mt-1 text-xs muted">{tr('Die KI verwendet nur, was du hier angibst – keine erfundenen Zahlen, Bewertungen oder Rabatte. Jede Folge zeigt einen anderen Vorteil.')}</p>
+                </div>
+              </div>
+            )}
             {d.niche === 'pov' && (
               <div className="mt-5">
                 <label className="label" htmlFor="topic-pov">{tr('Epoche oder Ort (optional)')}</label>
                 <input id="topic-pov" className="input" placeholder={tr('z. B. Mittelalter, altes Rom, Schweiz um 1900 – leer lassen für Abwechslung')} value={d.topic} onChange={(e) => set({ topic: e.target.value })} />
               </div>
             )}
-            {!['characters', 'pov', 'animalstories'].includes(d.niche) && (d.niche === 'custom' || !nicheReady(NICHES.find((n) => n.id === d.niche))) && (
+            {!['characters', 'pov', 'animalstories', 'promo'].includes(d.niche) && (d.niche === 'custom' || !nicheReady(NICHES.find((n) => n.id === d.niche))) && (
               <div className="mt-5">
                 <label className="label" htmlFor="topic">{d.niche === 'custom' ? tr("Dein Thema") : tr("Thema präzisieren (optional)")}</label>
                 <input id="topic" className="input" placeholder={tr("z. B. Erfindungen aus der Schweiz")} value={d.topic} onChange={(e) => set({ topic: e.target.value })} />

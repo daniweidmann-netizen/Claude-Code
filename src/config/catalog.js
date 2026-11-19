@@ -8,6 +8,7 @@ export const NICHES = [
   { id: 'reddit', label: 'Reddit-Stories', emoji: '💬', ready: false, desc: 'Erzählte Community-Geschichten (eigene Texte).' },
   { id: 'animalstories', label: 'Bewegende Tiergeschichten', emoji: '🐾', ready: true, desc: 'Rührende Geschichten über Tiere – Rettung, Treue, Abschied und Hoffnung. Emotional, aber nie grausam.' },
   { id: 'pov', label: 'POV: Zeitreise', emoji: '⏳', ready: true, desc: 'Du erlebst den Alltag in einer anderen Epoche – aus der Ich-Perspektive. Ein beliebtes Trend-Format.' },
+  { id: 'promo', label: 'Werbung für dein Produkt', emoji: '📣', ready: true, desc: 'Kurze, ehrliche Werbevideos für deinen Shop, dein Lokal, deine App oder dein Angebot – mit Hook und klarem Aufruf am Schluss.' },
   { id: 'characters', label: 'Figuren-Geschichten', emoji: '🧑‍🎤', ready: true, desc: 'Eine erfundene Hauptfigur erlebt in jeder Folge ein neues Abenteuer – immer mit demselben Gesicht.' },
   { id: 'custom', label: 'Eigenes Thema', emoji: '✍️', ready: true, desc: 'Du gibst das Thema vor, die KI plant die Serie.' },
 ];
