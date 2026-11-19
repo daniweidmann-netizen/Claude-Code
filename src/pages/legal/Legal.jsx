@@ -78,6 +78,8 @@ function DatenschutzDe() {
       <p>Einige Anbieter (Stripe, Anthropic, OpenAI, Render, Wikimedia, Google) sitzen in den USA. Die Übermittlung erfolgt, soweit der Anbieter zertifiziert ist, auf Basis des EU-US bzw. Swiss-US Data Privacy Framework, ansonsten auf Basis der Standardvertragsklauseln der EU-Kommission (vom EDÖB anerkannt). Wir übermitteln jeweils nur die Daten, die für den konkreten Zweck nötig sind.</p>
       <h2>6. Speicherdauer</h2>
       <p>Kontodaten speichern wir, bis du dein Konto löschst. Rechnungsdaten bewahren wir gemäss gesetzlichen Fristen auf (CH: 10 Jahre, DE: bis zu 10 Jahre).</p>
+      <h2>Partner-Links</h2>
+      <p>Kommst du über den Link eines Partners (z. B. truereel.ch/?ref=…), merken wir uns dieses Kürzel bis zu 60 Tage lokal in deinem Browser. Erstellst du in dieser Zeit ein Konto, ordnen wir es dem Partner zu, damit wir ihm eine Provision zahlen können. Der Partner erfährt dabei weder deinen Namen noch deine E-Mail-Adresse.</p>
       <h2>Bewertungen</h2>
       <p>Wenn du TrueReel in der App bewertest, speichern wir Sterne, Text, Vorname und ob du der Veröffentlichung zustimmst. Veröffentlicht wird eine Bewertung nur mit deiner Zustimmung und nach Prüfung durch uns, unverändert. Du kannst deine Zustimmung jederzeit per E-Mail widerrufen; mit deinem Konto wird auch die Bewertung gelöscht.</p>
       <h2>Anfragen für den Video-Service für Firmen</h2>
@@ -214,6 +216,8 @@ function DatenschutzEn() {
       <p>Some providers (Stripe, Anthropic, OpenAI, Render, Wikimedia, Google) are based in the USA. Where the provider is certified, transfers are based on the EU-US or Swiss-US Data Privacy Framework; otherwise on the European Commission's standard contractual clauses (recognised by the FDPIC). We only transmit the data needed for the specific purpose.</p>
       <h2>6. Retention</h2>
       <p>We store account data until you delete your account. Billing records are kept for the statutory periods (CH: 10 years, DE: up to 10 years).</p>
+      <h2>Partner links</h2>
+      <p>If you arrive via a partner's link (e.g. truereel.ch/?ref=…), we remember this code locally in your browser for up to 60 days. If you create an account during that time, we assign it to the partner so we can pay them a commission. The partner does not learn your name or email address.</p>
       <h2>Reviews</h2>
       <p>When you rate TrueReel in the app, we store the stars, text, first name and whether you agree to publication. A review is only published with your consent and after our review, unchanged. You can withdraw consent at any time by email; the review is deleted together with your account.</p>
       <h2>Requests for the video service for businesses</h2>

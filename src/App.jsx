@@ -19,6 +19,8 @@ import Stats from './pages/app/Stats.jsx';
 import Finance from './pages/app/Finance.jsx';
 import { GuideIndex, GuidePage } from './pages/Guides.jsx';
 import Business from './pages/Business.jsx';
+import Partners from './pages/app/Partners.jsx';
+import { captureRef } from './lib/referral.js';
 import Sample from './pages/Sample.jsx';
 
 function ScrollManager() {
@@ -30,7 +32,7 @@ function ScrollManager() {
     }
     window.scrollTo(0, 0);
   }, [pathname, hash]);
-  useEffect(() => { track('pageview', pathname); }, [pathname]);
+  useEffect(() => { captureRef(); track('pageview', pathname); }, [pathname]);
   return null;
 }
 
@@ -79,6 +81,7 @@ export default function App() {
           <Route path="account" element={<Account />} />
           <Route path="statistik" element={<Stats />} />
           <Route path="finanzen" element={<Finance />} />
+          <Route path="partner" element={<Partners />} />
         </Route>
       </Routes>
     </>

@@ -21,6 +21,7 @@ import { PLAN_QUOTAS } from './quotas.js';
 import analyticsRouter from './analytics.js';
 import businessRouter from './business.js';
 import reviewsRouter from './reviews.js';
+import affiliatesRouter from './affiliates.js';
 import financeRouter from './finance.js';
 import { renderHtml, sitemap, robots } from './seo.js';
 import { sendReminders, reminderRouter } from './reminders.js';
@@ -39,6 +40,7 @@ app.use(express.json({ limit: '2mb' }));
 app.use('/api', analyticsRouter); // /api/track, /api/stats
 app.use('/api', businessRouter); // /api/business-inquiry
 app.use('/api', reviewsRouter); // /api/reviews
+app.use('/api', affiliatesRouter); // /api/affiliate*
 app.use('/api', financeRouter); // /api/finance (nur Inhaber)
 
 let hasFfmpeg = false;

@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { attachRef } from '../lib/referral.js';
 import { NavLink, Navigate, Outlet, useLocation, Link } from 'react-router-dom';
 import { Home, Layers, CalendarDays, CreditCard, LogOut, HelpCircle, Bell, ChevronDown, Moon, Sun } from 'lucide-react';
 import { useAuth } from '../context/AuthContext.jsx';
@@ -58,6 +59,7 @@ function ProfileMenu() {
           <Link to="/app/account" className="block rounded-lg px-3 py-2 text-sm hover:bg-navy-50 dark:hover:bg-navy-800" onClick={() => setOpen(false)}>{tr("Konto & Abrechnung")}</Link>
           {profile?.is_admin && <Link to="/app/statistik" className="block rounded-lg px-3 py-2 text-sm hover:bg-navy-50 dark:hover:bg-navy-800" onClick={() => setOpen(false)}>{tr("Statistik")}</Link>}
           {profile?.is_admin && <Link to="/app/finanzen" className="block rounded-lg px-3 py-2 text-sm hover:bg-navy-50 dark:hover:bg-navy-800" onClick={() => setOpen(false)}>{tr("Finanzen")}</Link>}
+          {profile?.is_admin && <Link to="/app/partner" className="block rounded-lg px-3 py-2 text-sm hover:bg-navy-50 dark:hover:bg-navy-800" onClick={() => setOpen(false)}>{tr("Partner-Programm")}</Link>}
           <Link to="/firmen" className="block rounded-lg px-3 py-2 text-sm hover:bg-navy-50 dark:hover:bg-navy-800" onClick={() => setOpen(false)}>{tr("Für Firmen")}</Link>
           <div className="flex items-center justify-between px-3 py-2 text-sm"><span>{tr("Sprache")}</span><LangSwitch /></div>
           <button onClick={toggle} className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm hover:bg-navy-50 dark:hover:bg-navy-800">
@@ -71,7 +73,8 @@ function ProfileMenu() {
 }
 
 export default function AppLayout() {
-  const { demo } = useAuth();
+  const { demo, user } = useAuth();
+  useEffect(() => { if (user && !demo) attachRef(); }, [user, demo]);
   const usage = useUsage();
   return (
     <div className="min-h-screen bg-navy-50/60 dark:bg-navy-950">
