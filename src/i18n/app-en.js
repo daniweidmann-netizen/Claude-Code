@@ -1,5 +1,9 @@
 // English versions of the app texts. Key = German original (see tr() in index.jsx).
 export default {
+  "Bewegende Tiergeschichten": "Moving animal stories",
+  "Rührende Geschichten über Tiere – Rettung, Treue, Abschied und Hoffnung. Emotional, aber nie grausam.": "Touching stories about animals – rescue, loyalty, farewell and hope. Emotional, but never cruel.",
+  "Tier oder Richtung (optional)": "Animal or direction (optional)",
+  "z. B. Hunde aus dem Tierheim, Strassenkatzen, ein alter Hund und sein Mensch": "e.g. shelter dogs, street cats, an old dog and their human",
   "Partner-Programm": "Partner program",
   "Jeder Partner hat einen eigenen Link. Hier siehst du, wie viele Kunden er gebracht hat und wie viel Provision du ihm schuldest.": "Each partner has their own link. Here you see how many customers they brought and how much commission you owe them.",
   "Monat": "Month",

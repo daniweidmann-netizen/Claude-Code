@@ -62,7 +62,7 @@ export default function SeriesWizard() {
         art_style: d.artStyle,
         voice_id: d.voiceId,
         captions: { ...DEFAULT_CAPTIONS, style: d.captionStyle },
-        music: { trackId: ['history', 'pov'].includes(d.niche) ? 'epic' : 'calm', volume: 0.3 },
+        music: { trackId: ['history', 'pov'].includes(d.niche) ? 'epic' : 'calm', volume: 0.3 }, // Tiergeschichten: ruhige Flächen
         schedule: d.schedule,
         platforms: d.platforms,
         require_approval: d.requireApproval,
@@ -137,13 +137,19 @@ export default function SeriesWizard() {
                 </div>
               </div>
             )}
+            {d.niche === 'animalstories' && (
+              <div className="mt-5">
+                <label className="label" htmlFor="topic-animal">{tr('Tier oder Richtung (optional)')}</label>
+                <input id="topic-animal" className="input" placeholder={tr('z. B. Hunde aus dem Tierheim, Strassenkatzen, ein alter Hund und sein Mensch')} value={d.topic} onChange={(e) => set({ topic: e.target.value })} />
+              </div>
+            )}
             {d.niche === 'pov' && (
               <div className="mt-5">
                 <label className="label" htmlFor="topic-pov">{tr('Epoche oder Ort (optional)')}</label>
                 <input id="topic-pov" className="input" placeholder={tr('z. B. Mittelalter, altes Rom, Schweiz um 1900 – leer lassen für Abwechslung')} value={d.topic} onChange={(e) => set({ topic: e.target.value })} />
               </div>
             )}
-            {d.niche !== 'characters' && d.niche !== 'pov' && (d.niche === 'custom' || !nicheReady(NICHES.find((n) => n.id === d.niche))) && (
+            {!['characters', 'pov', 'animalstories'].includes(d.niche) && (d.niche === 'custom' || !nicheReady(NICHES.find((n) => n.id === d.niche))) && (
               <div className="mt-5">
                 <label className="label" htmlFor="topic">{d.niche === 'custom' ? tr("Dein Thema") : tr("Thema präzisieren (optional)")}</label>
                 <input id="topic" className="input" placeholder={tr("z. B. Erfindungen aus der Schweiz")} value={d.topic} onChange={(e) => set({ topic: e.target.value })} />
