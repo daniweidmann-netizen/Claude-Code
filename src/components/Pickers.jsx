@@ -9,6 +9,13 @@ import { Link } from 'react-router-dom';
 import { previewMusic, stopMusicPreview, unlockAudio } from '../video/audio.js';
 import { translate as tr } from '../i18n/index.jsx';
 
+// Echtes KI-Beispielbild pro Stil (public/styles/<id>.jpg), sonst gezeichnete Vorschau
+function StyleThumb({ id, motif }) {
+  const [failed, setFailed] = useState(false);
+  if (failed) return <ArtThumb style={id} motif={motif} className="h-auto w-full" />;
+  return <img src={`/styles/${id}.jpg`} alt="" loading="lazy" onError={() => setFailed(true)} className="aspect-[9/16] h-auto w-full rounded-lg object-cover" />;
+}
+
 export function ArtThumb({ style, seed = 4242, motif = 'pyramid', className = '' }) {
   const ref = useRef(null);
   useEffect(() => {
@@ -25,7 +32,7 @@ export function ArtStylePicker({ value, onChange, motif }) {
     <div className="grid grid-cols-3 gap-3 sm:grid-cols-6">
       {ART_STYLES.map((s) => (
         <button key={s.id} type="button" onClick={() => onChange(s.id)} className={`option flex flex-col items-center gap-2 p-2 ${value === s.id ? 'option-active' : ''}`} aria-pressed={value === s.id}>
-          <ArtThumb style={s.id} motif={motif} className="h-auto w-full" />
+          <StyleThumb id={s.id} motif={motif} />
           <span className="text-xs font-semibold">{tr(s.label)}</span>
         </button>
       ))}

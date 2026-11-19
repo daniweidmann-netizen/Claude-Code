@@ -19,6 +19,13 @@ export const ART_STYLES = [
   { id: 'manga', label: 'Manga' },
   { id: 'cinematic', label: 'Cinematic' },
   { id: 'stock', label: 'Stock-Footage' },
+  { id: 'toon3d', label: '3D-Animation' },
+  { id: 'fantasy', label: 'Märchen-Illustration' },
+  { id: 'watercolor', label: 'Aquarell' },
+  { id: 'cyberpunk', label: 'Cyberpunk' },
+  { id: 'noir', label: 'Film Noir' },
+  { id: 'papercut', label: 'Papierschnitt' },
+  { id: 'neon', label: 'Neon-Graffiti' },
 ];
 
 // Version der Hörproben in /public/voices (bei neuen Aufnahmen erhöhen → kein alter Cache)

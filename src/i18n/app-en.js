@@ -1,5 +1,12 @@
 // English versions of the app texts. Key = German original (see tr() in index.jsx).
 export default {
+  "3D-Animation": "3D animation",
+  "Märchen-Illustration": "Fairy-tale illustration",
+  "Aquarell": "Watercolor",
+  "Cyberpunk": "Cyberpunk",
+  "Film Noir": "Film noir",
+  "Papierschnitt": "Paper cut",
+  "Neon-Graffiti": "Neon graffiti",
   "Brian – gefühlvoll (m, EN)": "Brian – emotional (m, EN)",
   "Bewegende Tiergeschichten": "Moving animal stories",
   "Rührende Geschichten über Tiere – Rettung, Treue, Abschied und Hoffnung. Emotional, aber nie grausam.": "Touching stories about animals – rescue, loyalty, farewell and hope. Emotional, but never cruel.",

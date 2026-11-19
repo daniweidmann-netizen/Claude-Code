@@ -9,6 +9,13 @@ const STYLE_PROMPTS = {
   cinematic: 'cinematic film still, dramatic lighting, teal and orange grading, shallow depth of field',
   stock: 'high quality stock footage frame, neutral colors, documentary look',
   manga: 'black and white manga panel, screentone shading, bold ink lines, high contrast, Japanese manga style, no color',
+  toon3d: 'cute stylized 3D animated movie render, soft global illumination, expressive characters, rich colors, highly detailed (original design, not based on any existing film or brand)',
+  fantasy: 'soft hand-painted fantasy storybook illustration, warm light, lush nature, gentle pastel colors, whimsical (original style, no existing characters)',
+  watercolor: 'delicate watercolor painting, visible paper texture, soft bleeding colors, loose brush strokes',
+  cyberpunk: 'cyberpunk scene, neon lights, rain-soaked streets, magenta and cyan glow, futuristic, atmospheric',
+  noir: 'black and white film noir still, hard shadows, fog, venetian blind light, 1940s mood, high contrast',
+  papercut: 'layered paper cut art, handcrafted paper layers with depth and soft shadows, felt textures, diorama look',
+  neon: 'neon graffiti street art on a brick wall, glowing spray paint, vivid neon colors, drips and splatter',
 };
 
 const MODEL = () => process.env.OPENAI_IMAGE_MODEL || 'gpt-image-1-mini';
