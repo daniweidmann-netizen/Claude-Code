@@ -57,7 +57,7 @@ function HeroPhone() {
 
 // Test ohne Konto: Thema eingeben → Hook + Kurz-Skript sofort sehen
 const DEMO_TOPICS = { de: ['Warum Flamingos rosa sind', 'Der kürzeste Krieg der Geschichte', '3 Tipps für besseren Schlaf'], en: ['Why flamingos are pink', 'The shortest war in history', '3 tips for better sleep'] };
-function DemoBox() {
+export function DemoBox() {
   const { t, lang } = useI18n();
   const navigate = useNavigate();
   const [topic, setTopic] = useState('');

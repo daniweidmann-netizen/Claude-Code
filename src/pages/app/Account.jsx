@@ -5,6 +5,7 @@ import { useAuth } from '../../context/AuthContext.jsx';
 import { PageHeader } from '../../components/AppLayout.jsx';
 import { Notice, Spinner, StripeBadge } from '../../components/ui.jsx';
 import { PricingSection } from '../../components/Pricing.jsx';
+import OfferCard from '../../components/OfferCard.jsx';
 import { getPlan, priceFor, formatUSD, freeVideoLimit } from '../../config/plans.js';
 import { usePlatforms } from '../../lib/socialStatus.js';
 import { SITE } from '../../config/site.js';
@@ -30,6 +31,7 @@ function useConnections(user) {
 export default function Account() {
   const PLATFORMS = usePlatforms();
   const { user, profile, updateProfile, signOut, refreshProfile, recovery, updatePassword, demo } = useAuth();
+  useEffect(() => { if (window.location.hash === '#plaene') setTimeout(() => document.getElementById('plaene')?.scrollIntoView({ behavior: 'smooth' }), 300); }, []);
   const [pw, setPw] = useState({ a: '', b: '' });
   const pwRef = useRef(null);
   useEffect(() => { if (recovery) pwRef.current?.scrollIntoView({ behavior: 'smooth' }); }, [recovery]);
@@ -183,7 +185,8 @@ export default function Account() {
         </section>
       </div>
 
-      <section className="mt-8">
+      <section id="plaene" className="mt-8 scroll-mt-20">
+        {!hasSub && <OfferCard profile={profile} className="mb-6" />}
         <h2 className="mb-1 text-lg font-semibold">{hasSub ? tr("Plan wechseln") : tr("Plan wählen")}</h2>
         <p className="mb-6 text-sm muted">{hasSub ? tr("Upgrades und Downgrades laufen über das Stripe-Kundenportal, anteilig verrechnet.") : tr("Transparente Preise, monatlich kündbar.")}</p>
         {hasSub ? <button className="btn-outline" onClick={portal}>{tr("Plan im Kundenportal ändern")}</button> : <PricingSection showCalculator={false} currentPlan={plan.id} />}

@@ -23,6 +23,14 @@ const defaultProfile = (user) => ({
 const readJSON = (k) => { try { return JSON.parse(localStorage.getItem(k)); } catch { return null; } };
 const writeJSON = (k, v) => localStorage.setItem(k, JSON.stringify(v));
 
+// Thema aus dem Test auf der Startseite im Konto merken (falls die Bestätigungs-Mail auf einem anderen Gerät geöffnet wird)
+function firstTopicMeta() {
+  try {
+    const f = JSON.parse(localStorage.getItem('tr-first-topic') || 'null');
+    return f?.topic ? { first_topic: String(f.topic).slice(0, 120), first_topic_at: f.at || Date.now() } : {};
+  } catch { return {}; }
+}
+
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [profile, setProfile] = useState(null);
@@ -85,7 +93,7 @@ export function AuthProvider({ children }) {
     if (DEMO_MODE) { await demoLogin(email, fullName); return { needsConfirmation: false }; }
     const { data, error } = await supabase.auth.signUp({
       email, password,
-      options: { data: { full_name: fullName, lang }, emailRedirectTo: `${window.location.origin}/app` },
+      options: { data: { full_name: fullName, lang, ...firstTopicMeta() }, emailRedirectTo: `${window.location.origin}/app` },
     });
     if (error) throw error;
     return { needsConfirmation: !data.session };

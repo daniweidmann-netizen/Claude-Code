@@ -18,6 +18,7 @@ import { track } from './lib/analytics.js';
 import Stats from './pages/app/Stats.jsx';
 import Finance from './pages/app/Finance.jsx';
 import { GuideIndex, GuidePage } from './pages/Guides.jsx';
+import { HookIndex, HookPage } from './pages/Hooks.jsx';
 import Business from './pages/Business.jsx';
 import Partners from './pages/app/Partners.jsx';
 import { captureRef } from './lib/referral.js';
@@ -66,6 +67,10 @@ export default function App() {
           <Route path="guides/:slug" element={<GuidePage lang="en" />} />
           <Route path="ratgeber" element={<GuideIndex lang="de" />} />
           <Route path="ratgeber/:slug" element={<GuidePage lang="de" />} />
+          <Route path="tiktok-hooks" element={<HookIndex lang="de" />} />
+          <Route path="tiktok-hooks/:slug" element={<HookPage lang="de" />} />
+          <Route path="en/tiktok-hooks" element={<HookIndex lang="en" />} />
+          <Route path="en/tiktok-hooks/:slug" element={<HookPage lang="en" />} />
           <Route path="*" element={<NotFound />} />
         </Route>
         <Route path="login" element={<Login />} />

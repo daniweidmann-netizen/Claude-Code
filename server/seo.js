@@ -1,6 +1,7 @@
 // SEO: pro URL eigener <title>, Beschreibung, Canonical, Sprach-Alternativen und
 // für Ratgeber vorgerendertes HTML (Google sieht den Text ohne JavaScript).
 import { GUIDES, GUIDE_BASE, findGuide, guideHtml } from '../shared/guides.js';
+import { HOOK_PAGES, HOOK_BASE, HOOK_TEXT, HOOKS_UPDATED, findHookPage } from '../shared/hooks.js';
 
 const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 
@@ -38,13 +39,36 @@ function guideMeta(path) {
   };
 }
 
+// Hook-Seiten: Titel, Beschreibung, Sprach-Alternativen und vorgerenderte Liste für Google
+function hookMeta(path) {
+  const idx = path === HOOK_BASE.de ? 'de' : path === HOOK_BASE.en ? 'en' : null;
+  if (idx) {
+    const T = HOOK_TEXT[idx];
+    return { title: `${T.indexTitle} | TrueReel`, description: T.indexDescription, lang: idx, alt: HOOK_BASE[idx === 'de' ? 'en' : 'de'],
+      body: `<main style="max-width:720px;margin:0 auto;padding:32px 16px;font-family:system-ui,sans-serif"><h1>${esc(T.indexTitle)}</h1><p>${esc(T.intro)}</p><ul>${HOOK_PAGES.map((p) => `<li><a href="${HOOK_BASE[idx]}/${p[idx].slug}">${esc(p[idx].title)}</a></li>`).join('')}</ul></main>` };
+  }
+  const m = path.match(/^(\/en)?\/tiktok-hooks\/([\w-]+)$/);
+  if (!m) return null;
+  const lang = m[1] ? 'en' : 'de';
+  const found = findHookPage(lang, m[2]);
+  if (!found) return null;
+  const other = lang === 'de' ? 'en' : 'de';
+  const p = found.page; const T = HOOK_TEXT[lang];
+  return {
+    title: `${p.title} | TrueReel`, description: p.description, lang, type: 'article',
+    alt: `${HOOK_BASE[other]}/${found.all[other].slug}`,
+    jsonLd: { '@context': 'https://schema.org', '@type': 'Article', headline: p.title, description: p.description, dateModified: HOOKS_UPDATED, inLanguage: lang, publisher: { '@type': 'Organization', name: 'TrueReel' } },
+    body: `<article style="max-width:720px;margin:0 auto;padding:32px 16px;font-family:system-ui,sans-serif"><h1>${esc(p.title)}</h1><p>${esc(T.intro)}</p><ol>${p.hooks.map((h) => `<li>${esc(h)}</li>`).join('')}</ol><h2>${esc(T.tipsTitle)}</h2><ul>${T.tips.map((t) => `<li>${esc(t)}</li>`).join('')}</ul></article>`,
+  };
+}
+
 function indexBody(lang) {
   return `<main style="max-width:720px;margin:0 auto;padding:32px 16px;font-family:system-ui,sans-serif"><h1>${lang === 'de' ? 'Ratgeber' : 'Guides'}</h1><ul>${GUIDES.map((g) => `<li><a href="${GUIDE_BASE[lang]}/${g[lang].slug}">${esc(g[lang].title)}</a> – ${esc(g[lang].description)}</li>`).join('')}</ul></main>`;
 }
 
 export function renderHtml(template, path, appUrl, acceptLanguage = '') {
   const clean = path.split('?')[0].replace(/\/+$/, '') || '/';
-  const meta = guideMeta(clean) || PAGES[clean] || null;
+  const meta = guideMeta(clean) || hookMeta(clean) || PAGES[clean] || null;
   let html = template;
   const url = `${appUrl}${clean === '/' ? '' : clean}`;
   const head = [`<link rel="canonical" href="${url}">`];
@@ -77,6 +101,8 @@ export function sitemap(appUrl) {
   const today = new Date().toISOString().slice(0, 10);
   const urls = [['/', today], ['/preise', today], ['/firmen', today], ['/business', today], ['/guides', today], ['/ratgeber', today],
     ...GUIDES.flatMap((g) => ['en', 'de'].map((l) => [`${GUIDE_BASE[l]}/${g[l].slug}`, g[l].updated])),
+    [HOOK_BASE.de, HOOKS_UPDATED], [HOOK_BASE.en, HOOKS_UPDATED],
+    ...HOOK_PAGES.flatMap((p) => ['de', 'en'].map((l) => [`${HOOK_BASE[l]}/${p[l].slug}`, HOOKS_UPDATED])),
     ['/impressum', today], ['/datenschutz', today], ['/agb', today], ['/rueckerstattung', today]];
   return `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls.map(([u, d]) => `  <url><loc>${appUrl}${u === '/' ? '/' : u}</loc><lastmod>${d}</lastmod></url>`).join('\n')}\n</urlset>\n`;
 }

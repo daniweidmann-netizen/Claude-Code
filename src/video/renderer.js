@@ -211,11 +211,21 @@ export function drawFrame(ctx, project, tl, t, { W = VIDEO_W, H = VIDEO_H, getIm
   if (project.titleCard !== false) drawTitleCard(ctx, project, tl, t, W, H);
 
   if (watermark) {
+    // Gratis-Videos: gut lesbare Plakette oben (unten liegen bei TikTok/Reels Name und Beschreibung)
     const k = W / VIDEO_W;
-    ctx.font = `700 ${Math.round(34 * k)}px Inter, sans-serif`;
-    ctx.textAlign = 'right';
-    ctx.textBaseline = 'alphabetic';
-    ctx.fillStyle = 'rgba(255,255,255,0.75)';
-    ctx.fillText('Made with TrueReel', W - 36 * k, H - 60 * k);
+    const label = 'Made with TrueReel · truereel.ch';
+    ctx.font = `700 ${Math.round(32 * k)}px Inter, sans-serif`;
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'middle';
+    const tw = ctx.measureText(label).width;
+    const pad = 22 * k, dot = 16 * k, h = 62 * k;
+    const w = tw + pad * 2 + dot + 14 * k;
+    const x = (W - w) / 2, y = H * 0.075;
+    ctx.fillStyle = 'rgba(0,0,0,0.55)';
+    roundRect(ctx, x, y, w, h, h / 2); ctx.fill();
+    ctx.fillStyle = '#c9f03f';
+    ctx.beginPath(); ctx.arc(x + pad + dot / 2, y + h / 2, dot / 2, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = 'rgba(255,255,255,0.95)';
+    ctx.fillText(label, x + pad + dot + 14 * k, y + h / 2 + 1);
   }
 }

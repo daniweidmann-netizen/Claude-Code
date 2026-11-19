@@ -3,6 +3,7 @@ import Stripe from 'stripe';
 import { config, stripeEnabled, planFromPrice } from './config.js';
 import { admin, authenticate, getProfile } from './supabaseAdmin.js';
 import { recordEvent } from './analytics.js';
+import { offerSettings, offerActive } from './offer.js';
 
 export const stripe = stripeEnabled()
   ? new Stripe(config.stripeKey, process.env.NODE_USE_ENV_PROXY ? { httpClient: Stripe.createFetchHttpClient() } : {})
@@ -35,11 +36,14 @@ router.post('/checkout', authenticate, async (req, res) => {
     if (subs.data.some((x) => ['active', 'trialing', 'past_due'].includes(x.status))) {
       return res.status(409).json({ error: 'Du hast bereits ein aktives Abo. Planwechsel bitte über „Zahlungsdaten & Rechnungen“.' });
     }
+    // Willkommensangebot (48 h nach dem ersten Gratis-Export) automatisch anwenden – sonst eigene Codes erlauben
+    const profile = await getProfile(req.user.id);
+    const offer = offerActive(profile) ? await offerSettings() : null;
     const session = await stripe.checkout.sessions.create({
       mode: 'subscription',
       customer,
       line_items: [{ price, quantity: 1 }],
-      allow_promotion_codes: true,
+      ...(offer ? { discounts: [{ coupon: offer.couponId }] } : { allow_promotion_codes: true }),
       // Managed Payments: Stripe ist offizieller Verkäufer und übernimmt MWST/USt weltweit,
       // Betrugsprüfung und Rückbuchungen (Zusatzgebühr pro Zahlung). Abschalten mit STRIPE_MANAGED_PAYMENTS=false.
       ...(managedPayments

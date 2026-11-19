@@ -8,6 +8,7 @@ import { Notice, Spinner } from '../../components/ui.jsx';
 import { ArtThumb } from '../../components/Pickers.jsx';
 import IdeaDialog from '../../components/IdeaDialog.jsx';
 import SourceCard from '../../components/SourceCard.jsx';
+import OfferCard from '../../components/OfferCard.jsx';
 import ReviewCard from '../../components/ReviewCard.jsx';
 import { STATUS_LABELS } from '../../lib/videoFlow.js';
 import { fmtDateTime, nextFreeSlot } from '../../lib/schedule.js';
@@ -131,6 +132,7 @@ export default function Dashboard() {
       </div>
       {ideaOpen && <IdeaDialog allSeries={series} onClose={() => setIdeaOpen(false)} canCreate={usage.remaining > 0} limitText={limitText} />}
       {error && <Notice tone="error" className="mb-4">{error}</Notice>}
+      <OfferCard profile={profile} />
       <SourceCard profile={profile} />
       {!profile?.is_admin && <ReviewCard firstName={(profile?.full_name || '').split(' ')[0]} />}
       {usage.plan.id === 'free' && (

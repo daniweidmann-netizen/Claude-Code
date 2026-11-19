@@ -10,6 +10,7 @@ import { ArtStylePicker, VoicePicker, SchedulePicker, PlatformPicker, CaptionSty
 import { Notice, Spinner, Toggle } from '../../components/ui.jsx';
 import { planSeries, createCharacter } from '../../video/generate.js';
 import { saveSeries, uploadMedia } from '../../lib/store.js';
+import { supabase } from '../../lib/supabase.js';
 import { fileToJpeg } from '../../lib/imageFile.js';
 import { createVideoForEpisode } from '../../lib/videoFlow.js';
 import { computeUsage, seriesLimitReached } from '../../lib/usage.js';
@@ -51,6 +52,12 @@ export default function SeriesWizard() {
     if (loading || !isOnboarding) return;
     let first = null;
     try { first = JSON.parse(localStorage.getItem('tr-first-topic') || 'null'); localStorage.removeItem('tr-first-topic'); } catch { /* egal */ }
+    // Anderes Gerät (z. B. Bestätigungs-Mail am Handy geöffnet): Thema aus dem Konto
+    const meta = user?.user_metadata;
+    if (!first?.topic && meta?.first_topic && !meta.first_topic_used) {
+      first = { topic: meta.first_topic, at: meta.first_topic_at };
+      supabase?.auth.updateUser({ data: { first_topic_used: true } }).catch(() => {});
+    } else if (first?.topic && meta?.first_topic) supabase?.auth.updateUser({ data: { first_topic_used: true } }).catch(() => {});
     if (!first?.topic || Date.now() - (first.at || 0) > 7 * 864e5) return;
     setQuick(first.topic);
     finishRef.current?.({ niche: 'custom', topic: String(first.topic).slice(0, 120) });

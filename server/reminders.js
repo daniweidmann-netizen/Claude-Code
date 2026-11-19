@@ -8,8 +8,8 @@ import { config } from './config.js';
 const APP = () => config.appUrl || 'https://truereel.ch';
 const secret = () => crypto.createHash('sha256').update(`truereel-unsubscribe:${process.env.SUPABASE_SERVICE_ROLE_KEY || ''}`).digest();
 const unsubToken = (uid) => crypto.createHmac('sha256', secret()).update(uid).digest('base64url').slice(0, 32);
-const unsubUrl = (uid) => `${APP()}/api/email/unsubscribe?u=${uid}&t=${unsubToken(uid)}`;
-const esc = (s) => String(s || '').replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+export const unsubUrl = (uid) => `${APP()}/api/email/unsubscribe?u=${uid}&t=${unsubToken(uid)}`;
+export const esc = (s) => String(s || '').replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 
 const TEXT = {
   de: {
@@ -49,7 +49,7 @@ function render(lang, { name, title, videoId, isFree, uid }) {
   return { subject: t.subject, html, text };
 }
 
-async function sendMail(to, { subject, html, text }, uid) {
+export async function sendMail(to, { subject, html, text }, uid, tag = 'reminder-export') {
   const res = await fetch('https://api.brevo.com/v3/smtp/email', {
     method: 'POST',
     headers: { 'api-key': process.env.BREVO_API_KEY, 'Content-Type': 'application/json', Accept: 'application/json' },
@@ -59,7 +59,7 @@ async function sendMail(to, { subject, html, text }, uid) {
       to: [{ email: to }],
       subject, htmlContent: html, textContent: text,
       headers: { 'List-Unsubscribe': `<${unsubUrl(uid)}>`, 'List-Unsubscribe-Post': 'List-Unsubscribe=One-Click' },
-      tags: ['reminder-export'],
+      tags: [tag],
     }),
   });
   if (!res.ok) throw new Error(`Brevo ${res.status}: ${(await res.text()).slice(0, 160)}`);
@@ -109,7 +109,7 @@ const unsubscribe = async (req, res) => {
   const ok = /^[0-9a-f-]{36}$/i.test(uid) && String(req.query.t || '') === unsubToken(uid);
   if (ok && admin) await admin.from('profiles').update({ email_opt_out: true }).eq('id', uid);
   if (req.method === 'POST') return res.status(ok ? 200 : 400).end();
-  res.status(ok ? 200 : 400).type('html').send(`<!doctype html><meta name="viewport" content="width=device-width,initial-scale=1"><body style="font-family:Inter,Arial,sans-serif;background:#1b1e24;color:#fff;display:flex;min-height:100vh;align-items:center;justify-content:center;margin:0;padding:24px;text-align:center"><div><h1 style="font-size:22px">${ok ? 'Abgemeldet ✓ / Unsubscribed ✓' : 'Link ungültig / Invalid link'}</h1><p style="color:#c9ccd3">${ok ? 'Du bekommst keine Erinnerungs-Mails mehr. / You will not receive reminder emails anymore.' : ''}</p><p><a href="${APP()}" style="color:#cbef3f">truereel.ch</a></p></div>`);
+  res.status(ok ? 200 : 400).type('html').send(`<!doctype html><meta name="viewport" content="width=device-width,initial-scale=1"><body style="font-family:Inter,Arial,sans-serif;background:#1b1e24;color:#fff;display:flex;min-height:100vh;align-items:center;justify-content:center;margin:0;padding:24px;text-align:center"><div><h1 style="font-size:22px">${ok ? 'Abgemeldet ✓ / Unsubscribed ✓' : 'Link ungültig / Invalid link'}</h1><p style="color:#c9ccd3">${ok ? 'Du bekommst keine Erinnerungs- und Tipp-Mails mehr. / You will not receive reminder or tip emails anymore.' : ''}</p><p><a href="${APP()}" style="color:#cbef3f">truereel.ch</a></p></div>`);
 };
 reminderRouter.get('/email/unsubscribe', unsubscribe);
 reminderRouter.post('/email/unsubscribe', unsubscribe);
