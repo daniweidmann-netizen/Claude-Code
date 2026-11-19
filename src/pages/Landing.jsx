@@ -255,19 +255,22 @@ function Examples() {
 }
 
 function SocialProof() {
-  // Nur anzeigen, wenn echte Daten in SITE.socialProof hinterlegt sind.
-  if (!SITE.showSocialProof) return null;
-  const { usersCount, videosCreated, testimonials } = SITE.socialProof;
+  // Zeigt nur echte, vom Inhaber freigegebene Bewertungen mit Erlaubnis der Kunden
+  const { lang } = useI18n();
+  const [reviews, setReviews] = useState([]);
+  useEffect(() => { fetch('/api/reviews/public').then((r) => r.json()).then((d) => setReviews(d.reviews || [])).catch(() => {}); }, []);
+  if (!reviews.length) return null;
   return (
     <section className="section">
       <div className="container-x">
-        <div className="flex justify-center gap-12 text-center">
-          {usersCount != null && <div><p className="text-3xl font-bold">{usersCount.toLocaleString('de-CH')}</p><p className="muted text-sm">{tr("Creator")}</p></div>}
-          {videosCreated != null && <div><p className="text-3xl font-bold">{videosCreated.toLocaleString('de-CH')}</p><p className="muted text-sm">{tr("Videos erstellt")}</p></div>}
-        </div>
+        <h2 className="h2 text-center">{lang === 'en' ? 'What users say' : 'Das sagen Nutzer'}</h2>
         <div className="mt-10 grid gap-6 md:grid-cols-3">
-          {testimonials.map((q) => (
-            <figure key={q.name} className="card p-6"><blockquote className="text-sm">„{q.quote}“</blockquote><figcaption className="mt-3 text-sm font-semibold">{q.name}<span className="font-normal muted"> · {q.role}</span></figcaption></figure>
+          {reviews.slice(0, 6).map((r, i) => (
+            <figure key={i} className="card p-6">
+              <p className="text-accent-700 dark:text-accent-400" aria-label={`${r.rating}/5`}>{'★'.repeat(r.rating)}<span className="text-navy-300 dark:text-navy-600">{'★'.repeat(5 - r.rating)}</span></p>
+              <blockquote className="mt-2 text-sm">„{r.text}“</blockquote>
+              <figcaption className="mt-3 text-sm font-semibold">{r.display_name || (lang === 'en' ? 'TrueReel user' : 'TrueReel-Nutzer')}</figcaption>
+            </figure>
           ))}
         </div>
       </div>

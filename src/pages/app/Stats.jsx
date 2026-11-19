@@ -50,6 +50,34 @@ function DailyChart({ daily }) {
   );
 }
 
+function ReviewsAdmin() {
+  const [list, setList] = useState(null);
+  const load = () => api('/reviews/all').then((d) => setList(d.reviews)).catch(() => setList([]));
+  useEffect(() => { load(); }, []);
+  if (!list) return null;
+  const toggle = async (r) => { await api(`/reviews/${r.id}`, { method: 'PUT', body: { approved: !r.approved } }); load(); };
+  return (
+    <div className="card p-5">
+      <h2 className="font-semibold">{tr('Bewertungen')}</h2>
+      <p className="mt-1 text-xs muted">{tr('Nur freigegebene Bewertungen mit Erlaubnis erscheinen auf der Startseite.')}</p>
+      {!list.length ? <p className="mt-3 text-sm muted">{tr('Noch keine Bewertungen.')}</p> : (
+        <ul className="mt-3 divide-y divide-navy-100 dark:divide-navy-800">
+          {list.map((r) => (
+            <li key={r.id} className="flex flex-col gap-2 py-3 sm:flex-row sm:items-start sm:justify-between">
+              <div className="text-sm">
+                <p className="font-semibold">{'★'.repeat(r.rating)}{'☆'.repeat(5 - r.rating)} · {r.display_name || tr('ohne Namen')} <span className="font-normal muted">· {new Date(r.created_at).toLocaleDateString(getLocale())}</span></p>
+                {r.text && <p className="mt-1">„{r.text}“</p>}
+                {!r.publish_ok && <p className="mt-1 text-xs muted">{tr('Keine Erlaubnis zur Veröffentlichung – nur internes Feedback.')}</p>}
+              </div>
+              {r.publish_ok && r.text && <button className={r.approved ? 'btn-outline px-3 py-1.5 text-xs' : 'btn-primary px-3 py-1.5 text-xs'} onClick={() => toggle(r)}>{r.approved ? tr('Von Website entfernen') : tr('Auf Website zeigen')}</button>}
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
+  );
+}
+
 function TopList({ title, rows, total, empty }) {
   return (
     <div className="card p-5">
@@ -114,6 +142,7 @@ export default function Stats() {
             <TopList title={tr('Geräte')} rows={data.devices} total={data.totals.pageviews} empty={tr('Noch keine Daten.')} />
           </div>
           <TopList title={tr('Wie haben neue Nutzer von TrueReel erfahren?')} rows={(data.signupSources || []).map((r) => ({ ...r, name: tr(SOURCE_LABEL[r.name] || r.name) }))} total={data.totals.signups} empty={tr('Noch keine Registrierungen mit Angabe.')} />
+          <ReviewsAdmin />
           <p className="text-xs muted">{tr('Tipp: Hänge an Links in deinen Profilen ?ref=tiktok, ?ref=reddit usw. an – dann siehst du unter „Herkunft“ genau, welcher Kanal Besucher bringt.')}</p>
         </div>
       )}
