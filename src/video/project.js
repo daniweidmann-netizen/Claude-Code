@@ -9,10 +9,13 @@ const WORDS_PER_SEC = 2.6;
 export const newSeed = () => Math.floor(Math.random() * 1e9);
 
 export function scriptToProject(script, settings) {
+  // Echte Produktfotos (Nische „Werbung“): Szene mit photo-Index zeigt das Foto statt eines KI-Bildes
+  const photos = Array.isArray(settings.productImages) ? settings.productImages.filter((p) => p?.url) : [];
+  const photoOf = (i) => (Number.isInteger(i) && photos[i] ? { imageUrl: photos[i].url, productPhoto: true } : {});
   const scenes = [
-    { role: 'hook', text: script.hook, visual: script.scenes?.[0]?.visual || script.title },
-    ...(script.scenes || []).map((s) => ({ role: 'story', text: s.text, visual: s.visual })),
-    { role: 'cta', text: script.cta, visual: script.scenes?.at(-1)?.visual || script.title },
+    { role: 'hook', text: script.hook, visual: script.scenes?.[0]?.visual || script.title, ...photoOf(script.scenes?.[0]?.photo) },
+    ...(script.scenes || []).map((s) => ({ role: 'story', text: s.text, visual: s.visual, ...photoOf(s.photo) })),
+    { role: 'cta', text: script.cta, visual: script.scenes?.at(-1)?.visual || script.title, ...photoOf(photos.length ? 0 : -1) },
   ].filter((s) => s.text);
   return {
     version: 1,
@@ -26,6 +29,7 @@ export function scriptToProject(script, settings) {
     captions: { ...DEFAULT_CAPTIONS, ...(settings.captions || {}) },
     music: { trackId: 'calm', volume: 0.35, customUrl: null, ...(settings.music || {}) },
     notice: script.notice || null,
+    productImages: photos.length ? photos : undefined,
     character: settings.character?.imageUrl ? { description: settings.character.description || '', imageUrl: settings.character.imageUrl } : null,
     scenes: scenes.map((s) => ({ id: uid(), seed: newSeed(), imageUrl: null, audioUrl: null, audioDuration: null, voiceId: null, ...s })),
   };

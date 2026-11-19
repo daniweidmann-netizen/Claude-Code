@@ -20,6 +20,7 @@ import { StatusBadge } from './Dashboard.jsx';
 import { nextFreeSlot, fmtDateTime } from '../../lib/schedule.js';
 import { fillVoice } from '../../lib/videoFlow.js';
 import { api, apiAvailable } from '../../lib/api.js';
+import { fileToJpeg } from '../../lib/imageFile.js';
 import { translate as tr } from '../../i18n/index.jsx';
 
 const TABS = [
@@ -112,7 +113,7 @@ export default function Editor() {
     setBusy(`img-${scene.id}`);
     const seed = newSeed();
     const r = await generateImage({ prompt: scene.visual || scene.text, style: project.artStyle, seed, userId: user.id, niche: project.niche || series?.niche, archiveQuery: project.archiveQuery, exclude: scenes.map((x) => x.credit?.url).filter(Boolean), character: project.character });
-    updateScene(scene.id, { seed, imageUrl: r.imageUrl || null, credit: r.credit || null });
+    updateScene(scene.id, { seed, imageUrl: r.imageUrl || null, credit: r.credit || null, productPhoto: false });
     if (!r.imageUrl) setMsg({ tone: 'info', text: tr("Kein Bild gefunden bzw. kein Bild-Modul verbunden – neue Platzhalter-Grafik erzeugt. Tipp: Bildbeschreibung (englisch) anpassen.") });
     setBusy(null);
   };
@@ -160,7 +161,7 @@ export default function Editor() {
     if (!confirm(tr("Skript neu schreiben? Deine Textänderungen gehen verloren."))) return;
     setBusy('script');
     try {
-      const script = await regenerateScript({ niche: series?.niche, topic: series?.topic, language: project.language, seriesTitle: series?.title, episodeKey: video.episode_key, episodeTitle: video.title, targetSeconds: series?.target_seconds || 65 });
+      const script = await regenerateScript({ niche: series?.niche, topic: series?.topic, language: project.language, seriesTitle: series?.title, episodeKey: video.episode_key, episodeTitle: video.title, targetSeconds: series?.target_seconds || 65, photos: project.productImages?.length ? project.productImages.map((p, i) => p.label || `Foto ${i + 1}`) : undefined });
       const p = scriptToProject(script, project);
       updateProject({ scenes: p.scenes, title: p.title, notice: p.notice, archiveQuery: p.archiveQuery });
     } catch (e) { setMsg({ tone: 'error', text: e.message }); }
@@ -245,6 +246,20 @@ export default function Editor() {
     if (!confirm(tr("Video löschen? Das verbrauchte Kontingent wird dadurch nicht zurückgesetzt."))) return;
     await deleteVideo(video.id);
     navigate(series ? `/app/serien/${series.id}` : '/app');
+  };
+
+  // Eigenes Foto für eine Szene (Pro-Plan oder Werbe-Nische): wird ganz gezeigt, nicht beschnitten
+  const canUploadImages = plan.limits.customUploads || (project?.niche || series?.niche) === 'promo';
+  const onSceneImage = async (scene, e) => {
+    const f = e.target.files?.[0];
+    e.target.value = '';
+    if (!f) return;
+    setBusy(`img-${scene.id}`); setMsg(null);
+    try {
+      const url = await uploadMedia(user.id, await fileToJpeg(f), 'images');
+      updateScene(scene.id, { imageUrl: url, credit: null, productPhoto: true });
+    } catch (err) { setMsg({ tone: 'error', text: tr(err.message) }); }
+    setBusy(null);
   };
 
   const onMusicUpload = (e) => {
@@ -359,6 +374,7 @@ export default function Editor() {
                           {VOICES.map((v) => <option key={v.id} value={v.id}>{tr(v.label)}{v.premium ? ' ★' : ''}</option>)}
                         </select>
                         <button className="btn-outline px-2.5 py-2 text-xs" onClick={() => regenImage(sc)} disabled={!!busy}>{busy === `img-${sc.id}` ? <Spinner className="h-3.5 w-3.5" /> : <RefreshCw className="h-3.5 w-3.5" />}{tr("Bild")}</button>
+                        {canUploadImages && <label className="btn-outline cursor-pointer px-2.5 py-2 text-xs" title={tr("Eigenes Foto für diese Szene")}><Upload className="h-3.5 w-3.5" />{tr("Foto")}<input type="file" accept="image/*" className="sr-only" onChange={(e) => onSceneImage(sc, e)} disabled={!!busy} /></label>}
                         <button className="btn-icon" onClick={() => move(i, i - 1)} disabled={i === 0} aria-label={tr("Nach oben")}><ArrowUp className="h-4 w-4" /></button>
                         <button className="btn-icon" onClick={() => move(i, i + 1)} disabled={i === scenes.length - 1} aria-label={tr("Nach unten")}><ArrowDown className="h-4 w-4" /></button>
                         <button className="btn-icon text-red-600" onClick={() => updateProject({ scenes: scenes.filter((x) => x.id !== sc.id) })} disabled={scenes.length <= 1} aria-label={tr("Szene löschen")}><Trash2 className="h-4 w-4" /></button>

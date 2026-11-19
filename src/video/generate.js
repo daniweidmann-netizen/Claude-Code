@@ -47,6 +47,7 @@ export async function fillImages(project, userId, onProgress) {
     while (next < list.length) {
       const i = next++;
       const s = list[i];
+      if (s.productPhoto && s.imageUrl) { scenes[i] = s; onProgress?.(++done, list.length); continue; }
       const r = await generateImage({ prompt: s.visual || s.text, style: project.artStyle, seed: s.seed, userId, niche: project.niche, archiveQuery: project.archiveQuery, exclude: [...used], character: project.character });
       if (r.credit?.url) used.push(r.credit.url);
       if (r.imageUrl) found++;

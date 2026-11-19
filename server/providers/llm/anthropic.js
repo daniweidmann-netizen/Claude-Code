@@ -57,6 +57,11 @@ const scriptSchema = {
   additionalProperties: false,
 };
 
+// Werbe-Nische mit echten Produktfotos: jede Szene sagt, ob sie ein Foto (Index) oder ein KI-Bild (-1) zeigt
+const promoScriptSchema = JSON.parse(JSON.stringify(scriptSchema));
+promoScriptSchema.properties.scenes.items.properties.photo = { type: 'integer', description: 'Index des echten Produktfotos (0-basiert), das diese Szene zeigt – oder -1 für ein KI-Bild der Situation' };
+promoScriptSchema.properties.scenes.items.required.push('photo');
+
 const planSchema = {
   type: 'object',
   properties: {
@@ -100,7 +105,12 @@ export default {
       planSchema,
     );
   },
-  async writeScript({ niche, topic, language, episodeTitle, seriesTitle, targetSeconds = 65, idea, notes, ownText, character }) {
+  async writeScript({ niche, topic, language, episodeTitle, seriesTitle, targetSeconds = 65, idea, notes, ownText, character, photos }) {
+    const photoList = Array.isArray(photos) ? photos.slice(0, 6).map((l, i) => `${i}: ${String(l || `Foto ${i + 1}`).slice(0, 80)}`) : [];
+    const photoBlock = photoList.length
+      ? `\nEs gibt ${photoList.length} echte Produktfotos des Nutzers:\n${photoList.join('\n')}\nSetze bei jeder Szene "photo": den Index des passenden Fotos, wenn die Szene das Produkt/Angebot zeigt (mindestens die Hälfte der Szenen, die Lösungs- und Vorteils-Szenen), sonst -1 (dann entsteht ein KI-Bild der Situation, z. B. das Problem im Alltag). Die erste Szene ist meist -1. Verteile die Fotos abwechslungsreich. Beschreibe im Text nur, was auf den Fotos laut Beschriftung plausibel zu sehen ist.`
+      : '';
+    const schema = photoList.length ? promoScriptSchema : scriptSchema;
     const lang = LANG_NAMES[language] || 'Deutsch';
     if (ownText) {
       // Eigener Text: wortgetreu übernehmen, nur aufteilen und Bildbeschreibungen ergänzen
@@ -118,8 +128,8 @@ export default {
       ? `\nDer Nutzer hat eine EIGENE Video-Idee – setze genau diese um:\n<idee>${String(idea).slice(0, 1500)}</idee>${notes ? `\nHinweise/Fakten des Nutzers, die vorkommen sollen (auf Plausibilität achten, nichts Falsches übernehmen):\n<hinweise>${String(notes).slice(0, 3000)}</hinweise>` : ''}`
       : '';
     return ask(
-      `Schreibe das Skript für eine Folge.\n${NICHE_HINT[niche] || ''}${ideaBlock}\nSerie: ${seriesTitle || topic || niche}\nFolge: ${idea ? '(aus der Idee ableiten)' : episodeTitle || topic}\nNische: ${niche}\nSprache: ${lang}\nAufbau: hook, ${scenes} scenes, cta.\nGewünschte Videolänge: ${t} Sekunden → insgesamt ${minWords}–${maxWords} Wörter (Hook + Szenen + CTA). ${t >= 60 ? 'Wichtig: Das Video muss über 60 Sekunden lang sein – lieber etwas mehr als zu wenig Text.' : ''}${character ? `\nHauptfigur (immer dieselbe Person, im visual als „the main character“ bezeichnen): ${String(character).slice(0, 600)}` : ''}`,
-      scriptSchema,
+      `Schreibe das Skript für eine Folge.\n${NICHE_HINT[niche] || ''}${ideaBlock}\nSerie: ${seriesTitle || topic || niche}\nFolge: ${idea ? '(aus der Idee ableiten)' : episodeTitle || topic}\nNische: ${niche}\nSprache: ${lang}\nAufbau: hook, ${scenes} scenes, cta.\nGewünschte Videolänge: ${t} Sekunden → insgesamt ${minWords}–${maxWords} Wörter (Hook + Szenen + CTA). ${t >= 60 ? 'Wichtig: Das Video muss über 60 Sekunden lang sein – lieber etwas mehr als zu wenig Text.' : ''}${character ? `\nHauptfigur (immer dieselbe Person, im visual als „the main character“ bezeichnen): ${String(character).slice(0, 600)}` : ''}${photoBlock}`,
+      schema,
     );
   },
 };

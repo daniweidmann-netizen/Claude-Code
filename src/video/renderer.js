@@ -11,6 +11,24 @@ function drawCover(ctx, src, W, H, zoom, panX, panY) {
   ctx.drawImage(src, (W - dw) / 2 + panX * W, (H - dh) / 2 + panY * H, dw, dh);
 }
 
+// Echtes Produktfoto: nichts abschneiden – unscharfer, abgedunkelter Hintergrund + ganzes Foto mit sanftem Zoom
+function drawProduct(ctx, src, W, H, p, zoom) {
+  const sw = src.naturalWidth || src.width, sh = src.naturalHeight || src.height;
+  ctx.save();
+  if ('filter' in ctx) ctx.filter = 'blur(36px) brightness(0.55)';
+  drawCover(ctx, src, W, H, 1.15, 0, 0);
+  ctx.restore();
+  if (!('filter' in ctx)) { ctx.fillStyle = 'rgba(0,0,0,0.45)'; ctx.fillRect(0, 0, W, H); }
+  // Hochformat-Fotos füllen das Bild fast ganz, Querformat bleibt vollständig sichtbar
+  const scale = Math.min(W / sw, (H * 0.78) / sh) * zoom;
+  const dw = sw * scale, dh = sh * scale;
+  const y = (H - dh) / 2 - H * 0.06 - 0.02 * H * p;
+  ctx.save();
+  ctx.shadowColor = 'rgba(0,0,0,0.5)'; ctx.shadowBlur = 40;
+  ctx.drawImage(src, (W - dw) / 2, y, dw, dh);
+  ctx.restore();
+}
+
 function drawScene(ctx, project, item, t, W, H, getImage) {
   const s = item.scene;
   const local = t - item.start;
@@ -23,7 +41,8 @@ function drawScene(ctx, project, item, t, W, H, getImage) {
   if (item.duration > 4.2 && p > 0.5) zoom *= 1.22;
   const pan = (dir < 2 ? 1 : -1) * 0.03 * (p - 0.5) + (item.duration > 4.2 && p > 0.5 ? (dir % 2 ? 0.04 : -0.04) : 0);
   const img = getImage?.(s);
-  if (img) drawCover(ctx, img, W, H, zoom, pan, 0);
+  if (img && s.productPhoto) drawProduct(ctx, img, W, H, p, item.index === 0 ? zoom : 1 + 0.08 * p);
+  else if (img) drawCover(ctx, img, W, H, zoom, pan, 0);
   else {
     const art = renderArt(s.seed, project.artStyle, project.motif);
     drawCover(ctx, art, W, H, (zoom / ART_OVERSCAN) * 1.15, pan, 0);

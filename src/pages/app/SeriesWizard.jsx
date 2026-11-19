@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { apiAvailable } from '../../lib/api.js';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
-import { ArrowLeft, ArrowRight, Sparkles } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Sparkles, ImagePlus, X } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext.jsx';
 import { useAppData } from '../../lib/useAppData.js';
 import { NICHES, DEFAULT_CAPTIONS, VIDEO_LENGTHS, DEFAULT_TARGET_SECONDS } from '../../config/catalog.js';
@@ -9,7 +9,8 @@ import { getPlan } from '../../config/plans.js';
 import { ArtStylePicker, VoicePicker, SchedulePicker, PlatformPicker, CaptionStylePicker } from '../../components/Pickers.jsx';
 import { Notice, Spinner, Toggle } from '../../components/ui.jsx';
 import { planSeries, createCharacter } from '../../video/generate.js';
-import { saveSeries } from '../../lib/store.js';
+import { saveSeries, uploadMedia } from '../../lib/store.js';
+import { fileToJpeg } from '../../lib/imageFile.js';
 import { createVideoForEpisode } from '../../lib/videoFlow.js';
 import { computeUsage, seriesLimitReached } from '../../lib/usage.js';
 import { DEFAULT_SCHEDULE } from '../../lib/schedule.js';
@@ -33,7 +34,7 @@ export default function SeriesWizard() {
   const [busy, setBusy] = useState('');
   const [error, setError] = useState('');
   const [d, setD] = useState({
-    niche: 'history', topic: '', character: '', promo: { product: '', link: '', facts: '', audience: '' }, artStyle: 'cinematic', captionStyle: 'karaoke',
+    niche: 'history', topic: '', character: '', promo: { product: '', link: '', facts: '', audience: '' }, photos: [], artStyle: 'cinematic', captionStyle: 'karaoke',
     language: getLang(), voiceId: 'calm-m',
     schedule: DEFAULT_SCHEDULE, platforms: [], requireApproval: true, targetSeconds: DEFAULT_TARGET_SECONDS,
   });
@@ -47,6 +48,21 @@ export default function SeriesWizard() {
   const usage = computeUsage(profile, videos);
 
   const setPromo = (patch) => setD((x) => ({ ...x, promo: { ...x.promo, ...patch } }));
+  const [photoBusy, setPhotoBusy] = useState(false);
+  const addPhotos = async (e) => {
+    const files = [...(e.target.files || [])].slice(0, 6 - d.photos.length);
+    e.target.value = '';
+    if (!files.length) return;
+    setPhotoBusy(true); setError('');
+    try {
+      for (const f of files) {
+        const url = await uploadMedia(user.id, await fileToJpeg(f), 'images');
+        setD((x) => ({ ...x, photos: [...x.photos, { url, label: '' }].slice(0, 6) }));
+      }
+    } catch (err) { setError(tr(err.message)); }
+    setPhotoBusy(false);
+  };
+  const setPhoto = (i, patch) => setD((x) => ({ ...x, photos: x.photos.map((p, k) => (k === i ? { ...p, ...patch } : p)) }));
   const promoTopic = () => {
     const p = d.promo;
     return [`Produkt/Angebot: ${p.product.trim()}`, p.link.trim() && `Link: ${p.link.trim()}`, p.audience.trim() && `Zielgruppe: ${p.audience.trim()}`, `Fakten und Vorteile (nur diese verwenden): ${p.facts.trim()}`].filter(Boolean).join('\n');
@@ -81,6 +97,7 @@ export default function SeriesWizard() {
         target_seconds: d.targetSeconds,
         episodes: planRes.episodes,
         character,
+        product: d.niche === 'promo' && d.photos.length ? { images: d.photos.map((p, i) => ({ url: p.url, label: p.label.trim() || `Foto ${i + 1}` })) } : null,
         active: true,
       });
       if (isOnboarding) await updateProfile({ onboarding_done: true });
@@ -180,6 +197,27 @@ export default function SeriesWizard() {
                   <label className="label" htmlFor="promo-facts">{tr('Vorteile und Fakten *')}</label>
                   <textarea id="promo-facts" className="input min-h-[110px]" maxLength={800} placeholder={tr('z. B. hausgemachte Kuchen jeden Tag frisch · Terrasse mit Seesicht · Mo–Sa ab 7 Uhr offen')} value={d.promo.facts} onChange={(e) => setPromo({ facts: e.target.value })} />
                   <p className="mt-1 text-xs muted">{tr('Die KI verwendet nur, was du hier angibst – keine erfundenen Zahlen, Bewertungen oder Rabatte. Jede Folge zeigt einen anderen Vorteil.')}</p>
+                </div>
+                <div>
+                  <p className="label">{tr('Fotos von deinem Produkt (empfohlen, bis 6)')}</p>
+                  <div className="grid grid-cols-3 gap-3 sm:grid-cols-6">
+                    {d.photos.map((p, i) => (
+                      <div key={p.url} className="space-y-1">
+                        <div className="relative aspect-square overflow-hidden rounded-lg bg-navy-100 dark:bg-navy-800">
+                          <img src={p.url} alt="" className="h-full w-full object-cover" />
+                          <button type="button" className="absolute right-1 top-1 rounded-full bg-black/60 p-1 text-white" onClick={() => setD((x) => ({ ...x, photos: x.photos.filter((_, k) => k !== i) }))} aria-label={tr('Foto entfernen')}><X className="h-3.5 w-3.5" /></button>
+                        </div>
+                        <input className="input px-2 py-1 text-xs" maxLength={60} placeholder={tr('Was ist zu sehen?')} value={p.label} onChange={(e) => setPhoto(i, { label: e.target.value })} aria-label={tr('Beschreibung Foto {n}', { n: i + 1 })} />
+                      </div>
+                    ))}
+                    {d.photos.length < 6 && (
+                      <label className="flex aspect-square cursor-pointer flex-col items-center justify-center gap-1 rounded-lg border-2 border-dashed border-navy-200 text-xs muted dark:border-navy-700">
+                        {photoBusy ? <Spinner className="h-5 w-5" /> : <ImagePlus className="h-6 w-6" />}{tr('Foto hinzufügen')}
+                        <input type="file" accept="image/*" multiple className="sr-only" onChange={addPhotos} disabled={photoBusy} />
+                      </label>
+                    )}
+                  </div>
+                  <p className="mt-1 text-xs muted">{tr('Szenen mit deinem Produkt zeigen diese echten Fotos (ganz, nicht abgeschnitten). Für Alltags-Situationen erstellt die KI passende Bilder. Lade nur Fotos hoch, an denen du die Rechte hast.')}</p>
                 </div>
               </div>
             )}
