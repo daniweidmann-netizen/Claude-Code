@@ -26,6 +26,13 @@ function describe(video, series) {
   ].join('\n').trim();
 }
 
+// Bildunterschrift für TikTok/Instagram: Hook + Hinweis auf KI + Hashtags
+function captionFor(video) {
+  const p = video.project || {};
+  const hook = p.scenes?.[0]?.text || video.title || '';
+  return `${hook}\n\n${video.title ? `${video.title}\n\n` : ''}#wusstestdu #fakten #fyp\n\nErstellt mit TrueReel · Bilder und Stimme KI-generiert`.slice(0, 2200);
+}
+
 let running = false;
 
 export async function publishVideo(videoId, { userId } = {}) {
@@ -35,7 +42,7 @@ export async function publishVideo(videoId, { userId } = {}) {
   const { data: video } = await q.maybeSingle();
   if (!video) throw new Error('Video nicht gefunden.');
   if (!video.video_path) throw new Error('Noch kein exportiertes MP4 gespeichert – bitte zuerst exportieren.');
-  // Nur Plattformen mit aktivem Upload (TikTok/Instagram: App-Review ausstehend → übersprungen)
+  // Nur Plattformen mit aktivem Upload (TikTok/Instagram: erst, wenn ihre App-Schlüssel gesetzt sind)
   const platforms = (video.platforms || []).filter((pl) => PLATFORMS[pl]?.available);
   if (!platforms.length) throw new Error('Für diese Serie ist keine Plattform ausgewählt.');
   const { data: series } = video.series_id ? await admin.from('series').select('*').eq('id', video.series_id).maybeSingle() : { data: null };
@@ -43,6 +50,12 @@ export async function publishVideo(videoId, { userId } = {}) {
   const { data: blob, error: dlErr } = await admin.storage.from('renders').download(video.video_path);
   if (dlErr) throw new Error(`Video-Datei nicht gefunden: ${dlErr.message}`);
   const file = Buffer.from(await blob.arrayBuffer());
+  // Instagram lädt das Video selbst von einer URL → zeitlich begrenzter Link (2 h)
+  let videoUrl = null;
+  if (platforms.includes('instagram')) {
+    const { data: signed } = await admin.storage.from('renders').createSignedUrl(video.video_path, 7200);
+    videoUrl = signed?.signedUrl || null;
+  }
 
   const results = { ...(video.post_results || {}) };
   for (const platform of platforms) {
@@ -59,6 +72,8 @@ export async function publishVideo(videoId, { userId } = {}) {
       const r = await p.publish({
         connection: conn,
         file,
+        videoUrl,
+        caption: captionFor(video),
         title: `${video.title} #Shorts`,
         description: describe(video, series),
         tags: TAGS[series?.niche] || [],

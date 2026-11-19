@@ -78,6 +78,8 @@ function DatenschutzDe() {
       <p>Einige Anbieter (Stripe, Anthropic, OpenAI, Render, Wikimedia, Google) sitzen in den USA. Die Übermittlung erfolgt, soweit der Anbieter zertifiziert ist, auf Basis des EU-US bzw. Swiss-US Data Privacy Framework, ansonsten auf Basis der Standardvertragsklauseln der EU-Kommission (vom EDÖB anerkannt). Wir übermitteln jeweils nur die Daten, die für den konkreten Zweck nötig sind.</p>
       <h2>6. Speicherdauer</h2>
       <p>Kontodaten speichern wir, bis du dein Konto löschst. Rechnungsdaten bewahren wir gemäss gesetzlichen Fristen auf (CH: 10 Jahre, DE: bis zu 10 Jahre).</p>
+      <h2>TikTok- und Instagram-Verbindung</h2>
+      <p>Wenn du TikTok oder Instagram verbindest, erhalten wir nach deiner Zustimmung ein Zugriffstoken und deinen Anzeige- bzw. Benutzernamen. Wir nutzen sie ausschliesslich, um von dir freigegebene Videos auf deinem eigenen Konto zu veröffentlichen. Für Instagram stellen wir das Video dafür über einen zeitlich begrenzten Link (2 Stunden) bereit. Tokens werden verschlüsselt gespeichert und beim Trennen oder Löschen des Kontos sofort entfernt. Es gelten zusätzlich die Bedingungen und Datenschutzhinweise von TikTok bzw. Meta; den Zugriff kannst du jederzeit in den Einstellungen der jeweiligen App widerrufen.</p>
       <h2>Partner-Links</h2>
       <p>Kommst du über den Link eines Partners (z. B. truereel.ch/?ref=…), merken wir uns dieses Kürzel bis zu 60 Tage lokal in deinem Browser. Erstellst du in dieser Zeit ein Konto, ordnen wir es dem Partner zu, damit wir ihm eine Provision zahlen können. Der Partner erfährt dabei weder deinen Namen noch deine E-Mail-Adresse.</p>
       <h2>Bewertungen</h2>
@@ -216,6 +218,8 @@ function DatenschutzEn() {
       <p>Some providers (Stripe, Anthropic, OpenAI, Render, Wikimedia, Google) are based in the USA. Where the provider is certified, transfers are based on the EU-US or Swiss-US Data Privacy Framework; otherwise on the European Commission's standard contractual clauses (recognised by the FDPIC). We only transmit the data needed for the specific purpose.</p>
       <h2>6. Retention</h2>
       <p>We store account data until you delete your account. Billing records are kept for the statutory periods (CH: 10 years, DE: up to 10 years).</p>
+      <h2>TikTok and Instagram connection</h2>
+      <p>When you connect TikTok or Instagram, we receive an access token and your display or user name after your consent. We use them only to publish videos you approved to your own account. For Instagram we provide the video via a time-limited link (2 hours). Tokens are stored encrypted and removed immediately when you disconnect or delete your account. The terms and privacy notices of TikTok and Meta also apply; you can revoke access at any time in the settings of the respective app.</p>
       <h2>Partner links</h2>
       <p>If you arrive via a partner's link (e.g. truereel.ch/?ref=…), we remember this code locally in your browser for up to 60 days. If you create an account during that time, we assign it to the partner so we can pay them a commission. The partner does not learn your name or email address.</p>
       <h2>Reviews</h2>

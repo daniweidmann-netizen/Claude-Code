@@ -4,6 +4,7 @@ import { VOICE_SAMPLE_VERSION, PREMIUM_VOICE_PLANS, ART_STYLES, VOICES, LANGUAGE
 import { renderArt } from '../video/art.js';
 import { stopSpeaking } from '../video/tts.js';
 import { useAuth } from '../context/AuthContext.jsx';
+import { usePlatforms } from '../lib/socialStatus.js';
 import { Link } from 'react-router-dom';
 import { previewMusic, stopMusicPreview, unlockAudio } from '../video/audio.js';
 import { translate as tr } from '../i18n/index.jsx';
@@ -151,6 +152,7 @@ export function SchedulePicker({ schedule, onChange }) {
 }
 
 export function PlatformPicker({ value = [], onChange, max = 3 }) {
+  const PLATFORMS = usePlatforms();
   return (
     <div className="grid gap-2 sm:grid-cols-3">
       {PLATFORMS.map((p) => {

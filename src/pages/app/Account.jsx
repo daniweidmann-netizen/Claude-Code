@@ -6,7 +6,7 @@ import { PageHeader } from '../../components/AppLayout.jsx';
 import { Notice, Spinner, StripeBadge } from '../../components/ui.jsx';
 import { PricingSection } from '../../components/Pricing.jsx';
 import { getPlan, priceFor, formatUSD } from '../../config/plans.js';
-import { PLATFORMS } from '../../config/catalog.js';
+import { usePlatforms } from '../../lib/socialStatus.js';
 import { SITE } from '../../config/site.js';
 import { startCheckout, openPortal } from '../../lib/billing.js';
 import { api } from '../../lib/api.js';
@@ -28,6 +28,7 @@ function useConnections(user) {
 }
 
 export default function Account() {
+  const PLATFORMS = usePlatforms();
   const { user, profile, updateProfile, signOut, refreshProfile, recovery, updatePassword, demo } = useAuth();
   const [pw, setPw] = useState({ a: '', b: '' });
   const pwRef = useRef(null);
