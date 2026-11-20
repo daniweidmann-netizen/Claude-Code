@@ -5,6 +5,7 @@ import { admin } from './supabaseAdmin.js';
 import { publishDue } from './publish.js';
 import { sendReminders } from './reminders.js';
 import { sendOnboardingMails } from './onboardingMails.js';
+import { checkKeys } from './keyMonitor.js';
 
 export function startScheduler() {
   if (!admin || process.env.SCHEDULER_ENABLED === 'false') return;
@@ -12,4 +13,7 @@ export function startScheduler() {
   setInterval(() => publishDue().catch((e) => console.error('[scheduler]', e.message)), 60_000);
   setInterval(() => sendReminders().catch((e) => console.error('[reminder]', e.message)), 10 * 60_000);
   setInterval(() => sendOnboardingMails().catch((e) => console.error('[onboarding-mail]', e.message)), 10 * 60_000);
+  // KI-Schlüssel prüfen: kurz nach dem Start und dann alle 6 Stunden
+  setTimeout(() => checkKeys().catch(() => {}), 60_000);
+  setInterval(() => checkKeys().catch(() => {}), 6 * 3600_000);
 }

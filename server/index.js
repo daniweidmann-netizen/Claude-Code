@@ -26,6 +26,7 @@ import financeRouter from './finance.js';
 import demoRouter from './demo.js';
 import offerRouter from './offer.js';
 import campaignsRouter from './campaigns.js';
+import { keyStatus } from './keyMonitor.js';
 import { renderHtml, sitemap, robots } from './seo.js';
 import { sendReminders, reminderRouter } from './reminders.js';
 import elevenlabsTts from './providers/tts/elevenlabs.js';
@@ -71,6 +72,7 @@ app.get('/api/health', (_req, res) => {
     stripeManagedPayments: managedPayments,
     premiumVoices: !!process.env.ELEVENLABS_API_KEY,
     reminderEmails: !!process.env.BREVO_API_KEY,
+    keys: keyStatus, // ok | ungueltig | … (nur Status, nie Werte)
   });
 });
 
