@@ -25,6 +25,7 @@ import affiliatesRouter from './affiliates.js';
 import financeRouter from './finance.js';
 import demoRouter from './demo.js';
 import offerRouter from './offer.js';
+import campaignsRouter from './campaigns.js';
 import { renderHtml, sitemap, robots } from './seo.js';
 import { sendReminders, reminderRouter } from './reminders.js';
 import elevenlabsTts from './providers/tts/elevenlabs.js';
@@ -46,6 +47,7 @@ app.use('/api', affiliatesRouter); // /api/affiliate*
 app.use('/api', financeRouter); // /api/finance (nur Inhaber)
 app.use('/api', demoRouter); // /api/demo/script (Test ohne Konto)
 app.use('/api', offerRouter); // /api/offer (Willkommensangebot)
+app.use('/api', campaignsRouter); // /api/campaign* (Werbe-Test, nur Inhaber)
 
 let hasFfmpeg = false;
 ffmpegAvailable().then((ok) => { hasFfmpeg = ok; });

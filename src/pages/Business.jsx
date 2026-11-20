@@ -1,5 +1,6 @@
 // Video-Service für Firmen: Pakete + Anfrage-Formular (DE/EN)
 import { useState } from 'react';
+import { adCampaign } from '../lib/referral.js';
 import { Check, Clapperboard, CalendarCheck, MessageSquare, ShieldCheck } from 'lucide-react';
 import { useI18n } from '../i18n/index.jsx';
 import { Notice, Spinner } from '../components/ui.jsx';
@@ -83,7 +84,7 @@ export default function Business() {
   const submit = async (e) => {
     e.preventDefault(); setBusy(true); setMsg(null);
     try {
-      const r = await fetch('/api/business-inquiry', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ ...f, lang }) });
+      const r = await fetch('/api/business-inquiry', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ ...f, lang, campaign: adCampaign() }) });
       const d = await r.json().catch(() => ({}));
       if (!r.ok) throw new Error(d.error || 'Error');
       setMsg({ tone: 'success', text: c.sent });

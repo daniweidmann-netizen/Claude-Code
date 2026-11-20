@@ -21,6 +21,7 @@ import { GuideIndex, GuidePage } from './pages/Guides.jsx';
 import { HookIndex, HookPage } from './pages/Hooks.jsx';
 import Business from './pages/Business.jsx';
 import Partners from './pages/app/Partners.jsx';
+import Ads from './pages/app/Ads.jsx';
 import { captureRef } from './lib/referral.js';
 import Sample from './pages/Sample.jsx';
 
@@ -87,6 +88,7 @@ export default function App() {
           <Route path="statistik" element={<Stats />} />
           <Route path="finanzen" element={<Finance />} />
           <Route path="partner" element={<Partners />} />
+          <Route path="werbung" element={<Ads />} />
         </Route>
       </Routes>
     </>

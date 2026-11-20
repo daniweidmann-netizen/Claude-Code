@@ -24,6 +24,7 @@ router.post('/business-inquiry', express.json({ limit: '8kb' }), async (req, res
     name: clip(b.name, 100), company: clip(b.company, 120), email, phone: clip(b.phone, 40),
     industry: clip(b.industry, 80), package: PACKAGES.has(b.package) ? b.package : 'unsure',
     message: clip(b.message, 2000), lang: b.lang === 'en' ? 'en' : 'de',
+    campaign: /^ad-[a-z0-9]{4,12}$/.test(String(b.campaign || '')) ? b.campaign : null,
   };
   if (admin) {
     const { error } = await admin.from('business_leads').insert(lead);
