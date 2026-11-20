@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import {
   ArrowRight, Layers, FileText, Image, Mic, Captions, Music, Scissors, CalendarClock, Download, LayoutDashboard,
-  Tag, MousePointerClick, Sparkles, Megaphone, Eye, Languages, Mail, Search, PenSquare, Send, Heart, MessageCircle, Share2,
+  Tag, MousePointerClick, Sparkles, Megaphone, ShieldCheck, CreditCard, MapPin, RotateCcw, Check, Eye, Languages, Mail, Search, PenSquare, Send, Heart, MessageCircle, Share2,
 } from 'lucide-react';
 import { useI18n } from '../i18n/index.jsx';
 import { PhoneFrame } from '../components/ui.jsx';
@@ -43,7 +43,12 @@ function useHeroProject(lang) {
 function HeroPhone() {
   const { lang } = useI18n();
   return (
-    <div className="relative mx-auto w-full max-w-[300px] rounded-[2.8rem] border-[9px] border-navy-800 bg-black shadow-2xl ring-1 ring-white/10">
+    <div className="relative mx-auto w-full max-w-[300px]">
+    <div className="pointer-events-none absolute -inset-10 -z-10 rounded-full bg-accent-500/25 blur-3xl" aria-hidden="true" />
+    {[['Skript', 'Script', 'left-[-3.5rem] top-16'], ['KI-Bilder', 'AI images', 'right-[-3.75rem] top-40'], ['Stimme', 'Voice', 'left-[-3rem] bottom-36'], ['Untertitel', 'Captions', 'right-[-3.25rem] bottom-16']].map(([de, en, pos]) => (
+      <span key={de} className={`absolute z-30 hidden items-center gap-1.5 rounded-full border border-white/10 bg-navy-900/90 px-3 py-1.5 text-xs font-semibold text-white shadow-xl backdrop-blur lg:inline-flex ${pos}`}><Check className="h-3.5 w-3.5 text-accent-400" />{lang === 'en' ? en : de}</span>
+    ))}
+    <div className="relative rounded-[2.8rem] border-[9px] border-navy-800 bg-black shadow-2xl ring-1 ring-white/10">
       <div className="absolute left-1/2 top-2 z-20 h-6 w-24 -translate-x-1/2 rounded-full bg-black" aria-hidden="true" />
       <div className="relative overflow-hidden rounded-[2.2rem]">
         <video className="block aspect-[9/16] w-full object-cover" src="/showcase/restaurant-pizza.mp4" poster="/showcase/restaurant-pizza.jpg" autoPlay muted loop playsInline preload="auto" aria-label={lang === 'en' ? 'Example video made with TrueReel' : 'Beispielvideo, erstellt mit TrueReel'} />
@@ -51,6 +56,7 @@ function HeroPhone() {
           <Heart className="h-7 w-7 fill-white" /><MessageCircle className="h-7 w-7 fill-white" /><Share2 className="h-6 w-6" />
         </div>
       </div>
+    </div>
     </div>
   );
 }
@@ -85,7 +91,7 @@ export function DemoBox() {
   };
   return (
     <div className="mt-8 max-w-xl">
-      <form onSubmit={run} className="card flex flex-col gap-2 p-2 sm:flex-row">
+      <form onSubmit={run} className="card flex flex-col gap-2 p-2 shadow-[0_20px_60px_-25px_rgba(170,220,40,0.55)] ring-1 ring-accent-500/30 sm:flex-row">
         <label htmlFor="demo-topic" className="sr-only">{t('demo.label')}</label>
         <input id="demo-topic" className="input flex-1 border-0 text-base" maxLength={120} placeholder={t('demo.placeholder')} value={topic} onChange={(e) => setTopic(e.target.value)} />
         <button className="btn-primary px-5 py-3 text-base" disabled={busy}>{busy ? <span className="inline-block h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" /> : <Sparkles className="h-4 w-4" />}{t('demo.button')}</button>
@@ -120,11 +126,16 @@ export function DemoBox() {
 function Hero() {
   const { t, lang } = useI18n();
   return (
-    <section className="relative overflow-hidden">
-      <div className="container-x grid items-center gap-12 py-12 sm:py-16 lg:grid-cols-[1.25fr_1fr]">
+    <section className="relative isolate overflow-hidden">
+      <div className="pointer-events-none absolute inset-0 -z-10" aria-hidden="true">
+        <div className="absolute -top-40 left-1/2 h-[520px] w-[900px] -translate-x-1/2 rounded-full bg-accent-500/15 blur-3xl" />
+        <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(127,127,127,0.07)_1px,transparent_1px),linear-gradient(to_bottom,rgba(127,127,127,0.07)_1px,transparent_1px)] bg-[size:56px_56px] [mask-image:radial-gradient(ellipse_at_top,black_30%,transparent_75%)]" />
+      </div>
+      <div className="container-x grid items-center gap-14 py-14 sm:py-20 lg:grid-cols-[1.25fr_1fr]">
         <div>
-          <h1 className="text-[2.6rem] font-extrabold leading-[1.04] tracking-[-0.03em] sm:text-6xl lg:text-[4.6rem]">
-            {t('hero.title1')}<br />{t('hero.title2')}
+          <p className="eyebrow mb-6"><Sparkles className="h-3.5 w-3.5" />{lang === 'en' ? 'AI short videos · made in Switzerland' : 'KI-Kurzvideos · aus der Schweiz'}</p>
+          <h1 className="text-[2.6rem] font-extrabold leading-[1.04] tracking-[-0.035em] sm:text-6xl lg:text-[4.6rem]">
+            {t('hero.title1')}<br /><span className="text-gradient">{t('hero.title2')}</span>
           </h1>
           <p className="mt-6 max-w-xl text-lg text-navy-500 dark:text-navy-300 sm:text-xl">{t('hero.sub')}</p>
           <DemoBox />
@@ -132,6 +143,11 @@ function Hero() {
             <span className="mr-2 inline-block rounded-full bg-accent-500 px-2.5 py-0.5 text-xs font-bold text-navy-950">{t('hero.badge')}</span>
             <Link to="/registrieren" className="font-semibold underline">{t('hero.cta')}</Link> · <Link to="/preise" className="underline">{t('hero.cta2')}</Link>
           </p>
+          <ul className="mt-8 flex flex-wrap gap-x-6 gap-y-2 text-xs font-medium muted">
+            {[[MapPin, lang === 'en' ? 'Based in Grafstal, Switzerland' : 'Aus Grafstal, Schweiz'], [ShieldCheck, lang === 'en' ? 'GDPR & Swiss FADP' : 'DSG & DSGVO'], [CreditCard, lang === 'en' ? 'Secure payment via Stripe' : 'Sichere Zahlung via Stripe'], [RotateCcw, lang === 'en' ? 'Cancel monthly' : 'Monatlich kündbar']].map(([Icon, label]) => (
+              <li key={label} className="inline-flex items-center gap-1.5"><Icon className="h-4 w-4 text-accent-700 dark:text-accent-400" />{label}</li>
+            ))}
+          </ul>
         </div>
         <div>
           <HeroPhone />
@@ -143,17 +159,17 @@ function Hero() {
 }
 
 function HowItWorks() {
-  const { t } = useI18n();
+  const { t, lang } = useI18n();
   const icons = [Search, PenSquare, Send];
   return (
     <section id="how" className="scroll-mt-16 pb-16 sm:pb-24">
       <div className="container-x">
-        <h2 className="h2">{t('how.title')}</h2>
-        <ol className="mt-6 grid gap-4 md:grid-cols-3">
+        <div className="text-center"><p className="eyebrow">{lang === 'en' ? 'In 3 steps' : 'In 3 Schritten'}</p><h2 className="h2 mt-3">{t('how.title')}</h2></div>
+        <ol className="mt-10 grid gap-4 md:grid-cols-3">
           {[1, 2, 3].map((n, i) => {
             const Icon = icons[i];
             return (
-              <li key={n} className="card flex items-start gap-4 p-6">
+              <li key={n} className="card card-hover flex items-start gap-4 p-6">
                 <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-accent-500 text-lg font-extrabold text-navy-950">{n}</span>
                 <div className="min-w-0 flex-1">
                   <h3 className="text-lg font-bold">{t(`how.s${n}.t`)}</h3>
@@ -186,8 +202,8 @@ function ShowcaseVideo({ id, label, lang }) {
     io.observe(v); return () => io.disconnect();
   }, []);
   return (
-    <figure className="w-40 shrink-0 snap-start sm:w-auto">
-      <video ref={ref} className="aspect-[9/16] w-full rounded-2xl bg-black object-cover shadow-lg ring-1 ring-white/10" src={`/showcase/${id}.mp4`} poster={`/showcase/${id}.jpg`} muted loop playsInline preload="none" />
+    <figure className="group w-40 shrink-0 snap-start sm:w-auto">
+      <video ref={ref} className="aspect-[9/16] w-full rounded-2xl bg-black object-cover shadow-lg ring-1 ring-white/10 transition duration-300 group-hover:-translate-y-1 group-hover:shadow-2xl group-hover:ring-accent-500/50" src={`/showcase/${id}.mp4`} poster={`/showcase/${id}.jpg`} muted loop playsInline preload="none" />
       <figcaption className="mt-2 flex items-center justify-between text-xs muted"><span>{tr(label)}</span><span className="rounded bg-navy-100 px-1.5 py-0.5 font-semibold dark:bg-navy-800">{lang}</span></figcaption>
     </figure>
   );
@@ -217,7 +233,8 @@ function BusinessTeaser() {
   return (
     <section className="section pt-0">
       <div className="container-x">
-        <div className="card flex flex-col items-start gap-5 border-2 border-accent-500 p-6 sm:flex-row sm:items-center sm:justify-between sm:p-8">
+        <div className="card relative flex flex-col items-start gap-5 overflow-hidden border-accent-500/60 p-6 sm:flex-row sm:items-center sm:justify-between sm:p-10">
+          <div className="pointer-events-none absolute -right-20 -top-20 h-64 w-64 rounded-full bg-accent-500/15 blur-3xl" aria-hidden="true" />
           <div>
             <p className="eyebrow">{en ? 'For businesses' : 'Für Firmen'}</p>
             <h2 className="mt-1 text-2xl font-bold sm:text-3xl">{en ? 'No time? We make the videos for your business.' : 'Keine Zeit? Wir machen die Videos für dein Unternehmen.'}</h2>
@@ -233,7 +250,7 @@ function BusinessTeaser() {
 function Features() {
   const { t } = useI18n();
   return (
-    <section id="features" className="section scroll-mt-16">
+    <section id="features" className="section section-alt scroll-mt-16">
       <div className="container-x">
         <div className="mx-auto max-w-2xl text-center">
           <p className="eyebrow">{t('nav.features')}</p>
@@ -242,9 +259,9 @@ function Features() {
         </div>
         <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {FEATURES.map(([k, Icon]) => (
-            <div key={k} className="card p-5">
-              <Icon className="h-6 w-6 text-accent-700 dark:text-accent-400" />
-              <h3 className="mt-3 font-semibold">{t(`f.${k}.t`)}</h3>
+            <div key={k} className="card card-hover p-6">
+              <span className="icon-tile"><Icon className="h-5 w-5" /></span>
+              <h3 className="mt-4 text-lg font-bold">{t(`f.${k}.t`)}</h3>
               <p className="mt-1.5 text-sm muted">{t(`f.${k}.d`)}</p>
             </div>
           ))}
@@ -263,9 +280,9 @@ function Different() {
         <h2 className="h2 text-center">{t('diff.title')}</h2>
         <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
           {icons.map((Icon, i) => (
-            <div key={i} className="rounded-2xl border border-navy-800 bg-navy-900/60 p-6">
-              <Icon className="h-6 w-6 text-accent-400" />
-              <h3 className="mt-4 font-semibold">{t(`diff.${i + 1}.t`)}</h3>
+            <div key={i} className="rounded-2xl border border-white/[0.07] bg-gradient-to-b from-navy-900 to-navy-950 p-6 transition hover:border-accent-500/40">
+              <span className="inline-flex h-11 w-11 items-center justify-center rounded-xl bg-accent-500/15 text-accent-400 ring-1 ring-accent-500/25"><Icon className="h-5 w-5" /></span>
+              <h3 className="mt-4 text-lg font-bold">{t(`diff.${i + 1}.t`)}</h3>
               <p className="mt-2 text-sm text-navy-300">{t(`diff.${i + 1}.d`)}</p>
             </div>
           ))}
@@ -373,10 +390,11 @@ export default function Landing() {
       </section>
       <section className="section">
         <div className="container-x">
-          <div className="rounded-3xl bg-navy-900 px-6 py-14 text-center text-white sm:px-12">
-            <h2 className="h2">{t('cta.title')}</h2>
-            <p className="mt-3 text-navy-300">{t('cta.sub')}</p>
-            <Link to="/registrieren" className="btn-primary mt-8 px-6 py-3 text-base">{t('cta.button')}<ArrowRight className="h-4 w-4" /></Link>
+          <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-accent-300 via-accent-500 to-emerald-400 px-6 py-16 text-center text-navy-950 sm:px-12 sm:py-20">
+            <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_20%_0%,rgba(255,255,255,0.45),transparent_45%)]" aria-hidden="true" />
+            <h2 className="h2 relative">{t('cta.title')}</h2>
+            <p className="relative mt-3 text-navy-800">{t('cta.sub')}</p>
+            <Link to="/registrieren" className="btn relative mt-8 bg-navy-950 px-7 py-3.5 text-base text-white hover:bg-navy-800">{t('cta.button')}<ArrowRight className="h-4 w-4" /></Link>
           </div>
         </div>
       </section>
