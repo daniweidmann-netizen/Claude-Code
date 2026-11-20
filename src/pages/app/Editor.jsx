@@ -22,6 +22,7 @@ import { fillVoice } from '../../lib/videoFlow.js';
 import { api, apiAvailable } from '../../lib/api.js';
 import { fileToJpeg } from '../../lib/imageFile.js';
 import OfferCard from '../../components/OfferCard.jsx';
+import UpgradeModal from '../../components/UpgradeModal.jsx';
 import { translate as tr } from '../../i18n/index.jsx';
 
 const TABS = [
@@ -37,6 +38,7 @@ export default function Editor() {
   const { id } = useParams();
   const navigate = useNavigate();
   const { user, profile, refreshProfile } = useAuth();
+  const [upgradeOpen, setUpgradeOpen] = useState(false);
   const plan = getPlan(profile?.plan);
   const [video, setVideo] = useState(null);
   const [series, setSeries] = useState(null);
@@ -220,6 +222,7 @@ export default function Editor() {
       download(file, `${(video.title || 'truereel').replace(/[^\w\-äöüÄÖÜ ]+/g, '').trim() || 'truereel'}.${ext}`);
       // Erster Gratis-Export → Willkommensangebot starten (einmalig, echte 48-h-Frist)
       if (plan.id === 'free' && !profile?.offer_until) api('/offer/start', { method: 'POST' }).then((r) => r?.ok && refreshProfile?.()).catch(() => {});
+      if (plan.id === 'free') setTimeout(() => setUpgradeOpen(true), 1500);
       setMsg({ tone: 'success', text: `${tr("Export fertig (1080×1920).")}${hasVoice ? '' : tr(" Hinweis: ohne Voiceover, da kein TTS-Anbieter verbunden ist.")}${plan.id === 'free' ? tr(" Gratis-Export mit Wasserzeichen.") : ''}${note}` });
     } catch (e) {
       setMsg({ tone: 'error', text: e.message });
@@ -313,6 +316,7 @@ export default function Editor() {
       )}
       {msg && <Notice tone={msg.tone} className="mb-4">{msg.text}</Notice>}
       <OfferCard profile={profile} className="mb-4" />
+      {upgradeOpen && <UpgradeModal profile={profile} onClose={() => setUpgradeOpen(false)} />}
       {!video.video_path && scenes.length > 0 && scenes.every((x) => x.imageUrl) && (
         <section className="card mb-5 border-2 border-accent-500 p-5" aria-label={tr("Nächste Schritte")}>
           <h2 className="text-lg font-extrabold">{tr("Dein Video ist fertig 🎉 – so geht es weiter")}</h2>

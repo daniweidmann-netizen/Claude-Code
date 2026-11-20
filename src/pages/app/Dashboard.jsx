@@ -9,6 +9,7 @@ import { ArtThumb } from '../../components/Pickers.jsx';
 import IdeaDialog from '../../components/IdeaDialog.jsx';
 import SourceCard from '../../components/SourceCard.jsx';
 import OfferCard from '../../components/OfferCard.jsx';
+import UpgradeModal from '../../components/UpgradeModal.jsx';
 import ReviewCard from '../../components/ReviewCard.jsx';
 import { STATUS_LABELS } from '../../lib/videoFlow.js';
 import { fmtDateTime, nextFreeSlot } from '../../lib/schedule.js';
@@ -111,6 +112,12 @@ export default function Dashboard() {
   const { profile } = useAuth();
   const { series, videos, loading, error, reload } = useAppData();
   const [ideaOpen, setIdeaOpen] = useState(false);
+  const [upgradeOpen, setUpgradeOpen] = useState(false);
+  useEffect(() => {
+    if (loading || profile?.is_admin || (profile?.plan || 'free') !== 'free') return;
+    let seen = false; try { seen = sessionStorage.getItem('tr-upg') === '1'; } catch { /* egal */ }
+    if (!seen && computeUsage(profile, videos).remaining === 0) setUpgradeOpen(true);
+  }, [loading]); // eslint-disable-line react-hooks/exhaustive-deps
   const thumbs = useThumbs(videos);
   if (loading) return <Spinner className="h-6 w-6 text-accent-500" />;
   if (!series.length && !profile?.onboarding_done) return <Navigate to="/app/onboarding" replace />;
@@ -133,6 +140,7 @@ export default function Dashboard() {
       {ideaOpen && <IdeaDialog allSeries={series} onClose={() => setIdeaOpen(false)} canCreate={usage.remaining > 0} limitText={limitText} />}
       {error && <Notice tone="error" className="mb-4">{error}</Notice>}
       <OfferCard profile={profile} />
+      {upgradeOpen && <UpgradeModal profile={profile} done={false} onClose={() => { setUpgradeOpen(false); try { sessionStorage.setItem('tr-upg', '1'); } catch { /* egal */ } }} />}
       <SourceCard profile={profile} />
       {!profile?.is_admin && <ReviewCard firstName={(profile?.full_name || '').split(' ')[0]} />}
       {usage.plan.id === 'free' && (

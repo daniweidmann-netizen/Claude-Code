@@ -1,6 +1,8 @@
 import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Check, ChevronDown, Sparkles } from 'lucide-react';
+import { Check, ChevronDown, Sparkles, ShieldCheck, Mail } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { SITE } from '../config/site.js';
 import { PLANS, priceFor, costPerVideo, formatUSD, YEARLY_DISCOUNT, displayCurrency } from '../config/plans.js';
 import { useI18n } from '../i18n/index.jsx';
 import { useAuth } from '../context/AuthContext.jsx';
@@ -56,7 +58,8 @@ export function PricingTable({ interval, currentPlan }) {
                 <span className="text-5xl font-extrabold tracking-tight tabular-nums">{formatUSD(p.perMonth, p.perMonth % 1 ? 2 : 0)}</span>
                 <span className={`text-xl ${hot ? 'text-navy-900' : 'muted'}`}>/{t('pricing.perMonth').replace('/ ', '')}</span>
               </div>
-              <p className={`mt-1 h-5 text-xs ${hot ? 'text-navy-800' : 'muted'}`}>{interval === 'yearly' ? `${formatUSD(p.billed)} ${t('pricing.billedYearly')}` : ''}</p>
+              <p className={`mt-1 text-sm font-semibold ${hot ? 'text-navy-900' : 'text-accent-700 dark:text-accent-400'}`}>{t('pricing.perVideoLine').replace('{p}', formatUSD(costPerVideo(plan, interval)))}</p>
+              <p className={`mt-0.5 h-5 text-xs ${hot ? 'text-navy-800' : 'muted'}`}>{interval === 'yearly' ? `${formatUSD(p.billed)} ${t('pricing.billedYearly')}` : ''}</p>
               <ul className="mt-4 flex-1 space-y-3 text-[15px]">
                 {plan.featureKeys.map((k) => (
                   <li key={k} className="flex gap-2.5"><Check className={`mt-0.5 h-5 w-5 shrink-0 ${hot ? 'text-navy-950' : 'text-accent-700 dark:text-accent-500'}`} strokeWidth={2.5} />{t(k)}</li>
@@ -67,7 +70,8 @@ export function PricingTable({ interval, currentPlan }) {
                 {busy === plan.id && <Spinner />}
                 {isCurrent ? tr("Aktueller Plan") : t('pricing.choose')}
               </button>
-              <p className={`mt-3 text-center text-sm ${hot ? 'text-navy-900' : 'muted'}`}>{t('trust.cancel')}</p>
+              <p className={`mt-3 flex items-center justify-center gap-1.5 text-center text-sm font-medium ${hot ? 'text-navy-950' : ''}`}><ShieldCheck className="h-4 w-4 shrink-0" />{t('pricing.guarantee')}</p>
+              <p className={`mt-1 text-center text-xs ${hot ? 'text-navy-800' : 'muted'}`}>{t('trust.cancel')} · <Link to="/rueckerstattung" className="underline">{t('pricing.guaranteeNote')}</Link></p>
             </div>
           );
         })}
@@ -167,7 +171,16 @@ export function PricingSection({ showCalculator = true, currentPlan }) {
         <p className="text-xs muted">{t('pricing.vat').replace('{cur}', displayCurrency())} {interval === 'yearly' && `(${Math.round(YEARLY_DISCOUNT * 100)} % ${lang === 'de' ? 'Rabatt' : 'off'})`}</p>
         <p className="mt-1 text-xs muted">{t('pricing.withdrawal')}</p>
       </div>
+      {!currentPlan || currentPlan === 'free' ? <p className="mb-6 text-center text-sm" dangerouslySetInnerHTML={{ __html: t('pricing.recommend') }} /> : null}
       <PricingTable interval={interval} currentPlan={currentPlan} />
+      <p className="mt-4 text-center text-xs muted">{t('pricing.agency')}</p>
+      <div className="card mx-auto mt-8 flex max-w-2xl items-start gap-4 p-5">
+        <img src="/logo-email.png" alt="" className="h-10 w-auto shrink-0 rounded-lg" onError={(e) => { e.currentTarget.style.display = 'none'; }} />
+        <div className="text-sm">
+          <p>„{t('founder.text')}“</p>
+          <p className="mt-2 font-semibold">{t('founder.sign')} · <a href={`mailto:${SITE.contactEmail}`} className="inline-flex items-center gap-1 text-accent-700 underline dark:text-accent-400"><Mail className="h-3.5 w-3.5" />{SITE.contactEmail}</a></p>
+        </div>
+      </div>
       <div className="mt-8 flex flex-col items-center justify-between gap-4 rounded-2xl border border-dashed border-navy-200 p-6 text-center dark:border-navy-700 sm:flex-row sm:text-left">
         <div>
           <p className="font-semibold">{t('pricing.freeTitle')}</p>
