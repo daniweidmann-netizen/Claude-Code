@@ -26,7 +26,7 @@ import financeRouter from './finance.js';
 import demoRouter from './demo.js';
 import offerRouter from './offer.js';
 import campaignsRouter from './campaigns.js';
-import { keyStatus } from './keyMonitor.js';
+import { keyStatus, reportKeyFailure } from './keyMonitor.js';
 import { renderHtml, sitemap, robots } from './seo.js';
 import { sendReminders, reminderRouter } from './reminders.js';
 import elevenlabsTts from './providers/tts/elevenlabs.js';
@@ -140,7 +140,7 @@ app.post('/api/generate/voice', authenticate, handle(async (req) => {
     const profile = req.demo ? null : await getProfile(req.user.id);
     if (profile?.is_admin || PREMIUM_VOICE_PLANS.includes(profile?.plan)) {
       try { return { ...(await elevenlabsTts.synthesize({ ...req.body, text })), provider: 'elevenlabs' }; }
-      catch (e) { console.warn('[tts:elevenlabs]', e.message, '→ Standard-Stimme'); }
+      catch (e) { console.warn('[tts:elevenlabs]', e.message, '→ Standard-Stimme'); if (/40[123]|quota|invalid/i.test(e.message)) reportKeyFailure('elevenlabs', e.message); }
     }
   }
   return { ...(await provider('tts').synthesize({ ...req.body, text })), provider: provider('tts').name };
