@@ -3,225 +3,213 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Weidmann Digital Solutions – Building the Digital Future.</title>
-<meta name="description" content="Weidmann Digital Solutions aus der Schweiz entwickelt KI-Lösungen, intelligente Automatisierungen und digitale Softwareprodukte: Weidmann Digital, TrueReel und FollowUpAI.">
-<meta name="theme-color" content="#03050A">
+<title>Weidmann Digital Solutions – KI-Agenten, KI-Automatisierung &amp; Software aus der Schweiz</title>
+<meta name="description" content="Weidmann Digital Solutions entwickelt in der Schweiz intelligente KI-Lösungen, KI-Automatisierung und digitale Softwareprodukte: Weidmann Digital (KI-Agenten), TrueReel (KI-Videos) und FollowUpAI (Follow-up-CRM).">
+<meta name="theme-color" content="#050914">
+<meta name="color-scheme" content="dark">
 <link rel="canonical" href="https://weidmann-digital-solutions.onrender.com/">
 <link rel="icon" type="image/png" href="assets/favicon.png">
 <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
 <link rel="preload" href="assets/fonts/bricolage-grotesque-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="assets/fonts/onest-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="preload" as="image" href="assets/core-poster.jpg">
+<link rel="preload" href="assets/fonts/instrument-serif-latin-400-italic.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" as="image" href="assets/hero-core.jpg" fetchpriority="high">
 <meta property="og:type" content="website">
-<meta property="og:title" content="Weidmann Digital Solutions – Building the Digital Future.">
-<meta property="og:description" content="KI-Lösungen, intelligente Automatisierung und digitale Softwareprodukte aus der Schweiz.">
+<meta property="og:site_name" content="Weidmann Digital Solutions">
+<meta property="og:locale" content="de_CH">
+<meta property="og:locale:alternate" content="en_US">
+<meta property="og:url" content="https://weidmann-digital-solutions.onrender.com/">
+<meta property="og:title" content="Weidmann Digital Solutions – The Future, Made Real.">
+<meta property="og:description" content="Intelligente KI-Lösungen, starke Automatisierung und digitale Produkte aus der Schweiz.">
 <meta property="og:image" content="https://weidmann-digital-solutions.onrender.com/assets/og-image.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
-<link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="styles.css?v=8">
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"Organization","name":"Weidmann Digital Solutions","slogan":"Building the Digital Future.","logo":"https://weidmann-digital-solutions.onrender.com/assets/logo-full.jpg","url":"https://weidmann-digital-solutions.onrender.com/","areaServed":"CH","brand":[{"@type":"Brand","name":"Weidmann Digital"},{"@type":"Brand","name":"TrueReel","url":"https://truereel.ch"},{"@type":"Brand","name":"FollowUpAI"}]}
+{"@context":"https://schema.org","@graph":[
+{"@type":"Organization","@id":"https://weidmann-digital-solutions.onrender.com/#org","name":"Weidmann Digital Solutions","slogan":"The Future, Made Real.","description":"Schweizer Technologieunternehmen für KI-Lösungen, Automatisierung und digitale Softwareprodukte.","logo":"https://weidmann-digital-solutions.onrender.com/assets/logo-full.jpg","url":"https://weidmann-digital-solutions.onrender.com/","address":{"@type":"PostalAddress","addressLocality":"Grafstal","postalCode":"8310","addressCountry":"CH"},"areaServed":"CH","knowsAbout":["KI-Agenten","KI-Automatisierung","AI Business Automation","KI Video Creation","Follow-up CRM"],"brand":[{"@type":"Brand","name":"Weidmann Digital","url":"https://weidmann-digital.ch"},{"@type":"Brand","name":"TrueReel","url":"https://truereel.ch"},{"@type":"Brand","name":"FollowUpAI","url":"https://apps.apple.com/ch/app/followupai-crm/id6822229676"}]},
+{"@type":"WebSite","@id":"https://weidmann-digital-solutions.onrender.com/#site","url":"https://weidmann-digital-solutions.onrender.com/","name":"Weidmann Digital Solutions","inLanguage":["de-CH","en"],"publisher":{"@id":"https://weidmann-digital-solutions.onrender.com/#org"}}
+]}
 </script>
 <script>document.documentElement.classList.add('js')</script>
 </head>
 <body>
-<a class="sr-only" href="#main">Zum Inhalt springen</a>
+<a class="sr-only" href="#main" data-i18n="skip">Zum Inhalt springen</a>
+<div class="progress" id="progress" aria-hidden="true"></div>
 
 <!-- ── Navigation ── -->
 <header class="nav" id="nav">
   <div class="container nav-inner">
-    <a class="brand" href="#top" aria-label="Weidmann Digital Solutions – Startseite">
+    <a class="brand" href="#top" aria-label="Weidmann Digital Solutions – Home">
       <img src="assets/logo-mark.png" alt="" width="54" height="26">
       <span class="brand-text"><b>WEIDMANN</b><span>DIGITAL SOLUTIONS</span></span>
     </a>
-    <button class="menu-btn" id="menuBtn" aria-label="Menü öffnen" aria-expanded="false" aria-controls="navLinks">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
-    </button>
     <nav class="nav-links" id="navLinks" aria-label="Hauptnavigation">
-      <a href="#about" data-i18n="nav.about">Über uns</a>
-      <a href="#solutions" data-i18n="nav.solutions">Lösungen</a>
-      <a href="#vision" data-i18n="nav.vision">Vision</a>
-      <a href="#contact" data-i18n="nav.contact">Kontakt</a>
-      <div class="lang" role="group" aria-label="Sprache">
+      <a href="#top" data-nav="top">Home</a>
+      <a href="#about" data-nav="about" data-i18n="nav.about">Über uns</a>
+      <a href="#solutions" data-nav="solutions" data-i18n="nav.solutions">Lösungen</a>
+      <a href="#vision" data-nav="vision">Vision</a>
+      <a href="#contact" data-nav="contact" data-i18n="nav.contact">Kontakt</a>
+      <div class="lang" role="group" aria-label="Sprache / Language">
         <button type="button" data-lang="de" aria-pressed="true">DE</button>
         <button type="button" data-lang="en" aria-pressed="false">EN</button>
       </div>
-      <a class="btn btn-primary btn-sm" href="#contact" data-i18n="nav.cta">Get in Touch</a>
+      <a class="btn btn-primary btn-sm" href="#contact" data-i18n="nav.cta">Kontakt aufnehmen</a>
     </nav>
+    <button class="menu-btn" id="menuBtn" aria-label="Menü öffnen" aria-expanded="false" aria-controls="navLinks"><span></span><span></span><span></span></button>
   </div>
 </header>
 
 <main id="main">
 <!-- ── Hero ── -->
 <section class="hero" id="top">
-  <div class="beams" aria-hidden="true"></div>
-  <div class="core-stage" aria-hidden="true" data-float><video class="core-video" src="assets/core.mp4" poster="assets/core-poster.jpg" autoplay muted loop playsinline preload="auto"></video></div>
+  <canvas id="field" aria-hidden="true"></canvas>
+  <div class="core-stage" aria-hidden="true" data-float><div class="core-tilt"><video class="core-video" poster="assets/hero-core.jpg" autoplay muted loop playsinline preload="auto" width="900" height="900"><source src="assets/hero-core.mp4" type="video/mp4"></video></div></div>
   <div class="container hero-inner">
-    <span class="eyebrow reveal" data-i18n="hero.eyebrow">AI · Automation · Software</span>
-    <h1 class="reveal" data-delay="1"><span data-i18n="hero.t1">Building the</span><br><span class="grad" data-i18n="hero.t2">Digital Future.</span></h1>
-    <p class="lead reveal" data-delay="2" data-i18n="hero.sub">Intelligente KI. Starke Automatisierung. Digitale Innovation.</p>
+    <p class="kicker reveal">The Future, Made Real.</p>
+    <h1 class="reveal"><span class="line"><span>Technology.</span></span><span class="line"><span class="grad">Without Limits.</span></span></h1>
+    <p class="hero-tag reveal" data-delay="2">Building the Digital Future.</p>
+    <p class="lead reveal" data-delay="2" data-i18n="hero.sub">Wir entwickeln intelligente KI-Lösungen, starke Automatisierung und digitale Produkte, die Unternehmen voranbringen.</p>
     <div class="hero-cta reveal" data-delay="3">
-      <a class="btn btn-primary" href="#solutions"><span data-i18n="hero.cta1">Unsere Lösungen entdecken</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+      <a class="btn btn-primary" href="#solutions"><span data-i18n="hero.cta1">Unsere Lösungen entdecken</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
       <a class="btn btn-ghost" href="#contact" data-i18n="hero.cta2">Kontakt aufnehmen</a>
     </div>
-    <dl class="facts reveal" data-delay="3">
-      <div><dt>03</dt><dd data-i18n="fact1">Digitale Produkte</dd></div>
-      <div><dt>AI</dt><dd data-i18n="fact2">Im Kern jedes Produkts</dd></div>
-      <div><dt>CH</dt><dd data-i18n="fact3">Entwickelt in der Schweiz</dd></div>
-    </dl>
   </div>
-  <div class="ticker" aria-hidden="true"><div class="container"><span>Artificial Intelligence</span><span>AI Agents</span><span>Automation</span><span>AI Video</span><span>AI CRM</span><span>Software</span></div></div>
+  <div class="hero-foot reveal" data-delay="3">
+    <div class="container">
+      <dl class="facts">
+        <div><dt>03</dt><dd data-i18n="fact1">Digitale Produkte</dd></div>
+        <div><dt>AI</dt><dd data-i18n="fact2">Im Kern jedes Produkts</dd></div>
+        <div><dt>CH</dt><dd data-i18n="fact3">Entwickelt in der Schweiz</dd></div>
+      </dl>
+      <span class="scroll-hint" aria-hidden="true"><span>Scroll</span><i></i></span>
+    </div>
+  </div>
 </section>
 
 <!-- ── Über uns ── -->
 <section class="section about" id="about">
   <div class="container">
-    <div class="about-grid">
+    <div class="sec-head">
       <div>
-        <span class="eyebrow reveal" data-i18n="about.eyebrow">Über uns</span>
-        <h2 class="h2 reveal" data-delay="1">Innovation.<br>Intelligence. <span class="grad">Impact.</span></h2>
+        <span class="eyebrow reveal"><b>01</b><span data-i18n="about.eyebrow">Über uns</span></span>
+        <h2 class="h2 reveal"><span class="line"><span>Innovation.</span></span><span class="line"><span>Intelligence.</span></span><span class="line"><span class="grad">Impact.</span></span></h2>
       </div>
-      <div class="about-text reveal" data-delay="2">
-        <p data-i18n="about.text">Weidmann Digital Solutions verbindet künstliche Intelligenz, Automatisierung und moderne Softwareentwicklung. Unser Ziel ist es, innovative digitale Produkte zu entwickeln, die reale Herausforderungen lösen und Unternehmen nachhaltig unterstützen.</p>
-      </div>
+      <p class="lead reveal" data-delay="1" data-i18n="about.text">Weidmann Digital Solutions verbindet künstliche Intelligenz, intelligente Automatisierung und moderne Softwareentwicklung zu digitalen Produkten, die echte Herausforderungen im Unternehmensalltag lösen.</p>
     </div>
-    <figure class="cine reveal" data-float>
-      <picture><source srcset="assets/about.webp" type="image/webp"><img src="assets/about.jpg" alt="" loading="lazy" width="1800" height="1200"></picture>
-      <figcaption><span data-i18n="cine.cap">Digitale Architektur – präzise gebaut.</span></figcaption>
-    </figure>
-    <div class="values">
-      <article class="value reveal">
-        <span class="num">01</span>
-        <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="5" width="14" height="14" rx="3"/><path d="M9 9h6v6H9zM9 2v3M15 2v3M9 19v3M15 19v3M2 9h3M2 15h3M19 9h3M19 15h3"/></svg></span>
-        <h3>Artificial Intelligence</h3>
-        <p data-i18n="v1">KI dort einsetzen, wo sie echten Nutzen bringt – verständlich, nachvollziehbar und praxisnah.</p>
+    <div class="pillars">
+      <article class="pillar glow reveal" data-float>
+        <div class="pillar-visual" aria-hidden="true"><video poster="assets/a-ai.jpg" muted loop playsinline preload="none" data-autoplay width="640" height="640"><source src="assets/a-ai.mp4" type="video/mp4"></video></div>
+        <div class="pillar-body"><span class="num">01</span><h3>Artificial Intelligence</h3><p data-i18n="v1">KI dort einsetzen, wo sie echten Nutzen bringt – verständlich, nachvollziehbar und praxisnah.</p></div>
       </article>
-      <article class="value reveal" data-delay="1">
-        <span class="num">02</span>
-        <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 0 1-15.5 6.2M3 12A9 9 0 0 1 18.5 5.8"/><path d="M21 4v5h-5M3 20v-5h5"/></svg></span>
-        <h3>Smart Automation</h3>
-        <p data-i18n="v2">Wiederkehrende Aufgaben automatisieren, damit mehr Zeit für das Wesentliche bleibt.</p>
+      <article class="pillar glow reveal" data-delay="1" data-float>
+        <div class="pillar-visual" aria-hidden="true"><video poster="assets/a-auto.jpg" muted loop playsinline preload="none" data-autoplay width="640" height="640"><source src="assets/a-auto.mp4" type="video/mp4"></video></div>
+        <div class="pillar-body"><span class="num">02</span><h3>Smart Automation</h3><p data-i18n="v2">Wiederkehrende Aufgaben automatisieren, damit mehr Zeit für das Wesentliche bleibt.</p></div>
       </article>
-      <article class="value reveal" data-delay="2">
-        <span class="num">03</span>
-        <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l2.4 5.6L20 10l-5.6 2.4L12 18l-2.4-5.6L4 10l5.6-2.4z"/><path d="M19 17l.8 1.9L22 20l-2.2.9L19 23l-.8-2.1L16 20l2.2-1.1z"/></svg></span>
-        <h3>Digital Innovation</h3>
-        <p data-i18n="v3">Eigene digitale Produkte entwickeln, testen und laufend verbessern.</p>
+      <article class="pillar glow reveal" data-delay="2" data-float>
+        <div class="pillar-visual" aria-hidden="true"><video poster="assets/a-inno.jpg" muted loop playsinline preload="none" data-autoplay width="640" height="640"><source src="assets/a-inno.mp4" type="video/mp4"></video></div>
+        <div class="pillar-body"><span class="num">03</span><h3>Digital Innovation</h3><p data-i18n="v3">Eigene digitale Produkte entwickeln, testen und laufend verbessern.</p></div>
       </article>
     </div>
   </div>
 </section>
 
-<hr class="divider">
-
 <!-- ── Lösungen ── -->
 <section class="section solutions" id="solutions">
   <div class="container">
-    <div class="solutions-head">
+    <div class="sec-head">
       <div>
-        <span class="eyebrow reveal" data-i18n="sol.eyebrow">Unsere Lösungen</span>
-        <h2 class="h2 reveal" data-delay="1"><span data-i18n="sol.t1">Drei Produkte.</span><br><span class="grad" data-i18n="sol.t2">Eine Vision.</span></h2>
+        <span class="eyebrow reveal"><b>02</b><span data-i18n="sol.eyebrow">Unsere Lösungen</span></span>
+        <h2 class="h2 reveal"><span class="line"><span data-i18n="sol.t1">Drei Produkte.</span></span><span class="line"><span class="grad" data-i18n="sol.t2">Eine Vision.</span></span></h2>
       </div>
-      <p class="lead reveal" data-delay="2" data-i18n="sol.sub">Jedes Produkt löst eine konkrete Aufgabe – von der Automatisierung im Unternehmen über KI-Videos bis zum persönlichen Vertrieb.</p>
+      <p class="lead reveal" data-delay="1" data-i18n="sol.sub">Jedes Produkt löst eine konkrete Aufgabe – von der Automatisierung im Unternehmen über KI-Videos bis zum persönlichen Vertrieb.</p>
     </div>
 
     <div class="products">
-      <!-- Produkt 1 -->
-      <article class="product reveal" data-p="digital">
-        <div>
+      <article class="product glow reveal" data-p="digital" data-tilt>
+        <div class="product-copy">
+          <span class="p-index">01</span>
           <span class="p-cat">AI Agents &amp; Business Automation</span>
           <h3>Weidmann Digital</h3>
-          <p data-i18n="p1.text">Intelligente KI-Agenten und Automatisierungslösungen, die Unternehmen bei wiederkehrenden Aufgaben unterstützen, Prozesse optimieren und wertvolle Zeit sparen.</p>
+          <p data-i18n="p1.text">Intelligente KI-Agenten und Automatisierungslösungen, die Unternehmen helfen, Abläufe zu vereinfachen, wiederkehrende Aufgaben zu reduzieren und effizienter zu arbeiten.</p>
           <ul class="p-points">
             <li data-i18n="p1.a">KI-Agenten für wiederkehrende Aufgaben</li>
             <li data-i18n="p1.b">Automatisierte Abläufe statt manueller Routine</li>
-            <li data-i18n="p1.c">Prozesse optimieren und Zeit sparen</li>
+            <li data-i18n="p1.c">Prozesse vereinfachen und Zeit sparen</li>
           </ul>
-          <a class="btn btn-accent" href="https://weidmann-digital.ch" target="_blank" rel="noopener" data-product-link="digital"><span data-i18n="p1.cta">Weidmann Digital entdecken</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M8 7h9v9"/></svg></a>
+          <a class="btn btn-accent" href="https://weidmann-digital.ch" target="_blank" rel="noopener" data-product-link="digital"><span data-i18n="p1.cta">Weidmann Digital entdecken</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17L17 7M8 7h9v9"/></svg></a>
         </div>
-        <div class="product-visual pv3d" aria-hidden="true" data-float>
-          <div class="obj-wrap"><video class="obj" src="assets/p-digital.mp4" poster="assets/p-digital.jpg" muted loop playsinline preload="none" data-autoplay></video></div>
-          <div class="flow">
-            <div class="flow-node"><span class="dot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16v12H5.2L4 17.2z"/></svg></span><div><b data-i18n="f1.t">Anfrage eingegangen</b><small data-i18n="f1.s">E-Mail, Formular oder Nachricht</small></div><span class="state">IN</span></div>
-            <div class="flow-line"></div>
-            <div class="flow-node"><span class="dot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="5" width="14" height="14" rx="3"/><path d="M9 9h6v6H9z"/></svg></span><div><b data-i18n="f2.t">KI-Agent analysiert</b><small data-i18n="f2.s">Inhalt verstehen, einordnen</small></div><span class="state">AI</span></div>
-            <div class="flow-line"></div>
-            <div class="flow-node"><span class="dot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></span><div><b data-i18n="f3.t">Aufgabe erledigt</b><small data-i18n="f3.s">Weitergeleitet, erfasst, beantwortet</small></div><span class="state">DONE</span></div>
-          </div>
+        <div class="product-visual" aria-hidden="true" data-float>
+          <div class="obj-wrap"><video poster="assets/p-digital.jpg" muted loop playsinline preload="none" data-autoplay width="720" height="720"><source src="assets/p-digital.mp4" type="video/mp4"></video></div>
+          <div class="hud"><span class="hud-chip"><i></i><span data-i18n="f1.t">Anfrage eingegangen</span></span><span class="hud-sep"></span><span class="hud-chip"><i></i><span data-i18n="f2.t">KI-Agent analysiert</span></span><span class="hud-sep"></span><span class="hud-chip"><i></i><span data-i18n="f3.t">Aufgabe erledigt</span></span></div>
         </div>
       </article>
 
-      <!-- Produkt 2 -->
-      <article class="product reverse reveal" data-p="truereel">
-        <div>
+      <article class="product reverse glow reveal" data-p="truereel" data-tilt>
+        <div class="product-copy">
+          <span class="p-index">02</span>
           <span class="p-cat">AI Video Creation</span>
           <h3>TrueReel</h3>
-          <p data-i18n="p2.text">TrueReel macht die automatisierte Erstellung von KI-generierten Videos und Social-Media-Content zugänglich. Entdecke neue Möglichkeiten für effiziente Content-Produktion.</p>
+          <p data-i18n="p2.text">Entdecke eine smartere Art, KI-generierte Videos und Social-Media-Content zu erstellen. Aus Ideen werden ansprechende Videos – in einem automatisierten kreativen Ablauf.</p>
           <ul class="p-points">
             <li data-i18n="p2.a">Vom Thema zum fertigen Kurzvideo: Skript, Bilder, Stimme und Untertitel</li>
             <li data-i18n="p2.b">Für TikTok, Instagram Reels und YouTube Shorts</li>
             <li data-i18n="p2.c">Erstes Video gratis testen</li>
           </ul>
-          <a class="btn btn-accent" href="https://truereel.ch" target="_blank" rel="noopener"><span data-i18n="p2.cta">TrueReel entdecken</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M8 7h9v9"/></svg></a>
+          <a class="btn btn-accent" href="https://truereel.ch" target="_blank" rel="noopener"><span data-i18n="p2.cta">TrueReel entdecken</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17L17 7M8 7h9v9"/></svg></a>
         </div>
-        <div class="product-visual pv3d" aria-hidden="true" data-float>
-          <div class="obj-wrap"><video class="obj" src="assets/p-truereel.mp4" poster="assets/p-truereel.jpg" muted loop playsinline preload="none" data-autoplay></video></div>
-          <span class="chip c1"><i></i><span data-i18n="chip1">Skript</span></span>
-          <span class="chip c2"><i></i><span data-i18n="chip2">Stimme</span></span>
-          <span class="chip c3"><i></i><span data-i18n="chip3">Untertitel</span></span>
+        <div class="product-visual" aria-hidden="true" data-float>
+          <div class="obj-wrap"><video poster="assets/p-truereel.jpg" muted loop playsinline preload="none" data-autoplay width="720" height="720"><source src="assets/p-truereel.mp4" type="video/mp4"></video></div>
+          <div class="hud"><span class="hud-chip"><i></i><span data-i18n="chip1">Skript</span></span><span class="hud-chip"><i></i><span data-i18n="chip4">Bilder</span></span><span class="hud-chip"><i></i><span data-i18n="chip2">Stimme</span></span><span class="hud-chip"><i></i><span data-i18n="chip3">Untertitel</span></span></div>
         </div>
       </article>
 
-      <!-- Produkt 3 -->
-      <article class="product reveal" data-p="followup">
-        <div>
+      <article class="product glow reveal" data-p="followup" data-tilt>
+        <div class="product-copy">
+          <span class="p-index">03</span>
           <span class="p-cat">AI-Powered CRM</span>
           <h3>FollowUpAI</h3>
-          <p data-i18n="p3.text">FollowUpAI ist ein KI-gestütztes CRM für kleine Unternehmen. Verwalte Leads, organisiere deine Sales-Pipeline und generiere personalisierte Follow-up-Nachrichten auf Basis deiner tatsächlichen Lead-Daten.</p>
+          <p data-i18n="p3.text">FollowUpAI hilft kleinen Unternehmen, Leads zu verwalten, ihre Sales-Pipeline zu organisieren und personalisierte Follow-up-Nachrichten auf Basis echter Lead-Daten zu erstellen.</p>
           <ul class="p-points">
             <li data-i18n="p3.a">Leads verwalten und Sales-Pipeline organisieren</li>
             <li data-i18n="p3.b">Personalisierte Follow-ups aus deinen echten Lead-Daten</li>
             <li data-i18n="p3.c">Als App für iPhone im App Store</li>
           </ul>
-          <a class="btn btn-accent" href="https://apps.apple.com/ch/app/followupai-crm/id6822229676" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="currentColor" style="width:18px;height:18px"><path d="M16.4 12.6c0-2.4 2-3.6 2.1-3.7-1.1-1.7-2.9-1.9-3.5-1.9-1.5-.2-2.9.9-3.7.9-.8 0-1.9-.9-3.2-.8-1.6 0-3.1 1-4 2.4-1.7 3-.4 7.4 1.2 9.8.8 1.2 1.8 2.5 3 2.4 1.2 0 1.7-.8 3.1-.8 1.5 0 1.9.8 3.2.8 1.3 0 2.2-1.2 3-2.4.9-1.4 1.3-2.7 1.3-2.8 0 0-2.5-1-2.5-3.9zM14 5.3c.7-.8 1.1-1.9 1-3-1 0-2.1.7-2.8 1.5-.6.7-1.2 1.8-1 2.9 1.1.1 2.1-.6 2.8-1.4z"/></svg><span data-i18n="p3.cta">Im App Store laden</span></a>
+          <a class="btn btn-accent" href="https://apps.apple.com/ch/app/followupai-crm/id6822229676" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M16.4 12.6c0-2.4 2-3.6 2.1-3.7-1.1-1.700-2.900-1.900-3.500-1.900-1.500-.2-2.900.9-3.700.9-.8 0-1.900-.9-3.200-.8-1.600 0-3.100 1-4 2.400-1.700 3-.4 7.400 1.200 9.800.8 1.200 1.800 2.500 3 2.400 1.200 0 1.700-.8 3.100-.8 1.500 0 1.900.8 3.200.8 1.300 0 2.200-1.200 3-2.400.9-1.400 1.300-2.700 1.300-2.800 0 0-2.500-1-2.500-3.900zM14 5.300c.7-.8 1.100-1.900 1-3-1 0-2.100.7-2.800 1.500-.6.7-1.200 1.800-1 2.900 1.100.1 2.100-.6 2.800-1.400z"/></svg><span data-i18n="p3.cta">Im App Store laden</span></a>
         </div>
-        <div class="product-visual pv3d" aria-hidden="true" data-float>
-          <div class="obj-wrap"><video class="obj" src="assets/p-followup.mp4" poster="assets/p-followup.jpg" muted loop playsinline preload="none" data-autoplay></video></div>
-          <div class="msg">
-              <small><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l2.4 5.6L20 10l-5.6 2.4L12 18l-2.4-5.6L4 10l5.600-2.400z"/></svg><span data-i18n="msg.h">KI-Follow-up-Entwurf</span></small>
-              <p class="typing" data-i18n="msg.t">Hallo! Ich wollte kurz nachfragen, ob mein Angebot von letzter Woche noch passt …</p>
-          </div>
+        <div class="product-visual" aria-hidden="true" data-float>
+          <div class="obj-wrap"><video poster="assets/p-followup.jpg" muted loop playsinline preload="none" data-autoplay width="720" height="720"><source src="assets/p-followup.mp4" type="video/mp4"></video></div>
+          <div class="hud"><div class="hud-msg"><small><i></i><span data-i18n="msg.h">KI-Follow-up-Entwurf (Beispiel)</span></small><p data-i18n="msg.t">Hallo! Ich wollte kurz nachfragen, ob mein Angebot von letzter Woche noch passt …</p></div></div>
         </div>
       </article>
     </div>
   </div>
 </section>
 
-<!-- ── Warum wir ── -->
-<section class="section why" id="why">
+<!-- ── Warum ── -->
+<section class="section why" id="why" data-float>
+  <picture><source srcset="assets/about.webp" type="image/webp"><img class="why-bg" src="assets/about.jpg" alt="" loading="lazy" width="1800" height="1200"></picture>
   <div class="container">
-    <div class="center">
-      <span class="eyebrow reveal" data-i18n="why.eyebrow">Warum Weidmann Digital Solutions</span>
-      <h2 class="h2 reveal" data-delay="1"><span data-i18n="why.t1">Technology That Moves</span><br><span class="grad" data-i18n="why.t2">Businesses Forward.</span></h2>
-    </div>
-    <div class="why-grid">
-      <div class="why-item reveal"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="5" width="14" height="14" rx="3"/><path d="M9 9h6v6H9z"/></svg></span><h3 data-i18n="w1.t">Innovative KI-Technologien</h3><p data-i18n="w1.d">Aktuelle KI-Modelle, sinnvoll eingesetzt.</p></div>
-      <div class="why-item reveal" data-delay="1"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18l3 3 6.3-6.3a4 4 0 0 0 5.4-5.4l-2.5 2.5-2.5-2.5z"/></svg></span><h3 data-i18n="w2.t">Praktische digitale Lösungen</h3><p data-i18n="w2.d">Werkzeuge, die im Alltag funktionieren.</p></div>
-      <div class="why-item reveal" data-delay="2"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 0 1-15.5 6.2M3 12A9 9 0 0 1 18.5 5.8"/><path d="M21 4v5h-5M3 20v-5h5"/></svg></span><h3 data-i18n="w3.t">Intelligente Automatisierung</h3><p data-i18n="w3.d">Weniger Routine, mehr Fokus.</p></div>
-      <div class="why-item reveal" data-delay="3"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="14" rx="2.5"/><path d="M8 21h8M12 18v3"/></svg></span><h3 data-i18n="w4.t">Moderne Softwareprodukte</h3><p data-i18n="w4.d">Web, App und Cloud – aus einer Hand.</p></div>
-      <div class="why-item reveal" data-delay="3"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.5"/></svg></span><h3 data-i18n="w5.t">Fokus auf reale Probleme</h3><p data-i18n="w5.d">Wir bauen, was Unternehmen wirklich brauchen.</p></div>
-    </div>
+    <span class="eyebrow reveal"><b>03</b><span data-i18n="why.eyebrow">Warum Weidmann Digital Solutions</span></span>
+    <h2 class="h2 reveal" style="margin-top:22px"><span class="line"><span>Technology That Moves</span></span><span class="line"><span class="grad">Businesses Forward.</span></span></h2>
+    <ol class="why-list">
+      <li class="why-item reveal"><h3 data-i18n="w1.t">Künstliche Intelligenz</h3><p data-i18n="w1.d">KI dort, wo sie echten Nutzen bringt – verständlich und nachvollziehbar eingesetzt.</p></li>
+      <li class="why-item reveal"><h3 data-i18n="w2.t">Intelligente Automatisierung</h3><p data-i18n="w2.d">Wiederkehrende Abläufe automatisieren, damit Zeit fürs Wesentliche bleibt.</p></li>
+      <li class="why-item reveal"><h3 data-i18n="w3.t">Digitale Produktentwicklung</h3><p data-i18n="w3.d">Wir entwickeln eigene Produkte, testen sie im Einsatz und verbessern sie laufend.</p></li>
+      <li class="why-item reveal"><h3 data-i18n="w4.t">Moderne Softwarelösungen</h3><p data-i18n="w4.d">Web, App und Cloud – durchdacht gebaut und aus einer Hand.</p></li>
+      <li class="why-item reveal"><h3 data-i18n="w5.t">Praktische Innovation</h3><p data-i18n="w5.d">Wir bauen, was Unternehmen im Alltag wirklich brauchen.</p></li>
+    </ol>
   </div>
 </section>
 
 <!-- ── Vision ── -->
-<section class="section vision" id="vision">
+<section class="vision" id="vision" data-float>
+  <div class="vision-media" aria-hidden="true"><video poster="assets/vision-poster.jpg" muted loop playsinline preload="none" data-autoplay width="1272" height="848"><source src="assets/vision-loop.mp4" type="video/mp4"></video></div>
   <div class="container">
-    <div class="vision-box reveal" data-float>
-      <picture><source srcset="assets/vision.webp" type="image/webp"><img class="vision-img" src="assets/vision.jpg" alt="" loading="lazy" width="1800" height="1200"></picture>
-      <span class="eyebrow" data-i18n="vision.eyebrow">Unsere Vision</span>
-      <h2 class="h2"><span data-i18n="vision.t1">Creating What</span><br><span class="grad" data-i18n="vision.t2">Comes Next.</span></h2>
-      <p class="lead" data-i18n="vision.text">Wir glauben an eine Zukunft, in der intelligente Technologien Unternehmen neue Möglichkeiten eröffnen. Mit unseren digitalen Produkten möchten wir diese Zukunft aktiv mitgestalten.</p>
-    </div>
+    <span class="eyebrow reveal"><b>04</b><span data-i18n="vision.eyebrow">Unsere Vision</span></span>
+    <h2 class="h2 reveal"><span class="line"><span>Creating What</span></span><span class="line"><span class="grad">Comes Next.</span></span></h2>
+    <p class="lead reveal" data-delay="1" data-i18n="vision.text">Wir glauben, dass intelligente Technologie den Geschäftsalltag einfacher, smarter und effizienter machen soll. Unsere Mission ist es, digitale Produkte zu bauen, die diese Vision Wirklichkeit werden lassen.</p>
   </div>
 </section>
 
@@ -229,30 +217,31 @@
 <section class="section contact" id="contact">
   <div class="container contact-grid">
     <div class="contact-info">
-      <span class="eyebrow reveal" data-i18n="contact.eyebrow">Kontakt</span>
-      <h2 class="h2 reveal" data-delay="1"><span data-i18n="contact.t1">Let’s Build</span><br><span class="grad" data-i18n="contact.t2">Something Great.</span></h2>
-      <p class="lead reveal" data-delay="2" data-i18n="contact.text">Du möchtest dein Unternehmen digitalisieren, Prozesse automatisieren oder mehr über unsere Produkte erfahren? Wir freuen uns auf deine Nachricht.</p>
-      <picture class="contact-pic reveal" data-delay="2" data-float><source srcset="assets/contact.webp" type="image/webp"><img src="assets/contact.jpg" alt="" loading="lazy" width="1000" height="1000"></picture>
-      <ul class="contact-points reveal" data-delay="3">
-        <li><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="5" width="14" height="14" rx="3"/><path d="M9 9h6v6H9z"/></svg></span><span data-i18n="cp1">KI-Agenten &amp; Automatisierung für dein Unternehmen</span></li>
-        <li><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="7" y="2" width="10" height="20" rx="2.5"/><path d="M11 18h2"/></svg></span><span data-i18n="cp2">Fragen zu TrueReel oder FollowUpAI</span></li>
-        <li><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9.5" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.9M16 3.1a4 4 0 0 1 0 7.8"/></svg></span><span data-i18n="cp3">Partnerschaften &amp; Zusammenarbeit</span></li>
+      <span class="eyebrow reveal"><b>05</b><span data-i18n="contact.eyebrow">Kontakt</span></span>
+      <h2 class="h2 reveal"><span class="line"><span>Let’s Build</span></span><span class="line"><span class="grad">Something Great.</span></span></h2>
+      <p class="lead reveal" data-delay="1" data-i18n="contact.text">Du hast eine Idee, eine Herausforderung im Unternehmen oder Interesse an unseren Produkten? Lass uns herausfinden, was möglich ist.</p>
+      <picture class="contact-pic reveal" data-delay="1" data-float><source srcset="assets/contact.webp" type="image/webp"><img src="assets/contact.jpg" alt="" loading="lazy" width="1000" height="1000"></picture>
+      <ul class="contact-points reveal" data-delay="2">
+        <li data-i18n="cp1">KI-Agenten &amp; Automatisierung für dein Unternehmen</li>
+        <li data-i18n="cp2">Fragen zu TrueReel oder FollowUpAI</li>
+        <li data-i18n="cp3">Partnerschaften &amp; Zusammenarbeit</li>
       </ul>
     </div>
-    <form class="form reveal" id="contactForm" novalidate data-delay="2">
+    <form class="form reveal" id="contactForm" novalidate data-delay="1">
       <h3 data-i18n="form.title">Schreib uns</h3>
       <div class="row">
-        <div class="field"><label for="f-name"><span data-i18n="form.name">Name</span> *</label><input id="f-name" name="name" autocomplete="name" required maxlength="100"></div>
-        <div class="field"><label for="f-email"><span data-i18n="form.email">E-Mail-Adresse</span> *</label><input id="f-email" name="email" type="email" autocomplete="email" required maxlength="190"></div>
+        <div class="field"><label for="f-name"><span data-i18n="form.name">Name</span> *</label><input id="f-name" name="name" autocomplete="name" required maxlength="100" aria-describedby="e-name"><small class="err" id="e-name" aria-live="polite"></small></div>
+        <div class="field"><label for="f-email"><span data-i18n="form.email">E-Mail-Adresse</span> *</label><input id="f-email" name="email" type="email" inputmode="email" autocomplete="email" required maxlength="190" aria-describedby="e-email"><small class="err" id="e-email" aria-live="polite"></small></div>
       </div>
       <div class="row">
         <div class="field"><label for="f-company"><span data-i18n="form.company">Unternehmen</span> <span data-i18n="form.optional">(optional)</span></label><input id="f-company" name="company" autocomplete="organization" maxlength="120"></div>
-        <div class="field"><label for="f-subject"><span data-i18n="form.subject">Betreff</span> *</label><input id="f-subject" name="subject" required maxlength="140"></div>
+        <div class="field"><label for="f-subject"><span data-i18n="form.subject">Betreff</span> *</label><input id="f-subject" name="subject" required maxlength="140" aria-describedby="e-subject"><small class="err" id="e-subject" aria-live="polite"></small></div>
       </div>
-      <div class="field"><label for="f-message"><span data-i18n="form.message">Nachricht</span> *</label><textarea id="f-message" name="message" required maxlength="4000"></textarea></div>
+      <div class="field"><label for="f-message"><span data-i18n="form.message">Nachricht</span> *</label><textarea id="f-message" name="message" required maxlength="4000" aria-describedby="e-message"></textarea><small class="err" id="e-message" aria-live="polite"></small></div>
       <input class="hp" type="text" name="website" tabindex="-1" autocomplete="off" aria-hidden="true">
-      <label class="consent"><input type="checkbox" name="consent" required><span data-i18n-html="form.consent">Ich bin einverstanden, dass meine Angaben zur Beantwortung meiner Anfrage verarbeitet werden. Mehr dazu in der <a href="datenschutz.html">Datenschutzerklärung</a>.</span></label>
-      <button class="btn btn-primary" type="submit"><span data-i18n="form.submit">Get in Touch</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+      <label class="consent"><input type="checkbox" name="consent" required aria-describedby="e-consent"><span data-i18n-html="form.consent">Ich bin einverstanden, dass meine Angaben zur Beantwortung meiner Anfrage verarbeitet werden. Mehr dazu in der <a href="datenschutz.html">Datenschutzerklärung</a>.</span></label>
+      <small class="consent-err" id="e-consent" aria-live="polite"></small>
+      <button class="btn btn-primary" type="submit"><span data-i18n="form.submit">Nachricht senden</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
       <p class="form-status" id="formStatus" role="status" aria-live="polite"></p>
     </form>
   </div>
@@ -262,11 +251,12 @@
 <!-- ── Footer ── -->
 <footer class="footer">
   <div class="container">
+    <p class="footer-claim">The Future, <span class="grad">Made Real.</span></p>
     <div class="footer-grid">
       <div>
-        <a class="brand" href="#top"><img src="assets/logo-mark.png" alt="" width="62" height="30"><span class="brand-text"><b>WEIDMANN</b><span>DIGITAL SOLUTIONS</span></span></a>
-        <p class="footer-slogan">Building the Digital Future.</p>
-        <a class="social" href="#" id="linkedin" aria-label="LinkedIn" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M4.98 3.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5zM3 9.5h4V21H3zM9.5 9.5h3.8v1.6h.1c.5-1 1.8-2 3.8-2 4 0 4.8 2.6 4.8 6V21h-4v-5.2c0-1.2 0-2.9-1.8-2.9s-2 1.4-2 2.8V21h-4z"/></svg></a>
+        <a class="brand" href="#top" aria-label="Weidmann Digital Solutions – Home"><img src="assets/logo-mark.png" alt="" width="54" height="26" loading="lazy"><span class="brand-text"><b>WEIDMANN</b><span>DIGITAL SOLUTIONS</span></span></a>
+        <p class="footer-slogan" data-i18n="ft.slogan">Building the Digital Future. KI, Automatisierung und Software aus der Schweiz.</p>
+        <a class="social" href="#" id="linkedin" aria-label="LinkedIn" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M4.980 3.500a2.500 2.500 0 1 1 0 5 2.500 2.500 0 0 1 0-5zM3 9.500h4V21H3zM9.500 9.500h3.800v1.600h.1c.5-1 1.800-2 3.800-2 4 0 4.800 2.600 4.800 6V21h-4v-5.200c0-1.200 0-2.900-1.800-2.900s-2 1.400-2 2.800V21h-4z"/></svg></a>
       </div>
       <div>
         <h4 data-i18n="ft.company">Unternehmen</h4>
@@ -274,6 +264,7 @@
           <li><a href="#top">Home</a></li>
           <li><a href="#about" data-i18n="nav.about">Über uns</a></li>
           <li><a href="#solutions" data-i18n="nav.solutions">Lösungen</a></li>
+          <li><a href="#vision">Vision</a></li>
           <li><a href="#contact" data-i18n="nav.contact">Kontakt</a></li>
         </ul>
       </div>
@@ -295,12 +286,12 @@
     </div>
     <div class="footer-bottom">
       <span>© <span id="year">2026</span> Weidmann Digital Solutions</span>
-      <span><span data-i18n="ft.made">Entwickelt in der Schweiz</span> · <span data-i18n="ft.ai">Bildwelten: KI-generierte Visualisierungen</span></span>
+      <span><span data-i18n="ft.made">Entwickelt in der Schweiz</span> · <span data-i18n="ft.ai">Bildwelten: KI-generierte 3D-Visualisierungen</span></span>
     </div>
   </div>
 </footer>
 
-<script src="config.js"></script>
-<script src="main.js" defer></script>
+<script src="config.js?v=8"></script>
+<script src="main.js?v=8" defer></script>
 </body>
 </html>

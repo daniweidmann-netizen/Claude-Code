@@ -5,7 +5,8 @@ Schriften liegen lokal in `assets/fonts`, keine Cookies, kein Tracking.
 
 ## Dateien
 - `index.html` – Startseite (Deutsch, Umschalter DE/EN oben rechts)
-- `styles.css`, `main.js` – Design, Animationen, Sprache, Kontaktformular
+- `styles.css`, `main.js` – Design, Animationen (Partikelfeld, 3D-Neigung, Parallax), Sprache, Kontaktformular
+- `assets/*.mp4` – kurze, stumme CGI-Videoschleifen (KI-generiert); spielen nur, wenn sichtbar, im Sparmodus bleibt das Standbild
 - `config.js` – **hier anpassen**: Kontaktformular-Adresse, Link zu Weidmann Digital, LinkedIn
 - `impressum.html`, `datenschutz.html` – Pflichtseiten (gelb markierte Stellen ausfüllen)
 - `robots.txt`, `sitemap.xml` – für Google (Domain eintragen)
