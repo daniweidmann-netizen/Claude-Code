@@ -3,7 +3,7 @@ import crypto from 'node:crypto';
 import { config } from '../config.js';
 import { admin, authenticate } from '../supabaseAdmin.js';
 import { PLATFORMS } from './platforms.js';
-import { encryptToken, encryptExistingTokens } from './tokenCrypto.js';
+import { encryptToken, encryptExistingTokens, decryptConnection, encryptFields } from './tokenCrypto.js';
 
 encryptExistingTokens(admin);
 
@@ -57,6 +57,28 @@ router.get('/:platform/callback', async (req, res) => {
     console.error(e);
     res.redirect(`${config.appUrl}/app/account?social_error=${platform}`);
   }
+});
+
+// TikTok: Konto-Infos und erlaubte Einstellungen für das Posten-Fenster (Vorgabe der Content Posting API)
+router.get('/tiktok/creator-info', authenticate, async (req, res) => {
+  try {
+    if (!admin) return res.json({ demo: true });
+    const { data: stored } = await admin.from('social_connections').select('*').eq('user_id', req.user.id).eq('platform', 'tiktok').maybeSingle();
+    const conn = decryptConnection(stored);
+    if (!conn) return res.status(400).json({ error: 'TikTok ist nicht verbunden.' });
+    const upd = await PLATFORMS.tiktok.refresh(conn);
+    if (upd) { Object.assign(conn, upd); await admin.from('social_connections').update({ ...encryptFields(upd), updated_at: new Date().toISOString() }).eq('id', conn.id); }
+    const r = await (await fetch('https://open.tiktokapis.com/v2/post/publish/creator_info/query/', { method: 'POST', headers: { Authorization: `Bearer ${conn.access_token}`, 'Content-Type': 'application/json; charset=UTF-8' } })).json();
+    if (r.error?.code && r.error.code !== 'ok') return res.status(400).json({ error: r.error.code === 'spam_risk_too_many_posts' ? 'TikTok erlaubt heute keine weiteren Posts über Apps. Bitte morgen erneut versuchen.' : `TikTok: ${r.error.message || r.error.code}` });
+    const d = r.data || {};
+    res.json({
+      nickname: d.creator_nickname || d.creator_username || conn.account_name || 'TikTok',
+      username: d.creator_username || null, avatar: d.creator_avatar_url || null,
+      privacyOptions: d.privacy_level_options || [],
+      commentDisabled: !!d.comment_disabled, duetDisabled: !!d.duet_disabled, stitchDisabled: !!d.stitch_disabled,
+      maxDuration: d.max_video_post_duration_sec || null,
+    });
+  } catch (e) { res.status(500).json({ error: e.message }); }
 });
 
 router.delete('/:platform', authenticate, async (req, res) => {

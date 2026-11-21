@@ -42,7 +42,7 @@ export const PLATFORMS = {
       return { access_token: d.access_token, refresh_token: d.refresh_token || conn.refresh_token, expires_at: new Date(Date.now() + (d.expires_in || 86400) * 1000).toISOString() };
     },
     // Content Posting API (Direct Post). Nicht geprüfte TikTok-Apps dürfen nur privat posten (SELF_ONLY).
-    async publish({ connection, file, caption }) {
+    async publish({ connection, file, caption, options }) {
       const auth = { Authorization: `Bearer ${connection.access_token}`, 'Content-Type': 'application/json; charset=UTF-8' };
       if (!tiktokDirect()) {
         // Entwurf in die TikTok-Inbox: der Nutzer bekommt eine Benachrichtigung in der App, ergänzt Text/Sound und postet selbst
@@ -56,14 +56,24 @@ export const PLATFORMS = {
         if (!up.ok) throw new Error(`TikTok-Upload fehlgeschlagen (${up.status})`);
         return { id: String(publishId), url: null, draft: true, note: 'Als Entwurf in deiner TikTok-App – dort öffnen und veröffentlichen (KI-Label einschalten).' };
       }
+      // TikTok-Vorgabe: Sichtbarkeit & Interaktionen wählt der Nutzer im Posten-Fenster selbst (keine Vorauswahl durch die App)
+      if (!options?.privacy) throw new Error('Bitte vor dem Posten die TikTok-Einstellungen wählen (Sichtbarkeit usw.).');
       const info = await (await fetch('https://open.tiktokapis.com/v2/post/publish/creator_info/query/', { method: 'POST', headers: auth })).json();
-      const options = info.data?.privacy_level_options || [];
-      const wanted = env('TIKTOK_PRIVACY') || 'PUBLIC_TO_EVERYONE';
-      const privacy = options.includes(wanted) ? wanted : options.includes('SELF_ONLY') ? 'SELF_ONLY' : options[0] || 'SELF_ONLY';
+      if (info.error?.code && info.error.code !== 'ok') throw new Error(`TikTok: ${info.error.message || info.error.code}`);
+      const allowed = info.data?.privacy_level_options || [];
+      if (!allowed.includes(options.privacy)) throw new Error('Die gewählte Sichtbarkeit ist für dieses TikTok-Konto nicht mehr verfügbar. Bitte neu wählen.');
+      const privacy = options.privacy;
       const init = await (await fetch('https://open.tiktokapis.com/v2/post/publish/video/init/', {
         method: 'POST', headers: auth,
         body: JSON.stringify({
-          post_info: { title: String(caption || '').slice(0, 2200), privacy_level: privacy, disable_comment: false, disable_duet: false, disable_stitch: false, is_aigc: true },
+          post_info: {
+            title: String(options.title ?? caption ?? '').slice(0, 2200), privacy_level: privacy,
+            disable_comment: !options.allowComment || !!info.data?.comment_disabled,
+            disable_duet: !options.allowDuet || !!info.data?.duet_disabled,
+            disable_stitch: !options.allowStitch || !!info.data?.stitch_disabled,
+            brand_content_toggle: !!options.brandedContent, brand_organic_toggle: !!options.yourBrand,
+            is_aigc: true,
+          },
           source_info: { source: 'FILE_UPLOAD', video_size: file.length, chunk_size: file.length, total_chunk_count: 1 },
         }),
       })).json();

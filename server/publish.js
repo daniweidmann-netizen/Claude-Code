@@ -71,6 +71,7 @@ export async function publishVideo(videoId, { userId } = {}) {
       }
       const r = await p.publish({
         connection: conn,
+        options: video.post_options?.[platform] || null,
         file,
         videoUrl,
         caption: captionFor(video),

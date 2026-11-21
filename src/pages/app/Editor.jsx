@@ -23,6 +23,7 @@ import { api, apiAvailable } from '../../lib/api.js';
 import { fileToJpeg } from '../../lib/imageFile.js';
 import OfferCard from '../../components/OfferCard.jsx';
 import UpgradeModal from '../../components/UpgradeModal.jsx';
+import TikTokPostDialog from '../../components/TikTokPostDialog.jsx';
 import { translate as tr } from '../../i18n/index.jsx';
 
 const TABS = [
@@ -39,6 +40,7 @@ export default function Editor() {
   const navigate = useNavigate();
   const { user, profile, refreshProfile } = useAuth();
   const [upgradeOpen, setUpgradeOpen] = useState(false);
+  const [ttDialog, setTtDialog] = useState(null); // TikTok-Posten-Fenster: 'approve' | 'publish' | null
   const plan = getPlan(profile?.plan);
   const [video, setVideo] = useState(null);
   const [series, setSeries] = useState(null);
@@ -230,6 +232,22 @@ export default function Editor() {
     setBusy(null);
   };
 
+  // TikTok verlangt vor jedem Post ein Fenster mit Sichtbarkeit, Interaktionen und Werbe-Kennzeichnung
+  const tiktokActive = (video?.platforms || []).includes('tiktok');
+  const withTikTok = (action) => (tiktokActive ? setTtDialog(action) : (action === 'approve' ? approve() : publishNow()));
+  const defaultCaption = () => {
+    const hook = String(video?.project?.scenes?.[0]?.text || video?.title || '').replace(/\[[^\]]{1,30}\]\s*/g, '');
+    return `${hook}\n\n${video?.title ? `${video.title}\n\n` : ''}#wusstestdu #fakten #fyp\n\n${tr('Erstellt mit TrueReel · Bilder und Stimme KI-generiert')}`.slice(0, 2200);
+  };
+  const confirmTikTok = async (opts) => {
+    const action = ttDialog; setTtDialog(null);
+    const next = { ...video, post_options: { ...(video.post_options || {}), tiktok: opts } };
+    setVideo(next);
+    clearTimeout(saveTimer.current);
+    try { await saveVideo(next); } catch (e) { return setMsg({ tone: 'error', text: e.message }); }
+    if (action === 'approve') approve(next); else publishNow();
+  };
+
   const approve = async () => {
     const slot = series ? nextFreeSlot(series, await listVideos(user.id)) : null;
     update({ status: 'scheduled', scheduled_at: video.scheduled_at || slot?.toISOString() || null });
@@ -316,6 +334,7 @@ export default function Editor() {
       )}
       {msg && <Notice tone={msg.tone} className="mb-4">{msg.text}</Notice>}
       <OfferCard profile={profile} className="mb-4" />
+      {ttDialog && <TikTokPostDialog defaultTitle={video.post_options?.tiktok?.title || defaultCaption()} durationSec={tl.total} onCancel={() => setTtDialog(null)} onConfirm={confirmTikTok} />}
       {upgradeOpen && <UpgradeModal profile={profile} onClose={() => setUpgradeOpen(false)} />}
       {!video.video_path && scenes.length > 0 && scenes.every((x) => x.imageUrl) && (
         <section className="card mb-5 border-2 border-accent-500 p-5" aria-label={tr("Nächste Schritte")}>
@@ -459,12 +478,12 @@ export default function Editor() {
         ) : (
           <div className="mt-2 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <p className="text-sm muted">{video.status === 'draft' ? tr("Zuerst exportieren – so prüfst du das fertige Video vor dem Posten.") : series?.require_approval ? tr("Nichts geht ohne deine Freigabe live. Nach der Freigabe wird im nächsten freien Slot gepostet.") : tr("Auto-Post ist aktiv: Das Video wird automatisch eingeplant.")}</p>
-            <button className="btn-primary shrink-0" onClick={approve} disabled={video.status === 'draft' || !!busy}><CheckCircle2 className="h-4 w-4" />{tr("Freigeben & einplanen")}</button>
+            <button className="btn-primary shrink-0" onClick={() => withTikTok('approve')} disabled={video.status === 'draft' || !!busy}><CheckCircle2 className="h-4 w-4" />{tr("Freigeben & einplanen")}</button>
           </div>
         )}
         {video.video_path && (video.platforms || []).length > 0 && video.status !== 'posted' && (
           <div className="mt-4 flex flex-wrap items-center gap-3 border-t border-navy-100 pt-4 dark:border-navy-800">
-            <button className="btn-outline" onClick={publishNow} disabled={!!busy}>{busy === 'publish' ? <Spinner /> : <Send className="h-4 w-4" />}{tr("Jetzt posten")}</button>
+            <button className="btn-outline" onClick={() => withTikTok('publish')} disabled={!!busy}>{busy === 'publish' ? <Spinner /> : <Send className="h-4 w-4" />}{tr("Jetzt posten")}</button>
             <p className="text-xs muted">{tr('Postet sofort auf {p} statt zum geplanten Zeitpunkt.', { p: (video.platforms || []).join(', ') })}</p>
           </div>
         )}
