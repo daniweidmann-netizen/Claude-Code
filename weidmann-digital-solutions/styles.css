@@ -374,3 +374,5 @@ html { overflow-x: clip; }
 @media (max-width: 900px) { .contact .contact-grid { width: calc(100% - 32px); margin: 0 16px; } }
 .contact .contact-grid { margin-left: auto; margin-right: auto; }
 @media (max-width: 900px) { .contact .contact-grid { margin: 0 16px; } }
+.vision-box > picture { position: static; }
+.vision-img { object-position: 50% 42%; } .vision-box { padding-bottom: 230px; } @media (max-width: 640px) { .vision-box { padding-bottom: 170px; } }
