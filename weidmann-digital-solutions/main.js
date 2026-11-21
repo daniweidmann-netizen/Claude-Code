@@ -35,7 +35,7 @@
     'f1.t': 'Request received', 'f1.s': 'Email, form or message', 'f2.t': 'AI agent analyzes', 'f2.s': 'Understand and classify', 'f3.t': 'Task completed', 'f3.s': 'Forwarded, logged, answered',
     'p2.text': 'TrueReel makes the automated creation of AI-generated videos and social media content accessible. Discover new possibilities for efficient content production.',
     'p2.a': 'From topic to finished short video: script, images, voice and captions', 'p2.b': 'For TikTok, Instagram Reels and YouTube Shorts', 'p2.c': 'Try your first video for free', 'p2.cta': 'Discover TrueReel',
-    'ph.title': 'Topic → Video', 'ph.cap1': 'created', 'ph.cap2': 'automatically', 'chip1': 'Script', 'chip2': 'Voice', 'chip3': 'Captions',
+    'ph.title': 'Topic → Video', 'ph.cap1': 'created', 'ph.cap2': 'automatically', 'pv.note': 'Real sample video from TrueReel · AI-generated images and voice', 'chip1': 'Script', 'chip2': 'Voice', 'chip3': 'Captions',
     'p3.text': 'FollowUpAI is an AI-powered CRM for small businesses. Manage leads, organize your sales pipeline and generate personalized follow-up messages based on your actual lead data.',
     'p3.a': 'Manage leads and organize your sales pipeline', 'p3.b': 'Personalized follow-ups from your real lead data', 'p3.c': 'Available for iPhone on the App Store', 'p3.cta': 'Download on the App Store',
     'col1': 'New', 'col2': 'Contacted', 'col3': 'Proposal', 'msg.h': 'AI follow-up draft', 'msg.t': 'Hi! I wanted to quickly check whether my offer from last week still works for you …',

@@ -408,3 +408,28 @@ main > .section > .container::after { right: 24px; }
 .nav .nav-inner { border-radius: 14px; }
 .lang, .lang button { border-radius: 9px; }
 .hero .eyebrow { border-radius: 6px; }
+
+/* ═══════════ Realistisches iPhone mit echtem TrueReel-Video ═══════════ */
+.product[data-p="truereel"] .product-visual { min-height: 600px; perspective: 1400px; }
+.iphone { position: relative; width: 272px; aspect-ratio: 9 / 19.3; border-radius: 50px; padding: 11px;
+  background: linear-gradient(135deg, #5d6066 0%, #2a2c31 18%, #15161a 50%, #2e3036 82%, #6b6e75 100%);
+  box-shadow: 0 0 0 1.5px #0a0b0d inset, 0 0 0 1px rgba(255,255,255,.14), 0 2px 3px rgba(255,255,255,.18) inset,
+    0 60px 100px -30px rgba(0,0,0,.9), 0 30px 80px -20px rgba(201,240,63,.22), -30px 40px 80px -40px rgba(22,139,255,.35);
+  transform: rotateY(-16deg) rotateX(5deg) rotateZ(1.5deg); transform-style: preserve-3d; transition: transform .8s var(--ease); }
+.product[data-p="truereel"]:hover .iphone { transform: rotateY(-6deg) rotateX(2deg) rotateZ(.5deg); }
+.ip-screen { position: relative; height: 100%; border-radius: 40px; overflow: hidden; background: #000; box-shadow: 0 0 0 2px #000; }
+.ip-screen video { width: 100%; height: 100%; object-fit: cover; display: block; }
+.ip-island { position: absolute; top: 11px; left: 50%; transform: translateX(-50%); width: 84px; height: 25px; border-radius: 999px; background: #000; z-index: 3; box-shadow: inset 0 0 0 1px rgba(255,255,255,.04); }
+.ip-island::after { content: ''; position: absolute; right: 9px; top: 50%; width: 9px; height: 9px; margin-top: -4.5px; border-radius: 50%; background: radial-gradient(circle at 35% 35%, #2b3550, #0a0d16 60%); }
+.ip-ui { position: absolute; right: 10px; bottom: 96px; z-index: 3; display: grid; gap: 18px; filter: drop-shadow(0 2px 6px rgba(0,0,0,.6)); }
+.ip-ui svg { width: 27px; height: 27px; }
+.ip-home { position: absolute; bottom: 7px; left: 50%; transform: translateX(-50%); width: 104px; height: 4.5px; border-radius: 3px; background: rgba(255,255,255,.85); z-index: 3; }
+.ip-glare { position: absolute; inset: 0; z-index: 4; pointer-events: none; background: linear-gradient(115deg, rgba(255,255,255,.16) 0%, rgba(255,255,255,.04) 22%, transparent 38%, transparent 100%); }
+.ip-btn { position: absolute; width: 4px; border-radius: 2px; background: linear-gradient(90deg, #1b1c20, #55585f); }
+.ip-btn.b1 { left: -3.5px; top: 17%; height: 26px; } .ip-btn.b2 { left: -3.5px; top: 25%; height: 46px; } .ip-btn.b3 { left: -3.5px; top: 35%; height: 46px; }
+.ip-btn.b4 { right: -3.5px; top: 28%; height: 72px; background: linear-gradient(270deg, #1b1c20, #55585f); }
+.pv-note { position: absolute; bottom: -6px; left: 0; right: 0; text-align: center; font: 400 10.5px var(--mono); letter-spacing: .04em; color: #6F7C96; }
+.product[data-p="truereel"] .chip.c1 { top: 16%; left: 2%; } .product[data-p="truereel"] .chip.c2 { top: 44%; right: 0; } .product[data-p="truereel"] .chip.c3 { bottom: 20%; left: 4%; }
+@media (max-width: 980px) { .product[data-p="truereel"] .product-visual { min-height: 560px; } .iphone { width: 240px; transform: rotateY(-10deg) rotateX(3deg); } }
+@media (prefers-reduced-motion: reduce) { .iphone { transition: none; } }
+.pv-note { bottom: -26px; }
