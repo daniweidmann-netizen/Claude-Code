@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://weidmann-digital-solutions.ch/sitemap.xml

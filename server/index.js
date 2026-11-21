@@ -27,6 +27,7 @@ import demoRouter from './demo.js';
 import offerRouter from './offer.js';
 import campaignsRouter from './campaigns.js';
 import { keyStatus, reportKeyFailure } from './keyMonitor.js';
+import wdsContactRouter from './wdsContact.js';
 import { renderHtml, sitemap, robots } from './seo.js';
 import { sendReminders, reminderRouter } from './reminders.js';
 import elevenlabsTts from './providers/tts/elevenlabs.js';
@@ -39,6 +40,8 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 // Stripe-Webhook braucht den Roh-Body → vor express.json() registrieren
 app.post('/api/stripe/webhook', express.raw({ type: 'application/json' }), webhookHandler);
 
+// Kontaktformular der Corporate-Website (andere Domain) – eigener CORS-Bereich, vor dem globalen CORS
+app.use('/api', wdsContactRouter);
 app.use(cors({ origin: config.appUrl }));
 app.use(express.json({ limit: '2mb' }));
 app.use('/api', analyticsRouter); // /api/track, /api/stats
