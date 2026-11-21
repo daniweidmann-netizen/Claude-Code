@@ -475,3 +475,56 @@ main > .section > .container::after { right: 24px; }
 .vision-box::after { background: linear-gradient(180deg, rgba(3,5,10,.9) 0%, rgba(3,5,10,.72) 30%, rgba(3,5,10,.25) 48%, transparent 60%); }
 .vision-box .lead { max-width: 560px; color: #D5DEEE; text-shadow: 0 2px 20px rgba(3,5,10,.9); }
 @media (max-width: 640px) { .vision-box { min-height: 680px; } }
+
+/* ═══════════ v5: 3D-Objektwelt (keine Personen) – live 3D-Kern, schwebende CGI-Objekte, Parallax ═══════════ */
+.hero { background: radial-gradient(1100px 700px at 74% 46%, rgba(22,139,255,.16), transparent 62%), radial-gradient(900px 500px at 20% 100%, rgba(63,213,255,.05), transparent 60%), #03050A; }
+#core3d { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 1; opacity: 0; transition: opacity 1.4s ease; pointer-events: none; }
+.core-ready #core3d { opacity: 1; }
+.core-fallback { position: absolute; z-index: 1; right: max(2vw, calc((100vw - var(--max)) / 2 - 120px)); top: 50%; width: min(52vw, 760px); transform: translateY(-50%); mix-blend-mode: screen; transition: opacity 1s ease; -webkit-mask-image: radial-gradient(circle at 50% 50%, #000 52%, transparent 72%); mask-image: radial-gradient(circle at 50% 50%, #000 52%, transparent 72%); }
+.core-fallback img { width: 100%; height: auto; animation: floaty 9s ease-in-out infinite; }
+.core-ready .core-fallback { opacity: 0; }
+.hero-inner { z-index: 3; pointer-events: none; }
+.hero-inner a, .hero-inner button { pointer-events: auto; }
+.hero .lead { font: 500 clamp(13px, 1.25vw, 16px) var(--mono); letter-spacing: .16em; text-transform: uppercase; color: #A9C4EA; max-width: none; }
+.beams { opacity: .5; z-index: 0; }
+.ticker { z-index: 3; }
+@keyframes floaty { 0%, 100% { transform: translateY(-10px) rotate(-.6deg); } 50% { transform: translateY(12px) rotate(.6deg); } }
+@media (max-width: 760px) { .core-fallback { right: -18vw; top: 6%; width: 96vw; transform: none; opacity: .75; } .hero-inner { padding-top: 46vh; } .hero h1 { font-size: clamp(44px, 13vw, 64px); } }
+
+/* Schwebende Objekte: Parallax (Wrapper) + sanftes Schweben (Bild) */
+[data-float] { --sy: 0; --mx: 0; --my: 0; }
+.pv3d { min-height: 440px; perspective: 1200px; overflow: visible; }
+.pv3d picture { display: block; width: 118%; max-width: none; margin: -9%; transform: translate3d(calc(var(--mx) * 14px), calc(var(--sy) * -46px + var(--my) * 10px), 0) rotateY(calc(var(--mx) * 5deg + var(--sy) * 7deg)) rotateX(calc(var(--my) * -4deg)) scale(calc(1.04 - var(--sy) * var(--sy) * .1)); transition: transform .25s linear; will-change: transform; }
+.pv3d .obj { width: 100%; height: auto; mix-blend-mode: screen; animation: floaty 8s ease-in-out infinite; -webkit-mask-image: radial-gradient(circle at 50% 50%, #000 55%, transparent 74%); mask-image: radial-gradient(circle at 50% 50%, #000 55%, transparent 74%); }
+.product.reverse .pv3d .obj { animation-duration: 10s; animation-delay: -3s; }
+.product[data-p="followup"] .pv3d .obj { animation-duration: 11s; animation-delay: -5s; }
+.product { overflow: hidden; }
+.pv3d .flow { position: absolute; left: 0; right: 0; bottom: 0; z-index: 2; display: flex; gap: 8px; max-width: none; width: 100%; }
+.pv3d .flow-line { display: none; }
+.pv3d .flow-node { flex: 1; flex-direction: column; align-items: flex-start; gap: 8px; padding: 12px; background: rgba(5,10,22,.62); backdrop-filter: blur(14px); }
+.pv3d .flow-node small { display: none; } .pv3d .flow-node .state { margin-left: 0; } .pv3d .flow-node b { font-size: 12.5px; }
+.pv3d .msg { position: absolute; left: 6%; right: 6%; bottom: 0; z-index: 2; background: rgba(8,10,26,.7); backdrop-filter: blur(14px); }
+.product[data-p="truereel"] .product-visual { min-height: 440px; }
+@media (max-width: 980px) { .pv3d { min-height: 360px; } .pv3d picture { width: 104%; margin: -2%; } }
+
+/* Über uns: Architektur-Objekt */
+.cine { background: #03050A; aspect-ratio: 21 / 9; }
+.cine picture { display: block; height: 100%; transform: translate3d(calc(var(--mx) * -10px), calc(var(--sy) * -30px), 0) scale(1.12); transition: transform .25s linear; }
+.cine img { object-position: 50% 50%; animation: floaty 12s ease-in-out infinite; }
+.cine:hover img { transform: none; }
+/* Vision: Flüssigmetall-Horizont */
+.vision-box { min-height: 760px; padding-top: 84px; }
+.vision-img { object-position: 50% 62%; transform: translate3d(0, calc(var(--sy) * -24px), 0) scale(1.08); transition: transform .25s linear; }
+.vision-box::after { background: linear-gradient(180deg, rgba(3,5,10,.85) 0%, rgba(3,5,10,.5) 30%, transparent 55%); }
+/* Kontakt: Glaskugel */
+.contact-pic { aspect-ratio: 16 / 11; background: #03050A; }
+.contact-pic img { object-position: 50% 42%; transform: translate3d(calc(var(--mx) * 8px), calc(var(--sy) * -16px), 0) scale(1.1); transition: transform .25s linear; }
+@media (prefers-reduced-motion: reduce) { .pv3d .obj, .cine img, .core-fallback img { animation: none; } }
+/* Vision: Bild nur im unteren Teil, Text frei darüber */
+.vision-box { min-height: 800px; }
+.vision-img { inset: auto 0 0 0 !important; height: 68%; object-position: 50% 58%; -webkit-mask-image: linear-gradient(180deg, transparent 0%, #000 26%); mask-image: linear-gradient(180deg, transparent 0%, #000 26%); }
+.vision-box::after { display: none; }
+@media (max-width: 640px) { .vision-box { min-height: 660px; } .vision-img { height: 52%; } }
+.vision-box { min-height: 880px; }
+.vision-img { height: 58%; object-position: 50% 70%; }
+@media (max-width: 640px) { .vision-box { min-height: 700px; } .vision-img { height: 46%; } }

@@ -21,7 +21,7 @@
   const EN = {
     'nav.about': 'About', 'nav.solutions': 'Solutions', 'nav.vision': 'Vision', 'nav.contact': 'Contact', 'nav.cta': 'Get in Touch',
     'hero.eyebrow': 'AI · Automation · Software', 'hero.t1': 'Building the', 'hero.t2': 'Digital Future.',
-    'hero.sub': 'We create intelligent digital solutions that empower businesses to work smarter, grow faster and embrace the future.',
+    'hero.sub': 'Intelligent AI. Powerful Automation. Digital Innovation.',
     'hero.cta1': 'Explore Our Solutions', 'hero.cta2': 'Get in Touch', 'fact1': 'Digital products', 'fact2': 'At the core of every product', 'fact3': 'Developed in Switzerland', 'tag.ai': 'Artificial Intelligence', 'tag.auto': 'Automation', 'tag.sw': 'Software',
     'about.eyebrow': 'About us',
     'about.text': 'Weidmann Digital Solutions combines artificial intelligence, automation and modern software development. Our goal is to build innovative digital products that solve real challenges and support businesses for the long term.',
@@ -50,7 +50,7 @@
     'cp1': 'AI agents & automation for your business', 'cp2': 'Questions about TrueReel or FollowUpAI', 'cp3': 'Partnerships & collaboration',
     'form.title': 'Write to us', 'form.name': 'Name', 'form.email': 'Email address', 'form.company': 'Company', 'form.optional': '(optional)', 'form.subject': 'Subject', 'form.message': 'Message',
     'form.consent': 'I agree that my details will be processed to answer my request. More in the <a href="datenschutz.html">privacy policy</a>.', 'form.submit': 'Get in Touch',
-    'ft.company': 'Company', 'ft.products': 'Products', 'ft.legal': 'Legal', 'ft.privacy': 'Privacy Policy', 'ft.imprint': 'Legal Notice', 'ft.made': 'Developed in Switzerland', 'ft.ai': 'Imagery: AI-generated visualizations', 'cine.cap': 'Technology that fits into everyday work.',
+    'ft.company': 'Company', 'ft.products': 'Products', 'ft.legal': 'Legal', 'ft.privacy': 'Privacy Policy', 'ft.imprint': 'Legal Notice', 'ft.made': 'Developed in Switzerland', 'ft.ai': 'Imagery: AI-generated visualizations', 'cine.cap': 'Digital architecture – built with precision.',
   };
   const MSG = {
     de: { sending: 'Wird gesendet …', ok: 'Danke! Deine Nachricht ist angekommen – wir melden uns so bald wie möglich.', invalid: 'Bitte fülle alle Pflichtfelder aus und bestätige die Datenschutzerklärung.', email: 'Bitte gib eine gültige E-Mail-Adresse ein.', fail: 'Das Senden hat nicht geklappt. Bitte versuche es später erneut.', menu: 'Menü öffnen' },
@@ -113,6 +113,35 @@
     };
     resize(); window.addEventListener('resize', resize);
     new IntersectionObserver(([e]) => { if (e.isIntersecting) { if (!raf) draw(); } else { cancelAnimationFrame(raf); raf = null; } }).observe(cv);
+  }
+
+  // ── 3D-Kern im Hero (nur mit WebGL und wenn Bewegung erlaubt ist) ──
+  const cv3 = $('#core3d');
+  const hasGL = (() => { try { const c = document.createElement('canvas'); return !!(c.getContext('webgl2') || c.getContext('webgl')); } catch { return false; } })();
+  // Auf dem Handy bleibt das schwebende Standbild (schont Akku und Ladezeit)
+  if (cv3 && hasGL && !reduce && !window.matchMedia('(max-width: 760px)').matches) {
+    const boot = () => import('./hero3d.js').then((m) => m.startCore(cv3, $('.hero'))).catch(() => {});
+    if ('requestIdleCallback' in window) requestIdleCallback(boot, { timeout: 1200 }); else setTimeout(boot, 200);
+  }
+
+  // ── Schweben & Parallax: Objekte reagieren auf Scrollen und Maus ──
+  const floats = $$('[data-float]');
+  if (floats.length && !reduce) {
+    let mx = 0, my = 0, tx = 0, ty = 0, ticking = false;
+    const update = () => {
+      ticking = false; mx += (tx - mx) * 0.08; my += (ty - my) * 0.08;
+      const vh = window.innerHeight;
+      floats.forEach((el) => {
+        const r = el.getBoundingClientRect(); if (r.bottom < -200 || r.top > vh + 200) return;
+        const p = Math.max(-1, Math.min(1, ((r.top + r.height / 2) - vh / 2) / vh)); // -1 oben … 1 unten
+        el.style.setProperty('--sy', p.toFixed(3)); el.style.setProperty('--mx', mx.toFixed(3)); el.style.setProperty('--my', my.toFixed(3));
+      });
+      if (Math.abs(tx - mx) > 0.002 || Math.abs(ty - my) > 0.002) request();
+    };
+    const request = () => { if (!ticking) { ticking = true; requestAnimationFrame(update); } };
+    window.addEventListener('scroll', request, { passive: true });
+    window.addEventListener('pointermove', (e) => { tx = (e.clientX / window.innerWidth - 0.5) * 2; ty = (e.clientY / window.innerHeight - 0.5) * 2; request(); }, { passive: true });
+    request();
   }
 
   // ── Kontaktformular ──
