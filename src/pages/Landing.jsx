@@ -63,7 +63,7 @@ function HeroPhone() {
 
 // Test ohne Konto: Thema eingeben → Hook + Kurz-Skript sofort sehen
 const DEMO_TOPICS = { de: ['Warum Flamingos rosa sind', 'Der kürzeste Krieg der Geschichte', '3 Tipps für besseren Schlaf'], en: ['Why flamingos are pink', 'The shortest war in history', '3 tips for better sleep'] };
-export function DemoBox() {
+export function DemoBox({ topics } = {}) {
   const { t, lang } = useI18n();
   const navigate = useNavigate();
   const [topic, setTopic] = useState('');
@@ -99,7 +99,7 @@ export function DemoBox() {
       {!res && !busy && (
         <div className="mt-2 flex flex-wrap gap-2 text-xs">
           <span className="muted">{t('demo.try')}</span>
-          {(DEMO_TOPICS[lang] || DEMO_TOPICS.de).map((x) => <button key={x} type="button" className="rounded-full border border-navy-200 px-2.5 py-1 hover:border-accent-500 dark:border-navy-700" onClick={() => run(null, x)}>{x}</button>)}
+          {(topics || DEMO_TOPICS[lang] || DEMO_TOPICS.de).map((x) => <button key={x} type="button" className="rounded-full border border-navy-200 px-2.5 py-1 hover:border-accent-500 dark:border-navy-700" onClick={() => run(null, x)}>{x}</button>)}
         </div>
       )}
       {busy && <p className="mt-3 text-sm muted">{t('demo.busy')}</p>}

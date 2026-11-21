@@ -106,6 +106,7 @@ export function Footer() {
             <li><a href="/#faq">{t('nav.faq')}</a></li>
             <li><Link to={lang === 'de' ? '/ratgeber' : '/guides'}>{lang === 'de' ? 'Ratgeber' : 'Guides'}</Link></li>
             <li><Link to={lang === 'de' ? '/tiktok-hooks' : '/en/tiktok-hooks'}>{lang === 'de' ? 'TikTok-Hooks' : 'TikTok hooks'}</Link></li>
+            <li><Link to={lang === 'de' ? '/ki-video-generator' : '/tools'}>{lang === 'de' ? 'KI-Video-Generatoren' : 'AI video generators'}</Link></li>
             <li><Link to="/registrieren">{t('nav.start')}</Link></li>
           </ul>
         </div>

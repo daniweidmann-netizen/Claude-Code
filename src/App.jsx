@@ -19,6 +19,7 @@ import Stats from './pages/app/Stats.jsx';
 import Finance from './pages/app/Finance.jsx';
 import { GuideIndex, GuidePage } from './pages/Guides.jsx';
 import { HookIndex, HookPage } from './pages/Hooks.jsx';
+import { ToolIndex, ToolPage } from './pages/ToolPages.jsx';
 import Business from './pages/Business.jsx';
 import Partners from './pages/app/Partners.jsx';
 import Ads from './pages/app/Ads.jsx';
@@ -72,6 +73,10 @@ export default function App() {
           <Route path="tiktok-hooks/:slug" element={<HookPage lang="de" />} />
           <Route path="en/tiktok-hooks" element={<HookIndex lang="en" />} />
           <Route path="en/tiktok-hooks/:slug" element={<HookPage lang="en" />} />
+          <Route path="tools" element={<ToolIndex lang="en" />} />
+          <Route path="tools/:slug" element={<ToolPage lang="en" />} />
+          <Route path="ki-video-generator" element={<ToolIndex lang="de" />} />
+          <Route path="ki-video-generator/:slug" element={<ToolPage lang="de" />} />
           <Route path="*" element={<NotFound />} />
         </Route>
         <Route path="login" element={<Login />} />
