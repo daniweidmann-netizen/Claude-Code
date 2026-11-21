@@ -19,7 +19,7 @@ Schriften liegen lokal in `assets/fonts`, keine Cookies, kein Tracking.
 ## Kontaktformular
 Das Formular sendet an `https://truereel.ch/api/wds/contact` (TrueReel-Server). Der Server schickt die Nachricht per Brevo
 an `WDS_CONTACT_TO` (Render-Umgebungsvariable, sonst die TrueReel-Kontaktadresse). Optional `WDS_ORIGINS` auf die Domain
-der Website setzen (z. B. `https://weidmann-digital-solutions.ch`), damit nur diese Seite das Formular nutzen kann.
+der Website setzen (z. B. `https://weidmann-digital-solutions.onrender.com`), damit nur diese Seite das Formular nutzen kann.
 
 ## Veröffentlichen (Beispiel Render, kostenlos)
 Render → New → Static Site → dieses Repository → Root Directory `weidmann-digital-solutions`, Build Command leer,
