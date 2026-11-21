@@ -50,7 +50,7 @@
     'cp1': 'AI agents & automation for your business', 'cp2': 'Questions about TrueReel or FollowUpAI', 'cp3': 'Partnerships & collaboration',
     'form.title': 'Write to us', 'form.name': 'Name', 'form.email': 'Email address', 'form.company': 'Company', 'form.optional': '(optional)', 'form.subject': 'Subject', 'form.message': 'Message',
     'form.consent': 'I agree that my details will be processed to answer my request. More in the <a href="datenschutz.html">privacy policy</a>.', 'form.submit': 'Get in Touch',
-    'ft.company': 'Company', 'ft.products': 'Products', 'ft.legal': 'Legal', 'ft.privacy': 'Privacy Policy', 'ft.imprint': 'Legal Notice', 'ft.made': 'Developed in Switzerland',
+    'ft.company': 'Company', 'ft.products': 'Products', 'ft.legal': 'Legal', 'ft.privacy': 'Privacy Policy', 'ft.imprint': 'Legal Notice', 'ft.made': 'Developed in Switzerland', 'ft.ai': 'Imagery: AI-generated visualizations', 'cine.cap': 'Technology that fits into everyday work.',
   };
   const MSG = {
     de: { sending: 'Wird gesendet …', ok: 'Danke! Deine Nachricht ist angekommen – wir melden uns so bald wie möglich.', invalid: 'Bitte fülle alle Pflichtfelder aus und bestätige die Datenschutzerklärung.', email: 'Bitte gib eine gültige E-Mail-Adresse ein.', fail: 'Das Senden hat nicht geklappt. Bitte versuche es später erneut.', menu: 'Menü öffnen' },
