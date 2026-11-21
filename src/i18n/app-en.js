@@ -99,6 +99,8 @@ export default {
   "7 Tage Geld zurück, wenn es nicht passt": "7-day money back if it is not for you",
   "Jederzeit mit 1 Klick kündbar": "Cancel anytime with 1 click",
   "Sichere Zahlung via Stripe": "Secure payment via Stripe",
+  "Jede Vorschau zeigt ein echtes Beispielbild im jeweiligen Stil.": "Each preview shows a real sample image in that style.",
+  "Nische": "Niche",
   "Epoche oder Ort (optional)": "Era or place (optional)",
   "z. B. Mittelalter, altes Rom, Schweiz um 1900 – leer lassen für Abwechslung": "e.g. Middle Ages, ancient Rome, Switzerland around 1900 – leave empty for variety",
   "Grosser Titel am Anfang": "Big title at the start",

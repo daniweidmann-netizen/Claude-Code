@@ -157,7 +157,7 @@ export default function SeriesWizard() {
         {STEPS.map((s, i) => (
           <li key={s} className="text-center">
             <div className={`h-1.5 rounded-full ${i <= step ? 'bg-accent-500' : 'bg-navy-100 dark:bg-navy-800'}`} />
-            <span className={`mt-2 block text-xs font-medium ${i === step ? '' : 'muted'}`}>{i + 1}. {s}</span>
+            <span className={`mt-2 block text-xs font-medium ${i === step ? '' : 'muted'}`}>{i + 1}. {tr(s)}</span>
           </li>
         ))}
       </ol>
@@ -262,7 +262,7 @@ export default function SeriesWizard() {
         {step === 1 && (
           <>
             <h2 className="text-lg font-semibold">{tr("Visueller Stil")}</h2>
-            <p className="mb-5 text-sm muted">{tr("Die Vorschau zeigt Platzhalter-Grafiken. Mit verbundenem Bildmodell entstehen echte Bilder im gewählten Stil.")}</p>
+            <p className="mb-5 text-sm muted">{tr("Jede Vorschau zeigt ein echtes Beispielbild im jeweiligen Stil.")}</p>
             <ArtStylePicker value={d.artStyle} onChange={(artStyle) => set({ artStyle })} />
             <h3 className="mb-3 mt-8 font-semibold">{tr("Untertitel-Stil")}</h3>
             <CaptionStylePicker value={d.captionStyle} onChange={(captionStyle) => set({ captionStyle })} />
