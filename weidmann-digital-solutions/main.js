@@ -22,7 +22,7 @@
     'nav.about': 'About', 'nav.solutions': 'Solutions', 'nav.vision': 'Vision', 'nav.contact': 'Contact', 'nav.cta': 'Get in Touch',
     'hero.eyebrow': 'AI · Automation · Software', 'hero.t1': 'Building the', 'hero.t2': 'Digital Future.',
     'hero.sub': 'We create intelligent digital solutions that empower businesses to work smarter, grow faster and embrace the future.',
-    'hero.cta1': 'Explore Our Solutions', 'hero.cta2': 'Get in Touch', 'tag.ai': 'Artificial Intelligence', 'tag.auto': 'Automation', 'tag.sw': 'Software',
+    'hero.cta1': 'Explore Our Solutions', 'hero.cta2': 'Get in Touch', 'fact1': 'Digital products', 'fact2': 'At the core of every product', 'fact3': 'Developed in Switzerland', 'tag.ai': 'Artificial Intelligence', 'tag.auto': 'Automation', 'tag.sw': 'Software',
     'about.eyebrow': 'About us',
     'about.text': 'Weidmann Digital Solutions combines artificial intelligence, automation and modern software development. Our goal is to build innovative digital products that solve real challenges and support businesses for the long term.',
     'v1': 'Using AI where it creates real value – understandable, transparent and practical.',

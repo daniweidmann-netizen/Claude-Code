@@ -11,6 +11,7 @@
 <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
 <link rel="preload" href="assets/fonts/space-grotesk-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="assets/fonts/inter-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" as="image" href="assets/hero.webp" type="image/webp">
 <meta property="og:type" content="website">
 <meta property="og:title" content="Weidmann Digital Solutions – Building the Digital Future.">
 <meta property="og:description" content="KI-Lösungen, intelligente Automatisierung und digitale Softwareprodukte aus der Schweiz.">
@@ -52,23 +53,23 @@
 <main id="main">
 <!-- ── Hero ── -->
 <section class="hero" id="top">
-  <canvas id="net" aria-hidden="true"></canvas>
-  <div class="container hero-grid">
-    <div>
-      <span class="eyebrow reveal" data-i18n="hero.eyebrow">AI · Automation · Software</span>
-      <h1 class="reveal" data-delay="1"><span data-i18n="hero.t1">Building the</span><br><span class="grad" data-i18n="hero.t2">Digital Future.</span></h1>
-      <p class="lead reveal" data-delay="2" data-i18n="hero.sub">Wir entwickeln intelligente digitale Lösungen, die Unternehmen effizienter machen und neue Möglichkeiten schaffen.</p>
-      <div class="hero-cta reveal" data-delay="3">
-        <a class="btn btn-primary" href="#solutions"><span data-i18n="hero.cta1">Unsere Lösungen entdecken</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
-        <a class="btn btn-ghost" href="#contact" data-i18n="hero.cta2">Kontakt aufnehmen</a>
-      </div>
-      <div class="hero-tags reveal" data-delay="3"><span data-i18n="tag.ai">Künstliche Intelligenz</span><span data-i18n="tag.auto">Automatisierung</span><span data-i18n="tag.sw">Software</span></div>
+  <div class="hero-bg" aria-hidden="true"><picture><source srcset="assets/hero.webp" type="image/webp"><img src="assets/hero.jpg" alt="" width="1800" height="1200" fetchpriority="high"></picture></div>
+  <div class="beams" aria-hidden="true"></div>
+  <div class="container hero-inner">
+    <span class="eyebrow reveal" data-i18n="hero.eyebrow">AI · Automation · Software</span>
+    <h1 class="reveal" data-delay="1"><span data-i18n="hero.t1">Building the</span><br><span class="grad" data-i18n="hero.t2">Digital Future.</span></h1>
+    <p class="lead reveal" data-delay="2" data-i18n="hero.sub">Wir entwickeln intelligente digitale Lösungen, die Unternehmen effizienter machen und neue Möglichkeiten schaffen.</p>
+    <div class="hero-cta reveal" data-delay="3">
+      <a class="btn btn-primary" href="#solutions"><span data-i18n="hero.cta1">Unsere Lösungen entdecken</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+      <a class="btn btn-ghost" href="#contact" data-i18n="hero.cta2">Kontakt aufnehmen</a>
     </div>
-    <div class="orb reveal" data-delay="2" aria-hidden="true">
-      <div class="ring"></div><div class="ring"></div><div class="ring"></div>
-      <div class="core"><img src="assets/logo-mark.png" alt=""></div>
-    </div>
+    <dl class="facts reveal" data-delay="3">
+      <div><dt>03</dt><dd data-i18n="fact1">Digitale Produkte</dd></div>
+      <div><dt>AI</dt><dd data-i18n="fact2">Im Kern jedes Produkts</dd></div>
+      <div><dt>CH</dt><dd data-i18n="fact3">Entwickelt in der Schweiz</dd></div>
+    </dl>
   </div>
+  <div class="ticker" aria-hidden="true"><div class="container"><span>Artificial Intelligence</span><span>AI Agents</span><span>Automation</span><span>AI Video</span><span>AI CRM</span><span>Software</span></div></div>
 </section>
 
 <!-- ── Über uns ── -->
@@ -133,7 +134,8 @@
           </ul>
           <a class="btn btn-accent" href="https://weidmann-digital.ch" target="_blank" rel="noopener" data-product-link="digital"><span data-i18n="p1.cta">Weidmann Digital entdecken</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M8 7h9v9"/></svg></a>
         </div>
-        <div class="product-visual" aria-hidden="true">
+        <div class="product-visual has-img" aria-hidden="true">
+          <picture><source srcset="assets/agents.webp" type="image/webp"><img class="pv-img" src="assets/agents.jpg" alt="" loading="lazy" width="900" height="900"></picture>
           <div class="flow">
             <div class="flow-node"><span class="dot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16v12H5.2L4 17.2z"/></svg></span><div><b data-i18n="f1.t">Anfrage eingegangen</b><small data-i18n="f1.s">E-Mail, Formular oder Nachricht</small></div><span class="state">IN</span></div>
             <div class="flow-line"></div>
@@ -225,6 +227,7 @@
 <section class="section vision" id="vision">
   <div class="container">
     <div class="vision-box reveal">
+      <picture><source srcset="assets/vision.webp" type="image/webp"><img class="vision-img" src="assets/vision.jpg" alt="" loading="lazy" width="1800" height="1200"></picture>
       <span class="eyebrow" data-i18n="vision.eyebrow">Unsere Vision</span>
       <h2 class="h2"><span data-i18n="vision.t1">Creating What</span><br><span class="grad" data-i18n="vision.t2">Comes Next.</span></h2>
       <p class="lead" data-i18n="vision.text">Wir glauben an eine Zukunft, in der intelligente Technologien Unternehmen neue Möglichkeiten eröffnen. Mit unseren digitalen Produkten möchten wir diese Zukunft aktiv mitgestalten.</p>
