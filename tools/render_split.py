@@ -99,6 +99,7 @@ def main():
     ap.add_argument("--cam", default="0,289,262,147")
     ap.add_argument("--game", default="268,0,1012,720")
     ap.add_argument("--no-hook", action="store_true")
+    ap.add_argument("--cam-width", type=int, default=0, help="facecam width in px (default: auto by source resolution)")
     a = ap.parse_args()
     gx, gy, gw, gh = map(int, a.game.split(","))
     dur = float(subprocess.run(["ffprobe", "-v", "error", "-show_entries", "format=duration", "-of", "csv=p=0", a.src],
@@ -128,20 +129,32 @@ def main():
               f"[bg][game]overlay=0:{game_y}[t2];[t2]ass='{ass}'[v]")
     else:
         cx, cy, cw, ch = map(int, a.cam.split(","))
-        cam_h = round(1080 * ch / cw / 2) * 2          # facecam scaled to full width
+        src_h = int(subprocess.run(["ffprobe", "-v", "error", "-select_streams", "v:0", "-show_entries",
+                                    "stream=height", "-of", "csv=p=0", a.src],
+                                   capture_output=True, text=True).stdout.strip() or 720)
+        # low-res sources (e.g. 360p VODs): keep the facecam smaller so it stays sharp
+        if a.cam_width:
+            cam_w = a.cam_width
+        else:
+            up = 1080 / cw
+            cam_w = 1080 if up <= 4.2 else max(640, min(1080, round(cw * 5.5)))
+        cam_w = cam_w // 2 * 2
+        cam_h = round(cam_w * ch / cw / 2) * 2
         cam_h = min(cam_h, 760)
-        cam_y = 140
+        cam_x = (1080 - cam_w) // 2
+        cam_y = 140 if cam_w == 1080 else 200
         banner_y = cam_y + cam_h + 24
         game_h = round(1080 * gh / gw / 2) * 2
         game_y = banner_y + 190
         cap_y = game_y + 120
         build_ass(words, a.banner, dur, ass, banner_y, cap_y)
+        sharpen = "unsharp=5:5:0.8" if src_h >= 600 else "unsharp=5:5:1.1:3:3:0.4"
         fc = (
             f"[0:v]split=3[b][c][g];" + bg +
-            f"[c]crop={cw}:{ch}:{cx}:{cy},scale=w='trunc(1080*{zoom}/2)*2':h='trunc({cam_h}*{zoom}/2)*2':eval=frame,"
-            f"crop=1080:{cam_h}:(iw-1080)/2:(ih-{cam_h})/2,unsharp=5:5:0.8[cam];"
-            f"[g]crop={gw}:{gh}:{gx}:{gy},scale=1080:{game_h}[game];"
-            f"[bg][cam]overlay=0:{cam_y}[t1];[t1][game]overlay=0:{game_y}[t2];"
+            f"[c]crop={cw}:{ch}:{cx}:{cy},scale=w='trunc({cam_w}*{zoom}/2)*2':h='trunc({cam_h}*{zoom}/2)*2':eval=frame:flags=lanczos,"
+            f"crop={cam_w}:{cam_h}:(iw-{cam_w})/2:(ih-{cam_h})/2,{sharpen}[cam];"
+            f"[g]crop={gw}:{gh}:{gx}:{gy},scale=1080:{game_h}:flags=lanczos[game];"
+            f"[bg][cam]overlay={cam_x}:{cam_y}[t1];[t1][game]overlay=0:{game_y}[t2];"
             f"[t2]ass='{ass}'[v]"
         )
     main_out = os.path.join(tmp, "main.mp4") if not a.no_hook else a.out
