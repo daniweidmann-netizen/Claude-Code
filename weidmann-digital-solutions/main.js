@@ -115,14 +115,13 @@
     new IntersectionObserver(([e]) => { if (e.isIntersecting) { if (!raf) draw(); } else { cancelAnimationFrame(raf); raf = null; } }).observe(cv);
   }
 
-  // ── 3D-Kern im Hero (nur mit WebGL und wenn Bewegung erlaubt ist) ──
-  const cv3 = $('#core3d');
-  const hasGL = (() => { try { const c = document.createElement('canvas'); return !!(c.getContext('webgl2') || c.getContext('webgl')); } catch { return false; } })();
-  // Auf dem Handy bleibt das schwebende Standbild (schont Akku und Ladezeit)
-  if (cv3 && hasGL && !reduce && !window.matchMedia('(max-width: 760px)').matches) {
-    const boot = () => import('./hero3d.js').then((m) => m.startCore(cv3, $('.hero'))).catch(() => {});
-    if ('requestIdleCallback' in window) requestIdleCallback(boot, { timeout: 1200 }); else setTimeout(boot, 200);
+  // ── Videoschleifen: nur abspielen, wenn sichtbar (spart Akku und Daten) ──
+  const vids = $$('video[data-autoplay]');
+  if (vids.length && 'IntersectionObserver' in window && !reduce) {
+    const vio = new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) e.target.play().catch(() => {}); else e.target.pause(); }), { threshold: 0.15, rootMargin: '200px 0px' });
+    vids.forEach((v) => vio.observe(v));
   }
+  if (reduce) $$('video').forEach((v) => { v.autoplay = false; v.pause(); });
 
   // ── Schweben & Parallax: Objekte reagieren auf Scrollen und Maus ──
   const floats = $$('[data-float]');

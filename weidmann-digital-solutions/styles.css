@@ -528,3 +528,14 @@ main > .section > .container::after { right: 24px; }
 .vision-box { min-height: 880px; }
 .vision-img { height: 58%; object-position: 50% 70%; }
 @media (max-width: 640px) { .vision-box { min-height: 700px; } .vision-img { height: 46%; } }
+
+
+/* ═══════════ v6: fotorealistische CGI-Videoschleifen (Higgsfield) statt Live-3D ═══════════ */
+.core-stage { position: absolute; z-index: 1; right: max(-4vw, calc((100vw - var(--max)) / 2 - 190px)); top: 50%; width: min(60vw, 860px); aspect-ratio: 1; margin-top: calc(min(60vw, 860px) / -2); pointer-events: none;
+  transform: translate3d(calc(var(--mx) * 22px), calc(var(--sy) * 120px + var(--my) * 16px), 0) scale(calc(1 - var(--sy) * var(--sy) * .25)) rotate(calc(var(--mx) * 1.5deg)); transition: transform .3s linear; will-change: transform; }
+.core-video { width: 100%; height: 100%; object-fit: cover; mix-blend-mode: screen; -webkit-mask-image: radial-gradient(circle at 50% 50%, #000 46%, transparent 70%); mask-image: radial-gradient(circle at 50% 50%, #000 46%, transparent 70%); }
+.core-fallback, #core3d { display: none; }
+@media (max-width: 760px) { .core-stage { right: -22vw; top: 4%; margin-top: 0; width: 104vw; opacity: .9; } }
+.obj-wrap { display: block; width: 118%; max-width: none; margin: -9%; transform: translate3d(calc(var(--mx) * 14px), calc(var(--sy) * -46px + var(--my) * 10px), 0) rotateY(calc(var(--mx) * 5deg + var(--sy) * 7deg)) rotateX(calc(var(--my) * -4deg)) scale(calc(1.04 - var(--sy) * var(--sy) * .1)); transition: transform .25s linear; will-change: transform; }
+.obj-wrap video.obj { display: block; width: 100%; aspect-ratio: 1; object-fit: cover; animation: none; }
+@media (max-width: 980px) { .obj-wrap { width: 104%; margin: -2%; } }

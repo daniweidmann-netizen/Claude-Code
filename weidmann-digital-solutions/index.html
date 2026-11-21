@@ -11,7 +11,7 @@
 <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
 <link rel="preload" href="assets/fonts/bricolage-grotesque-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="assets/fonts/onest-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="preload" as="image" href="assets/core.webp" type="image/webp">
+<link rel="preload" as="image" href="assets/core-poster.jpg">
 <meta property="og:type" content="website">
 <meta property="og:title" content="Weidmann Digital Solutions – Building the Digital Future.">
 <meta property="og:description" content="KI-Lösungen, intelligente Automatisierung und digitale Softwareprodukte aus der Schweiz.">
@@ -54,8 +54,7 @@
 <!-- ── Hero ── -->
 <section class="hero" id="top">
   <div class="beams" aria-hidden="true"></div>
-  <picture class="core-fallback" aria-hidden="true"><source srcset="assets/core.webp" type="image/webp"><img src="assets/core.jpg" alt="" width="1100" height="1100" fetchpriority="high"></picture>
-  <canvas id="core3d" aria-hidden="true"></canvas>
+  <div class="core-stage" aria-hidden="true" data-float><video class="core-video" src="assets/core.mp4" poster="assets/core-poster.jpg" autoplay muted loop playsinline preload="auto"></video></div>
   <div class="container hero-inner">
     <span class="eyebrow reveal" data-i18n="hero.eyebrow">AI · Automation · Software</span>
     <h1 class="reveal" data-delay="1"><span data-i18n="hero.t1">Building the</span><br><span class="grad" data-i18n="hero.t2">Digital Future.</span></h1>
@@ -140,7 +139,7 @@
           <a class="btn btn-accent" href="https://weidmann-digital.ch" target="_blank" rel="noopener" data-product-link="digital"><span data-i18n="p1.cta">Weidmann Digital entdecken</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M8 7h9v9"/></svg></a>
         </div>
         <div class="product-visual pv3d" aria-hidden="true" data-float>
-          <picture><source srcset="assets/p-digital.webp" type="image/webp"><img class="obj" src="assets/p-digital.jpg" alt="" loading="lazy" width="1100" height="1100"></picture>
+          <div class="obj-wrap"><video class="obj" src="assets/p-digital.mp4" poster="assets/p-digital.jpg" muted loop playsinline preload="none" data-autoplay></video></div>
           <div class="flow">
             <div class="flow-node"><span class="dot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16v12H5.2L4 17.2z"/></svg></span><div><b data-i18n="f1.t">Anfrage eingegangen</b><small data-i18n="f1.s">E-Mail, Formular oder Nachricht</small></div><span class="state">IN</span></div>
             <div class="flow-line"></div>
@@ -165,7 +164,7 @@
           <a class="btn btn-accent" href="https://truereel.ch" target="_blank" rel="noopener"><span data-i18n="p2.cta">TrueReel entdecken</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M8 7h9v9"/></svg></a>
         </div>
         <div class="product-visual pv3d" aria-hidden="true" data-float>
-          <picture><source srcset="assets/p-truereel.webp" type="image/webp"><img class="obj" src="assets/p-truereel.jpg" alt="" loading="lazy" width="1100" height="1100"></picture>
+          <div class="obj-wrap"><video class="obj" src="assets/p-truereel.mp4" poster="assets/p-truereel.jpg" muted loop playsinline preload="none" data-autoplay></video></div>
           <span class="chip c1"><i></i><span data-i18n="chip1">Skript</span></span>
           <span class="chip c2"><i></i><span data-i18n="chip2">Stimme</span></span>
           <span class="chip c3"><i></i><span data-i18n="chip3">Untertitel</span></span>
@@ -186,7 +185,7 @@
           <a class="btn btn-accent" href="https://apps.apple.com/ch/app/followupai-crm/id6822229676" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="currentColor" style="width:18px;height:18px"><path d="M16.4 12.6c0-2.4 2-3.6 2.1-3.7-1.1-1.7-2.9-1.9-3.5-1.9-1.5-.2-2.9.9-3.7.9-.8 0-1.9-.9-3.2-.8-1.6 0-3.1 1-4 2.4-1.7 3-.4 7.4 1.2 9.8.8 1.2 1.8 2.5 3 2.4 1.2 0 1.7-.8 3.1-.8 1.5 0 1.9.8 3.2.8 1.3 0 2.2-1.2 3-2.4.9-1.4 1.3-2.7 1.3-2.8 0 0-2.5-1-2.5-3.9zM14 5.3c.7-.8 1.1-1.9 1-3-1 0-2.1.7-2.8 1.5-.6.7-1.2 1.8-1 2.9 1.1.1 2.1-.6 2.8-1.4z"/></svg><span data-i18n="p3.cta">Im App Store laden</span></a>
         </div>
         <div class="product-visual pv3d" aria-hidden="true" data-float>
-          <picture><source srcset="assets/p-followup.webp" type="image/webp"><img class="obj" src="assets/p-followup.jpg" alt="" loading="lazy" width="1100" height="1100"></picture>
+          <div class="obj-wrap"><video class="obj" src="assets/p-followup.mp4" poster="assets/p-followup.jpg" muted loop playsinline preload="none" data-autoplay></video></div>
           <div class="msg">
               <small><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l2.4 5.6L20 10l-5.6 2.4L12 18l-2.4-5.6L4 10l5.600-2.400z"/></svg><span data-i18n="msg.h">KI-Follow-up-Entwurf</span></small>
               <p class="typing" data-i18n="msg.t">Hallo! Ich wollte kurz nachfragen, ob mein Angebot von letzter Woche noch passt …</p>
@@ -301,7 +300,6 @@
   </div>
 </footer>
 
-<script type="importmap">{"imports":{"three":"./vendor/three.module.min.js"}}</script>
 <script src="config.js"></script>
 <script src="main.js" defer></script>
 </body>
