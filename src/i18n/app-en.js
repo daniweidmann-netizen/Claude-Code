@@ -101,6 +101,8 @@ export default {
   "Sichere Zahlung via Stripe": "Secure payment via Stripe",
   "Jede Vorschau zeigt ein echtes Beispielbild im jeweiligen Stil.": "Each preview shows a real sample image in that style.",
   "Nische": "Niche",
+  "Als Entwurf in deiner TikTok-App – dort öffnen, KI-Label einschalten und veröffentlichen.": "Sent as a draft to your TikTok app – open it there, turn on the AI label and publish.",
+  "Entwurf in der TikTok-App": "Draft in the TikTok app",
   "Epoche oder Ort (optional)": "Era or place (optional)",
   "z. B. Mittelalter, altes Rom, Schweiz um 1900 – leer lassen für Abwechslung": "e.g. Middle Ages, ancient Rome, Switzerland around 1900 – leave empty for variety",
   "Grosser Titel am Anfang": "Big title at the start",

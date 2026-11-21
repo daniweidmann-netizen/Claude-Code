@@ -1,6 +1,9 @@
 // Social-API-Module: OAuth, Token-Erneuerung und Upload für TikTok, Instagram und YouTube.
 // TikTok/Instagram sind aktiv, sobald ihre App-Schlüssel gesetzt sind (TIKTOK_CLIENT_KEY/SECRET, INSTAGRAM_APP_ID/SECRET).
 const env = (k) => (process.env[k] || '').trim(); // trim: eingefügte Werte enthalten oft Zeilenumbrüche
+// TikTok: Direct Post (direkt veröffentlichen, braucht Scope video.publish) nur mit TIKTOK_DIRECT_POST=true.
+// Standard: Upload als Entwurf in die TikTok-App (Scope video.upload) – der Nutzer veröffentlicht dort selbst.
+const tiktokDirect = () => env('TIKTOK_DIRECT_POST') === 'true';
 
 export const PLATFORMS = {
   tiktok: {
@@ -8,7 +11,7 @@ export const PLATFORMS = {
     configured: () => !!(env('TIKTOK_CLIENT_KEY') && env('TIKTOK_CLIENT_SECRET')),
     get available() { return this.configured(); },
     authUrl: (state, redirectUri) => `https://www.tiktok.com/v2/auth/authorize/?${new URLSearchParams({
-      client_key: env('TIKTOK_CLIENT_KEY'), response_type: 'code', scope: 'user.info.basic,video.upload,video.publish', redirect_uri: redirectUri, state,
+      client_key: env('TIKTOK_CLIENT_KEY'), response_type: 'code', scope: tiktokDirect() ? 'user.info.basic,video.upload,video.publish' : 'user.info.basic,video.upload', redirect_uri: redirectUri, state,
     })}`,
     async exchangeCode(code, redirectUri) {
       const res = await fetch('https://open.tiktokapis.com/v2/oauth/token/', {
@@ -41,6 +44,18 @@ export const PLATFORMS = {
     // Content Posting API (Direct Post). Nicht geprüfte TikTok-Apps dürfen nur privat posten (SELF_ONLY).
     async publish({ connection, file, caption }) {
       const auth = { Authorization: `Bearer ${connection.access_token}`, 'Content-Type': 'application/json; charset=UTF-8' };
+      if (!tiktokDirect()) {
+        // Entwurf in die TikTok-Inbox: der Nutzer bekommt eine Benachrichtigung in der App, ergänzt Text/Sound und postet selbst
+        const init = await (await fetch('https://open.tiktokapis.com/v2/post/publish/inbox/video/init/', {
+          method: 'POST', headers: auth,
+          body: JSON.stringify({ source_info: { source: 'FILE_UPLOAD', video_size: file.length, chunk_size: file.length, total_chunk_count: 1 } }),
+        })).json();
+        if (init.error?.code && init.error.code !== 'ok') throw new Error(`TikTok lehnt den Upload ab: ${init.error.message || init.error.code}`);
+        const { publish_id: publishId, upload_url: uploadUrl } = init.data || {};
+        const up = await fetch(uploadUrl, { method: 'PUT', headers: { 'Content-Type': 'video/mp4', 'Content-Length': String(file.length), 'Content-Range': `bytes 0-${file.length - 1}/${file.length}` }, body: file });
+        if (!up.ok) throw new Error(`TikTok-Upload fehlgeschlagen (${up.status})`);
+        return { id: String(publishId), url: null, draft: true, note: 'Als Entwurf in deiner TikTok-App – dort öffnen und veröffentlichen (KI-Label einschalten).' };
+      }
       const info = await (await fetch('https://open.tiktokapis.com/v2/post/publish/creator_info/query/', { method: 'POST', headers: auth })).json();
       const options = info.data?.privacy_level_options || [];
       const wanted = env('TIKTOK_PRIVACY') || 'PUBLIC_TO_EVERYONE';

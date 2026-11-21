@@ -242,7 +242,7 @@ export default function Editor() {
       const r = await api(`/videos/${video.id}/publish`, { method: 'POST' });
       const fresh = await getVideo(video.id);
       setVideo(fresh);
-      const lines = Object.entries(r.results || {}).map(([pl, x]) => (x.id ? `${pl}: ✓ ${x.url}${x.privacy === 'private' ? tr(" (privat – in YouTube auf „öffentlich“ stellen)") : ''}` : `${pl}: ✗ ${translateServerError(x.error)}`));
+      const lines = Object.entries(r.results || {}).map(([pl, x]) => (x.id ? `${pl}: ✓ ${x.draft ? tr('Entwurf in der TikTok-App') : x.url || ''}${x.privacy === 'private' ? tr(" (privat – in YouTube auf „öffentlich“ stellen)") : ''}` : `${pl}: ✗ ${translateServerError(x.error)}`));
       setMsg({ tone: r.ok ? 'success' : 'error', text: lines.join(' · ') || tr("Nichts zu posten.") });
     } catch (e) { setMsg({ tone: 'error', text: e.message }); }
     setBusy(null);
@@ -469,7 +469,7 @@ export default function Editor() {
           </div>
         )}
         {video.post_results && Object.entries(video.post_results).map(([pl, x]) => (
-          <p key={pl} className="mt-2 text-xs">{pl}: {x.url ? <a className="underline" href={x.url} target="_blank" rel="noreferrer">{x.url}</a> : <span className="text-red-600">{translateServerError(x.error)}</span>}</p>
+          <p key={pl} className="mt-2 text-xs">{pl}: {x.url ? <a className="underline" href={x.url} target="_blank" rel="noreferrer">{x.url}</a> : x.draft ? <span>✓ {tr('Als Entwurf in deiner TikTok-App – dort öffnen, KI-Label einschalten und veröffentlichen.')}</span> : x.id ? <span>✓</span> : <span className="text-red-600">{translateServerError(x.error)}</span>}</p>
         ))}
         {!(video.platforms || []).length && <p className="mt-3 text-xs muted">{tr("Keine Plattform gewählt – Plattformen wählst du in den Serien-Einstellungen, verbinden unter")} <Link className="underline" to="/app/account">{tr("Konto")}</Link>.</p>}
       </section>
