@@ -114,11 +114,11 @@ export function startCore(canvas, hero) {
     // Schweben, langsame Rotation, Reaktion auf Maus und Scroll
     core.position.set(home.x + mouse.x * 0.18, home.y + Math.sin(t * 0.6) * 0.12 - mouse.y * 0.12 + scrollP * 1.6, 0);
     core.scale.setScalar(baseScale * (1 - scrollP * 0.28));
-    core.rotation.y = t * 0.12 + mouse.x * 0.35 + scrollP * 1.4; core.rotation.x = Math.sin(t * 0.25) * 0.08 + mouse.y * 0.22;
+    core.rotation.y = Math.sin(t * 0.18) * 0.35 + mouse.x * 0.35 + scrollP * 1.1; core.rotation.x = Math.sin(t * 0.25) * 0.08 + mouse.y * 0.22;
     net.rotation.y = -t * 0.22; net.rotation.z = t * 0.07;
     facet.rotation.y = t * 0.09; facet.rotation.x = -t * 0.05;
     heart.scale.setScalar(1.5 + Math.sin(t * 1.6) * 0.14); halo.material.opacity = 0.3 + Math.sin(t * 0.8) * 0.05;
-    rings.forEach(({ pivot, d, base }, k) => { pivot.rotation.x = base[0] + Math.sin(t * 0.3 + k) * 0.12 + scrollP * (0.9 - k * 0.5); pivot.rotation.y = base[1] + t * d.speed; pivot.rotation.z = base[2] + Math.cos(t * 0.22 + k) * 0.1; });
+    rings.forEach(({ pivot, d, base }, k) => { pivot.rotation.x = base[0] + Math.sin(t * 0.3 + k) * 0.12 + scrollP * (0.9 - k * 0.5); pivot.rotation.y = base[1] + Math.sin(t * Math.abs(d.speed) * 1.6 + k * 2.1) * 0.45; pivot.rotation.z = base[2] + Math.cos(t * 0.22 + k) * 0.1; });
     trails.forEach((tr) => {
       tr.a += tr.speed * dt;
       for (let i = 0; i < tr.T; i++) {
