@@ -30,8 +30,8 @@
   // ── Sprache ──
   const EN = {
     'skip': 'Skip to content', 'nav.about': 'About', 'nav.solutions': 'Solutions', 'nav.contact': 'Contact', 'nav.cta': 'Get in Touch',
-    'hero.sub': 'We create intelligent AI solutions, powerful automation and digital products that move businesses forward.',
-    'hero.cta1': 'Discover Our Solutions', 'hero.cta2': 'Get in Touch', 'fact1': 'Digital products', 'fact2': 'At the core of every product', 'fact3': 'Developed in Switzerland',
+    'hero.sub': 'Intelligent AI. Powerful Automation. Digital Innovation.',
+    'hero.cta1': 'Explore Our Solutions', 'hero.cta2': 'Get in Touch', 'fact1': 'Digital products', 'fact2': 'At the core of every product', 'fact3': 'Developed in Switzerland',
     'about.eyebrow': 'About',
     'about.text': 'Weidmann Digital Solutions combines artificial intelligence, intelligent automation and modern software development to create digital products that solve real-world business challenges.',
     'v1': 'Using AI where it creates real value – understandable, transparent and practical.',
@@ -56,6 +56,8 @@
     'w5.t': 'Practical Innovation', 'w5.d': 'We build what businesses actually need in everyday work.',
     'vision.eyebrow': 'Our Vision',
     'vision.text': 'We believe intelligent technology should make everyday business simpler, smarter and more efficient. Our mission is to build digital products that turn this vision into reality.',
+    'start.eyebrow': 'Next step', 'start.t1': 'Choose Your', 'start.t2': 'Starting Point.',
+    'start.d1': 'AI agents and automation for your business.', 'start.d2': 'AI videos for social media – your first video is free.', 'start.d3': 'AI-powered CRM for small businesses – as an iPhone app.',
     'contact.eyebrow': 'Contact',
     'contact.text': 'Have an idea, a business challenge or an interest in our products? Let’s explore what’s possible.',
     'cp1': 'AI agents & automation for your business', 'cp2': 'Questions about TrueReel or FollowUpAI', 'cp3': 'Partnerships & collaboration',
@@ -116,7 +118,7 @@
     ticking = false;
     const y = window.scrollY; const vh = window.innerHeight;
     nav.classList.toggle('scrolled', y > 24);
-    progress.style.setProperty('--p', Math.min(1, y / Math.max(1, document.documentElement.scrollHeight - vh)).toFixed(4));
+    document.documentElement.style.setProperty('--p', Math.min(1, y / Math.max(1, document.documentElement.scrollHeight - vh)).toFixed(4));
     mx += (tx - mx) * 0.08; my += (ty - my) * 0.08;
     floats.forEach((el) => {
       const r = el.getBoundingClientRect(); if (r.bottom < -200 || r.top > vh + 200) return;

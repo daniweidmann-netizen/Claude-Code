@@ -13,7 +13,7 @@
 <link rel="preload" href="assets/fonts/bricolage-grotesque-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="assets/fonts/onest-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="assets/fonts/instrument-serif-latin-400-italic.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="preload" as="image" href="assets/hero-core.jpg" fetchpriority="high">
+<link rel="preload" as="image" href="assets/hero-core2.jpg" fetchpriority="high">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Weidmann Digital Solutions">
 <meta property="og:locale" content="de_CH">
@@ -25,7 +25,7 @@
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
-<link rel="stylesheet" href="styles.css?v=8">
+<link rel="stylesheet" href="styles.css?v=9">
 <script type="application/ld+json">
 {"@context":"https://schema.org","@graph":[
 {"@type":"Organization","@id":"https://weidmann-digital-solutions.onrender.com/#org","name":"Weidmann Digital Solutions","slogan":"The Future, Made Real.","description":"Schweizer Technologieunternehmen für KI-Lösungen, Automatisierung und digitale Softwareprodukte.","logo":"https://weidmann-digital-solutions.onrender.com/assets/logo-full.jpg","url":"https://weidmann-digital-solutions.onrender.com/","address":{"@type":"PostalAddress","addressLocality":"Grafstal","postalCode":"8310","addressCountry":"CH"},"areaServed":"CH","knowsAbout":["KI-Agenten","KI-Automatisierung","AI Business Automation","KI Video Creation","Follow-up CRM"],"brand":[{"@type":"Brand","name":"Weidmann Digital","url":"https://weidmann-digital.ch"},{"@type":"Brand","name":"TrueReel","url":"https://truereel.ch"},{"@type":"Brand","name":"FollowUpAI","url":"https://apps.apple.com/ch/app/followupai-crm/id6822229676"}]},
@@ -37,6 +37,7 @@
 <body>
 <a class="sr-only" href="#main" data-i18n="skip">Zum Inhalt springen</a>
 <div class="progress" id="progress" aria-hidden="true"></div>
+<div class="ambient" aria-hidden="true"></div>
 
 <!-- ── Navigation ── -->
 <header class="nav" id="nav">
@@ -65,12 +66,11 @@
 <!-- ── Hero ── -->
 <section class="hero" id="top">
   <canvas id="field" aria-hidden="true"></canvas>
-  <div class="core-stage" aria-hidden="true" data-float><div class="core-tilt"><video class="core-video" poster="assets/hero-core.jpg" autoplay muted loop playsinline preload="auto" width="900" height="900"><source src="assets/hero-core.mp4" type="video/mp4"></video></div></div>
-  <div class="container hero-inner">
+  <div class="core-stage" aria-hidden="true" data-float><div class="core-tilt"><video class="core-video" poster="assets/hero-core2.jpg" autoplay muted loop playsinline preload="auto" width="900" height="900"><source src="assets/hero-core2.mp4" type="video/mp4"></video></div></div>
+  <div class="container hero-inner" data-float>
     <p class="kicker reveal">The Future, Made Real.</p>
     <h1 class="reveal"><span class="line"><span>Technology.</span></span><span class="line"><span class="grad">Without Limits.</span></span></h1>
-    <p class="hero-tag reveal" data-delay="2">Building the Digital Future.</p>
-    <p class="lead reveal" data-delay="2" data-i18n="hero.sub">Wir entwickeln intelligente KI-Lösungen, starke Automatisierung und digitale Produkte, die Unternehmen voranbringen.</p>
+    <p class="hero-sub reveal" data-delay="2" data-i18n="hero.sub">Intelligente KI. Starke Automatisierung. Digitale Innovation.</p>
     <div class="hero-cta reveal" data-delay="3">
       <a class="btn btn-primary" href="#solutions"><span data-i18n="hero.cta1">Unsere Lösungen entdecken</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
       <a class="btn btn-ghost" href="#contact" data-i18n="hero.cta2">Kontakt aufnehmen</a>
@@ -141,7 +141,7 @@
           <a class="btn btn-accent" href="https://weidmann-digital.ch" target="_blank" rel="noopener" data-product-link="digital"><span data-i18n="p1.cta">Weidmann Digital entdecken</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17L17 7M8 7h9v9"/></svg></a>
         </div>
         <div class="product-visual" aria-hidden="true" data-float>
-          <div class="obj-wrap"><video poster="assets/p-digital.jpg" muted loop playsinline preload="none" data-autoplay width="720" height="720"><source src="assets/p-digital.mp4" type="video/mp4"></video></div>
+          <div class="obj-wrap"><video poster="assets/p-digital2.jpg" muted loop playsinline preload="none" data-autoplay width="720" height="720"><source src="assets/p-digital2.mp4" type="video/mp4"></video></div>
           <div class="hud"><span class="hud-chip"><i></i><span data-i18n="f1.t">Anfrage eingegangen</span></span><span class="hud-sep"></span><span class="hud-chip"><i></i><span data-i18n="f2.t">KI-Agent analysiert</span></span><span class="hud-sep"></span><span class="hud-chip"><i></i><span data-i18n="f3.t">Aufgabe erledigt</span></span></div>
         </div>
       </article>
@@ -160,7 +160,7 @@
           <a class="btn btn-accent" href="https://truereel.ch" target="_blank" rel="noopener"><span data-i18n="p2.cta">TrueReel entdecken</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17L17 7M8 7h9v9"/></svg></a>
         </div>
         <div class="product-visual" aria-hidden="true" data-float>
-          <div class="obj-wrap"><video poster="assets/p-truereel.jpg" muted loop playsinline preload="none" data-autoplay width="720" height="720"><source src="assets/p-truereel.mp4" type="video/mp4"></video></div>
+          <div class="obj-wrap"><video poster="assets/p-truereel2.jpg" muted loop playsinline preload="none" data-autoplay width="720" height="720"><source src="assets/p-truereel2.mp4" type="video/mp4"></video></div>
           <div class="hud"><span class="hud-chip"><i></i><span data-i18n="chip1">Skript</span></span><span class="hud-chip"><i></i><span data-i18n="chip4">Bilder</span></span><span class="hud-chip"><i></i><span data-i18n="chip2">Stimme</span></span><span class="hud-chip"><i></i><span data-i18n="chip3">Untertitel</span></span></div>
         </div>
       </article>
@@ -210,6 +210,21 @@
     <span class="eyebrow reveal"><b>04</b><span data-i18n="vision.eyebrow">Unsere Vision</span></span>
     <h2 class="h2 reveal"><span class="line"><span>Creating What</span></span><span class="line"><span class="grad">Comes Next.</span></span></h2>
     <p class="lead reveal" data-delay="1" data-i18n="vision.text">Wir glauben, dass intelligente Technologie den Geschäftsalltag einfacher, smarter und effizienter machen soll. Unsere Mission ist es, digitale Produkte zu bauen, die diese Vision Wirklichkeit werden lassen.</p>
+  </div>
+</section>
+
+<!-- ── Nächster Schritt ── -->
+<section class="section start" id="start">
+  <div class="container">
+    <div class="center">
+      <span class="eyebrow reveal"><span data-i18n="start.eyebrow">Nächster Schritt</span></span>
+      <h2 class="h2 reveal" style="margin-top:22px"><span class="line"><span data-i18n="start.t1">Wähle deinen</span></span><span class="line"><span class="grad" data-i18n="start.t2">Einstieg.</span></span></h2>
+    </div>
+    <div class="start-grid">
+      <a class="start-card glow reveal" data-p="digital" href="https://weidmann-digital.ch" target="_blank" rel="noopener" data-product-link="digital"><span class="p-cat">AI Agents &amp; Business Automation</span><strong>Weidmann Digital</strong><span class="start-text" data-i18n="start.d1">KI-Agenten und Automatisierung für dein Unternehmen.</span><span class="start-go"><span data-i18n="p1.cta">Weidmann Digital entdecken</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17L17 7M8 7h9v9"/></svg></span></a>
+      <a class="start-card glow reveal" data-delay="1" data-p="truereel" href="https://truereel.ch" target="_blank" rel="noopener"><span class="p-cat">AI Video Creation</span><strong>TrueReel</strong><span class="start-text" data-i18n="start.d2">KI-Videos für Social Media – das erste Video ist gratis.</span><span class="start-go"><span data-i18n="p2.cta">TrueReel entdecken</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17L17 7M8 7h9v9"/></svg></span></a>
+      <a class="start-card glow reveal" data-delay="2" data-p="followup" href="https://apps.apple.com/ch/app/followupai-crm/id6822229676" target="_blank" rel="noopener"><span class="p-cat">AI-Powered CRM</span><strong>FollowUpAI</strong><span class="start-text" data-i18n="start.d3">KI-gestütztes CRM für kleine Unternehmen – als iPhone-App.</span><span class="start-go"><span data-i18n="p3.cta">Im App Store laden</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17L17 7M8 7h9v9"/></svg></span></a>
+    </div>
   </div>
 </section>
 
@@ -291,7 +306,7 @@
   </div>
 </footer>
 
-<script src="config.js?v=8"></script>
-<script src="main.js?v=8" defer></script>
+<script src="config.js?v=9"></script>
+<script src="main.js?v=9" defer></script>
 </body>
 </html>
