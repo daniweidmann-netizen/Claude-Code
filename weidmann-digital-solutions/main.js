@@ -34,6 +34,8 @@
     'hero.cta1': 'Explore Our Solutions', 'hero.cta2': 'Get in Touch', 'fact1': 'Digital products', 'fact2': 'At the core of every product', 'fact3': 'Developed in Switzerland',
     'about.eyebrow': 'About',
     'about.text': 'Weidmann Digital Solutions combines artificial intelligence, intelligent automation and modern software development to create digital products that solve real-world business challenges.',
+    'umb.text': 'As an umbrella brand, Weidmann Digital Solutions brings independent digital products together under one standard: technology that genuinely helps in everyday business – developed in Switzerland.',
+    'ar1': 'AI agents and AI features that understand tasks and take them on.', 'ar2': 'Workflows that run by themselves – instead of manual routine.', 'ar3': 'From topic to finished short video for social media.', 'ar4': 'Web and app products that we build and operate ourselves.',
     'v1': 'Using AI where it creates real value – understandable, transparent and practical.',
     'v2': 'Automating repetitive tasks so there is more time for what matters.',
     'v3': 'Building, testing and continuously improving our own digital products.',
@@ -61,7 +63,7 @@
     'contact.eyebrow': 'Contact',
     'contact.text': 'Have an idea, a business challenge or an interest in our products? Let’s explore what’s possible.',
     'cp1': 'AI agents & automation for your business', 'cp2': 'Questions about TrueReel or FollowUpAI', 'cp3': 'Partnerships & collaboration',
-    'form.title': 'Write to us', 'form.name': 'Name', 'form.email': 'Email', 'form.company': 'Company', 'form.optional': '(optional)', 'form.subject': 'Subject', 'form.message': 'Message',
+    'form.title': 'Write to us', 'form.name': 'Name', 'form.email': 'Email', 'form.note': 'We reply personally by email. Fields marked * are required.', 'form.subject': 'Subject', 'form.message': 'Message',
     'form.consent': 'I agree that my details will be processed to answer my request. More in the <a href="datenschutz.html">privacy policy</a>.', 'form.submit': 'Send Message',
     'ft.slogan': 'Building the Digital Future. AI, automation and software from Switzerland.',
     'ft.company': 'Company', 'ft.products': 'Products', 'ft.legal': 'Legal', 'ft.privacy': 'Privacy Policy', 'ft.imprint': 'Legal Notice', 'ft.made': 'Developed in Switzerland', 'ft.ai': 'Imagery: AI-generated 3D visualizations',
@@ -75,7 +77,7 @@
   $$('[data-i18n-html]').forEach((el) => { DE[el.dataset.i18nHtml] = el.innerHTML; });
   const META = {
     de: { title: document.title, desc: $('meta[name="description"]').content },
-    en: { title: 'Weidmann Digital Solutions – AI Agents, AI Business Automation & Software from Switzerland', desc: 'Weidmann Digital Solutions is a Swiss technology company building intelligent AI solutions, business automation and digital software products: Weidmann Digital (AI agents), TrueReel (AI video creation) and FollowUpAI (follow-up CRM).' },
+    en: { title: 'Weidmann Digital Solutions – AI Agents, AI Business Automation & Software from Switzerland', desc: 'Weidmann Digital Solutions is the Swiss umbrella brand for artificial intelligence (AI), automation, software solutions and digital products: Weidmann Digital (AI agents), TrueReel (AI video creation) and FollowUpAI (follow-up CRM).' },
   };
   let lang = 'de';
   const setLang = (l, save) => {
@@ -210,7 +212,7 @@
     const d = Object.fromEntries(new FormData(form));
     const submit = $('button[type=submit]', form); submit.disabled = true; show(MSG[lang].sending);
     try {
-      const r = await fetch(cfg.contactEndpoint, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name: d.name, email: d.email, company: d.company, subject: d.subject, message: d.message, website: d.website, lang }) });
+      const r = await fetch(cfg.contactEndpoint, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name: d.name, email: d.email, subject: d.subject, message: d.message, website: d.website, lang }) });
       if (r.status === 429) { show(MSG[lang].many, 'err'); submit.disabled = false; return; }
       const j = r.ok ? await r.json().catch(() => null) : null;
       if (!j || j.ok !== true) throw new Error(String(r.status));
