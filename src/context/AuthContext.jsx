@@ -96,7 +96,16 @@ export function AuthProvider({ children }) {
       options: { data: { full_name: fullName, lang, ...firstTopicMeta() }, emailRedirectTo: `${window.location.origin}/app` },
     });
     if (error) throw error;
+    // Supabase meldet aus Sicherheitsgründen auch bei bereits registrierten Adressen „Erfolg“, schickt dann aber keine Mail.
+    // Erkennbar an der leeren Identitätsliste – so können wir das ehrlich anzeigen.
+    if (data.user && Array.isArray(data.user.identities) && data.user.identities.length === 0) return { exists: true };
     return { needsConfirmation: !data.session };
+  };
+
+  const resendConfirmation = async (email) => {
+    if (DEMO_MODE) return;
+    const { error } = await supabase.auth.resend({ type: 'signup', email, options: { emailRedirectTo: `${window.location.origin}/app` } });
+    if (error) throw error;
   };
 
   const signIn = async ({ email, password }) => {
@@ -150,7 +159,7 @@ export function AuthProvider({ children }) {
   return (
     <AuthContext.Provider value={{
       user, profile, loading, demo: DEMO_MODE, recovery,
-      signUp, signIn, signInWithGoogle, signOut, resetPassword, updateProfile, updatePassword,
+      signUp, resendConfirmation, signIn, signInWithGoogle, signOut, resetPassword, updateProfile, updatePassword,
       refreshProfile: () => loadProfile(user),
     }}>
       {children}

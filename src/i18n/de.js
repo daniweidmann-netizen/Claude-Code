@@ -169,6 +169,10 @@ export default {
   'auth.hasAccount': 'Schon ein Konto?',
   'auth.forgot': 'Passwort vergessen?',
   'auth.consent': 'Mit der Registrierung akzeptierst du die AGB und die Datenschutzerklärung.',
+  'auth.exists': 'Für diese E-Mail-Adresse gibt es bereits ein Konto. Melde dich an – oder setze dein Passwort auf der Anmeldeseite über „Passwort vergessen“ zurück.',
+  'auth.noMail': 'Keine Mail bekommen? Schau im Spam-Ordner nach oder',
+  'auth.resend': 'Mail erneut senden',
+  'auth.resent': 'Wir haben dir die Bestätigungs-Mail erneut geschickt.',
   'auth.checkMail': 'Fast geschafft: Bitte bestätige deine E-Mail-Adresse über den Link, den wir dir geschickt haben.',
   'auth.resetSent': 'Falls ein Konto existiert, haben wir dir einen Link zum Zurücksetzen geschickt.',
 };

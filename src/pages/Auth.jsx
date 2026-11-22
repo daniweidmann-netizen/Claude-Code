@@ -86,7 +86,8 @@ export function Login() {
 
 export function Register() {
   const { t } = useI18n();
-  const { user, signUp, signInWithGoogle } = useAuth();
+  const { user, signUp, resendConfirmation, signInWithGoogle } = useAuth();
+  const [sentTo, setSentTo] = useState('');
   const navigate = useNavigate();
   const next = useAfterAuth();
   const [form, setForm] = useState({ email: '', password: '', fullName: '' });
@@ -101,9 +102,15 @@ export function Register() {
     try {
       const r = await signUp(form);
       track('signup', '/registrieren');
-      if (r.needsConfirmation) setMsg({ tone: 'success', text: t('auth.checkMail') });
+      if (r.exists) setMsg({ tone: 'warn', text: t('auth.exists') });
+      else if (r.needsConfirmation) { setSentTo(form.email); setMsg({ tone: 'success', text: t('auth.checkMail') }); }
       else navigate(next);
     } catch (err) { setMsg({ tone: 'error', text: err.message }); }
+    setBusy(false);
+  };
+  const resend = async () => {
+    setBusy(true);
+    try { await resendConfirmation(sentTo); setMsg({ tone: 'success', text: t('auth.resent') }); } catch (err) { setMsg({ tone: 'error', text: err.message }); }
     setBusy(false);
   };
 
@@ -115,6 +122,7 @@ export function Register() {
         <div><label className="label" htmlFor="email">{t('auth.email')}</label><input id="email" type="email" required autoComplete="email" className="input" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} /></div>
         <div><label className="label" htmlFor="pw">{t('auth.password')}</label><input id="pw" type="password" required minLength={8} autoComplete="new-password" className="input" value={form.password} onChange={(e) => setForm({ ...form, password: e.target.value })} /><p className="mt-1 text-xs muted">{tr("Mindestens 8 Zeichen")}</p></div>
         {msg && <Notice tone={msg.tone}>{msg.text}</Notice>}
+        {sentTo && <p className="text-xs muted">{t('auth.noMail')} <button type="button" className="font-semibold underline" onClick={resend} disabled={busy}>{t('auth.resend')}</button></p>}
         <button className="btn-primary w-full" disabled={busy}>{busy && <Spinner />}{t('auth.register')}</button>
         <p className="text-center text-xs muted">
           {t('auth.consent').split(/(AGB|Datenschutzerklärung|terms|privacy policy)/).map((part, i) =>

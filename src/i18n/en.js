@@ -168,6 +168,10 @@ export default {
   'auth.hasAccount': 'Already have an account?',
   'auth.forgot': 'Forgot password?',
   'auth.consent': 'By signing up you accept the terms and the privacy policy.',
+  'auth.exists': 'There is already an account for this email address. Log in – or reset your password via “Forgot password” on the login page.',
+  'auth.noMail': 'No email? Check your spam folder or',
+  'auth.resend': 'send it again',
+  'auth.resent': 'We have sent the confirmation email again.',
   'auth.checkMail': 'Almost there: please confirm your email address using the link we sent you.',
   'auth.resetSent': 'If an account exists, we sent you a reset link.',
 };
