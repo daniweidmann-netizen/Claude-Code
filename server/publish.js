@@ -71,7 +71,8 @@ export async function publishVideo(videoId, { userId } = {}) {
       }
       const r = await p.publish({
         connection: conn,
-        options: video.post_options?.[platform] || null,
+        // Einstellungen dieses Videos; sonst die vom Inhaber für die Serie gewählten Standardwerte
+        options: video.post_options?.[platform] || series?.post_options?.[platform] || null,
         file,
         videoUrl,
         caption: captionFor(video),
