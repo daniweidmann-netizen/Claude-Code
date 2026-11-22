@@ -10,6 +10,7 @@ const PAGES = {
   '/': { title: 'TrueReel – AI short videos for TikTok, Reels & Shorts', description: 'TrueReel creates faceless AI short videos for TikTok, Instagram Reels and YouTube Shorts. Set up a series once – script, images, voice-over and captions for every new episode. First video free, no credit card.' },
   '/firmen': { title: 'Kurzvideos für Firmen – TrueReel', description: 'Wir produzieren jeden Monat Kurzvideos für TikTok, Instagram Reels und YouTube Shorts für dein Unternehmen. Ab CHF 290 pro Monat, monatlich kündbar, kostenloses Beispielvideo.' },
   '/business': { title: 'Short videos for businesses – TrueReel', description: 'Monthly short videos for TikTok, Instagram Reels and YouTube Shorts for your business. From CHF 290 per month, cancel monthly, free sample video.' },
+  '/partner': { title: 'Partnerprogramm – TrueReel', description: 'TrueReel empfehlen und mitverdienen: 20 % vom Gewinn für jeden geworbenen Kunden, monatliche Abrechnung. Jetzt als Partner bewerben.' },
   '/preise': { title: 'Pricing – TrueReel', description: 'Transparent pricing for faceless short videos: Hobby, Daily and Pro. Cancel any time. Try your first video free, no credit card.' },
   '/guides': { title: 'Guides – TrueReel', description: 'Practical, honest guides for faceless short-video creators on TikTok, Reels and YouTube Shorts.', lang: 'en', alt: '/ratgeber' },
   '/ratgeber': { title: 'Ratgeber – TrueReel', description: 'Praktische, ehrliche Ratgeber für Faceless-Kurzvideos auf TikTok, Reels und YouTube Shorts.', lang: 'de', alt: '/guides' },
@@ -121,7 +122,7 @@ export function renderHtml(template, path, appUrl, acceptLanguage = '') {
 
 export function sitemap(appUrl) {
   const today = new Date().toISOString().slice(0, 10);
-  const urls = [['/', today], ['/preise', today], ['/firmen', today], ['/business', today], ['/guides', today], ['/ratgeber', today],
+  const urls = [['/', today], ['/preise', today], ['/partner', today], ['/firmen', today], ['/business', today], ['/guides', today], ['/ratgeber', today],
     ...GUIDES.flatMap((g) => ['en', 'de'].map((l) => [`${GUIDE_BASE[l]}/${g[l].slug}`, g[l].updated])),
     [HOOK_BASE.de, HOOKS_UPDATED], [HOOK_BASE.en, HOOKS_UPDATED], [TOOL_BASE.de, TOOLS_UPDATED], [TOOL_BASE.en, TOOLS_UPDATED],
     ...TOOLS.flatMap((t) => ['de', 'en'].map((l) => [`${TOOL_BASE[l]}/${t[l].slug}`, TOOLS_UPDATED])),

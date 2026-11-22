@@ -21,6 +21,7 @@ import { GuideIndex, GuidePage } from './pages/Guides.jsx';
 import { HookIndex, HookPage } from './pages/Hooks.jsx';
 import { ToolIndex, ToolPage } from './pages/ToolPages.jsx';
 import Business from './pages/Business.jsx';
+import Partner from './pages/Partner.jsx';
 import Partners from './pages/app/Partners.jsx';
 import Ads from './pages/app/Ads.jsx';
 import { captureRef } from './lib/referral.js';
@@ -59,6 +60,7 @@ export default function App() {
           <Route index element={<Landing />} />
           <Route path="preise" element={<PricingPage />} />
           <Route path="firmen" element={<Business />} />
+          <Route path="partner" element={<Partner />} />
           <Route path="business" element={<Business />} />
           <Route path="beispiel/:slug" element={<Sample />} />
           <Route path="impressum" element={<Impressum />} />
