@@ -7,7 +7,7 @@ import { TOOLS, TOOL_BASE, TOOLS_UPDATED, toolText, findTool } from '../shared/t
 const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 
 const PAGES = {
-  '/': { title: 'TrueReel – Faceless videos that perform', description: 'TrueReel creates faceless short videos for TikTok, Instagram Reels and YouTube Shorts – with AI script, voiceover, captions and auto-posting. first video free, no credit card.' },
+  '/': { title: 'TrueReel – AI short videos for TikTok, Reels & Shorts', description: 'TrueReel creates faceless AI short videos for TikTok, Instagram Reels and YouTube Shorts. Set up a series once – script, images, voice-over and captions for every new episode. First video free, no credit card.' },
   '/firmen': { title: 'Kurzvideos für Firmen – TrueReel', description: 'Wir produzieren jeden Monat Kurzvideos für TikTok, Instagram Reels und YouTube Shorts für dein Unternehmen. Ab CHF 290 pro Monat, monatlich kündbar, kostenloses Beispielvideo.' },
   '/business': { title: 'Short videos for businesses – TrueReel', description: 'Monthly short videos for TikTok, Instagram Reels and YouTube Shorts for your business. From CHF 290 per month, cancel monthly, free sample video.' },
   '/preise': { title: 'Pricing – TrueReel', description: 'Transparent pricing for faceless short videos: Hobby, Daily and Pro. Cancel any time. Try your first video free, no credit card.' },

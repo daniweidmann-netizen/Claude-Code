@@ -4,7 +4,7 @@ import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { ArrowLeft, ArrowRight, Sparkles, ImagePlus, X } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext.jsx';
 import { useAppData } from '../../lib/useAppData.js';
-import { NICHES, DEFAULT_CAPTIONS, VIDEO_LENGTHS, DEFAULT_TARGET_SECONDS } from '../../config/catalog.js';
+import { NICHES, DEFAULT_CAPTIONS, VIDEO_LENGTHS, DEFAULT_TARGET_SECONDS, ART_STYLES, CAPTION_STYLES, LANGUAGES, VOICES } from '../../config/catalog.js';
 import { getPlan } from '../../config/plans.js';
 import { ArtStylePicker, VoicePicker, SchedulePicker, PlatformPicker, CaptionStylePicker } from '../../components/Pickers.jsx';
 import { Notice, Spinner, Toggle } from '../../components/ui.jsx';
@@ -17,7 +17,7 @@ import { computeUsage, seriesLimitReached } from '../../lib/usage.js';
 import { DEFAULT_SCHEDULE } from '../../lib/schedule.js';
 import { translate as tr, getLang } from '../../i18n/index.jsx';
 
-const STEPS = ['Nische', 'Stil', 'Stimme', 'Zeitplan'];
+const STEPS = ['Thema', 'Stil', 'Stimme & Sprache', 'Länge & Zeitplan'];
 
 // Vorlage für den Inhaber: Werbung für TrueReel selbst (nur echte, überprüfbare Fakten)
 const TRUEREEL_PROMO = {
@@ -156,13 +156,16 @@ export default function SeriesWizard() {
       <ol className="mb-6 grid grid-cols-4 gap-2" aria-label={tr("Fortschritt")}>
         {STEPS.map((s, i) => (
           <li key={s} className="text-center">
-            <div className={`h-1.5 rounded-full ${i <= step ? 'bg-accent-500' : 'bg-navy-100 dark:bg-navy-800'}`} />
-            <span className={`mt-2 block text-xs font-medium ${i === step ? '' : 'muted'}`}>{i + 1}. {tr(s)}</span>
+            <button type="button" className="group block w-full disabled:cursor-default" onClick={() => setStep(i)} disabled={i >= step || !!busy} aria-current={i === step ? 'step' : undefined} title={i < step ? tr('Zurück zu diesem Schritt') : undefined}>
+              <span className={`block h-1.5 rounded-full transition ${i <= step ? 'bg-accent-500' : 'bg-navy-100 dark:bg-navy-800'}`} />
+              <span className={`mt-2 block text-[11px] font-medium leading-tight sm:text-xs ${i === step ? '' : 'muted'} ${i < step ? 'group-hover:underline' : ''}`}>{i < step ? '✓ ' : `${i + 1}. `}{tr(s)}</span>
+            </button>
           </li>
         ))}
       </ol>
 
       <div className="card p-5 sm:p-8">
+        <p className="mb-3 text-xs font-semibold uppercase tracking-wide text-accent-700 dark:text-accent-400">{tr('Schritt {a} von {b}', { a: step + 1, b: STEPS.length })}</p>
         {step === 0 && (
           <>
             <h2 className="text-lg font-semibold">{tr("Worum soll es gehen?")}</h2>
@@ -271,7 +274,8 @@ export default function SeriesWizard() {
 
         {step === 2 && (
           <>
-            <h2 className="mb-5 text-lg font-semibold">{tr("Stimme & Sprache")}</h2>
+            <h2 className="text-lg font-semibold">{tr("Stimme & Sprache")}</h2>
+            <p className="mb-5 text-sm muted">{tr('In dieser Sprache werden Skript und Voiceover erstellt. Jede Stimme kannst du vorher anhören.')}</p>
             <VoicePicker language={d.language} voiceId={d.voiceId} onChange={set} />
           </>
         )}
@@ -279,7 +283,7 @@ export default function SeriesWizard() {
         {step === 3 && (
           <>
             <h2 className="text-lg font-semibold">{tr("Videolänge")}</h2>
-            <p className="mb-4 text-sm muted">{tr("TikTok zahlt im Creator-Rewards-Programm nur für Videos über 1 Minute.")}</p>
+            <p className="mb-4 text-sm muted">{tr('So lang wird jedes Video dieser Serie.')} {tr("TikTok zahlt im Creator-Rewards-Programm nur für Videos über 1 Minute.")}</p>
             <div className="mb-8 grid gap-2 sm:grid-cols-3">
               {VIDEO_LENGTHS.map((l) => (
                 <button key={l.seconds} type="button" onClick={() => set({ targetSeconds: l.seconds })} className={`option p-3 ${d.targetSeconds === l.seconds ? 'option-active' : ''}`} aria-pressed={d.targetSeconds === l.seconds}>
@@ -289,13 +293,30 @@ export default function SeriesWizard() {
               ))}
             </div>
             <h2 className="text-lg font-semibold">{tr("Zeitplan & Plattformen")}</h2>
-            <p className="mb-5 text-sm muted">{tr("Plattformen verbindest du später unter „Konto“. Ohne Verbindung kannst du Videos exportieren und manuell posten.")}</p>
+            <p className="mb-5 text-sm muted">{tr('Zu diesen Zeiten werden freigegebene Videos eingeplant.')} {tr("Plattformen verbindest du später unter „Konto“. Ohne Verbindung kannst du Videos exportieren und manuell posten.")}</p>
             <SchedulePicker schedule={d.schedule} onChange={(schedule) => set({ schedule })} />
             <h3 className="mb-3 mt-6 font-semibold">{tr('Plattformen')} {plan.limits.platforms < 3 && <span className="text-xs font-normal muted">{tr('(dein Plan: max. {n})', { n: plan.limits.platforms || 1 })}</span>}</h3>
             <PlatformPicker value={d.platforms} onChange={(platforms) => set({ platforms })} max={Math.max(1, plan.limits.platforms)} />
             <div className="mt-6 rounded-xl border border-navy-100 p-4 dark:border-navy-800">
               <Toggle id="approval" checked={d.requireApproval} onChange={(requireApproval) => set({ requireApproval })} label={tr("Vor jedem Post Freigabe einholen (empfohlen)")} />
               {!d.requireApproval && <p className="mt-2 text-xs text-amber-700 dark:text-amber-300">{tr("Videos werden nach dem Rendern ohne Rückfrage zum geplanten Zeitpunkt gepostet.")}</p>}
+            </div>
+            <div className="mt-6 rounded-xl border border-accent-500/40 bg-accent-500/[0.06] p-4">
+              <h3 className="font-semibold">{tr('Deine Serie im Überblick')}</h3>
+              <p className="mt-0.5 text-xs muted">{tr('Prüfe deine Auswahl. Alles lässt sich auch nach dem Erstellen in der Serie ändern.')}</p>
+              <dl className="mt-3 divide-y divide-navy-100 text-sm dark:divide-navy-800">
+                {[
+                  [tr('Thema'), `${NICHES.find((n) => n.id === d.niche)?.emoji || ''} ${tr(NICHES.find((n) => n.id === d.niche)?.label || '')}${d.niche === 'promo' && d.promo.product.trim() ? ` – ${d.promo.product.trim()}` : d.topic.trim() ? ` – ${d.topic.trim()}` : ''}`, 0],
+                  [tr('Stil'), `${tr(ART_STYLES.find((a) => a.id === d.artStyle)?.label || d.artStyle)} · ${tr('Untertitel')}: ${tr(CAPTION_STYLES.find((c) => c.id === d.captionStyle)?.label || d.captionStyle)}`, 1],
+                  [tr('Stimme & Sprache'), `${LANGUAGES.find((l) => l.id === d.language)?.label || d.language} · ${tr(VOICES.find((v) => v.id === d.voiceId)?.label || tr('Premium-Stimme'))}`, 2],
+                ].map(([k, v, s]) => (
+                  <div key={k} className="flex items-center justify-between gap-3 py-2">
+                    <dt className="w-32 shrink-0 muted">{k}</dt>
+                    <dd className="min-w-0 flex-1 truncate font-medium">{v}</dd>
+                    <button type="button" className="shrink-0 text-xs font-semibold text-accent-700 underline dark:text-accent-400" onClick={() => setStep(s)} disabled={!!busy}>{tr('Ändern')}</button>
+                  </div>
+                ))}
+              </dl>
             </div>
           </>
         )}

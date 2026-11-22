@@ -54,6 +54,7 @@ export function PricingTable({ interval, currentPlan }) {
                 <h3 className="text-3xl font-extrabold tracking-tight">{plan.name}</h3>
                 {hot && <span className="rounded-full bg-navy-950 px-3 py-1 text-xs font-bold text-white">{t('pricing.popular')}</span>}
               </div>
+              <p className={`mt-2 min-h-[2.5rem] text-sm ${hot ? 'text-navy-900' : 'muted'}`}>{t(`plan.${plan.id}.for`)}</p>
               <div className="mt-3 flex items-baseline gap-1">
                 <span className="text-5xl font-extrabold tracking-tight tabular-nums">{formatUSD(p.perMonth, p.perMonth % 1 ? 2 : 0)}</span>
                 <span className={`text-xl ${hot ? 'text-navy-900' : 'muted'}`}>/{t('pricing.perMonth').replace('/ ', '')}</span>
@@ -68,7 +69,7 @@ export function PricingTable({ interval, currentPlan }) {
               <button onClick={() => choose(plan.id)} disabled={busy || isCurrent}
                 className={`btn mt-7 w-full py-3 text-base ${hot ? 'bg-navy-950 text-white hover:bg-navy-800' : 'btn-outline'}`}>
                 {busy === plan.id && <Spinner />}
-                {isCurrent ? tr("Aktueller Plan") : t('pricing.choose')}
+                {isCurrent ? tr("Aktueller Plan") : t('pricing.chooseNamed').replace('{n}', plan.name)}
               </button>
               <p className={`mt-3 flex items-center justify-center gap-1.5 text-center text-sm font-medium ${hot ? 'text-navy-950' : ''}`}><ShieldCheck className="h-4 w-4 shrink-0" />{t('pricing.guarantee')}</p>
               <p className={`mt-1 text-center text-xs ${hot ? 'text-navy-800' : 'muted'}`}>{t('trust.cancel')} · <Link to="/rueckerstattung" className="underline">{t('pricing.guaranteeNote')}</Link></p>
@@ -145,7 +146,7 @@ export function CostCalculator({ interval }) {
 export function FAQ() {
   const { t } = useI18n();
   const [open, setOpen] = useState(0);
-  const items = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+  const items = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13];
   return (
     <div className="divide-y divide-navy-100 rounded-2xl border border-navy-100 dark:divide-navy-800 dark:border-navy-800">
       {items.map((i, idx) => (
@@ -168,12 +169,14 @@ export function PricingSection({ showCalculator = true, currentPlan }) {
     <div>
       <div className="mb-10 flex flex-col items-center gap-4 text-center">
         <IntervalToggle interval={interval} setInterval={setInterval} />
+        <p className="text-sm font-medium">{t(interval === 'yearly' ? 'pricing.yearlyNote' : 'pricing.monthlyNote')}</p>
         <p className="text-xs muted">{t('pricing.vat').replace('{cur}', displayCurrency())} {interval === 'yearly' && `(${Math.round(YEARLY_DISCOUNT * 100)} % ${lang === 'de' ? 'Rabatt' : 'off'})`}</p>
         <p className="mt-1 text-xs muted">{t('pricing.withdrawal')}</p>
       </div>
       {!currentPlan || currentPlan === 'free' ? <p className="mb-6 text-center text-sm" dangerouslySetInnerHTML={{ __html: t('pricing.recommend') }} /> : null}
       <PricingTable interval={interval} currentPlan={currentPlan} />
-      <p className="mt-4 text-center text-xs muted">{t('pricing.agency')}</p>
+      <p className="mt-4 text-center text-xs muted">{t('pricing.perVideoHelp')}</p>
+      <p className="mt-1 text-center text-xs muted">{t('pricing.agency')}</p>
       <div className="card mx-auto mt-8 flex max-w-2xl items-start gap-4 p-5">
         <img src="/logo-email.png" alt="" className="h-10 w-auto shrink-0 rounded-lg" onError={(e) => { e.currentTarget.style.display = 'none'; }} />
         <div className="text-sm">

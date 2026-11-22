@@ -13,6 +13,7 @@ import { exampleScripts } from '../config/examples.js';
 import { NICHES } from '../config/catalog.js';
 import { SITE } from '../config/site.js';
 import { translate as tr } from '../i18n/index.jsx';
+import { ProductDemo, Gallery, Workflow, Trust } from '../components/LandingSections.jsx';
 
 function useExampleProject(key, lang) {
   return useMemo(() => {
@@ -131,25 +132,28 @@ function Hero() {
         <div className="absolute -top-40 left-1/2 h-[520px] w-[900px] -translate-x-1/2 rounded-full bg-accent-500/15 blur-3xl" />
         <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(127,127,127,0.07)_1px,transparent_1px),linear-gradient(to_bottom,rgba(127,127,127,0.07)_1px,transparent_1px)] bg-[size:56px_56px] [mask-image:radial-gradient(ellipse_at_top,black_30%,transparent_75%)]" />
       </div>
-      <div className="container-x grid items-center gap-14 py-14 sm:py-20 lg:grid-cols-[1.25fr_1fr]">
+      <div className="container-x grid items-center gap-10 py-10 sm:gap-14 sm:py-20 lg:grid-cols-[1.25fr_1fr]">
         <div>
           <p className="eyebrow mb-6"><Sparkles className="h-3.5 w-3.5" />{lang === 'en' ? 'AI short videos · made in Switzerland' : 'KI-Kurzvideos · aus der Schweiz'}</p>
-          <h1 className="text-[2.6rem] font-extrabold leading-[1.04] tracking-[-0.035em] sm:text-6xl lg:text-[4.6rem]">
+          <h1 className="text-[2.15rem] font-extrabold leading-[1.06] tracking-[-0.035em] sm:text-5xl lg:text-[3.5rem]">
             {t('hero.title1')}<br /><span className="text-gradient">{t('hero.title2')}</span>
           </h1>
-          <p className="mt-6 max-w-xl text-lg text-navy-500 dark:text-navy-300 sm:text-xl">{t('hero.sub')}</p>
+          <p className="mt-5 max-w-xl text-base text-navy-500 dark:text-navy-300 sm:text-lg">{t('hero.sub')}</p>
+          <ul className="mt-5 grid max-w-xl gap-x-5 gap-y-2 text-sm font-medium sm:grid-cols-2">
+            {[1, 2, 3, 4, 5, 6].map((n) => <li key={n} className="flex items-start gap-2"><Check className="mt-0.5 h-4 w-4 shrink-0 text-accent-700 dark:text-accent-400" strokeWidth={3} />{t(`hero.b${n}`)}</li>)}
+          </ul>
           <DemoBox />
           <p className="mt-4 text-sm muted">
             <span className="mr-2 inline-block rounded-full bg-accent-500 px-2.5 py-0.5 text-xs font-bold text-navy-950">{t('hero.badge')}</span>
             <Link to="/registrieren" className="font-semibold underline">{t('hero.cta')}</Link> · <Link to="/preise" className="underline">{t('hero.cta2')}</Link>
           </p>
-          <ul className="mt-8 flex flex-wrap gap-x-6 gap-y-2 text-xs font-medium muted">
+          <ul className="mt-8 hidden flex-wrap gap-x-6 gap-y-2 text-xs font-medium muted sm:flex">
             {[[MapPin, lang === 'en' ? 'Based in Grafstal, Switzerland' : 'Aus Grafstal, Schweiz'], [ShieldCheck, lang === 'en' ? 'GDPR & Swiss FADP' : 'DSG & DSGVO'], [CreditCard, lang === 'en' ? 'Secure payment via Stripe' : 'Sichere Zahlung via Stripe'], [RotateCcw, lang === 'en' ? 'Cancel monthly' : 'Monatlich kündbar']].map(([Icon, label]) => (
               <li key={label} className="inline-flex items-center gap-1.5"><Icon className="h-4 w-4 text-accent-700 dark:text-accent-400" />{label}</li>
             ))}
           </ul>
         </div>
-        <div>
+        <div className="mx-auto w-full max-w-[230px] sm:max-w-none">
           <HeroPhone />
           <p className="mt-3 text-center text-[11px] muted">{lang === 'en' ? 'Example video · images and voice AI-generated' : 'Beispielvideo · Bilder und Stimme KI-generiert'}</p>
         </div>
@@ -362,11 +366,12 @@ export default function Landing() {
   return (
     <>
       <Hero />
-      <Showcase />
-      <HowItWorks />
+      <ProductDemo />
+      <Gallery />
+      <Workflow />
       <Features />
       <BusinessTeaser />
-      <Different />
+      <Trust />
       <SocialProof />
       <section id="pricing" className="section scroll-mt-16">
         <div className="container-x">
