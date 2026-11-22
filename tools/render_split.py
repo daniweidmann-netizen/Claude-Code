@@ -100,6 +100,7 @@ def main():
     ap.add_argument("--game", default="268,0,1012,720")
     ap.add_argument("--no-hook", action="store_true")
     ap.add_argument("--cam-width", type=int, default=0, help="facecam width in px (default: auto by source resolution)")
+    ap.add_argument("--cam-src", default="", help="optional pre-cropped (e.g. AI-upscaled) facecam video, same timing as SRC")
     a = ap.parse_args()
     gx, gy, gw, gh = map(int, a.game.split(","))
     dur = float(subprocess.run(["ffprobe", "-v", "error", "-show_entries", "format=duration", "-of", "csv=p=0", a.src],
@@ -135,9 +136,11 @@ def main():
         # low-res sources (e.g. 360p VODs): keep the facecam smaller so it stays sharp
         if a.cam_width:
             cam_w = a.cam_width
+        elif a.cam_src:
+            cam_w = 1080                      # AI-upscaled facecam: full width
         else:
-            up = 1080 / cw
-            cam_w = 1080 if up <= 4.2 else max(640, min(1080, round(cw * 5.5)))
+            # keep upscaling moderate (max ~2.8x) so the facecam stays sharp
+            cam_w = max(640, min(1080, round(cw * 2.8)))
         cam_w = cam_w // 2 * 2
         cam_h = round(cam_w * ch / cw / 2) * 2
         cam_h = min(cam_h, 760)
@@ -149,16 +152,18 @@ def main():
         cap_y = game_y + 120
         build_ass(words, a.banner, dur, ass, banner_y, cap_y)
         sharpen = "unsharp=5:5:0.8" if src_h >= 600 else "unsharp=5:5:1.1:3:3:0.4"
+        cam_in = f"[1:v]scale={cw * 4}:{ch * 4}," if a.cam_src else f"[c]crop={cw}:{ch}:{cx}:{cy},"
         fc = (
-            f"[0:v]split=3[b][c][g];" + bg +
-            f"[c]crop={cw}:{ch}:{cx}:{cy},scale=w='trunc({cam_w}*{zoom}/2)*2':h='trunc({cam_h}*{zoom}/2)*2':eval=frame:flags=lanczos,"
+            f"[0:v]split=3[b][c][g];" + ("[c]nullsink;" if a.cam_src else "") + bg +
+            f"{cam_in}scale=w='trunc({cam_w}*{zoom}/2)*2':h='trunc({cam_h}*{zoom}/2)*2':eval=frame:flags=lanczos,"
             f"crop={cam_w}:{cam_h}:(iw-{cam_w})/2:(ih-{cam_h})/2,{sharpen}[cam];"
             f"[g]crop={gw}:{gh}:{gx}:{gy},scale=1080:{game_h}:flags=lanczos[game];"
             f"[bg][cam]overlay={cam_x}:{cam_y}[t1];[t1][game]overlay=0:{game_y}[t2];"
             f"[t2]ass='{ass}'[v]"
         )
     main_out = os.path.join(tmp, "main.mp4") if not a.no_hook else a.out
-    run(["ffmpeg", "-v", "error", "-y", "-i", a.src, "-filter_complex", fc, "-map", "[v]", "-map", "0:a",
+    extra_in = ["-i", a.cam_src] if (a.cam != "none" and a.cam_src) else []
+    run(["ffmpeg", "-v", "error", "-y", "-i", a.src] + extra_in + ["-filter_complex", fc, "-map", "[v]", "-map", "0:a",
          "-af", "loudnorm=I=-14:TP=-1.5:LRA=11", "-c:v", "libx264", "-preset", "medium", "-crf", "20",
          "-pix_fmt", "yuv420p", "-r", "30", "-c:a", "aac", "-b:a", "160k", "-ar", "44100", main_out])
     if not a.no_hook:
