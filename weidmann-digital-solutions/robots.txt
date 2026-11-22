@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://weidmann-digital-solutions.onrender.com/sitemap.xml
+Sitemap: https://weidmann-digital-solutions.ch/sitemap.xml
