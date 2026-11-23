@@ -11,6 +11,7 @@
 
   // Links aus der Konfiguration
   if (cfg.digitalUrl) $$('[data-product-link="digital"]').forEach((a) => { a.href = cfg.digitalUrl; });
+  $$('[data-blog-link]').forEach((a) => { if (cfg.blogUrl) a.href = cfg.blogUrl; else (a.closest('li') || a).style.display = 'none'; });
   const li = $('#linkedin');
   if (cfg.linkedinUrl) li.href = cfg.linkedinUrl; else li.style.display = 'none';
 
