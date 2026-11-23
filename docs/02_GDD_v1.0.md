@@ -2,7 +2,7 @@
 
 **TEMPLE OF THE LOST SUN** – *Every relic reveals a secret.*
 
-Stand: 2026-11-23 · Status: zur Freigabe vorgelegt · Enthält die empfohlenen Änderungen CR-01 bis CR-08 aus Dokument 01.
+Stand: 2026-11-23 · Status: APPROVED (Freigabe vom 2026-11-23, einschliesslich CR-01 bis CR-08) · Präzisierungen v1.0.1 aus der Implementierung sind mit «v1.0.1» markiert · CR-09 (Abschnitt 5.5) ist offen.
 
 > **Hinweis zu allen Zahlen:** Regeln und Abläufe in diesem Dokument sind verbindlich definiert. Gewichte, Auszahlungswerte und Preistabellen sind **Startwerte (Entwurf v0.1)** für die Simulation und noch nicht validiert. RTP, Trefferfrequenz und Volatilität sind **Zielwerte**, keine Messergebnisse.
 
@@ -180,6 +180,14 @@ M gilt für alle Clusterauszahlungen, die nach seiner Änderung ausgewertet werd
 
 Jede Station verändert Raster oder Multiplikator direkt und nachvollziehbar. Der Spieler sieht vor jedem Schritt, was als Nächstes freigeschaltet wird. Keys erzeugen Sprünge, die Erwartungen bewusst durchbrechen. In Free Spins verschiebt das Base Camp den Startpunkt dauerhaft – der Track wird zum Träger des gesamten Features.
 
+### 5.5 Messbefund und offener Änderungsvorschlag CR-09 («Trittsteine»)
+
+Die Simulation der freigegebenen Regel zeigt: Mit einer Station je Gewinnkaskade wird Station 5 auch ganz ohne Temple Keys etwa jeden 50.–80. Spin erreicht (Messwerte in `docs/math/reports/`). Der Temple Bonus könnte dann im Schnitt nur etwa 7–10× Einsatz wert sein und wäre kein Höhepunkt mehr; Keys müssten praktisch entfallen.
+
+**Vorschlag CR-09:** Zwischen den Stationen liegen Trittsteine. Jede Gewinnkaskade und jeder Key ist ein Schritt; die Stationen werden nach insgesamt **1 / 2 / 4 / 6 / 9** Schritten erreicht. Alles andere bleibt unverändert. In Free Spins beginnt jeder Spin genau auf der Base-Camp-Station.
+
+Die Engine führt die Schrittzahlen als Parameter `stationSteps`; `[1,2,3,4,5]` entspricht der freigegebenen Regel, `[1,2,4,6,9]` dem Vorschlag. Der Abstimmungskandidat v0.2 verwendet den Vorschlag und ist bis zur Entscheidung nur ein Kandidat.
+
 ## 6. Temple Bonus
 
 ### 6.1 Auslösung
@@ -191,14 +199,14 @@ Jede Station verändert Raster oder Multiplikator direkt und nachvollziehbar. De
 
 1. Vor der Anzeige werden drei Preise gezogen und den Kammern 1–3 fest zugeordnet. Das Ergebnis ist ab diesem Moment festgelegt und wird in einer Echtgeldarchitektur serverseitig gespeichert.
 2. Der Spieler wählt eine Kammer und erhält deren Preis.
-3. Zeigt die gewählte Kammer einen **Relic Bonus**, erhält der Spieler dessen Betrag und wählt eine zweite Kammer.
+3. Zeigt eine geöffnete Kammer einen **Relic Bonus**, erhält der Spieler dessen Betrag und öffnet eine weitere Kammer, solange noch eine verschlossen ist (v1.0.1: gilt für jeden Relic Bonus, nicht nur den ersten).
 4. Am Ende werden alle nicht gewählten Kammern mit ihrem tatsächlichen Inhalt aufgedeckt.
 
 Da die Zuordnung der Preise zu den Kammern gleichverteilt zufällig ist, hat jede Kammer dieselbe Gewinnerwartung. Die Wahl beeinflusst das Ergebnis, aber nicht den RTP. Es gibt keine Beinahe-Gewinn-Inszenierung: Die Kammern sehen vor der Wahl identisch aus, und es wird nichts angedeutet.
 
 ### 6.3 Preisziehung
 
-Die drei Preise werden nacheinander unabhängig aus der Stufentabelle gezogen. Der Hauptschatz kann je Bonus höchstens einmal vorkommen (bei erneutem Ziehen wird wiederholt).
+Die drei Preise werden nacheinander unabhängig aus der Stufentabelle gezogen. Der Hauptschatz kann je Bonus höchstens einmal vorkommen (bei erneutem Ziehen wird wiederholt). Anschliessend werden die Preise gleichverteilt auf die Kammern gemischt (v1.0.1: ohne das Mischen wären die Kammern wegen der Hauptschatz-Regel nicht gleichwertig).
 
 **Preistabelle (Entwurf v0.1, relative Gewichte; Wahrscheinlichkeit = Gewicht ÷ Summe der Stufe):**
 
@@ -213,6 +221,8 @@ Die drei Preise werden nacheinander unabhängig aus der Stufentabelle gezogen. D
 | Free Spins (8, Base Camp auf Station 2) | 90 | – | – |
 | Hauptschatz | 10 (1 000×) | 20 (2 500×) | 30 (5 000×) |
 | Summe der Gewichte | 1 000 | 920 | 880 |
+
+v1.0.1: Im Temple Finale mit einem Siegel gilt die Bronze-Tabelle ohne den Free-Spin-Preis; dessen Gewicht (90) geht auf «Schatz 40×».
 
 Der Erwartungswert jeder Stufe ist exakt berechenbar und wird als analytische Kontrollgrösse für die Simulation verwendet (Dokument 04).
 
@@ -252,7 +262,7 @@ Damit hat das Feature einen klaren Spannungsbogen: Keys bauen das Lager aus, Rel
 
 - Erreicht ein Free Spin Station 5, wird ein **Tempelsiegel** gesammelt (höchstens eines je Free Spin, höchstens drei je Feature).
 - Nach dem letzten Free Spin wird bei mindestens einem Siegel der Temple Bonus genau einmal gespielt: 1 Siegel = Bronze, 2 = Silber, 3 = Gold.
-- In Silber und Gold gibt es keinen Free-Spin-Preis; das Finale kann keine weiteren Free Spins auslösen.
+- Im Finale gibt es in keiner Stufe einen Free-Spin-Preis; das Finale kann keine weiteren Free Spins auslösen.
 
 ## 8. Zielkennzahlen (Entwicklungsziele, nicht gemessen)
 

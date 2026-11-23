@@ -1,6 +1,6 @@
 # 03 – Technische Architektur
 
-Stand: 2026-11-23 · Status: zur Freigabe vorgelegt · Noch kein Code implementiert.
+Stand: 2026-11-23 · Status: APPROVED · Engine und Simulator sind implementiert (siehe Dokument 00); Client und Session-Schicht noch nicht.
 
 ## 1. Leitprinzipien
 

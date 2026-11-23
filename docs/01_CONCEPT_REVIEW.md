@@ -78,11 +78,17 @@ Provider erwarten mehrere RTP-Varianten (typisch um 96 / 94 / 92 % und tiefer). 
 | **CR-07** | Asset-Register mit Herkunft, Werkzeug, Lizenz und menschlichem Bearbeitungsanteil ab dem ersten Asset | 2.8 | IP-Dokumentation später nicht rekonstruierbar |
 | **CR-08** | Animation im Prototyp mit Phaser-Tweens, Partikeln und Shadern; Spine/Rive erst bei belegtem Mehrwert | 2.9, Budget | Lizenzkosten vor Nutzennachweis |
 
+### Nachtrag vom 2026-11-23 (nach den ersten Simulationen)
+
+| CR | Vorschlag | Begründung | Auswirkung bei Ablehnung |
+|---|---|---|---|
+| **CR-09** | Trittsteine: Stationen nach 1 / 2 / 4 / 6 / 9 Schritten statt 1 / 2 / 3 / 4 / 5 | Gemessen: Station 5 sonst etwa jeden 50.–80. Spin, auch ohne Keys | Temple Bonus häufig und klein (Schnitt etwa 7–10×), Temple Keys praktisch ohne Funktion |
+
 ## 4. Bewusst **nicht** geändert
 
 - Name, Tagline, Story, Farbwelt und Symbolnamen.
 - Raster 6×5, Cluster Pays orthogonal, Kaskaden.
-- Fünf Stationen mit den vorgegebenen Namen und Funktionsrichtungen.
+- Fünf Stationen mit den vorgegebenen Namen und Funktionsrichtungen (CR-09 ändert nur den Abstand zwischen ihnen).
 - Drei Kammern im Temple Bonus.
 - 3+ Compass → 8 Free Spins.
 - Ziel-RTP 96,00 %.

@@ -40,7 +40,7 @@ Ein geschlossener theoretischer RTP ist für ein 6×5-Clusterspiel mit Kaskaden 
 ## 4. Simulator
 
 - Node-Programm in `tools/sim`, nutzt den Engine-Rechenkern ohne Ereigniserzeugung, parallel über `worker_threads`.
-- **Reproduzierbarkeit:** Jeder Lauf ist durch Konfigurationsversion, Master-Seed, Anzahl Worker und Spins je Worker vollständig bestimmt. Worker-Seeds werden deterministisch aus dem Master-Seed abgeleitet (Xoshiro-Jump). Berichte enthalten Git-Commit und Konfigurations-Hash.
+- **Reproduzierbarkeit:** Jeder Lauf ist durch Konfigurationsversion, Master-Seed, Anzahl Worker und Spins je Worker vollständig bestimmt. Jeder Worker erhält einen eigenen RNG-Strom, dessen Zustand per SplitMix64 aus Master-Seed und Stromnummer abgeleitet wird (umgesetzt statt des ursprünglich geplanten Xoshiro-Jump: einfacher und ohne 64-Bit-Arithmetik im Simulator). Berichte enthalten Git-Commit und Konfigurations-Hash.
 - **Ausgaben je Lauf:** RTP gesamt und je Quelle (Basis, Temple Bonus, Free Spins, Finale) · Standardabweichung und Standardfehler · Trefferfrequenz · Gewinnverteilung in Klassen (0, <1×, 1–2×, 2–5×, 5–10×, 10–20×, 20–50×, 50–100×, 100–500×, 500–1 000×, 1 000–5 000×, >5 000×, Obergrenze) · Clusterhäufigkeit je Symbol und Grösse · Verteilung der Kaskadenlänge · höchste erreichte Station je Spin · Feature-Frequenzen · Free-Spin-Verlauf (Anzahl, Base Camp, Endwert von S, Siegel) · Preisverteilung im Bonus · grösste Einzelgewinne mit Seed zur Wiedergabe.
 - Ergebnisse werden als JSON und als lesbarer Bericht unter `docs/math/reports/` versioniert.
 
