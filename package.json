@@ -1,0 +1,19 @@
+{
+  "name": "temple-of-the-lost-sun",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "vitest run",
+    "build": "tsc -p tsconfig.build.json",
+    "sim": "npm run build --silent && node dist/tools/sim/cli.js",
+    "bonus-ev": "npm run build --silent && node dist/tools/sim/bonus-ev.js"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "fast-check": "^3.23.2",
+    "typescript": "^5.9.0",
+    "vitest": "^2.1.9"
+  }
+}
