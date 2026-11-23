@@ -94,6 +94,27 @@ export const MUSIC_TRACKS = [
   { id: 'tension', label: 'Spannung', mood: 'spannend', bpm: 90, root: 146.83, scale: [0, 1, 7, 8] },
   { id: 'epic', label: 'Episch', mood: 'episch', bpm: 80, root: 110, scale: [0, 7, 12, 15] },
   { id: 'uplift', label: 'Aufbruch', mood: 'positiv', bpm: 110, root: 261.63, scale: [0, 4, 7, 11] },
+  // Neuere Stücke: eigene Akkordfolgen und Instrumente (kit) – ebenfalls komplett im Browser erzeugt, also lizenzfrei.
+  { id: 'piano', label: 'Sanftes Klavier', mood: 'gefühlvoll', bpm: 72, root: 220, lp: 3200, chords: [[0, 3, 7, 12], [-4, 0, 3, 8], [3, 7, 10, 15], [-2, 2, 5, 10]],
+    kit: { pad: 0.35, bass: [0], pluck: { decay: 1.6, gain: 0.5, notes: [[0, 0, 0], [0.5, 1, 0], [1, 2, 0], [1.5, 3, 0], [2, 2, 0], [2.5, 1, 0], [3, 2, 0], [3.5, 3, 0]] } } },
+  { id: 'lofi', label: 'Lo-Fi Beat', mood: 'entspannt', bpm: 82, root: 174.61, lp: 2400, chords: [[0, 4, 7, 11], [-3, 0, 4, 7], [2, 5, 9, 12], [-5, -1, 2, 5]],
+    kit: { pad: 0.3, bass: [0, 2.5], kick: [0, 2.5], snare: [1, 3], hat: 0.5, pluck: { decay: 0.7, gain: 0.32, notes: [[0, -1, 0], [1.5, -1, 0], [2.5, -1, 0]] } } },
+  { id: 'dark', label: 'Düster', mood: 'unheimlich', bpm: 60, root: 73.42, lp: 1200, chords: [[0, 7, 12, 15], [0, 7, 13, 15], [0, 6, 12, 15], [0, 7, 12, 15]],
+    kit: { drone: 0.9, pad: 0.5, heart: true, pluck: { decay: 2.4, gain: 0.22, notes: [[0, 3, 1], [2.5, 2, 1]] } } },
+  { id: 'countdown', label: 'Countdown', mood: 'nervös', bpm: 100, root: 130.81, lp: 3600, chords: [[0, 3, 7, 12], [0, 3, 8, 12], [0, 2, 7, 12], [0, 3, 7, 10]],
+    kit: { pad: 0.35, tick: true, bass: [0, 1, 2, 3], arp: { wave: 'triangle', div: 1, gain: 0.16, octave: 0 } } },
+  { id: 'pulse', label: 'Technik-Puls', mood: 'modern', bpm: 118, root: 110, lp: 4200, chords: [[0, 3, 7, 12], [-4, 0, 3, 8], [3, 7, 10, 15], [-2, 2, 5, 10]],
+    kit: { pad: 0.25, bass: [0, 1, 2, 3], kick: [0, 1, 2, 3], hat: 0.5, arp: { wave: 'square', div: 4, gain: 0.07, octave: 1 } } },
+  { id: 'happy', label: 'Fröhlich', mood: 'verspielt', bpm: 120, root: 261.63, lp: 4200, chords: [[0, 4, 7, 12], [-5, -1, 2, 7], [-3, 0, 4, 9], [-7, -3, 0, 5]],
+    kit: { pad: 0.2, bass: [0, 2], kick: [0, 2], snare: [1, 3], hat: 0.5, pluck: { decay: 0.3, gain: 0.42, notes: [[0, 0, 0], [0.5, 2, 0], [1, 1, 0], [1.5, 2, 0], [2, 0, 0], [2.5, 3, 0], [3, 2, 0], [3.5, 1, 0]] } } },
+  { id: 'drums', label: 'Kino-Trommeln', mood: 'dramatisch', bpm: 96, root: 98, lp: 2600, chords: [[0, 7, 12, 15], [-4, 3, 8, 12], [-2, 5, 10, 14], [0, 7, 12, 19]],
+    kit: { pad: 0.8, drone: 0.4, toms: [[0, 82], [0.75, 82], [1.5, 110], [2, 82], [3, 70], [3.5, 110]] } },
+  { id: 'ambient', label: 'Weite', mood: 'schwebend', bpm: 60, root: 174.61, lp: 2800, chords: [[0, 7, 14, 16], [-5, 2, 9, 14], [-3, 4, 12, 16], [-7, 0, 9, 12]],
+    kit: { pad: 1, shimmer: 0.06 } },
+  { id: 'drive', label: 'Motivation', mood: 'antreibend', bpm: 104, root: 196, lp: 3800, chords: [[0, 4, 7, 12], [-3, 0, 4, 9], [-7, -3, 0, 5], [-5, -1, 2, 7]],
+    kit: { pad: 0.4, bass: [0, 1.5, 2.5], kick: [0, 1, 2, 3], snare: [1, 3], hat: 0.5, from: 2, arp: { wave: 'triangle', div: 2, gain: 0.14, octave: 1 } } },
+  { id: 'report', label: 'Reportage', mood: 'sachlich', bpm: 108, root: 146.83, lp: 3400, chords: [[0, 3, 7, 12], [0, 3, 7, 10], [-2, 2, 5, 10], [-4, 0, 3, 8]],
+    kit: { pad: 0.3, bass: [0, 2], hat: 1, pluck: { decay: 0.22, gain: 0.34, notes: [[0, 0, 0], [0.5, 0, 0], [1, 2, 0], [1.5, 0, 0], [2, 1, 0], [2.5, 0, 0], [3, 2, 0], [3.5, 1, 0]] } } },
 ];
 
 export const POST_FREQUENCIES = [

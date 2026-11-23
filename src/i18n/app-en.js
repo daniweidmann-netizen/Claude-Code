@@ -652,4 +652,13 @@ export default {
   'Prüfe deine Auswahl. Alles lässt sich auch nach dem Erstellen in der Serie ändern.': 'Check your choices. Everything can still be changed in the series after creating it.',
   'Ändern': 'Change',
   'Premium-Stimme': 'Premium voice',
+  'Sanftes Klavier': 'Soft piano',
+  'Lo-Fi Beat': 'Lo-fi beat',
+  'Düster': 'Dark',
+  'Countdown': 'Countdown',
+  'Technik-Puls': 'Tech pulse',
+  'Fröhlich': 'Cheerful',
+  'Kino-Trommeln': 'Cinematic drums',
+  'Weite': 'Wide open',
+  'Reportage': 'Documentary',
 };
