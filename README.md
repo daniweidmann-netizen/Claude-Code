@@ -4,7 +4,16 @@
 
 Premium Adventure Video Slot (6×5, Cluster Pays, Cascades, Expedition System) – eigenständige Game-IP in Entwicklung.
 
-**Projektstand:** Phase 1 (Entwicklungsgrundlage) abgeschlossen, wartet auf Freigabe. Es existiert noch kein Spielcode. Alle mathematischen Parameter sind Entwürfe und **nicht validiert**.
+**Projektstand:** Engine, Tests und Simulator sind implementiert und getestet. Der Abstimmungskandidat v0.2 misst 95,98 % RTP (400 Mio. Runden), ist aber **nicht validiert** und setzt den offenen Änderungsvorschlag CR-09 voraus. Client, Grafik und Audio existieren noch nicht.
+
+## Befehle
+
+```
+npm install
+npm test                                   # alle Tests
+npm run sim -- --rounds 10000000           # Simulation Kandidat v0.2
+npm run sim -- --preset v0.1 --rounds 1000000
+```
 
 ## Dokumente
 
