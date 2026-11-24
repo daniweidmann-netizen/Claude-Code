@@ -118,7 +118,7 @@ export default function Editor() {
     setBusy(`img-${scene.id}`);
     const seed = newSeed();
     const r = await generateImage({ prompt: scene.visual || scene.text, style: project.artStyle, seed, userId: user.id, niche: project.niche || series?.niche, archiveQuery: project.archiveQuery, exclude: scenes.map((x) => x.credit?.url).filter(Boolean), character: project.character });
-    updateScene(scene.id, { seed, imageUrl: r.imageUrl || null, credit: r.credit || null, productPhoto: false });
+    updateScene(scene.id, { seed, imageUrl: r.imageUrl || null, credit: r.credit || null, productPhoto: false, fallback: !!r.fallback });
     if (!r.imageUrl) setMsg({ tone: 'info', text: tr("Kein Bild gefunden bzw. kein Bild-Modul verbunden – neue Platzhalter-Grafik erzeugt. Tipp: Bildbeschreibung (englisch) anpassen.") });
     setBusy(null);
   };
@@ -281,7 +281,7 @@ export default function Editor() {
     setBusy(`img-${scene.id}`); setMsg(null);
     try {
       const url = await uploadMedia(user.id, await fileToJpeg(f), 'images');
-      updateScene(scene.id, { imageUrl: url, credit: null, productPhoto: true });
+      updateScene(scene.id, { imageUrl: url, credit: null, productPhoto: true, fallback: false });
     } catch (err) { setMsg({ tone: 'error', text: tr(err.message) }); }
     setBusy(null);
   };
@@ -330,6 +330,12 @@ export default function Editor() {
             <button className="btn-outline px-3 py-1.5 text-xs" onClick={addScene}>{tr("Szene hinzufügen")}</button>
             <button className="btn-primary px-3 py-1.5 text-xs" onClick={rewrite} disabled={!!busy}>{tr("Skript neu (länger)")}</button>
           </span>
+        </Notice>
+      )}
+      {scenes.some((x) => x.fallback) && (
+        <Notice tone="warn" className="mb-4 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+          <span>{tr("Das KI-Bildmodell war gerade nicht erreichbar. {n} von {t} Bildern sind deshalb Stockfotos und passen vielleicht nicht zum Text.", { n: scenes.filter((x) => x.fallback).length, t: scenes.length })}</span>
+          <button className="btn-primary shrink-0 px-3 py-1.5 text-xs" onClick={regenAllImages} disabled={!!busy}>{busy === 'images' ? <Spinner className="h-3.5 w-3.5" /> : <RefreshCw className="h-3.5 w-3.5" />}{tr("Bilder neu erzeugen")}</button>
         </Notice>
       )}
       {msg && <Notice tone={msg.tone} className="mb-4">{msg.text}</Notice>}

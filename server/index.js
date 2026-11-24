@@ -125,9 +125,11 @@ app.post('/api/generate/image', authenticate, handle(async (req) => {
   } catch (e) {
     if (main.name === 'pixabay' || !process.env.PIXABAY_API_KEY) throw e;
     console.warn(`[image:${main.name}] ${e.message} → Pixabay`);
+    // Konfigurations-/Kontofehler (nicht: einzelne abgelehnte Bildbeschreibung) dem Inhaber melden
+    if (/40[13]|429|quota|billing|invalid model|model_not_found/i.test(e.message)) reportKeyFailure('image', e.message);
   }
-  // Rückfall: Stockfoto, damit jede Szene ein Bild bekommt
-  return { ...(await fallbackImageProvider.generate(req.body)), provider: 'pixabay' };
+  // Rückfall: Stockfoto, damit jede Szene ein Bild bekommt – als Ersatz markiert, damit der Editor darauf hinweist
+  return { ...(await fallbackImageProvider.generate(req.body)), provider: 'pixabay', fallback: true };
 }));
 app.post('/api/generate/character', authenticate, handle(async (req) => {
   if (!process.env.OPENAI_API_KEY) throw new Error('Kein Bildmodell verbunden.');

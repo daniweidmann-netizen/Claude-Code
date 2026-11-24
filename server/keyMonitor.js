@@ -36,15 +36,18 @@ export async function checkKeys() {
 }
 
 // Fehler aus dem laufenden Betrieb melden (z. B. ElevenLabs 401 → Kunden bekommen still die Standard-Stimme)
-const FIX = { elevenlabs: { name: 'ElevenLabs (Premium-Stimmen)', env: 'ELEVENLABS_API_KEY', fix: 'https://elevenlabs.io/app/settings/api-keys' } };
+const FIX = {
+  elevenlabs: { name: 'ElevenLabs (Premium-Stimmen)', env: 'ELEVENLABS_API_KEY', fix: 'https://elevenlabs.io/app/settings/api-keys', effect: 'Kunden bekommen deshalb die Standard-Stimme.' },
+  image: { name: 'OpenAI-Bildmodell', env: 'OPENAI_API_KEY bzw. OPENAI_IMAGE_MODEL', fix: 'https://platform.openai.com/settings/organization/billing/overview', effect: 'Kunden bekommen deshalb Stockfotos statt KI-Bilder (mit Hinweis im Editor).' },
+};
 export async function reportKeyFailure(id, message = '') {
   const c = FIX[id];
   if (!c) return;
   keyStatus[id] = /401|invalid/i.test(message) ? 'ungueltig' : /quota|402|credits/i.test(message) ? 'kein-guthaben' : 'fehler';
   if (Date.now() - (lastAlert[id] || 0) < 24 * 3600e3 || !process.env.BREVO_API_KEY) return;
   lastAlert[id] = Date.now();
-  const what = keyStatus[id] === 'kein-guthaben' ? 'Guthaben aufgebraucht' : 'Schlüssel ungültig oder gesperrt';
-  const text = `Achtung: ${c.name} funktioniert nicht (${what}). Kunden bekommen deshalb die Standard-Stimme.\n\nNeuen Schlüssel erstellen: ${c.fix}\nBei Render als ${c.env} eintragen: https://dashboard.render.com/web/srv-dbphbo0m7kps73aulfrg/env`;
-  const html = `<p><b>Achtung: ${c.name} funktioniert nicht (${what}).</b> Kunden bekommen deshalb die Standard-Stimme.</p><p><a href="${c.fix}">Neuen Schlüssel erstellen</a> und bei <a href="https://dashboard.render.com/web/srv-dbphbo0m7kps73aulfrg/env">Render</a> als <code>${c.env}</code> eintragen.</p>`;
+  const what = keyStatus[id] === 'kein-guthaben' ? 'Guthaben aufgebraucht' : /model/i.test(message) ? 'Modellname ungültig' : 'Schlüssel ungültig oder gesperrt';
+  const text = `Achtung: ${c.name} funktioniert nicht (${what}). ${c.effect}\n\nPrüfen: ${c.fix}\nEinstellung bei Render (${c.env}): https://dashboard.render.com/web/srv-dbphbo0m7kps73aulfrg/env`;
+  const html = `<p><b>Achtung: ${c.name} funktioniert nicht (${what}).</b> ${c.effect}</p><p><a href="${c.fix}">Hier prüfen</a>, Einstellung bei <a href="https://dashboard.render.com/web/srv-dbphbo0m7kps73aulfrg/env">Render</a>: <code>${c.env}</code>.</p>`;
   try { await sendMail(SITE.contactEmail, { subject: `⚠️ TrueReel: ${c.name} – ${what}`, html, text }, 'owner', 'key-alert'); } catch (e) { console.error('[key-alert]', e.message); }
 }

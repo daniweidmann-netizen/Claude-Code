@@ -429,6 +429,8 @@ export default {
   "Jede Serie hat eigenen Stil, Stimme und Zeitplan.": "Each series has its own style, voice and schedule.",
   "Jetzt eine anlegen": "Create one now",
   "KI-Voiceover erzeugt. Szenenlängen wurden an die Sprechdauer angepasst.": "AI voiceover created. Scene lengths were adjusted to the speech.",
+  "Das KI-Bildmodell war gerade nicht erreichbar. {n} von {t} Bildern sind deshalb Stockfotos und passen vielleicht nicht zum Text.": "The AI image model was unavailable just now. {n} of {t} images are therefore stock photos and may not match the text.",
+  "Bilder neu erzeugen": "Regenerate images",
   "Kalender": "Calendar",
   "Karaoke": "Karaoke",
   "Kein Bild gefunden bzw. kein Bild-Modul verbunden – neue Platzhalter-Grafik erzeugt. Tipp: Bildbeschreibung (englisch) anpassen.": "No image found or no image source connected – created a new placeholder graphic. Tip: adjust the image description (in English).",
