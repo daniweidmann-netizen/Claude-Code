@@ -25,7 +25,7 @@ export class GameScene extends Phaser.Scene {
   constructor() { super('game'); }
 
   preload(): void {
-    if (new URLSearchParams(window.location.search).get('art') === 'ref') preloadReferenceArt(this);
+    if (new URLSearchParams(window.location.search).get('art') !== 'placeholder') preloadReferenceArt(this);
   }
 
   create(): void {

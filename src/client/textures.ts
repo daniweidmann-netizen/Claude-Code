@@ -8,10 +8,12 @@ import { symbolKey } from './theme.js';
 export const SYMBOL_SIZE = 128;
 
 /**
- * Reference art under review (quality gate, see assets/ASSET_REGISTER.md).
- * Loaded only with ?art=ref; the default build shows placeholders only.
+ * Symbol art (style approved 2026-11-24; provenance and open legal points in
+ * assets/ASSET_REGISTER.md). ?art=placeholder shows the code-drawn set instead.
  */
-export const REFERENCE_ART: Record<number, string> = { 4: 'symbols/sym4.png', 5: 'symbols/sym5.png' };
+export const REFERENCE_ART: Record<number, string> = Object.fromEntries(
+  Array.from({ length: 9 }, (_, id) => [id, `symbols/sym${id}.png`]),
+);
 
 export function preloadReferenceArt(scene: Phaser.Scene): void {
   for (const [id, url] of Object.entries(REFERENCE_ART)) scene.load.image(symbolKey(Number(id)), url);
