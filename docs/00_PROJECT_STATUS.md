@@ -49,7 +49,14 @@ Die Anpassungen betrafen jeweils nur Schatzpreise des Temple Bonus der Basisrund
 - Die Auszahlungstabelle ist funktional abgestimmt, aber nicht auf «schöne» Werte geglättet. Weitere RTP-Varianten (94 %, 92 %) sind nicht abgeleitet.
 - Vor dem bestandenen Lauf gab es zwei verfehlte Läufe mit Nachjustierung. Der bestandene Lauf ist ein unabhängiger Lauf mit neuem Seed auf der unveränderten Endkonfiguration.
 
-**Zur Freigabe vorgelegt: Meilenstein M3** – Mathematik VALIDATED nach den Kriterien aus Dokument 04, Konfiguration v0.3.2 einfrieren. Danach beginnt Phase 4 (Phaser-Client).
+**Nachtrag Feature-Kauf (freigegeben am 2026-11-24, Version v0.3.4):**
+- Regel: Kauf ersetzt den Einsatz, keine Basisrunde, Start wie nach 3 Compass (8 Free Spins, Base Camp Station 1); GDD 7.5. Abschaltbar per Konfiguration.
+- Messung (100 Mio. gekaufte Features, Seed 20261127): Durchschnittsgewinn 56,148× Einsatz (95 %-Intervall ± 0,037), Standardabweichung 189,5×, Obergrenze 1 in 17 940 Käufen, 0,02 % der Käufe ohne Gewinn.
+- Der Lauf lief mit Preis 58,6× und ergab 95,82 % – ausserhalb des Bands. Der Preis wurde deshalb auf **58,5×** gesetzt; daraus folgt ein simulierter Kauf-RTP von **95,98 %** (95 %-Intervall 95,92–96,04 %). Der Preis skaliert nur den Nenner; der Featurewert hängt nicht vom Preis ab, ein neuer Lauf war dafür nicht nötig.
+- Normale Runden sind durch den Einbau unverändert (300 000 Runden identisch zum Stand davor); die Abnahme von v0.3.2 gilt für sie weiter.
+- Tests: 31 grün (3 neue). Python-Differenztest im Kaufmodus identisch über 1 Mio. Runden.
+
+**Zur Freigabe vorgelegt: Meilenstein M3** – Mathematik VALIDATED nach den Kriterien aus Dokument 04, Konfiguration v0.3.4 einfrieren. Danach beginnt Phase 4 (Phaser-Client).
 
 ## 2. Dokumente
 
@@ -78,6 +85,7 @@ Die Anpassungen betrafen jeweils nur Schatzpreise des Temple Bonus der Basisrund
 | F-11 | Ereignisprotokoll / Wiedergabe | Architektur 4 | TESTED |
 | F-12 | Simulator und Berichte | Mathematikplan 4 | TESTED |
 | F-13 | Mathematische Abstimmung auf 96,00 % | Mathematikplan 7 | VALIDATED (simuliert, v0.3.2; Freigabe M3 offen) |
+| F-22 | Feature-Kauf | GDD 7.5 | TESTED; Kauf-RTP simuliert 95,98 % |
 | F-14 | Client: Raster und Kaskaden | GDD 9 | NOT STARTED |
 | F-15 | Client: Expedition Track | GDD 9 | NOT STARTED |
 | F-16 | Client: UI, Demo-Guthaben, Historie | GDD 9 | NOT STARTED |
@@ -107,6 +115,7 @@ Die Anpassungen betrafen jeweils nur Schatzpreise des Temple Bonus der Basisrund
 | D-014 | Worker-Seeds per SplitMix64 statt Xoshiro-Jump | einfacher, gleichwertig für den Zweck | umgesetzt |
 | D-015 | Höhere Volatilität: eigene Relic-Werte in Free Spins, grössere Schätze; Ziel-Aufteilung 50 / 16 / 30 %, Trefferfrequenz 30–35 % | v0.2 war nur mittel volatil, Obergrenze nie erreicht | als freigegeben gewertet («Weiter») |
 | D-016 | RTP-Kriterium: Punktschätzung 96,00 ± 0,10 % und halbe Intervallbreite ≤ 0,10 | altes Kriterium bei σ ≈ 21× praktisch unerfüllbar | umgesetzt, zur Kenntnis |
+| D-018 | Feature-Kauf: Start wie 3 Compass, Preis 58,5× aus Messung, abschaltbar | Auftraggeber: «Feature-Kauf sollte möglich sein»; Kauf-RTP = Ziel-RTP | freigegeben (Regel); Preis zur Kenntnis |
 | D-017 | Feinabstimmung des RTP nur über Schatzpreise des Temple Bonus (v0.3.0 → v0.3.2) | Wirkung exakt vorab berechenbar, keine Regeländerung | umgesetzt |
 
 ## 5. Risikoregister
@@ -123,9 +132,9 @@ Die Anpassungen betrafen jeweils nur Schatzpreise des Temple Bonus der Basisrund
 
 ## 6. Offene Fragen an den Auftraggeber
 
-1. **Meilenstein M3 freigeben?** Konfiguration v0.3.2 einfrieren und mit dem Client (Phase 4) beginnen.
+1. **Meilenstein M3 freigeben?** Konfiguration v0.3.4 einfrieren und mit dem Client (Phase 4) beginnen.
 2. Wer erstellt die Grafik, und wie viele Stunden pro Woche stehen zur Verfügung?
-3. Feature-Kauf: weiterhin als «nein» angenommen. Einverstanden?
+3. Kaufpreis 58,5× (exakter Ziel-RTP) oder lieber ein runder Preis mit leicht abweichendem RTP (58× ≈ 96,8 %, 59× ≈ 95,2 %)?
 
 ## 7. Fehlerregister
 
