@@ -17,6 +17,9 @@ export const REFERENCE_ART: Record<number, string> = Object.fromEntries(
 
 export function preloadReferenceArt(scene: Phaser.Scene): void {
   for (const [id, url] of Object.entries(REFERENCE_ART)) scene.load.image(symbolKey(Number(id)), url);
+  scene.load.image('bg_portrait', 'bg_portrait.jpg');
+  scene.load.image('bg_landscape', 'bg_landscape.jpg');
+  scene.load.image('logo', 'logo.png');
 }
 
 export function createPlaceholderTextures(scene: Phaser.Scene): void {

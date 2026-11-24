@@ -15,6 +15,7 @@ export interface HudActions {
 /** Header (title, multiplier, free-spin counter) and the control bar. Pure display plus button callbacks. */
 export class Hud {
   private readonly title: Phaser.GameObjects.Text;
+  private readonly logo: Phaser.GameObjects.Image | null;
   private readonly demo: Phaser.GameObjects.Text;
   private readonly mult: Phaser.GameObjects.Text;
   private readonly fs: Phaser.GameObjects.Text;
@@ -29,8 +30,10 @@ export class Hud {
   readonly autoBtn: Button;
 
   constructor(private readonly scene: Phaser.Scene, actions: HudActions) {
-    const t = (text: string, color = COLOR.text) => scene.add.text(0, 0, text, { fontFamily: FONT, fontSize: '16px', color });
+    const t = (text: string, color = COLOR.text) => scene.add.text(0, 0, text, { fontFamily: FONT, fontSize: '16px', color, stroke: '#05070c', strokeThickness: 4 });
     this.title = t('TEMPLE OF THE LOST SUN', COLOR.win);
+    this.logo = scene.textures.exists('logo') ? scene.add.image(0, 0, 'logo').setOrigin(0, 0) : null;
+    this.title.setVisible(this.logo === null);
     this.demo = t('DEMO – kein Echtgeld', COLOR.dim);
     this.mult = t('×1', COLOR.win).setOrigin(1, 0);
     this.fs = t('', COLOR.text).setOrigin(1, 0);
@@ -49,9 +52,14 @@ export class Hud {
     const u = l.ui, h = l.header, c = l.controls;
     const px = (n: number) => `${Math.max(10, Math.round(n * u))}px`;
     this.title.setFontSize(px(l.portrait ? 19 : 20)).setPosition(h.x, h.y);
-    this.demo.setFontSize(px(11)).setPosition(h.x, h.y + this.title.height + 2);
+    if (this.logo) {
+      const lh = h.h * (l.portrait ? 0.82 : 1.0);
+      this.logo.setPosition(h.x, h.y - 2).setScale(lh / this.logo.height);
+      this.demo.setFontSize(px(10)).setPosition(h.x + this.logo.displayWidth + 8 * u, h.y + (l.portrait ? lh - 12 * u : 4 * u));
+      if (l.portrait) this.demo.setPosition(h.x, h.y + lh);
+    } else this.demo.setFontSize(px(11)).setPosition(h.x, h.y + this.title.height + 2);
     this.mult.setFontSize(px(26)).setPosition(h.x + h.w, h.y - 2);
-    this.infoBtn.layout(h.x + h.w - (l.portrait ? 86 : 110) * u, h.y + 22 * u, 44 * u, 44 * u, 20 * u);
+    this.infoBtn.layout(h.x + h.w - (l.portrait ? 124 : 150) * u, h.y + 22 * u, 44 * u, 44 * u, 20 * u);
     this.fs.setFontSize(px(12)).setPosition(h.x + h.w, h.y + this.mult.height);
     if (l.portrait) {
       const rowH = c.h / 3, y2 = c.y + rowH * 1.45;

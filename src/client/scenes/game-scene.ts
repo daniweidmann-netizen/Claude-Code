@@ -24,6 +24,9 @@ export class GameScene extends Phaser.Scene {
   private modal!: Modal;
   private presenter!: Presenter;
   private busy = false;
+  private bg: Phaser.GameObjects.Image | null = null;
+  private shade: Phaser.GameObjects.Rectangle | null = null;
+  private plate: Phaser.GameObjects.Graphics | null = null;
   private autoLeft = 0;
   private info!: InfoPanel;
   private rounds = 0;
@@ -47,6 +50,11 @@ export class GameScene extends Phaser.Scene {
 
     createPlaceholderTextures(this);
     this.cameras.main.setBackgroundColor(COLOR.bg);
+    if (this.textures.exists('bg_portrait')) {
+      this.bg = this.add.image(0, 0, 'bg_portrait').setDepth(-10);
+      this.shade = this.add.rectangle(0, 0, 10, 10, 0x05070c, 0.28).setOrigin(0).setDepth(-9);
+      this.plate = this.add.graphics().setDepth(-8);
+    }
     this.grid = new GridView(this, cfg.cols, cfg.rows);
     this.track = new TrackView(this, cfg.stationSteps, cfg.freeSpins.maxSeals);
     this.hud = new Hud(this, {
@@ -98,6 +106,14 @@ export class GameScene extends Phaser.Scene {
     const { width, height } = this.scale;
     const cfg = this.service.config;
     const l = computeLayout(width, height, cfg.cols, cfg.rows);
+    if (this.bg && this.shade) {
+      this.bg.setTexture(l.portrait ? 'bg_portrait' : 'bg_landscape');
+      // Cover the screen, anchored to the centre.
+      this.bg.setPosition(width / 2, height / 2).setScale(Math.max(width / this.bg.width, height / this.bg.height));
+      this.shade.setSize(width, height);
+      const c = l.controls;
+      this.plate?.clear().fillStyle(0x05070c, 0.55).fillRoundedRect(c.x - 6, c.y - 6, c.w + 12, c.h + 12, 14);
+    }
     this.grid.layout(l.grid.x, l.grid.y, l.grid.cell);
     this.track.layout(l.track, l.ui);
     this.hud.layout(l);

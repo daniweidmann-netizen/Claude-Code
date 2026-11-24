@@ -5,6 +5,7 @@ import { COLOR, FONT, STATION_NAMES } from '../theme.js';
 
 /** Expedition Track: start plus five stations, the explorer marker, Base Camp flag and temple seals. */
 export class TrackView extends Phaser.GameObjects.Container {
+  private readonly plate: Phaser.GameObjects.Graphics;
   private readonly path: Phaser.GameObjects.Graphics;
   private readonly nodes: Phaser.GameObjects.Arc[] = [];
   private readonly labels: Phaser.GameObjects.Text[] = [];
@@ -17,11 +18,12 @@ export class TrackView extends Phaser.GameObjects.Container {
 
   constructor(scene: Phaser.Scene, private readonly stepsNeeded: number[], maxSeals: number) {
     super(scene);
+    this.plate = scene.add.graphics();
     this.path = scene.add.graphics();
-    this.add(this.path);
+    this.add([this.plate, this.path]);
     for (let i = 0; i <= 5; i++) {
       const node = scene.add.circle(0, 0, 10, COLOR.panelLight).setStrokeStyle(2, COLOR.goldDark);
-      const label = scene.add.text(0, 0, i === 0 ? 'Start' : STATION_NAMES[i - 1], { fontFamily: FONT, fontSize: '12px', color: COLOR.dim }).setOrigin(0.5);
+      const label = scene.add.text(0, 0, i === 0 ? 'Start' : STATION_NAMES[i - 1], { fontFamily: FONT, fontSize: '12px', color: COLOR.dim, stroke: '#05070c', strokeThickness: 4 }).setOrigin(0.5);
       this.nodes.push(node); this.labels.push(label);
       this.add([node, label]);
     }
@@ -45,6 +47,7 @@ export class TrackView extends Phaser.GameObjects.Container {
         ? { x: R + 6, y: r.h - R - (i * (r.h - 2 * R)) / 5 }
         : { x: R + 4 + (i * (r.w - 2 * R - 8)) / 5, y: R + 4 });
     }
+    this.plate.clear().fillStyle(0x05070c, 0.55).fillRoundedRect(-6, -6, r.w + 12, r.h + 12, 12);
     this.path.clear().lineStyle(3, COLOR.line, 1).beginPath().moveTo(this.pts[0].x, this.pts[0].y);
     this.pts.slice(1).forEach((p) => this.path.lineTo(p.x, p.y));
     this.path.strokePath();
@@ -71,7 +74,7 @@ export class TrackView extends Phaser.GameObjects.Container {
     const c = this.pts[this.campAt];
     if (c) this.camp.setPosition(c.x, c.y - 18);
     this.nodes.forEach((n, i) => n.setFillStyle(i > 0 && i <= this.station ? COLOR.gold : COLOR.panelLight));
-    this.labels.forEach((l, i) => l.setColor(i > 0 && i <= this.station ? COLOR.text : COLOR.dim));
+    this.labels.forEach((l, i) => l.setColor(i > 0 && i <= this.station ? COLOR.text : '#c3cada'));
   }
 
   /** Sets the marker without animation (start of a spin). */

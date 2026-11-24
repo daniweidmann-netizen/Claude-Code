@@ -66,7 +66,7 @@ async function finishRound(p, w, h) {
 
     // Info panel through the real button: rules, paytable, history.
     const u = w >= h ? Math.min(w / 900, h / 480) : Math.min(w / 390, h / 760), m = Math.round(Math.min(w, h) * 0.03);
-    await p.mouse.click(w - m - (w >= h ? 110 : 86) * u, m + 22 * u);
+    await p.mouse.click(w - m - (w >= h ? 150 : 124) * u, m + 22 * u);
     await p.waitForSelector('.tls-info.open', { timeout: 5000 }).catch(() => problems.push(`${name}: info panel did not open`));
     const rules = await p.locator('.tls-info main').innerText().catch(() => '');
     if (!rules.includes('Nicht zertifiziert') || !rules.includes('Expedition Track')) problems.push(`${name}: rules text incomplete`);

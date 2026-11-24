@@ -55,4 +55,23 @@ Kosten des Symbolsatzes: 7 Bilder, rund 5 Credits (Schätzung aus dem Einzelprei
 
 **Offene Gestaltungspunkte:** Scarab, Chalice und Crown sind alle überwiegend golden und unterscheiden sich vor allem über die Silhouette – Lesbarkeit für Farbfehlsichtige und auf kleinen Displays ist nicht getestet. Die Explorer-Figur ist ein generiertes Gesicht; eine zufällige Ähnlichkeit mit einer realen Person ist nicht geprüft.
 
-Übersicht: `assets/reference/contact_sheet_all.png`, Vorschau im Spiel: `assets/reference/ingame_preview.png`. Mit `?art=placeholder` zeigt der Client die im Code gezeichneten Platzhalter.
+Übersicht: `assets/reference/contact_sheet_all.png`, Vorschau im Spiel: `assets/reference/ingame_portrait.png` und `ingame_landscape.png`. Mit `?art=placeholder` zeigt der Client die im Code gezeichneten Platzhalter.
+
+## Hintergrund und Logo (2026-11-24)
+
+Gleiches Werkzeug und Modell. Hintergründe je 1 Variante (752×1344 und 1344×752), Logo 2 Varianten (1344×752). Status: REFERENZ, im Client eingebunden; rechtliche Punkte wie oben offen, keine menschliche Überarbeitung.
+
+| Asset | Rohdatei | Spieldatei | Job-ID | Bearbeitung |
+|---|---|---|---|---|
+| Hintergrund Hochformat | `raw/bg_portrait.png` | `public/bg_portrait.jpg` | ddd4daa6-d261-4e4e-96a9-946c05592313 | automatisch: JPEG, Qualität 86 |
+| Hintergrund Querformat | `raw/bg_landscape.png` | `public/bg_landscape.jpg` | b1836ad1-1088-42ec-a510-71264fc7cbb8 | automatisch: JPEG, Qualität 86 |
+| Logo A | `raw/logo_a.png` | – | 42daf621-3e6c-4a00-a324-dba83d7ef5cf | keine (nicht verwendet) |
+| Logo B | `raw/logo_b.png` | `public/logo.png` | c8d81381-5982-42d3-9415-03d4be36ee6c | automatisch: dunkler Hintergrund per Helligkeitsschwelle transparent gemacht, zugeschnitten, auf 720 px Breite verkleinert |
+
+**Prompt Hintergrund** (Hochformat; Querformat identisch bis auf «Wide landscape» und die Lage der ruhigen Fläche):
+> Vertical mobile game background for a premium adventure slot game: the overgrown entrance of a lost sun temple deep in a jungle at dusk, massive weathered stone stairway and doorway with invented step-fret carvings and a large carved sun disc above the gate, warm golden light glowing from inside the temple, hanging vines, mist, fireflies, deep teal and navy shadows. The whole middle of the image is calm, dark and low in detail (dark stone wall in shadow) so that game symbols placed on top stay readable; detail and light concentrated at the top and the far edges. Stylised painterly 3D rendering matching polished casino game art. Original invented architecture, not a real site and not from any existing game. No characters, no text, no letters, no logo, no UI, no frame, no watermark.
+
+**Prompt Logo:**
+> Game logo with the exact text "TEMPLE OF THE LOST SUN" in two lines: small line "TEMPLE OF THE" above, large line "LOST SUN" below. Custom chiselled golden capital letters with bevelled edges and subtle carved step-fret details, the letter O in "LOST" replaced by a small radiant sun disc with short pointed rays and an amber gem, thin jade-green and turquoise accents, soft warm glow. Correct spelling, every letter clearly legible, strong silhouette readable at small size. Original lettering, not resembling any existing game logo. Centered on a plain flat dark navy background (#10131c), no other words, no tagline, no frame, no extra objects, no watermark.
+
+**Offene Punkte:** Die beiden Hintergründe sind getrennt erzeugt und zeigen nicht exakt dasselbe Bauwerk (Sonnenscheibe im Hochformat ohne, im Querformat mit Gesicht). Das Logo liegt nur als Rasterbild vor, nicht als Vektor. Die Markenrecherche zum Namen (T-508) ist noch nicht durchgeführt.
