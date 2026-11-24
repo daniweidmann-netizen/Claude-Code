@@ -269,6 +269,15 @@ Damit hat das Feature einen klaren Spannungsbogen: Keys bauen das Lager aus, Rel
 - Nach dem letzten Free Spin wird bei mindestens einem Siegel der Temple Bonus genau einmal gespielt: die Preistabelle richtet sich nach der Anzahl der Siegel (Abschnitt 6.3).
 - Im Finale gibt es in keiner Stufe einen Free-Spin-Preis; das Finale kann keine weiteren Free Spins auslösen.
 
+### 7.5 Feature-Kauf («Expedition kaufen», freigegeben am 2026-11-24)
+
+- Der Spieler kann die Free Spins direkt kaufen. Der Kauf ersetzt den Einsatz der Runde: Bezahlt wird der Kaufpreis, eine Basisrunde findet nicht statt.
+- Die gekaufte Runde startet genau so wie nach 3 Compass: 8 Free Spins, Base Camp auf Station 1. Danach gelten alle Regeln der Abschnitte 7.2 bis 7.4 unverändert (zusätzliche Free Spins, Siegel, Temple Finale). Die Wahrscheinlichkeiten innerhalb der Free Spins sind dieselben wie bei natürlich ausgelösten.
+- Kaufpreis (Kandidat v0.3.3): **58,6× Gesamteinsatz**, abgeleitet aus dem gemessenen Durchschnittswert des Features, sodass der RTP des Kaufs dem Ziel-RTP entspricht. Messwert siehe `docs/math/reports/`.
+- Die Gewinnobergrenze bleibt 10 000× **Einsatz** (nicht Kaufpreis).
+- Der Kauf ist ein Konfigurationsschalter (`featureBuy.enabled`). In einigen regulierten Märkten ist Feature-Kauf nicht zulässig; welche das zum Zeitpunkt einer Lizenzierung sind, klärt der Lizenznehmer. Ohne Kauf ist das Spiel vollständig und unverändert spielbar.
+- UX: eigene Schaltfläche mit Preis in Währung, Bestätigungsdialog mit Preis und Hinweis, dass ein Gewinn nicht garantiert ist; nicht verfügbar bei zu kleinem Guthaben, im Autoplay und während einer laufenden Runde.
+
 ## 8. Zielkennzahlen (Entwicklungsziele; Messwerte stehen in den Berichten)
 
 | Kennzahl | Ziel |
@@ -323,7 +332,6 @@ Raster · Expedition Track mit Explorer-Figur und Stationssymbolen (Antippen zei
 
 ## 12. Für später vorgesehen (nicht Teil von v1.0)
 
-- Feature-Kauf (je nach Markt zulässig oder verboten; als abschaltbare Option).
 - Weitere RTP-Varianten.
 - Lokalisierung der Regeltexte.
 - Turnier-/Promotion-Schnittstellen des Providers.
