@@ -1,6 +1,7 @@
 import Phaser from 'phaser';
-import { tween } from '../anim.js';
+import { tween, wait } from '../anim.js';
 import type { Rect } from '../layout.js';
+import { DPR, REDUCED_MOTION } from '../env.js';
 import { COLOR, FONT, STATION_NAMES } from '../theme.js';
 
 /** Expedition Track: start plus five stations, the explorer marker, Base Camp flag and temple seals. */
@@ -23,15 +24,15 @@ export class TrackView extends Phaser.GameObjects.Container {
     this.add([this.plate, this.path]);
     for (let i = 0; i <= 5; i++) {
       const node = scene.add.circle(0, 0, 10, COLOR.panelLight).setStrokeStyle(2, COLOR.goldDark);
-      const label = scene.add.text(0, 0, i === 0 ? 'Start' : STATION_NAMES[i - 1], { fontFamily: FONT, fontSize: '12px', color: COLOR.dim, stroke: '#05070c', strokeThickness: 4 }).setOrigin(0.5);
+      const label = scene.add.text(0, 0, i === 0 ? 'Start' : STATION_NAMES[i - 1], { fontFamily: FONT, fontSize: '12px', color: COLOR.dim, stroke: '#05070c', strokeThickness: 4 * DPR }).setOrigin(0.5);
       this.nodes.push(node); this.labels.push(label);
       this.add([node, label]);
     }
-    this.camp = scene.add.text(0, 0, '⛺', { fontSize: '16px' }).setOrigin(0.5).setVisible(false);
+    this.camp = scene.add.text(0, 0, '⛺', { fontSize: `${16 * DPR}px` }).setOrigin(0.5).setVisible(false);
     this.marker = scene.add.circle(0, 0, 8, COLOR.gold).setStrokeStyle(2, 0xffffff);
     this.add([this.camp, this.marker]);
     for (let i = 0; i < maxSeals; i++) {
-      const s = scene.add.circle(0, 0, 6, COLOR.panelLight).setStrokeStyle(2, COLOR.gold).setVisible(false);
+      const s = scene.add.circle(0, 0, 6 * DPR, COLOR.panelLight).setStrokeStyle(2, COLOR.gold).setVisible(false);
       this.seals.push(s); this.add(s);
     }
     scene.add.existing(this);
@@ -47,11 +48,11 @@ export class TrackView extends Phaser.GameObjects.Container {
         ? { x: R + 6, y: r.h - R - (i * (r.h - 2 * R)) / 5 }
         : { x: R + 4 + (i * (r.w - 2 * R - 8)) / 5, y: R + 4 });
     }
-    this.plate.clear().fillStyle(0x05070c, 0.55).fillRoundedRect(-6, -6, r.w + 12, r.h + 12, 12);
+    this.plate.clear().fillStyle(0x05070c, 0.55).fillRoundedRect(-6 * DPR, -6 * DPR, r.w + 12 * DPR, r.h + 12 * DPR, 12 * DPR);
     this.path.clear().lineStyle(3, COLOR.line, 1).beginPath().moveTo(this.pts[0].x, this.pts[0].y);
     this.pts.slice(1).forEach((p) => this.path.lineTo(p.x, p.y));
     this.path.strokePath();
-    const size = `${Math.max(9, Math.round(11 * ui))}px`;
+    const size = `${Math.max(9 * DPR, Math.round(11 * ui))}px`;
     this.pts.forEach((p, i) => {
       this.nodes[i].setPosition(p.x, p.y).setRadius(i === 5 ? R * 1.25 : R);
       const text = i === 0 ? 'Start' : `${STATION_NAMES[i - 1]}`;
@@ -62,8 +63,8 @@ export class TrackView extends Phaser.GameObjects.Container {
     this.marker.setRadius(R * 0.7);
     this.seals.forEach((s, i) => {
       const top = this.pts[5];
-      if (r.vertical) s.setPosition(top.x + R + 16 + i * 16, top.y - R - 8);
-      else s.setPosition(top.x - i * 15, top.y + R + 6 + parseInt(size, 10) * 2.6);
+      if (r.vertical) s.setPosition(top.x + R + 16 * DPR + i * 16 * DPR, top.y - R - 8 * DPR);
+      else s.setPosition(top.x - i * 15 * DPR, top.y + R + 6 + parseInt(size, 10) * 2.6);
     });
     this.refresh();
   }
@@ -72,7 +73,7 @@ export class TrackView extends Phaser.GameObjects.Container {
     const p = this.pts[this.station] ?? { x: 0, y: 0 };
     this.marker.setPosition(p.x, p.y);
     const c = this.pts[this.campAt];
-    if (c) this.camp.setPosition(c.x, c.y - 18);
+    if (c) this.camp.setPosition(c.x, c.y - 18 * DPR);
     this.nodes.forEach((n, i) => n.setFillStyle(i > 0 && i <= this.station ? COLOR.gold : COLOR.panelLight));
     this.labels.forEach((l, i) => l.setColor(i > 0 && i <= this.station ? COLOR.text : '#c3cada'));
   }
@@ -84,6 +85,7 @@ export class TrackView extends Phaser.GameObjects.Container {
     while (this.station < to) {
       this.station++;
       const p = this.pts[this.station];
+      if (REDUCED_MOTION) { this.refresh(); await wait(this.scene, 160); continue; }
       await tween(this.scene, { targets: this.marker, x: p.x, y: p.y, duration: 200, ease: 'Sine.easeInOut' });
       this.refresh();
       const n = this.nodes[this.station];

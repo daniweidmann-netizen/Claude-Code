@@ -4,7 +4,8 @@
  *
  * Plays normal and bought rounds through the real UI in portrait and
  * landscape, opens bonus chambers by clicking them, and checks that
- *  - no console or page error occurs,
+ *  - no console or page error occurs, all art loads, the canvas renders at device resolution,
+ *  - one run uses reduced motion (?motion=reduced),
  *  - the drawn grid always equals the grid in the event log (mismatches = 0),
  *  - the displayed books equal stake and win of the round history.
  */
@@ -28,16 +29,25 @@ async function finishRound(p, w, h) {
   const browser = await chromium.launch();
   const problems = [];
   let picksSeen = 0;
-  for (const [name, w, h] of [['portrait', 390, 844], ['landscape', 1280, 720], ['small', 360, 640]]) {
-    const p = await browser.newPage({ viewport: { width: w, height: h } });
+  // name, CSS width, CSS height, device pixel ratio, extra query
+  // The high-density run is short: headless Chromium renders in software, which is slow at device resolution.
+  for (const [name, w, h, dsf, extra, rounds] of [['portrait', 390, 844, 1, '', 40], ['landscape', 1280, 720, 1, '', 40], ['small', 360, 640, 1, '&motion=reduced', 40], ['hidpi', 390, 844, 3, '', 4]]) {
+    const p = await browser.newPage({ viewport: { width: w, height: h }, deviceScaleFactor: dsf });
     p.on('console', (m) => { if (m.type() === 'error') problems.push(`${name}: ${m.text()}`); });
     p.on('pageerror', (e) => problems.push(`${name}: ${e.message}`));
-    await p.goto(`${URL}?seed=${name.length * 1000}&fast=25&balance=5000000`);
+    await p.goto(`${URL}?seed=${name.length * 1000}&fast=25&balance=5000000${extra}`);
     await p.waitForFunction(() => window.__tls, null, { timeout: 20000 });
+    const env = await p.evaluate(() => window.__tls.state());
+    const dpr = Math.min(dsf, 2);
+    if (env.dpr !== dpr) problems.push(`${name}: dpr ${env.dpr}`);
+    if (env.canvas[0] !== w * dpr || env.canvas[1] !== h * dpr) problems.push(`${name}: canvas ${env.canvas} for ${w}x${h}@${dpr}`);
+    if (env.loadErrors.length) problems.push(`${name}: assets failed to load: ${env.loadErrors}`);
+    if (env.textureSize !== 256) problems.push(`${name}: symbol art not in use (texture ${env.textureSize})`);
+    if (env.reducedMotion !== extra.includes('reduced')) problems.push(`${name}: reducedMotion ${env.reducedMotion}`);
     if (out) await p.screenshot({ path: `${out}/${name}_idle.png` });
     let balance = (await p.evaluate(() => window.__tls.state())).balance;
-    for (let i = 0; i < 40; i++) {
-      const kind = i % 8 === 7 ? 'buy' : 'spin';
+    for (let i = 0; i < rounds; i++) {
+      const kind = i % 8 === (rounds < 8 ? 3 : 7) ? 'buy' : 'spin';
       await p.evaluate((k) => window.__tls[k](), kind);
       if (out && kind === 'buy' && i === 7) { await p.waitForTimeout(400); await p.screenshot({ path: `${out}/${name}_freespins.png` }); }
       await finishRound(p, w, h);
@@ -75,10 +85,10 @@ async function finishRound(p, w, h) {
     if (await p.locator('.tls-info td').count() !== 40) problems.push(`${name}: paytable cells`);
     if (out) await p.screenshot({ path: `${out}/${name}_paytable.png` });
     await p.getByRole('tab', { name: 'Verlauf' }).click();
-    if (await p.locator('.tls-info tbody tr').count() !== 50) problems.push(`${name}: history rows`);
+    if (await p.locator('.tls-info tbody tr').count() !== Math.min(50, rounds + 10)) problems.push(`${name}: history rows`);
     await p.getByRole('button', { name: 'Schliessen' }).click();
     if (await p.locator('.tls-info.open').count() !== 0) problems.push(`${name}: info panel did not close`);
-    console.log(name, 'rounds 40, balance', balance);
+    console.log(name, 'rounds', rounds, 'balance', balance);
     await p.close();
   }
   await browser.close();

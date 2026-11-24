@@ -1,5 +1,6 @@
 import Phaser from 'phaser';
 import { formatMoney, type Layout } from '../layout.js';
+import { DPR, REDUCED_MOTION } from '../env.js';
 import { COLOR, FONT } from '../theme.js';
 import { Button } from './button.js';
 
@@ -32,7 +33,7 @@ export class Hud {
   readonly muteBtn: Button;
 
   constructor(private readonly scene: Phaser.Scene, actions: HudActions) {
-    const t = (text: string, color = COLOR.text) => scene.add.text(0, 0, text, { fontFamily: FONT, fontSize: '16px', color, stroke: '#05070c', strokeThickness: 4 });
+    const t = (text: string, color = COLOR.text) => scene.add.text(0, 0, text, { fontFamily: FONT, fontSize: '16px', color, stroke: '#05070c', strokeThickness: 4 * DPR });
     this.title = t('TEMPLE OF THE LOST SUN', COLOR.win);
     this.logo = scene.textures.exists('logo') ? scene.add.image(0, 0, 'logo').setOrigin(0, 0) : null;
     this.title.setVisible(this.logo === null);
@@ -53,7 +54,7 @@ export class Hud {
 
   layout(l: Layout): void {
     const u = l.ui, h = l.header, c = l.controls;
-    const px = (n: number) => `${Math.max(10, Math.round(n * u))}px`;
+    const px = (n: number) => `${Math.max(10 * DPR, Math.round(n * u))}px`;
     this.title.setFontSize(px(l.portrait ? 19 : 20)).setPosition(h.x, h.y);
     if (this.logo) {
       const lh = h.h * (l.portrait ? 0.72 : 1.0);
@@ -98,7 +99,7 @@ export class Hud {
   setWin(minor: number): void { this.win.setText(minor > 0 ? `Gewinn  ${formatMoney(minor)}` : ''); }
   setMultiplier(m: number): void {
     this.mult.setText(`×${m}`);
-    this.scene.tweens.add({ targets: this.mult, scale: 1.25, duration: 110, yoyo: true });
+    if (!REDUCED_MOTION) this.scene.tweens.add({ targets: this.mult, scale: 1.25, duration: 110, yoyo: true });
   }
   setFreeSpins(text: string): void { this.fs.setText(text); }
   /** `autoLeft` > 0 means autoplay is running; its button then stays active so it can be stopped. */

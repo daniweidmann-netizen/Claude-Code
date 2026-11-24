@@ -1,4 +1,5 @@
 import Phaser from 'phaser';
+import { DPR } from '../env.js';
 import { COLOR, FONT } from '../theme.js';
 
 /** Rounded text button with a minimum touch target, enabled/disabled state and keyboard-free activation. */
@@ -21,7 +22,7 @@ export class Button extends Phaser.GameObjects.Container {
   }
 
   layout(x: number, y: number, w: number, h: number, fontPx: number): this {
-    this.bw = Math.max(w, 44); this.bh = Math.max(h, 44);
+    this.bw = Math.max(w, 44 * DPR); this.bh = Math.max(h, 44 * DPR); // 44 CSS px touch target
     this.setPosition(x, y);
     this.label.setFontSize(`${Math.round(fontPx)}px`);
     this.setSize(this.bw, this.bh);

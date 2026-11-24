@@ -2,6 +2,7 @@ import Phaser from 'phaser';
 import { CONFIG_V1 } from '../../engine/index.js';
 import { LocalGameService, type GameService, type RoundKind } from '../../session/game-service.js';
 import { Sfx } from '../audio/sfx.js';
+import { DPR, REDUCED_MOTION } from '../env.js';
 import { computeLayout, formatMoney } from '../layout.js';
 import { Presenter } from '../presentation/presenter.js';
 import { historyHtml, paytableHtml, rulesHtml } from '../rules-text.js';
@@ -30,6 +31,7 @@ export class GameScene extends Phaser.Scene {
   private shade: Phaser.GameObjects.Rectangle | null = null;
   private plate: Phaser.GameObjects.Graphics | null = null;
   private autoLeft = 0;
+  private readonly loadErrors: string[] = [];
   private readonly sfx = new Sfx();
   private info!: InfoPanel;
   private rounds = 0;
@@ -37,6 +39,15 @@ export class GameScene extends Phaser.Scene {
   constructor() { super('game'); }
 
   preload(): void {
+    // Loading screen: a plain progress bar; nothing else can be shown before the art has arrived.
+    const { width, height } = this.scale;
+    const w = Math.min(width * 0.6, 420 * DPR), h = 10 * DPR;
+    const frame = this.add.rectangle(width / 2, height / 2, w + 6 * DPR, h + 6 * DPR).setStrokeStyle(2 * DPR, COLOR.goldDark);
+    const bar = this.add.rectangle(width / 2 - w / 2, height / 2, 1, h, COLOR.gold).setOrigin(0, 0.5);
+    const label = this.add.text(width / 2, height / 2 - 28 * DPR, 'Laden …', { fontFamily: 'Georgia, serif', fontSize: `${16 * DPR}px`, color: COLOR.text }).setOrigin(0.5);
+    this.load.on('progress', (p: number) => { bar.width = Math.max(1, w * p); });
+    this.load.on('loaderror', (file: { key: string }) => { this.loadErrors.push(file.key); });
+    this.load.once('complete', () => { frame.destroy(); bar.destroy(); label.destroy(); });
     if (new URLSearchParams(window.location.search).get('art') !== 'placeholder') preloadReferenceArt(this);
   }
 
@@ -96,6 +107,8 @@ export class GameScene extends Phaser.Scene {
     // Read-only hook for automated end-to-end tests.
     (window as unknown as Record<string, unknown>).__tls = {
       state: () => ({
+        dpr: DPR, reducedMotion: REDUCED_MOTION, loadErrors: this.loadErrors, textureSize: this.grid.textureSize,
+        canvas: [this.scale.width, this.scale.height],
         busy: this.busy, rounds: this.rounds, autoLeft: this.autoLeft, info: this.info.isOpen, balance: this.service.balance, bet: this.service.bet,
         modal: this.modal.open, mismatches: this.presenter.mismatches, grid: this.grid.snapshot(),
         history: this.service.history().slice(0, 5),
@@ -120,7 +133,7 @@ export class GameScene extends Phaser.Scene {
       this.bg.setPosition(width / 2, height / 2).setScale(Math.max(width / this.bg.width, height / this.bg.height));
       this.shade.setSize(width, height);
       const c = l.controls;
-      this.plate?.clear().fillStyle(0x05070c, 0.55).fillRoundedRect(c.x - 6, c.y - 6, c.w + 12, c.h + 12, 14);
+      this.plate?.clear().fillStyle(0x05070c, 0.55).fillRoundedRect(c.x - 6 * DPR, c.y - 6 * DPR, c.w + 12 * DPR, c.h + 12 * DPR, 14 * DPR);
     }
     this.grid.layout(l.grid.x, l.grid.y, l.grid.cell);
     this.track.layout(l.track, l.ui);

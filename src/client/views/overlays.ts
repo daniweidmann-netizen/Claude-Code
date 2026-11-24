@@ -1,6 +1,7 @@
 import Phaser from 'phaser';
 import { tween, wait } from '../anim.js';
 import { formatMoney } from '../layout.js';
+import { DPR, REDUCED_MOTION } from '../env.js';
 import { COLOR, FONT } from '../theme.js';
 import { Button } from './button.js';
 
@@ -13,7 +14,7 @@ export class Banner {
   constructor(private readonly scene: Phaser.Scene) {
     this.dim = scene.add.rectangle(0, 0, 10, 10, 0x05070c, 0.66).setOrigin(0).setDepth(49).setVisible(false);
     this.text = scene.add.text(0, 0, '', {
-      fontFamily: FONT, fontSize: '28px', color: COLOR.win, align: 'center', stroke: '#000000', strokeThickness: 6,
+      fontFamily: FONT, fontSize: '28px', color: COLOR.win, align: 'center', stroke: '#000000', strokeThickness: 6 * DPR,
     }).setOrigin(0.5).setDepth(50).setAlpha(0);
   }
   /** Text currently on screen, or '' (used by end-to-end tests). */
@@ -22,8 +23,8 @@ export class Banner {
   async show(message: string, holdMs = 650): Promise<void> {
     const { width, height } = this.scene.scale;
     this.text.setText(message).setFontSize(`${Math.round(Math.min(width, height) * 0.06)}px`)
-      .setPosition(width / 2, height * 0.42).setScale(0.6).setAlpha(0);
-    await tween(this.scene, { targets: this.text, scale: 1, alpha: 1, duration: 180, ease: 'Back.easeOut' });
+      .setPosition(width / 2, height * 0.42).setScale(REDUCED_MOTION ? 1 : 0.6).setAlpha(0);
+    await tween(this.scene, { targets: this.text, scale: 1, alpha: 1, duration: 180, ease: REDUCED_MOTION ? 'Linear' : 'Back.easeOut' });
     await wait(this.scene, holdMs);
     await tween(this.scene, { targets: this.text, alpha: 0, duration: 160 });
   }
@@ -34,9 +35,16 @@ export class Banner {
     const size = Math.round(Math.min(width, height) * 0.075);
     this.dim.setSize(width, height).setVisible(true);
     this.text.setFontSize(`${size}px`).setPosition(width / 2, height * 0.42).setScale(0.6).setAlpha(0).setText(`${title}\n${formatMoney(0)}`);
-    await tween(this.scene, { targets: this.text, scale: 1, alpha: 1, duration: 220, ease: 'Back.easeOut' });
-    await countUp(this.scene, minor, ms, (v) => this.text.setText(`${title}\n${formatMoney(Math.floor(v))}`));
-    await tween(this.scene, { targets: this.text, scale: 1.12, duration: 200, yoyo: true });
+    if (REDUCED_MOTION) {
+      // No counting or zooming: the final amount fades in and stays.
+      this.text.setScale(1).setText(`${title}\n${formatMoney(minor)}`);
+      await tween(this.scene, { targets: this.text, alpha: 1, duration: 200 });
+      await wait(this.scene, ms);
+    } else {
+      await tween(this.scene, { targets: this.text, scale: 1, alpha: 1, duration: 220, ease: 'Back.easeOut' });
+      await countUp(this.scene, minor, ms, (v) => this.text.setText(`${title}\n${formatMoney(Math.floor(v))}`));
+      await tween(this.scene, { targets: this.text, scale: 1.12, duration: 200, yoyo: true });
+    }
     await wait(this.scene, 900);
     await tween(this.scene, { targets: this.text, alpha: 0, duration: 200 });
     this.dim.setVisible(false);
@@ -126,7 +134,7 @@ export class Modal {
     if (!c) return;
     c.btn.setText(prize.title).setAlpha(chosen ? 1 : 0.55);
     c.text.setText(chosen ? prize.detail : `${prize.detail}\n(nicht gewählt)`).setColor(chosen ? COLOR.win : COLOR.dim);
-    if (chosen) await tween(this.scene, { targets: c.btn, scale: 1.12, duration: 160, yoyo: true });
+    if (chosen && !REDUCED_MOTION) await tween(this.scene, { targets: c.btn, scale: 1.12, duration: 160, yoyo: true });
   }
 }
 
