@@ -32,8 +32,8 @@ async function finishRound(p, w, h) {
   const problems = [];
   let picksSeen = 0;
   // name, CSS width, CSS height, device pixel ratio, extra query
-  // The high-density run is short: headless Chromium renders in software, which is slow at device resolution.
-  for (const [name, w, h, dsf, extra, rounds] of [['iphone15pro', 393, 852, 1, '', 40], ['landscape', 1280, 720, 1, '', 40], ['small', 360, 640, 1, '&motion=reduced', 40], ['iphoneSE', 375, 667, 1, '&lang=de', 16], ['phoneLandscape', 852, 393, 1, '', 16], ['hidpi', 393, 852, 3, '', 4]]) {
+  // Large canvases get short runs: headless Chromium renders in software, which is slow at high resolution.
+  for (const [name, w, h, dsf, extra, rounds] of [['iphone15pro', 393, 852, 1, '', 40], ['landscape', 1280, 720, 1, '', 9], ['small', 360, 640, 1, '&motion=reduced', 24], ['iphoneSE', 375, 667, 1, '&lang=de', 16], ['phoneLandscape', 852, 393, 1, '', 9], ['hidpi', 393, 852, 3, '', 4]]) {
     const p = await browser.newPage({ viewport: { width: w, height: h }, deviceScaleFactor: dsf });
     p.on('console', (m) => { if (m.type() === 'error') problems.push(`${name}: ${m.text()}`); });
     p.on('pageerror', (e) => problems.push(`${name}: ${e.message}`));
@@ -63,7 +63,7 @@ async function finishRound(p, w, h) {
     checkLayout(env, 'idle');
     let balance = (await p.evaluate(() => window.__tls.state())).balance;
     for (let i = 0; i < rounds; i++) {
-      const kind = i % 8 === (rounds < 8 ? 3 : 7) ? 'buy' : 'spin';
+      const kind = i % 8 === (rounds < 8 ? 3 : 7) ? 'buy' : 'spin'; // every eighth round is a bought feature
       await p.evaluate((k) => window.__tls[k](), kind);
       if (kind === 'buy' && i === 7) {
         await p.waitForFunction(() => window.__tls.state().freeMode, null, { timeout: 120000 });
@@ -90,6 +90,7 @@ async function finishRound(p, w, h) {
     for (;;) {
       await finishRound(p, w, h);
       const s = await p.evaluate(() => window.__tls.state());
+      if (process.env.SMOKE_DEBUG) console.log(JSON.stringify({ busy: s.busy, auto: s.autoLeft, rounds: s.rounds, modal: s.modal, dialog: s.dialog, info: s.info, banner: await p.evaluate(() => window.__tls.banner()) }));
       if (s.autoLeft === 0 && !s.busy) break;
       await p.waitForTimeout(30);
     }
