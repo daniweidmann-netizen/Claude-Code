@@ -1,5 +1,5 @@
 {
- "version": "0.3.0-candidate",
+ "version": "0.3.1-candidate",
  "cols": 6,
  "rows": 5,
  "minClusterSize": 5,
@@ -176,12 +176,12 @@
    },
    {
     "kind": "treasure",
-    "value": 1400,
+    "value": 1500,
     "weight": 240
    },
    {
     "kind": "treasure",
-    "value": 2800,
+    "value": 3000,
     "weight": 150
    },
    {
