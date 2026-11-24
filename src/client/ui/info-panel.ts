@@ -6,7 +6,7 @@ export interface InfoTab { id: string; label: string; html: () => string }
 
 const CSS = `
 .tls-info { position: fixed; inset: 0; z-index: 10; display: none; background: rgba(5,7,12,.92); color: #f3ead6;
-  font: 15px/1.45 Georgia, "Times New Roman", serif; }
+  font: 15px/1.5 "Source Sans 3", "Helvetica Neue", Arial, sans-serif; -webkit-user-select: text; user-select: text; }
 .tls-info.open { display: flex; flex-direction: column; }
 .tls-info header { display: flex; gap: 6px; padding: 10px; padding-top: max(10px, env(safe-area-inset-top)); align-items: center; flex-wrap: wrap; }
 .tls-info button { min-height: 44px; min-width: 44px; padding: 0 14px; border-radius: 12px; border: 2px solid #9a7420;
@@ -14,7 +14,7 @@ const CSS = `
 .tls-info button[aria-selected="true"] { background: #9a7420; }
 .tls-info .close { margin-left: auto; }
 .tls-info main { flex: 1; overflow-y: auto; padding: 4px 16px 32px; max-width: 760px; width: 100%; box-sizing: border-box; margin: 0 auto; }
-.tls-info h3 { color: #ffd76a; margin: 18px 0 6px; font-size: 17px; }
+.tls-info h3 { color: #ffd76a; margin: 20px 0 6px; font: 700 16px "Cinzel", Georgia, serif; letter-spacing: .04em; }
 .tls-info ul, .tls-info ol { padding-left: 20px; margin: 6px 0; }
 .tls-info li { margin: 4px 0; }
 .tls-info .scroll { overflow-x: auto; }
@@ -36,7 +36,7 @@ export class InfoPanel {
   onAction: ((action: string, value: string) => void) | null = null;
   private currentId = '';
 
-  constructor(private readonly tabs: InfoTab[]) {
+  constructor(private readonly tabs: InfoTab[], closeLabel = 'Close') {
     const style = document.createElement('style');
     style.textContent = CSS;
     document.head.appendChild(style);
@@ -44,7 +44,7 @@ export class InfoPanel {
     this.root.className = 'tls-info';
     this.root.setAttribute('role', 'dialog');
     this.root.setAttribute('aria-modal', 'true');
-    this.root.setAttribute('aria-label', 'Spielinformationen');
+    this.root.setAttribute('aria-label', 'Game information');
     const header = document.createElement('header');
     header.setAttribute('role', 'tablist');
     for (const t of tabs) {
@@ -57,7 +57,7 @@ export class InfoPanel {
     }
     const close = document.createElement('button');
     close.className = 'close';
-    close.textContent = 'Schliessen';
+    close.textContent = closeLabel;
     close.addEventListener('click', () => this.close());
     header.appendChild(close);
     this.main = document.createElement('main');

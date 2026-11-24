@@ -7,6 +7,9 @@
  *  - no console or page error occurs, all art loads, the canvas renders at device resolution,
  *  - one run uses reduced motion (?motion=reduced),
  *  - the drawn grid always equals the grid in the event log (mismatches = 0),
+ *  - no symbol is ever stretched (aspect ratio stays exact),
+ *  - texts and buttons stay on screen, do not overlap and are large enough to touch,
+ *  - the scenery returns to the base game after free spins,
  *  - the displayed books equal stake and win of the round history.
  */
 const { chromium } = require('playwright');
@@ -18,9 +21,8 @@ async function finishRound(p, w, h) {
     await p.waitForFunction(() => !window.__tls.state().busy || window.__tls.state().modal, null, { timeout: 120000 });
     const s = await p.evaluate(() => window.__tls.state());
     if (!s.busy) return;
-    // A chamber pick is pending: click the chambers from left to right.
-    const u = Math.min(w, h) / 390, cw = Math.min(104 * u, (w * 0.9) / 3 - 8);
-    for (let i = 0; i < 3; i++) await p.mouse.click(w / 2 + (i - 1) * (cw + 10), h * 0.55);
+    // A chamber pick is pending: click the chamber doors from left to right.
+    for (const d of s.doors) await p.mouse.click(d.x, d.y);
     await p.waitForTimeout(150);
   }
 }
@@ -31,7 +33,7 @@ async function finishRound(p, w, h) {
   let picksSeen = 0;
   // name, CSS width, CSS height, device pixel ratio, extra query
   // The high-density run is short: headless Chromium renders in software, which is slow at device resolution.
-  for (const [name, w, h, dsf, extra, rounds] of [['portrait', 390, 844, 1, '', 40], ['landscape', 1280, 720, 1, '', 40], ['small', 360, 640, 1, '&motion=reduced', 40], ['hidpi', 390, 844, 3, '', 4]]) {
+  for (const [name, w, h, dsf, extra, rounds] of [['iphone15pro', 393, 852, 1, '', 40], ['landscape', 1280, 720, 1, '', 40], ['small', 360, 640, 1, '&motion=reduced', 40], ['iphoneSE', 375, 667, 1, '&lang=de', 16], ['phoneLandscape', 852, 393, 1, '', 16], ['hidpi', 393, 852, 3, '', 4]]) {
     const p = await browser.newPage({ viewport: { width: w, height: h }, deviceScaleFactor: dsf });
     p.on('console', (m) => { if (m.type() === 'error') problems.push(`${name}: ${m.text()}`); });
     p.on('pageerror', (e) => problems.push(`${name}: ${e.message}`));
@@ -45,11 +47,30 @@ async function finishRound(p, w, h) {
     if (env.textureSize !== 256) problems.push(`${name}: symbol art not in use (texture ${env.textureSize})`);
     if (env.reducedMotion !== extra.includes('reduced')) problems.push(`${name}: reducedMotion ${env.reducedMotion}`);
     if (out) await p.screenshot({ path: `${out}/${name}_idle.png` });
+    // Layout: every text and button lies inside the screen; texts do not run into buttons; touch targets are large enough.
+    const boxes = (st) => [...st.texts.map((t) => ({ ...t, kind: 'text' })), ...st.buttons.map((b) => ({ ...b, kind: 'button' }))];
+    const checkLayout = (st, where) => {
+      const all = boxes(st);
+      for (const a of all) {
+        if (a.x < -0.5 || a.y < -0.5 || a.x + a.w > w + 0.5 || a.y + a.h > h + 0.5) problems.push(`${name} ${where}: ${a.name} outside the screen`);
+        if (a.kind === 'button' && a.name !== 'spin' && Math.min(a.w, a.h) < 43.5) problems.push(`${name} ${where}: button ${a.name} is ${a.w.toFixed(0)}x${a.h.toFixed(0)} px`);
+      }
+      for (const t of st.texts) for (const b of st.buttons) {
+        const hit = t.x < b.x + b.w - 1 && b.x < t.x + t.w - 1 && t.y < b.y + b.h - 1 && b.y < t.y + t.h - 1;
+        if (hit) problems.push(`${name} ${where}: text "${t.text}" overlaps button ${b.name}`);
+      }
+    };
+    checkLayout(env, 'idle');
     let balance = (await p.evaluate(() => window.__tls.state())).balance;
     for (let i = 0; i < rounds; i++) {
       const kind = i % 8 === (rounds < 8 ? 3 : 7) ? 'buy' : 'spin';
       await p.evaluate((k) => window.__tls[k](), kind);
-      if (out && kind === 'buy' && i === 7) { await p.waitForTimeout(400); await p.screenshot({ path: `${out}/${name}_freespins.png` }); }
+      if (kind === 'buy' && i === 7) {
+        await p.waitForFunction(() => window.__tls.state().freeMode, null, { timeout: 120000 });
+        await p.waitForTimeout(300);
+        checkLayout(await p.evaluate(() => window.__tls.state()), 'free spins');
+        if (out) await p.screenshot({ path: `${out}/${name}_freespins.png` });
+      }
       await finishRound(p, w, h);
       const s = await p.evaluate(() => window.__tls.state());
       const last = s.history[0];
@@ -58,6 +79,8 @@ async function finishRound(p, w, h) {
       if (last.kind !== kind) problems.push(`${name}: round ${i} kind ${last.kind}`);
       if (s.balance !== balance) problems.push(`${name}: round ${i} balance ${s.balance} != ${balance}`);
       if (s.mismatches !== 0) problems.push(`${name}: round ${i} grid mismatches ${s.mismatches}`);
+      if (s.distortion > 0.001) problems.push(`${name}: round ${i} symbol distortion ${s.distortion}`);
+      if (s.freeMode) problems.push(`${name}: round ${i} still in free-spin scenery after the round`);
     }
     if (out) await p.screenshot({ path: `${out}/${name}_end.png` });
 
@@ -75,18 +98,19 @@ async function finishRound(p, w, h) {
     if (afterAuto.mismatches !== 0) problems.push(`${name}: grid mismatches after autoplay`);
 
     // Info panel through the real button: rules, paytable, history.
-    const u = w >= h ? Math.min(w / 900, h / 480) : Math.min(w / 390, h / 760), m = Math.round(Math.min(w, h) * 0.03);
-    await p.mouse.click(w - m - (w >= h ? 150 : 124) * u, m + 22 * u);
+    const infoBtn = (await p.evaluate(() => window.__tls.state())).buttons.find((b) => b.name === 'info');
+    await p.mouse.click(infoBtn.x + infoBtn.w / 2, infoBtn.y + infoBtn.h / 2);
     await p.waitForSelector('.tls-info.open', { timeout: 5000 }).catch(() => problems.push(`${name}: info panel did not open`));
     const rules = await p.locator('.tls-info main').innerText().catch(() => '');
-    if (!rules.includes('Nicht zertifiziert') || !rules.includes('Expedition Track')) problems.push(`${name}: rules text incomplete`);
+    const de = extra.includes('lang=de');
+    if (!rules.includes(de ? 'Nicht zertifiziert' : 'Not certified') || !rules.includes('Expedition Track')) problems.push(`${name}: rules text incomplete`);
     if (out) await p.screenshot({ path: `${out}/${name}_rules.png` });
-    await p.getByRole('tab', { name: 'Auszahlungen' }).click();
+    await p.getByRole('tab', { name: de ? 'Auszahlungen' : 'Paytable' }).click();
     if (await p.locator('.tls-info td').count() !== 40) problems.push(`${name}: paytable cells`);
     if (out) await p.screenshot({ path: `${out}/${name}_paytable.png` });
-    await p.getByRole('tab', { name: 'Verlauf' }).click();
+    await p.getByRole('tab', { name: de ? 'Verlauf' : 'History' }).click();
     if (await p.locator('.tls-info tbody tr').count() !== Math.min(50, rounds + 10)) problems.push(`${name}: history rows`);
-    await p.getByRole('button', { name: 'Schliessen' }).click();
+    await p.getByRole('button', { name: de ? 'Schliessen' : 'Close' }).click();
     if (await p.locator('.tls-info.open').count() !== 0) problems.push(`${name}: info panel did not close`);
     console.log(name, 'rounds', rounds, 'balance', balance);
     await p.close();
@@ -107,7 +131,7 @@ async function finishRound(p, w, h) {
   let bonusRounds = 0;
   for (const [kind, seeds] of [['spin', seedsFor(false, 6)], ['buy', seedsFor(true, 3)]]) {
     for (const seed of seeds) {
-      const w = 390, h = 844;
+      const w = 393, h = 852;
       const p = await browser.newPage({ viewport: { width: w, height: h } });
       p.on('console', (m) => { if (m.type() === 'error') problems.push(`bonus ${seed}: ${m.text()}`); });
       p.on('pageerror', (e) => problems.push(`bonus ${seed}: ${e.message}`));
@@ -131,19 +155,20 @@ async function finishRound(p, w, h) {
 
       if (bonusRounds === 1) {
         // Replay of that round from the history: same presentation, balance untouched.
-        const u = Math.min(w / 390, h / 760), m = Math.round(Math.min(w, h) * 0.03);
-        await p.mouse.click(w - m - 124 * u, m + 22 * u);
-        await p.getByRole('tab', { name: 'Verlauf' }).click();
-        await p.getByRole('button', { name: 'Wiedergabe' }).first().click();
+        const ib = s.buttons.find((b) => b.name === 'info');
+        const openInfo = () => p.mouse.click(ib.x + ib.w / 2, ib.y + ib.h / 2);
+        await openInfo();
+        await p.getByRole('tab', { name: 'History' }).click();
+        await p.getByRole('button', { name: 'Replay' }).first().click();
         await p.waitForFunction(() => window.__tls.state().replays === 1 && !window.__tls.state().busy, null, { timeout: 120000 });
         const r = await p.evaluate(() => window.__tls.state());
         if (r.balance !== s.balance || r.history.length !== s.history.length) problems.push('replay changed the balance or the history');
         if (r.mismatches !== 0 || r.modal) problems.push('replay: view state');
         // Performance tab renders and resets.
-        await p.mouse.click(w - m - 124 * u, m + 22 * u);
-        await p.getByRole('tab', { name: 'Leistung' }).click();
-        if (!(await p.locator('.tls-info main').innerText()).includes('Bilder pro Sekunde')) problems.push('performance tab incomplete');
-        await p.getByRole('button', { name: 'Messung zurücksetzen' }).click();
+        await openInfo();
+        await p.getByRole('tab', { name: 'Performance' }).click();
+        if (!(await p.locator('.tls-info main').innerText()).includes('Frames per second')) problems.push('performance tab incomplete');
+        await p.getByRole('button', { name: 'Reset measurement' }).click();
         if ((await p.evaluate(() => window.__tls.state())).perf.frames !== 0) problems.push('performance reset failed');
       }
       await p.close();

@@ -27,9 +27,18 @@ export class PerfMeter {
   }
 }
 
-export function perfVerdict(fps: number, slowShare: number, frames: number): string {
-  if (frames < 300) return 'Noch zu wenig Daten – spiele etwa 20 Runden (Autoplay zweimal) und öffne diese Ansicht erneut.';
-  if (fps >= 55 && slowShare < 0.02) return 'Flüssig: Das Ziel von 60 Bildern pro Sekunde wird praktisch erreicht.';
-  if (fps >= 40 && slowShare < 0.1) return 'Brauchbar, aber unter dem Ziel von 60 Bildern pro Sekunde.';
-  return 'Zu langsam: Auf diesem Gerät ruckelt die Darstellung. Bitte Gerät und Werte melden.';
+export function perfVerdict(fps: number, slowShare: number, frames: number, lang: 'en' | 'de' = 'en'): string {
+  const de = lang === 'de';
+  if (frames < 300) return de
+    ? 'Noch zu wenig Daten – spiele etwa 20 Runden (Autoplay zweimal) und öffne diese Ansicht erneut.'
+    : 'Not enough data yet – play about 20 rounds (autoplay twice) and open this view again.';
+  if (fps >= 55 && slowShare < 0.02) return de
+    ? 'Flüssig: Das Ziel von 60 Bildern pro Sekunde wird praktisch erreicht.'
+    : 'Smooth: the target of 60 frames per second is practically reached.';
+  if (fps >= 40 && slowShare < 0.1) return de
+    ? 'Brauchbar, aber unter dem Ziel von 60 Bildern pro Sekunde.'
+    : 'Usable, but below the target of 60 frames per second.';
+  return de
+    ? 'Zu langsam: Auf diesem Gerät ruckelt die Darstellung. Bitte Gerät und Werte melden.'
+    : 'Too slow: the display stutters on this device. Please report the device and these figures.';
 }

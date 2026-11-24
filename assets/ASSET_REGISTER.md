@@ -75,3 +75,38 @@ Gleiches Werkzeug und Modell. Hintergründe je 1 Variante (752×1344 und 1344×7
 > Game logo with the exact text "TEMPLE OF THE LOST SUN" in two lines: small line "TEMPLE OF THE" above, large line "LOST SUN" below. Custom chiselled golden capital letters with bevelled edges and subtle carved step-fret details, the letter O in "LOST" replaced by a small radiant sun disc with short pointed rays and an amber gem, thin jade-green and turquoise accents, soft warm glow. Correct spelling, every letter clearly legible, strong silhouette readable at small size. Original lettering, not resembling any existing game logo. Centered on a plain flat dark navy background (#10131c), no other words, no tagline, no frame, no extra objects, no watermark.
 
 **Offene Punkte:** Die beiden Hintergründe sind getrennt erzeugt und zeigen nicht exakt dasselbe Bauwerk (Sonnenscheibe im Hochformat ohne, im Querformat mit Gesicht). Das Logo liegt nur als Rasterbild vor, nicht als Vektor. Die Markenrecherche zum Namen (T-508) ist noch nicht durchgeführt.
+
+## Premium-Polish (2026-11-24)
+
+### Schriften (keine KI, freie Lizenz)
+
+| Schrift | Dateien | Quelle | Lizenz |
+|---|---|---|---|
+| Cinzel 700 | `public/fonts/cinzel-latin-700-normal.woff2`, `…-latin-ext-…` | npm-Paket `@fontsource/cinzel` | SIL Open Font License 1.1 |
+| Source Sans 3, 400 und 600 | `public/fonts/source-sans-3-latin-*.woff2` | npm-Paket `@fontsource/source-sans-3` | SIL Open Font License 1.1 |
+
+Die OFL erlaubt Einbettung und kommerzielle Nutzung; der Lizenztext muss mitgeliefert werden, wenn die Schriftdateien weitergegeben werden. **Der Lizenztext liegt dem Projekt noch nicht bei** (offener Punkt vor der Weitergabe).
+
+### Neue Bilder
+
+Werkzeug Higgsfield, Modell `gpt_image_2_6`, je 1 Variante. Kosten: 13 Bilder, geschätzt 10 Credits (nicht nachgemessen). Rechtliche Punkte wie oben offen; keine menschliche Überarbeitung. Alle Motivbeschreibungen enden mit demselben Stilblock wie der Symbolsatz.
+
+| Asset | Rohdatei | Spieldatei | Job-ID | Motiv |
+|---|---|---|---|---|
+| Station Discovery | `raw/st1_discovery.png` | `public/ui/station1.png` | 5771dda7-ca84-4c24-8f57-c07d64e8fced | Steinmedaillon mit Goldrand, brennende Fackel, Bernstein |
+| Station Treasure | `raw/st2_treasure.png` | `ui/station2.png` | d828c149-e2ab-4be7-8099-6c89d9f57e23 | offene Schatztruhe, Gold |
+| Station Ancient Power | `raw/st3_ancient.png` | `ui/station3.png` | 419aa606-28f3-4fb3-b7dd-4bccbd8f5727 | Jade-Auge («not the Eye of Horus») |
+| Station Relic | `raw/st4_relic.png` | `ui/station4.png` | d340b27d-fdef-4417-bd5f-410db1c28435 | Sonnenscheibe mit Türkis |
+| Station Temple | `raw/st5_temple.png` | `ui/station5.png` | 5dba0d19-5e2d-4aa3-b3b7-d21d77c228d5 | Stufentor mit weissgoldenem Licht |
+| Sonnenkammer | `raw/door_sun.png` | `ui/door_sun.png` | a4e5a37b-8164-47b0-92d6-cc7718f03a3f | geschlossenes Steintor, goldenes Sonnenemblem |
+| Jadekammer | `raw/door_jade.png` | `ui/door_jade.png` | 16c2b402-ce35-41b1-85f2-5ec387381a84 | geschlossenes Steintor, Jademaske, Ranken |
+| Mondkammer | `raw/door_moon.png` | `ui/door_moon.png` | a77d6f05-4fc8-445b-a51b-590bdc0a8014 | geschlossenes Steintor, Türkis-Mondsichel |
+| Schatz | `raw/treasure.png` | `ui/treasure.png` | 49567760-9eea-4d3d-b65e-fb3579f93567 | Münzhaufen mit Edelsteinen und kleinem Idol |
+| Tempelinneres hoch | `raw/bgfs_portrait.png` | `public/bgfs_portrait.jpg` | e96a729c-8dc7-4c22-9301-ab661d52260c | Säulenhalle, Sonnenscheibe, Lichtstrahlen |
+| Tempelinneres quer | `raw/bgfs_landscape.png` | `public/bgfs_landscape.jpg` | f1fd6034-dda6-4ee3-879f-ab49487e0ee2 | wie oben, Querformat |
+| Steinkachel | `raw/tile.png` | `ui/tile.png` | 2f790ba8-f91d-4416-8ebf-b48c44b58ebe | dunkle Steinplatte mit feiner Goldlinie |
+| Spin-Scheibe | `raw/spin.png` | `ui/spin.png` | 35077e4c-c631-43c5-b882-26faa0e698d3 | goldene Sonnenscheibe mit Drehpfeil |
+
+**Bearbeitung (automatisch, reproduzierbar mit `python3 tools/assets/process.py`):** dunkler Hintergrund freigestellt (Flutfüllung vom Bildrand, Kante geglättet), auf Inhalt zugeschnitten, zentriert, verkleinert. Die Symbole 0–7 wurden auf dieselbe Weise neu freigestellt (vorher mit dunklem Quadrat); der Explorer bleibt ein rundes Porträt. Hintergründe als JPEG.
+
+**Offene Gestaltungspunkte:** Das Sonnenemblem der Sonnenkammer zeigt ein Gesicht, das der Stationen nicht. Die Jademaske am Tor hat Reisszähne und wirkt bedrohlicher als das Jade-Mask-Symbol. Das Treasure-Medaillon und das Schatzbild sind nicht auf Ähnlichkeit mit bestehenden Spielen geprüft.

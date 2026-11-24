@@ -1,55 +1,10 @@
 import Phaser from 'phaser';
 import { tween, wait } from '../anim.js';
-import { formatMoney } from '../layout.js';
 import { DPR, REDUCED_MOTION } from '../env.js';
-import { COLOR, FONT } from '../theme.js';
+import type { Fx } from '../fx.js';
+import { formatMoney } from '../layout.js';
+import { COLOR, DEPTH, DISPLAY, TEXT } from '../theme.js';
 import { Button } from './button.js';
-
-export interface PrizeLabel { title: string; detail: string }
-
-/** Short centred announcement (station effects, free spins, big events). */
-export class Banner {
-  private readonly text: Phaser.GameObjects.Text;
-  private readonly dim: Phaser.GameObjects.Rectangle;
-  constructor(private readonly scene: Phaser.Scene) {
-    this.dim = scene.add.rectangle(0, 0, 10, 10, 0x05070c, 0.66).setOrigin(0).setDepth(49).setVisible(false);
-    this.text = scene.add.text(0, 0, '', {
-      fontFamily: FONT, fontSize: '28px', color: COLOR.win, align: 'center', stroke: '#000000', strokeThickness: 6 * DPR,
-    }).setOrigin(0.5).setDepth(50).setAlpha(0);
-  }
-  /** Text currently on screen, or '' (used by end-to-end tests). */
-  get current(): string { return this.text.alpha > 0 ? this.text.text : ''; }
-
-  async show(message: string, holdMs = 650): Promise<void> {
-    const { width, height } = this.scene.scale;
-    this.text.setText(message).setFontSize(`${Math.round(Math.min(width, height) * 0.06)}px`)
-      .setPosition(width / 2, height * 0.42).setScale(REDUCED_MOTION ? 1 : 0.6).setAlpha(0);
-    await tween(this.scene, { targets: this.text, scale: 1, alpha: 1, duration: 180, ease: REDUCED_MOTION ? 'Linear' : 'Back.easeOut' });
-    await wait(this.scene, holdMs);
-    await tween(this.scene, { targets: this.text, alpha: 0, duration: 160 });
-  }
-
-  /** Big-win presentation: title plus the amount counting up. The amount shown at the end is exactly `minor`. */
-  async celebrate(title: string, minor: number, ms: number): Promise<void> {
-    const { width, height } = this.scene.scale;
-    const size = Math.round(Math.min(width, height) * 0.075);
-    this.dim.setSize(width, height).setVisible(true);
-    this.text.setFontSize(`${size}px`).setPosition(width / 2, height * 0.42).setScale(0.6).setAlpha(0).setText(`${title}\n${formatMoney(0)}`);
-    if (REDUCED_MOTION) {
-      // No counting or zooming: the final amount fades in and stays.
-      this.text.setScale(1).setText(`${title}\n${formatMoney(minor)}`);
-      await tween(this.scene, { targets: this.text, alpha: 1, duration: 200 });
-      await wait(this.scene, ms);
-    } else {
-      await tween(this.scene, { targets: this.text, scale: 1, alpha: 1, duration: 220, ease: 'Back.easeOut' });
-      await countUp(this.scene, minor, ms, (v) => this.text.setText(`${title}\n${formatMoney(Math.floor(v))}`));
-      await tween(this.scene, { targets: this.text, scale: 1.12, duration: 200, yoyo: true });
-    }
-    await wait(this.scene, 900);
-    await tween(this.scene, { targets: this.text, alpha: 0, duration: 200 });
-    this.dim.setVisible(false);
-  }
-}
 
 /** Counts a number up over `ms` and reports each value; returns when done. */
 export function countUp(scene: Phaser.Scene, to: number, ms: number, onValue: (v: number) => void): Promise<void> {
@@ -57,94 +12,139 @@ export function countUp(scene: Phaser.Scene, to: number, ms: number, onValue: (v
   return tween(scene, { targets: state, v: to, duration: ms, ease: 'Cubic.easeOut', onUpdate: () => onValue(state.v) }).then(() => onValue(to));
 }
 
-/** Modal layer used for the Temple Bonus chambers and for confirmations. */
+/**
+ * Announcements on their own plate (never bare text over the symbols) and the
+ * win celebrations. All amounts are passed in; the last value shown is exact.
+ */
+export class Banner {
+  private readonly dim: Phaser.GameObjects.Rectangle;
+  private readonly plate: Phaser.GameObjects.Graphics;
+  private readonly title: Phaser.GameObjects.Text;
+  private readonly amount: Phaser.GameObjects.Text;
+
+  constructor(private readonly scene: Phaser.Scene, private readonly fx: Fx) {
+    this.dim = scene.add.rectangle(0, 0, 10, 10, 0x05070c, 0.7).setOrigin(0).setDepth(DEPTH.celebrate - 3).setVisible(false);
+    this.plate = scene.add.graphics().setDepth(DEPTH.banner).setAlpha(0);
+    this.title = scene.add.text(0, 0, '', { fontFamily: DISPLAY, fontSize: '28px', color: COLOR.win, align: 'center' }).setOrigin(0.5).setDepth(DEPTH.banner + 1).setAlpha(0);
+    this.amount = scene.add.text(0, 0, '', { fontFamily: DISPLAY, fontSize: '40px', color: '#fff6d6', align: 'center' }).setOrigin(0.5).setDepth(DEPTH.celebrate).setAlpha(0);
+  }
+
+  /** Text currently on screen, or '' (used by end-to-end tests). */
+  get current(): string { return this.title.alpha > 0 ? `${this.title.text} ${this.amount.alpha > 0 ? this.amount.text : ''}`.trim() : ''; }
+
+  private drawPlate(cx: number, cy: number, w: number, h: number): void {
+    const r = Math.min(h / 2, 18 * DPR);
+    this.plate.clear().fillStyle(0x070a11, 0.9).fillRoundedRect(cx - w / 2, cy - h / 2, w, h, r)
+      .lineStyle(Math.max(2, 1.5 * DPR), COLOR.gold, 1).strokeRoundedRect(cx - w / 2, cy - h / 2, w, h, r);
+  }
+
+  /** Short announcement on a plate in the middle of the play field. */
+  async show(message: string, holdMs = 650, y = 0.42): Promise<void> {
+    const { width, height } = this.scene.scale;
+    const size = Math.round(Math.min(width, height) * 0.058);
+    this.title.setDepth(DEPTH.banner + 1).setFontSize(`${size}px`).setWordWrapWidth(width * 0.8).setText(message).setPosition(width / 2, height * y);
+    this.drawPlate(width / 2, height * y, Math.min(width * 0.92, this.title.width + size * 2), this.title.height + size * 1.1);
+    this.title.setScale(REDUCED_MOTION ? 1 : 0.85).setAlpha(0);
+    await tween(this.scene, { targets: [this.title, this.plate], alpha: 1, duration: 150 });
+    if (!REDUCED_MOTION) this.scene.tweens.add({ targets: this.title, scale: 1, duration: 150, ease: 'Back.easeOut' });
+    await wait(this.scene, holdMs);
+    await tween(this.scene, { targets: [this.title, this.plate], alpha: 0, duration: 150 });
+  }
+
+  /**
+   * Win presentation by tier: 1 = plate with counter, 2 = full screen with
+   * sunburst and coins, 3 = the same, longer and brighter. Also used for the
+   * free-spin summary (tier 1 look, own title).
+   */
+  async celebrate(title: string, minor: number, tier: number, at?: { x: number; y: number }): Promise<void> {
+    const { width, height } = this.scene.scale;
+    const full = tier >= 2;
+    const cx = width / 2, cy = full ? height * 0.42 : (at?.y ?? height * 0.42);
+    const size = Math.round(Math.min(width, height) * (full ? 0.085 : 0.05));
+    const ms = [700, 1400, 2600][Math.min(3, Math.max(1, tier)) - 1];
+    this.title.setDepth(DEPTH.celebrate).setFontSize(`${size}px`).setWordWrapWidth(width * 0.9).setText(title).setScale(1);
+    this.amount.setFontSize(`${Math.round(size * 1.35)}px`).setText(formatMoney(REDUCED_MOTION ? minor : 0));
+    const blockH = this.title.height + this.amount.height + size * 0.3;
+    this.title.setPosition(cx, cy - blockH / 2 + this.title.height / 2);
+    this.amount.setPosition(cx, cy + blockH / 2 - this.amount.height / 2);
+    let stopRays = () => undefined as void;
+    if (full) {
+      this.dim.setSize(width, height).setVisible(true).setAlpha(0);
+      this.scene.tweens.add({ targets: this.dim, alpha: 1, duration: 200 });
+      stopRays = this.fx.rays(cx, cy, Math.max(width, height) * 0.75);
+      this.fx.coinRain(ms + 600, tier === 3 ? 34 : 18);
+      this.plate.clear();
+    } else {
+      this.plate.setDepth(DEPTH.celebrate - 1);
+      const pw = Math.min(width * 0.9, Math.max(this.title.width, size * 7) + size * 2);
+      this.drawPlate(cx, cy, pw, blockH + size);
+    }
+    await tween(this.scene, { targets: [this.title, this.amount, this.plate], alpha: 1, duration: 180 });
+    if (!REDUCED_MOTION) {
+      await countUp(this.scene, minor, ms, (v) => this.amount.setText(formatMoney(Math.floor(v))));
+      this.fx.burst(cx, this.amount.y, COLOR.goldBright, full ? 40 : 14);
+      await tween(this.scene, { targets: this.amount, scale: 1.14, duration: 170, yoyo: true });
+    } else await wait(this.scene, ms);
+    this.amount.setText(formatMoney(minor));
+    await wait(this.scene, full ? 1100 : 550);
+    stopRays();
+    await tween(this.scene, { targets: [this.title, this.amount, this.plate, ...(full ? [this.dim] : [])], alpha: 0, duration: 200 });
+    this.dim.setVisible(false);
+    this.plate.setDepth(DEPTH.banner);
+  }
+
+  /** Full-screen flash used for the change into and out of free spins. */
+  async wipe(color: number, midway: () => void): Promise<void> {
+    const { width, height } = this.scene.scale;
+    const r = this.scene.add.rectangle(0, 0, width, height, color, 1).setOrigin(0).setDepth(DEPTH.celebrate + 5).setAlpha(0);
+    await tween(this.scene, { targets: r, alpha: REDUCED_MOTION ? 0.85 : 1, duration: 260, ease: 'Sine.easeIn' });
+    midway();
+    await tween(this.scene, { targets: r, alpha: 0, duration: 420, ease: 'Sine.easeOut' });
+    r.destroy();
+  }
+}
+
+/** Confirmation dialog in the game's style. */
 export class Modal {
   private readonly dim: Phaser.GameObjects.Rectangle;
+  private readonly plate: Phaser.GameObjects.Graphics;
   private readonly title: Phaser.GameObjects.Text;
   private readonly body: Phaser.GameObjects.Text;
   private items: Phaser.GameObjects.GameObject[] = [];
-  private chambers: { btn: Button; text: Phaser.GameObjects.Text }[] = [];
 
   constructor(private readonly scene: Phaser.Scene) {
-    this.dim = scene.add.rectangle(0, 0, 10, 10, 0x000000, 0.72).setOrigin(0).setDepth(60).setVisible(false).setInteractive();
-    const style = { fontFamily: FONT, color: COLOR.win, align: 'center' as const };
-    this.title = scene.add.text(0, 0, '', style).setOrigin(0.5).setDepth(61).setVisible(false);
-    this.body = scene.add.text(0, 0, '', { ...style, color: COLOR.text }).setOrigin(0.5).setDepth(61).setVisible(false);
+    this.dim = scene.add.rectangle(0, 0, 10, 10, 0x05070c, 0.82).setOrigin(0).setDepth(DEPTH.scene).setVisible(false).setInteractive();
+    this.plate = scene.add.graphics().setDepth(DEPTH.scene + 1).setVisible(false);
+    this.title = scene.add.text(0, 0, '', { fontFamily: DISPLAY, color: COLOR.win, align: 'center' }).setOrigin(0.5).setDepth(DEPTH.sceneUi).setVisible(false);
+    this.body = scene.add.text(0, 0, '', { fontFamily: TEXT, color: COLOR.text, align: 'center' }).setOrigin(0.5, 0).setDepth(DEPTH.sceneUi).setVisible(false);
   }
 
   get open(): boolean { return this.dim.visible; }
 
-  private frame(title: string, body: string): { w: number; h: number; u: number } {
-    const { width: w, height: h } = this.scene.scale;
-    const u = Math.min(w, h) / 390;
-    this.dim.setSize(w, h).setVisible(true);
-    this.title.setText(title).setFontSize(`${Math.round(24 * u)}px`).setPosition(w / 2, h * 0.24).setVisible(true);
-    this.body.setText(body).setFontSize(`${Math.round(14 * u)}px`).setWordWrapWidth(w * 0.84).setPosition(w / 2, h * 0.34).setVisible(true);
-    return { w, h, u };
-  }
-
   close(): void {
     this.items.forEach((o) => o.destroy());
-    this.items = []; this.chambers = [];
-    this.dim.setVisible(false); this.title.setVisible(false); this.body.setVisible(false);
+    this.items = [];
+    [this.dim, this.plate, this.title, this.body].forEach((o) => o.setVisible(false));
   }
 
   /** Yes/no question; resolves with the answer. */
   confirm(title: string, body: string, yes: string, no: string): Promise<boolean> {
-    const { w, h, u } = this.frame(title, body);
+    const { width: w, height: h } = this.scene.scale;
+    const u = Math.min(w, h) / 390, pw = Math.min(w * 0.92, 420 * u);
+    this.dim.setSize(w, h).setVisible(true);
+    this.title.setText(title).setFontSize(`${Math.round(22 * u)}px`).setVisible(true);
+    this.body.setText(body).setFontSize(`${Math.round(14.5 * u)}px`).setWordWrapWidth(pw - 36 * u).setLineSpacing(4 * u).setVisible(true);
+    const ph = this.title.height + this.body.height + 130 * u, top = (h - ph) / 2;
+    this.plate.clear().fillStyle(0x0b0f18, 0.98).fillRoundedRect((w - pw) / 2, top, pw, ph, 18 * u)
+      .lineStyle(Math.max(2, 1.5 * DPR), COLOR.gold, 1).strokeRoundedRect((w - pw) / 2, top, pw, ph, 18 * u).setVisible(true);
+    this.title.setPosition(w / 2, top + 22 * u + this.title.height / 2);
+    this.body.setPosition(w / 2, this.title.y + this.title.height / 2 + 12 * u);
+    const by = top + ph - 44 * u, bw = (pw - 54 * u) / 2;
     return new Promise((resolve) => {
       const done = (v: boolean) => { this.close(); resolve(v); };
-      const a = new Button(this.scene, yes, () => done(true), COLOR.goldDark).layout(w / 2 + 80 * u, h * 0.55, 140 * u, 52 * u, 15 * u).setDepth(62);
-      const b = new Button(this.scene, no, () => done(false)).layout(w / 2 - 80 * u, h * 0.55, 140 * u, 52 * u, 15 * u).setDepth(62);
+      const a = new Button(this.scene, yes, () => done(true)).setAccent(COLOR.gold).layout(w / 2 + bw / 2 + 9 * u, by, bw, 52 * u, 14 * u).setDepth(DEPTH.sceneUi);
+      const b = new Button(this.scene, no, () => done(false)).layout(w / 2 - bw / 2 - 9 * u, by, bw, 52 * u, 14 * u).setDepth(DEPTH.sceneUi);
       this.items.push(a, b);
     });
-  }
-
-  /** Shows the closed chambers of a Temple Bonus. */
-  showChambers(title: string, body: string, count: number): void {
-    this.close();
-    const { w, h, u } = this.frame(title, body);
-    const cw = Math.min(104 * u, (w * 0.9) / count - 8), ch = cw * 1.35;
-    for (let i = 0; i < count; i++) {
-      const x = w / 2 + (i - (count - 1) / 2) * (cw + 10);
-      const btn = new Button(this.scene, `Kammer ${i + 1}`, () => this.onPick?.(i), COLOR.panelLight).layout(x, h * 0.55, cw, ch, 14 * u).setDepth(62);
-      const text = this.scene.add.text(x, h * 0.55 + ch / 2 + 16 * u, '', { fontFamily: FONT, fontSize: `${Math.round(12 * u)}px`, color: COLOR.dim, align: 'center' }).setOrigin(0.5, 0).setDepth(62);
-      this.chambers.push({ btn, text });
-      this.items.push(btn, text);
-    }
-  }
-
-  private onPick: ((chamber: number) => void) | null = null;
-
-  /** Waits until the player opens one of the available chambers. */
-  waitPick(available: number[]): Promise<number> {
-    this.chambers.forEach((c, i) => c.btn.setEnabled(available.includes(i)));
-    return new Promise((resolve) => {
-      this.onPick = (i) => {
-        if (!available.includes(i)) return;
-        this.onPick = null;
-        this.chambers.forEach((c) => c.btn.setEnabled(false));
-        resolve(i);
-      };
-    });
-  }
-
-  async reveal(chamber: number, prize: PrizeLabel, chosen: boolean): Promise<void> {
-    const c = this.chambers[chamber];
-    if (!c) return;
-    c.btn.setText(prize.title).setAlpha(chosen ? 1 : 0.55);
-    c.text.setText(chosen ? prize.detail : `${prize.detail}\n(nicht gewählt)`).setColor(chosen ? COLOR.win : COLOR.dim);
-    if (chosen && !REDUCED_MOTION) await tween(this.scene, { targets: c.btn, scale: 1.12, duration: 160, yoyo: true });
-  }
-}
-
-export function prizeLabel(kind: string, centibet: number, bet: number): PrizeLabel {
-  const money = formatMoney((centibet / 10) * (bet / 10));
-  const mult = `${centibet / 100}×`;
-  switch (kind) {
-    case 'freeSpins': return { title: 'Free\nSpins', detail: 'Free Spins' };
-    case 'relic': return { title: `Relic\n${mult}`, detail: `${money}\n+ weitere Kammer` };
-    case 'grand': return { title: `Haupt-\nschatz\n${mult}`, detail: money };
-    default: return { title: `Schatz\n${mult}`, detail: money };
   }
 }

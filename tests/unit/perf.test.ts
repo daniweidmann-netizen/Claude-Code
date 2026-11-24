@@ -18,9 +18,13 @@ describe('performance meter', () => {
   });
 
   it('gives a verdict only with enough data', () => {
-    expect(perfVerdict(60, 0, 10)).toMatch(/zu wenig Daten/);
-    expect(perfVerdict(59, 0.01, 1000)).toMatch(/^Flüssig/);
-    expect(perfVerdict(45, 0.05, 1000)).toMatch(/^Brauchbar/);
-    expect(perfVerdict(25, 0.5, 1000)).toMatch(/^Zu langsam/);
+    expect(perfVerdict(60, 0, 10, 'de')).toMatch(/zu wenig Daten/);
+    expect(perfVerdict(59, 0.01, 1000, 'de')).toMatch(/^Flüssig/);
+    expect(perfVerdict(45, 0.05, 1000, 'de')).toMatch(/^Brauchbar/);
+    expect(perfVerdict(25, 0.5, 1000, 'de')).toMatch(/^Zu langsam/);
+    expect(perfVerdict(60, 0, 10)).toMatch(/Not enough data/);
+    expect(perfVerdict(59, 0.01, 1000)).toMatch(/^Smooth/);
+    expect(perfVerdict(45, 0.05, 1000)).toMatch(/^Usable/);
+    expect(perfVerdict(25, 0.5, 1000)).toMatch(/^Too slow/);
   });
 });

@@ -1,11 +1,17 @@
 <!doctype html>
-<html lang="de">
+<html lang="en">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="theme-color" content="#0b0e16">
   <title>Temple of the Lost Sun – Demo</title>
   <style>
-    html, body { margin: 0; height: 100%; background: #0b0e16; overflow: hidden; }
+    /* Bundled fonts, SIL Open Font License 1.1 (see assets/ASSET_REGISTER.md). */
+    @font-face { font-family: "Cinzel"; font-weight: 700; font-display: block; src: url("fonts/cinzel-latin-700-normal.woff2") format("woff2"); }
+    @font-face { font-family: "Source Sans 3"; font-weight: 400; font-display: block; src: url("fonts/source-sans-3-latin-400-normal.woff2") format("woff2"); }
+    @font-face { font-family: "Source Sans 3"; font-weight: 600; font-display: block; src: url("fonts/source-sans-3-latin-600-normal.woff2") format("woff2"); }
+    html, body { margin: 0; height: 100%; background: #0b0e16; overflow: hidden; overscroll-behavior: none; -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; -webkit-tap-highlight-color: transparent; }
     #app { position: fixed; inset: 0; padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left); }
     #stage { width: 100%; height: 100%; overflow: hidden; }
     canvas { display: block; touch-action: none; }
