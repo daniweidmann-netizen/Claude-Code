@@ -1,6 +1,7 @@
 import Phaser from 'phaser';
 import { CONFIG_V1 } from '../../engine/index.js';
 import { LocalGameService, type GameService, type RoundKind } from '../../session/game-service.js';
+import { Sfx } from '../audio/sfx.js';
 import { computeLayout, formatMoney } from '../layout.js';
 import { Presenter } from '../presentation/presenter.js';
 import { historyHtml, paytableHtml, rulesHtml } from '../rules-text.js';
@@ -22,12 +23,14 @@ export class GameScene extends Phaser.Scene {
   private track!: TrackView;
   private hud!: Hud;
   private modal!: Modal;
+  private banner!: Banner;
   private presenter!: Presenter;
   private busy = false;
   private bg: Phaser.GameObjects.Image | null = null;
   private shade: Phaser.GameObjects.Rectangle | null = null;
   private plate: Phaser.GameObjects.Graphics | null = null;
   private autoLeft = 0;
+  private readonly sfx = new Sfx();
   private info!: InfoPanel;
   private rounds = 0;
 
@@ -64,7 +67,10 @@ export class GameScene extends Phaser.Scene {
       betUp: () => this.changeBet(1),
       info: () => { if (!this.busy && !this.modal.open) { this.input.enabled = false; this.info.show('rules'); } },
       auto: () => this.toggleAuto(),
+      mute: () => { this.sfx.setMuted(!this.sfx.muted); this.hud.setMuted(this.sfx.muted); },
     });
+    this.hud.setMuted(this.sfx.muted);
+    this.input.on('pointerdown', () => this.sfx.unlock());
     this.info = new InfoPanel([
       { id: 'rules', label: 'Regeln', html: () => rulesHtml(cfg) },
       { id: 'pays', label: 'Auszahlungen', html: () => paytableHtml(cfg, this.service.bet) },
@@ -72,7 +78,8 @@ export class GameScene extends Phaser.Scene {
     ]);
     this.info.onClose = () => { this.input.enabled = true; };
     this.modal = new Modal(this);
-    this.presenter = new Presenter(this, cfg, { grid: this.grid, track: this.track, hud: this.hud, banner: new Banner(this), modal: this.modal });
+    this.banner = new Banner(this);
+    this.presenter = new Presenter(this, cfg, { grid: this.grid, track: this.track, hud: this.hud, banner: this.banner, modal: this.modal, sfx: this.sfx });
 
     this.scale.on('resize', () => this.relayout());
     this.relayout();
@@ -96,6 +103,7 @@ export class GameScene extends Phaser.Scene {
       spin: () => void this.playRound('spin'),
       buy: () => void this.playRound('buy'),
       auto: () => this.toggleAuto(),
+      banner: () => this.banner.current,
     };
   }
 

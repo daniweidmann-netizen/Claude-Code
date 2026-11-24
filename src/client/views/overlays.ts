@@ -9,11 +9,16 @@ export interface PrizeLabel { title: string; detail: string }
 /** Short centred announcement (station effects, free spins, big events). */
 export class Banner {
   private readonly text: Phaser.GameObjects.Text;
+  private readonly dim: Phaser.GameObjects.Rectangle;
   constructor(private readonly scene: Phaser.Scene) {
+    this.dim = scene.add.rectangle(0, 0, 10, 10, 0x05070c, 0.66).setOrigin(0).setDepth(49).setVisible(false);
     this.text = scene.add.text(0, 0, '', {
       fontFamily: FONT, fontSize: '28px', color: COLOR.win, align: 'center', stroke: '#000000', strokeThickness: 6,
     }).setOrigin(0.5).setDepth(50).setAlpha(0);
   }
+  /** Text currently on screen, or '' (used by end-to-end tests). */
+  get current(): string { return this.text.alpha > 0 ? this.text.text : ''; }
+
   async show(message: string, holdMs = 650): Promise<void> {
     const { width, height } = this.scene.scale;
     this.text.setText(message).setFontSize(`${Math.round(Math.min(width, height) * 0.06)}px`)
@@ -22,6 +27,26 @@ export class Banner {
     await wait(this.scene, holdMs);
     await tween(this.scene, { targets: this.text, alpha: 0, duration: 160 });
   }
+
+  /** Big-win presentation: title plus the amount counting up. The amount shown at the end is exactly `minor`. */
+  async celebrate(title: string, minor: number, ms: number): Promise<void> {
+    const { width, height } = this.scene.scale;
+    const size = Math.round(Math.min(width, height) * 0.075);
+    this.dim.setSize(width, height).setVisible(true);
+    this.text.setFontSize(`${size}px`).setPosition(width / 2, height * 0.42).setScale(0.6).setAlpha(0).setText(`${title}\n${formatMoney(0)}`);
+    await tween(this.scene, { targets: this.text, scale: 1, alpha: 1, duration: 220, ease: 'Back.easeOut' });
+    await countUp(this.scene, minor, ms, (v) => this.text.setText(`${title}\n${formatMoney(Math.floor(v))}`));
+    await tween(this.scene, { targets: this.text, scale: 1.12, duration: 200, yoyo: true });
+    await wait(this.scene, 900);
+    await tween(this.scene, { targets: this.text, alpha: 0, duration: 200 });
+    this.dim.setVisible(false);
+  }
+}
+
+/** Counts a number up over `ms` and reports each value; returns when done. */
+export function countUp(scene: Phaser.Scene, to: number, ms: number, onValue: (v: number) => void): Promise<void> {
+  const state = { v: 0 };
+  return tween(scene, { targets: state, v: to, duration: ms, ease: 'Cubic.easeOut', onUpdate: () => onValue(state.v) }).then(() => onValue(to));
 }
 
 /** Modal layer used for the Temple Bonus chambers and for confirmations. */

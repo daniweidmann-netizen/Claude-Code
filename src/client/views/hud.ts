@@ -9,6 +9,7 @@ export interface HudActions {
   betDown(): void;
   betUp(): void;
   info(): void;
+  mute(): void;
   auto(): void;
 }
 
@@ -28,6 +29,7 @@ export class Hud {
   readonly plus: Button;
   readonly infoBtn: Button;
   readonly autoBtn: Button;
+  readonly muteBtn: Button;
 
   constructor(private readonly scene: Phaser.Scene, actions: HudActions) {
     const t = (text: string, color = COLOR.text) => scene.add.text(0, 0, text, { fontFamily: FONT, fontSize: '16px', color, stroke: '#05070c', strokeThickness: 4 });
@@ -46,6 +48,7 @@ export class Hud {
     this.plus = new Button(scene, '+', actions.betUp);
     this.infoBtn = new Button(scene, 'i', actions.info);
     this.autoBtn = new Button(scene, 'AUTO', actions.auto);
+    this.muteBtn = new Button(scene, 'Ton', actions.mute);
   }
 
   layout(l: Layout): void {
@@ -53,13 +56,14 @@ export class Hud {
     const px = (n: number) => `${Math.max(10, Math.round(n * u))}px`;
     this.title.setFontSize(px(l.portrait ? 19 : 20)).setPosition(h.x, h.y);
     if (this.logo) {
-      const lh = h.h * (l.portrait ? 0.82 : 1.0);
+      const lh = h.h * (l.portrait ? 0.72 : 1.0);
       this.logo.setPosition(h.x, h.y - 2).setScale(lh / this.logo.height);
       this.demo.setFontSize(px(10)).setPosition(h.x + this.logo.displayWidth + 8 * u, h.y + (l.portrait ? lh - 12 * u : 4 * u));
       if (l.portrait) this.demo.setPosition(h.x, h.y + lh);
     } else this.demo.setFontSize(px(11)).setPosition(h.x, h.y + this.title.height + 2);
     this.mult.setFontSize(px(26)).setPosition(h.x + h.w, h.y - 2);
     this.infoBtn.layout(h.x + h.w - (l.portrait ? 124 : 150) * u, h.y + 22 * u, 44 * u, 44 * u, 20 * u);
+    this.muteBtn.layout(h.x + h.w - (l.portrait ? 174 : 204) * u, h.y + 22 * u, 44 * u, 44 * u, 11 * u);
     this.fs.setFontSize(px(12)).setPosition(h.x + h.w, h.y + this.mult.height);
     if (l.portrait) {
       const rowH = c.h / 3, y2 = c.y + rowH * 1.45;
@@ -90,6 +94,7 @@ export class Hud {
     this.bet.setText(`Einsatz\n${formatMoney(minor)}`).setAlign('center');
     this.buyBtn.setText(`Expedition\nkaufen ${formatMoney(buyPrice)}`).setVisible(buyEnabled);
   }
+  setMuted(muted: boolean): void { this.muteBtn.setText(muted ? 'Ton\naus' : 'Ton\nan'); }
   setWin(minor: number): void { this.win.setText(minor > 0 ? `Gewinn  ${formatMoney(minor)}` : ''); }
   setMultiplier(m: number): void {
     this.mult.setText(`×${m}`);

@@ -52,3 +52,16 @@ export function formatMoney(minor: number): string {
 export function formatMultiple(centibet: number): string {
   return `${(centibet / 100).toFixed(2).replace(/\.?0+$/, '')}×`;
 }
+
+/** Celebration tiers by round win in bet multiples; 0 means no extra presentation. */
+export const WIN_TIERS = [
+  { from: 20, title: 'GROSSER GEWINN' },
+  { from: 50, title: 'RIESIGER GEWINN' },
+  { from: 200, title: 'LEGENDÄRER GEWINN' },
+];
+
+export function winTier(centibet: number): number {
+  let tier = 0;
+  WIN_TIERS.forEach((t, i) => { if (centibet >= t.from * 100) tier = i + 1; });
+  return tier;
+}
