@@ -2,7 +2,7 @@
 
 **TEMPLE OF THE LOST SUN** – *Every relic reveals a secret.*
 
-Stand: 2026-11-24 · Status: Regeln APPROVED (Phase-1-Freigabe vom 2026-11-23 mit CR-01 bis CR-08; CR-09 und die angepassten Zielwerte mit «Weiter» vom 2026-11-24) · Parameter: Kandidat v0.3.4 (`config/game-config.v0.3-candidate.json`), Validierungsstand siehe Dokument 00.
+Stand: 2026-11-24 · Status: Regeln APPROVED (Phase-1-Freigabe vom 2026-11-23 mit CR-01 bis CR-08; CR-09 und die angepassten Zielwerte mit «Weiter» vom 2026-11-24) · Parameter: eingefrorene Konfiguration v1.0.0 (`config/game-config.v1.0.0.json`, Freigabe M3 vom 2026-11-24), Validierungsstand siehe Dokument 00.
 
 > **Hinweis zu allen Zahlen:** Regeln und Abläufe sind verbindlich. Gewichte, Auszahlungswerte und Preistabellen entsprechen dem Abstimmungskandidaten v0.3; massgeblich ist die Konfigurationsdatei. Gemessene Kennzahlen stehen ausschliesslich in den Berichten unter `docs/math/reports/`.
 
@@ -273,7 +273,7 @@ Damit hat das Feature einen klaren Spannungsbogen: Keys bauen das Lager aus, Rel
 
 - Der Spieler kann die Free Spins direkt kaufen. Der Kauf ersetzt den Einsatz der Runde: Bezahlt wird der Kaufpreis, eine Basisrunde findet nicht statt.
 - Die gekaufte Runde startet genau so wie nach 3 Compass: 8 Free Spins, Base Camp auf Station 1. Danach gelten alle Regeln der Abschnitte 7.2 bis 7.4 unverändert (zusätzliche Free Spins, Siegel, Temple Finale). Die Wahrscheinlichkeiten innerhalb der Free Spins sind dieselben wie bei natürlich ausgelösten.
-- Kaufpreis (Kandidat v0.3.4): **58,5× Gesamteinsatz**, abgeleitet aus dem gemessenen Durchschnittswert des Features (56,148× ± 0,037 bei 100 Mio. gekauften Features), sodass der RTP des Kaufs dem Ziel-RTP entspricht (simuliert 95,98 %). Messwert siehe `docs/math/reports/`.
+- Kaufpreis (v1.0.0): **58× Gesamteinsatz** (Entscheid des Auftraggebers vom 2026-11-24 für einen runden Preis). Gemessener Durchschnittswert des Features: 56,148× ± 0,037 (100 Mio. gekaufte Features); daraus folgt ein simulierter Kauf-RTP von **96,81 %** (95 %-Intervall 96,74–96,87 %). Der Kauf-RTP liegt damit bewusst rund 0,8 Prozentpunkte über dem RTP normaler Runden und muss in Regeln und Unterlagen getrennt ausgewiesen werden.
 - Die Gewinnobergrenze bleibt 10 000× **Einsatz** (nicht Kaufpreis).
 - Der Kauf ist ein Konfigurationsschalter (`featureBuy.enabled`). In einigen regulierten Märkten ist Feature-Kauf nicht zulässig; welche das zum Zeitpunkt einer Lizenzierung sind, klärt der Lizenznehmer. Ohne Kauf ist das Spiel vollständig und unverändert spielbar.
 - UX: eigene Schaltfläche mit Preis in Währung, Bestätigungsdialog mit Preis und Hinweis, dass ein Gewinn nicht garantiert ist; nicht verfügbar bei zu kleinem Guthaben, im Autoplay und während einer laufenden Runde.

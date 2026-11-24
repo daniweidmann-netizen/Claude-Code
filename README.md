@@ -4,14 +4,14 @@
 
 Premium Adventure Video Slot (6×5, Cluster Pays, Cascades, Expedition System) – eigenständige Game-IP in Entwicklung.
 
-**Projektstand:** Engine, Tests, Simulator und Python-Zweitimplementierung sind implementiert und getestet. Die Konfiguration v0.3.2 misst im Abnahmelauf einen simulierten RTP von 95,995 % (2 Mrd. Runden, 95 %-Intervall 95,90–96,09 %) und erfüllt die eigenen Abnahmekriterien; sie ist **nicht zertifiziert**, und die Freigabe des Meilensteins M3 steht aus. Client, Grafik und Audio existieren noch nicht.
+**Projektstand:** Engine, Tests, Simulator und Python-Zweitimplementierung sind implementiert und getestet. Die Konfiguration ist als v1.0.0 eingefroren: simulierter RTP 95,995 % (2 Mrd. Runden, 95 %-Intervall 95,90–96,09 %), Feature-Kauf zu 58× Einsatz mit simuliertem Kauf-RTP 96,81 %. Alle Werte sind **simuliert, nicht zertifiziert**. Der Client ist in Arbeit; Grafik und Audio existieren noch nicht.
 
 ## Befehle
 
 ```
 npm install
 npm test                                   # alle Tests
-npm run sim -- --rounds 10000000           # Simulation Kandidat v0.3.2
+npm run sim -- --rounds 10000000           # Simulation Konfiguration v1.0.0
 npm run sim -- --preset v0.1 --rounds 1000000
 ```
 

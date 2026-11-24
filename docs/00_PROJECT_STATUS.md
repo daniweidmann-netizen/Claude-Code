@@ -6,7 +6,9 @@ Statusstufen: `NOT STARTED` · `IN PROGRESS` · `IMPLEMENTED` · `TESTED` · `VA
 
 Für Dokumente bedeutet `IMPLEMENTED` «fertig geschrieben, wartet auf Freigabe».
 
-## 1. Fortschrittsbericht Nr. 3 – Mathematik abgestimmt, Abnahmelauf bestanden
+## 1. Fortschrittsbericht Nr. 3 – Mathematik abgestimmt, Abnahmelauf bestanden, M3 freigegeben
+
+**Meilenstein M3 wurde am 2026-11-24 freigegeben.** Die Konfiguration ist als **v1.0.0** eingefroren (`config/game-config.v1.0.0.json`; ein Test prüft den Hash). Kaufpreis nach Entscheid des Auftraggebers 58× → simulierter Kauf-RTP 96,81 % (95 %-Intervall 96,74–96,87 %), getrennt vom RTP normaler Runden (95,995 %) auszuweisen. Die Parameter normaler Runden sind identisch mit v0.3.2. Phase 4 (Client) hat begonnen.
 
 **Freigaben:** Phase 1 samt CR-01 bis CR-08 am 2026-11-23 («Alles gut»). Fortschrittsbericht Nr. 2 mit den offenen Fragen 1–3 wurde am 2026-11-24 mit «Weiter» beantwortet; das wurde als Zustimmung zu CR-09 (Trittsteine), zum Trefferfrequenz-Ziel 30–35 % und zur höheren Volatilität gewertet. Diese Auslegung kann jederzeit widerrufen werden.
 
@@ -56,8 +58,6 @@ Die Anpassungen betrafen jeweils nur Schatzpreise des Temple Bonus der Basisrund
 - Normale Runden sind durch den Einbau unverändert (300 000 Runden identisch zum Stand davor); die Abnahme von v0.3.2 gilt für sie weiter.
 - Tests: 31 grün (3 neue). Python-Differenztest im Kaufmodus identisch über 1 Mio. Runden.
 
-**Zur Freigabe vorgelegt: Meilenstein M3** – Mathematik VALIDATED nach den Kriterien aus Dokument 04, Konfiguration v0.3.4 einfrieren. Danach beginnt Phase 4 (Phaser-Client).
-
 ## 2. Dokumente
 
 | Dokument | Status |
@@ -84,8 +84,8 @@ Die Anpassungen betrafen jeweils nur Schatzpreise des Temple Bonus der Basisrund
 | F-10 | RNG | Architektur 5 | TESTED |
 | F-11 | Ereignisprotokoll / Wiedergabe | Architektur 4 | TESTED |
 | F-12 | Simulator und Berichte | Mathematikplan 4 | TESTED |
-| F-13 | Mathematische Abstimmung auf 96,00 % | Mathematikplan 7 | VALIDATED (simuliert, v0.3.2; Freigabe M3 offen) |
-| F-22 | Feature-Kauf | GDD 7.5 | TESTED; Kauf-RTP simuliert 95,98 % |
+| F-13 | Mathematische Abstimmung auf 96,00 % | Mathematikplan 7 | APPROVED (simuliert, nicht zertifiziert; v1.0.0) |
+| F-22 | Feature-Kauf | GDD 7.5 | TESTED; Kauf-RTP simuliert 96,81 % bei Preis 58× |
 | F-14 | Client: Raster und Kaskaden | GDD 9 | NOT STARTED |
 | F-15 | Client: Expedition Track | GDD 9 | NOT STARTED |
 | F-16 | Client: UI, Demo-Guthaben, Historie | GDD 9 | NOT STARTED |
@@ -115,7 +115,7 @@ Die Anpassungen betrafen jeweils nur Schatzpreise des Temple Bonus der Basisrund
 | D-014 | Worker-Seeds per SplitMix64 statt Xoshiro-Jump | einfacher, gleichwertig für den Zweck | umgesetzt |
 | D-015 | Höhere Volatilität: eigene Relic-Werte in Free Spins, grössere Schätze; Ziel-Aufteilung 50 / 16 / 30 %, Trefferfrequenz 30–35 % | v0.2 war nur mittel volatil, Obergrenze nie erreicht | als freigegeben gewertet («Weiter») |
 | D-016 | RTP-Kriterium: Punktschätzung 96,00 ± 0,10 % und halbe Intervallbreite ≤ 0,10 | altes Kriterium bei σ ≈ 21× praktisch unerfüllbar | umgesetzt, zur Kenntnis |
-| D-018 | Feature-Kauf: Start wie 3 Compass, Preis 58,5× aus Messung, abschaltbar | Auftraggeber: «Feature-Kauf sollte möglich sein»; Kauf-RTP = Ziel-RTP | freigegeben (Regel); Preis zur Kenntnis |
+| D-018 | Feature-Kauf: Start wie 3 Compass, Preis 58× (runder Preis, Kauf-RTP 96,81 %), abschaltbar | Auftraggeber: «Feature-Kauf sollte möglich sein»; Kauf-RTP = Ziel-RTP | freigegeben |
 | D-017 | Feinabstimmung des RTP nur über Schatzpreise des Temple Bonus (v0.3.0 → v0.3.2) | Wirkung exakt vorab berechenbar, keine Regeländerung | umgesetzt |
 
 ## 5. Risikoregister
@@ -132,9 +132,7 @@ Die Anpassungen betrafen jeweils nur Schatzpreise des Temple Bonus der Basisrund
 
 ## 6. Offene Fragen an den Auftraggeber
 
-1. **Meilenstein M3 freigeben?** Konfiguration v0.3.4 einfrieren und mit dem Client (Phase 4) beginnen.
-2. Wer erstellt die Grafik, und wie viele Stunden pro Woche stehen zur Verfügung?
-3. Kaufpreis 58,5× (exakter Ziel-RTP) oder lieber ein runder Preis mit leicht abweichendem RTP (58× ≈ 96,8 %, 59× ≈ 95,2 %)?
+1. Grafik: Vorschlag liegt vor (Platzhalter-Vektorgrafik im Client, danach KI-gestützte Symbole mit dokumentierter Nachbearbeitung, Qualitätstor mit zwei Referenzsymbolen). Entscheidung offen.
 
 ## 7. Fehlerregister
 

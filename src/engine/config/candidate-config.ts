@@ -17,9 +17,9 @@ const grand = (table: PrizeEntry[], value: number): PrizeEntry[] =>
  */
 export const CONFIG_V0_3_CANDIDATE: GameConfig = {
   ...CONFIG_V0_1,
-  version: '0.3.4-candidate',
+  version: '1.0.0',
   // Same start as a 3-Compass trigger. Price from the measured feature value; see docs/math/reports/.
-  featureBuy: { enabled: true, price: 5_850, spins: 8, baseCamp: 1 },
+  featureBuy: { enabled: true, price: 5_800, spins: 8, baseCamp: 1 },
   stationSteps: [1, 2, 4, 6, 9],
   weights: {
     //      SAPPH SCARAB CHAL  CROWN MASK  WILD COMP KEY
@@ -59,3 +59,6 @@ export const CONFIG_V0_3_CANDIDATE: GameConfig = {
     ],
   },
 };
+
+/** Frozen game configuration (milestone M3, approved 2026-11-24). Changes need a new version and approval. */
+export const CONFIG_V1: GameConfig = CONFIG_V0_3_CANDIDATE;
