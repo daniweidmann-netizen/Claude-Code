@@ -3,7 +3,7 @@ import { CONFIG_V1 } from '../../engine/index.js';
 import { LocalGameService, type GameService, type RoundKind } from '../../session/game-service.js';
 import { computeLayout, formatMoney } from '../layout.js';
 import { Presenter } from '../presentation/presenter.js';
-import { createPlaceholderTextures } from '../textures.js';
+import { createPlaceholderTextures, preloadReferenceArt } from '../textures.js';
 import { COLOR } from '../theme.js';
 import { GridView } from '../views/grid-view.js';
 import { Hud } from '../views/hud.js';
@@ -23,6 +23,10 @@ export class GameScene extends Phaser.Scene {
   private rounds = 0;
 
   constructor() { super('game'); }
+
+  preload(): void {
+    if (new URLSearchParams(window.location.search).get('art') === 'ref') preloadReferenceArt(this);
+  }
 
   create(): void {
     const params = new URLSearchParams(window.location.search);

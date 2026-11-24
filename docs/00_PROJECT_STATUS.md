@@ -96,7 +96,7 @@ Die Anpassungen betrafen jeweils nur Schatzpreise des Temple Bonus der Basisrund
 | F-15 | Client: Expedition Track | GDD 9 | IMPLEMENTED (Platzhaltergrafik) |
 | F-16 | Client: UI, Demo-Guthaben, Historie | GDD 9 | IN PROGRESS (Sitzungsschicht TESTED; Regeln, Historienansicht, Autoplay fehlen) |
 | F-17 | Client: Temple Bonus und Free Spins | GDD 6, 7 | IMPLEMENTED (Platzhaltergrafik) |
-| F-18 | Art Assets | GDD 10 | NOT STARTED |
+| F-18 | Art Assets | GDD 10 | IN PROGRESS (Qualitätstor: 2 Referenzsymbole erzeugt, Entscheidung offen; Asset-Register angelegt) |
 | F-19 | Audio | GDD 11 | NOT STARTED |
 | F-20 | Barrierefreiheit / reduzierte Bewegung | GDD 9.4 | NOT STARTED |
 | F-21 | B2B-Verkaufspaket | Backlog Phase 7 | NOT STARTED |
@@ -138,7 +138,8 @@ Die Anpassungen betrafen jeweils nur Schatzpreise des Temple Bonus der Basisrund
 
 ## 6. Offene Fragen an den Auftraggeber
 
-1. Grafik: Vorschlag liegt vor (Platzhalter-Vektorgrafik im Client, danach KI-gestützte Symbole mit dokumentierter Nachbearbeitung, Qualitätstor mit zwei Referenzsymbolen). Entscheidung offen.
+1. Qualitätstor Grafik: Überzeugen die Referenzsymbole (`assets/reference/contact_sheet.png`, `assets/reference/ingame_preview.png`)? Bei Ja folgen die übrigen sieben Symbole im selben Stil.
+2. Rechtliche Prüfung der KI-Lizenzbedingungen vor einem IP-Verkauf (siehe `assets/ASSET_REGISTER.md`) – wer übernimmt das?
 
 ## 7. Fehlerregister
 

@@ -7,9 +7,20 @@ import { symbolKey } from './theme.js';
  */
 export const SYMBOL_SIZE = 128;
 
+/**
+ * Reference art under review (quality gate, see assets/ASSET_REGISTER.md).
+ * Loaded only with ?art=ref; the default build shows placeholders only.
+ */
+export const REFERENCE_ART: Record<number, string> = { 4: 'symbols/sym4.png', 5: 'symbols/sym5.png' };
+
+export function preloadReferenceArt(scene: Phaser.Scene): void {
+  for (const [id, url] of Object.entries(REFERENCE_ART)) scene.load.image(symbolKey(Number(id)), url);
+}
+
 export function createPlaceholderTextures(scene: Phaser.Scene): void {
   const S = SYMBOL_SIZE, c = S / 2;
   const make = (id: number, tile: number, draw: (g: Phaser.GameObjects.Graphics) => void) => {
+    if (scene.textures.exists(symbolKey(id))) return; // reference art already loaded
     const g = scene.make.graphics({ x: 0, y: 0 }, false);
     g.fillStyle(tile, 1).fillRoundedRect(4, 4, S - 8, S - 8, 18);
     g.lineStyle(3, 0xffffff, 0.12).strokeRoundedRect(4, 4, S - 8, S - 8, 18);
