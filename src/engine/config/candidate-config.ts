@@ -17,7 +17,7 @@ const grand = (table: PrizeEntry[], value: number): PrizeEntry[] =>
  */
 export const CONFIG_V0_3_CANDIDATE: GameConfig = {
   ...CONFIG_V0_1,
-  version: '0.3.1-candidate',
+  version: '0.3.2-candidate',
   stationSteps: [1, 2, 4, 6, 9],
   weights: {
     //      SAPPH SCARAB CHAL  CROWN MASK  WILD COMP KEY
@@ -42,7 +42,7 @@ export const CONFIG_V0_3_CANDIDATE: GameConfig = {
     ...CONFIG_V0_1.templeBonus,
     base: [
       { kind: 'treasure', value: 700, weight: 300 },
-      { kind: 'treasure', value: 1500, weight: 240 },
+      { kind: 'treasure', value: 1400, weight: 240 },
       { kind: 'treasure', value: 3000, weight: 150 },
       { kind: 'treasure', value: 5600, weight: 80 },
       { kind: 'treasure', value: 14000, weight: 30 },
