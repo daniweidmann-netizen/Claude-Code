@@ -8,7 +8,16 @@
     "noImplicitOverride": true,
     "noFallthroughCasesInSwitch": true,
     "skipLibCheck": true,
-    "types": ["node"]
+    "types": [
+      "node"
+    ]
   },
-  "include": ["src", "tools", "tests"]
+  "include": [
+    "src",
+    "tools",
+    "tests"
+  ],
+  "exclude": [
+    "src/client"
+  ]
 }

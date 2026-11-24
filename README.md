@@ -13,6 +13,9 @@ npm install
 npm test                                   # alle Tests
 npm run sim -- --rounds 10000000           # Simulation Konfiguration v1.0.0
 npm run sim -- --preset v0.1 --rounds 1000000
+npm run sim -- --mode buy --rounds 1000000 # Feature-Kauf
+npm run dev                                # Demo-Client im Browser (Platzhaltergrafik)
+npm run build:client && npx vite preview --port 4173   # danach: npm run e2e
 ```
 
 ## Dokumente
