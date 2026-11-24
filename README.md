@@ -28,7 +28,8 @@ npm run build:client && npx vite preview --port 4173   # danach: npm run e2e
 | 03 | [Technische Architektur](docs/03_TECHNICAL_ARCHITECTURE.md) | Module, Datenmodell, RNG, Tests, Tooling |
 | 04 | [Mathematischer Modellierungsplan](docs/04_MATH_MODELING_PLAN.md) | Modell, Simulation, Validierung, Abnahmekriterien |
 | 05 | [Backlog & Roadmap](docs/05_BACKLOG_AND_ROADMAP.md) | Priorisierte Aufgaben, Zeitplan, Budget |
-| 06 | [Polish: Audit und Designplan](docs/06_POLISH_AUDIT_AND_PLAN.md) | Schwachstellen der Oberfläche, priorisierter Plan (wartet auf Freigabe) |
+| 06 | [Polish: Audit und Designplan](docs/06_POLISH_AUDIT_AND_PLAN.md) | Erstes Audit der Oberfläche und Plan (Pakete 1–5 umgesetzt) |
+| 07 | [Publisher Readiness](docs/07_PUBLISHER_READINESS.md) | Audit des überarbeiteten Stands, Gap-Analyse, Verbesserungsplan (wartet auf Freigabe) |
 
 ## Werkzeuge
 
