@@ -2,7 +2,7 @@
 
 **TEMPLE OF THE LOST SUN** – *Every relic reveals a secret.*
 
-Stand: 2026-11-24 · Status: Regeln APPROVED (Phase-1-Freigabe vom 2026-11-23 mit CR-01 bis CR-08; CR-09 und die angepassten Zielwerte mit «Weiter» vom 2026-11-24) · Parameter: Kandidat v0.3 (`config/game-config.v0.3-candidate.json`), Validierungsstand siehe Dokument 00.
+Stand: 2026-11-24 · Status: Regeln APPROVED (Phase-1-Freigabe vom 2026-11-23 mit CR-01 bis CR-08; CR-09 und die angepassten Zielwerte mit «Weiter» vom 2026-11-24) · Parameter: Kandidat v0.3.2 (`config/game-config.v0.3-candidate.json`), Validierungsstand siehe Dokument 00.
 
 > **Hinweis zu allen Zahlen:** Regeln und Abläufe sind verbindlich. Gewichte, Auszahlungswerte und Preistabellen entsprechen dem Abstimmungskandidaten v0.3; massgeblich ist die Konfigurationsdatei. Gemessene Kennzahlen stehen ausschliesslich in den Berichten unter `docs/math/reports/`.
 
