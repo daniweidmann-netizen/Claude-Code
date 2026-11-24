@@ -18,8 +18,9 @@ const STYLE_PROMPTS = {
   neon: 'neon graffiti street art on a brick wall, glowing spray paint, vivid neon colors, drips and splatter',
 };
 
-const MODEL = () => process.env.OPENAI_IMAGE_MODEL || 'gpt-image-1-mini';
-const QUALITY = () => process.env.OPENAI_IMAGE_QUALITY || 'medium';
+// trim(): beim Einfügen im Hosting-Dashboard rutscht leicht ein Zeilenumbruch mit – der macht den Modellnamen ungültig
+const MODEL = () => (process.env.OPENAI_IMAGE_MODEL || '').trim() || 'gpt-image-1-mini';
+const QUALITY = () => (process.env.OPENAI_IMAGE_QUALITY || '').trim() || 'medium';
 
 async function toResult(res) {
   if (!res.ok) {
@@ -67,8 +68,8 @@ export default {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${process.env.OPENAI_API_KEY}` },
       body: JSON.stringify({
-        model: process.env.OPENAI_IMAGE_MODEL || 'gpt-image-1-mini',
-        quality: process.env.OPENAI_IMAGE_QUALITY || 'medium',
+        model: MODEL(),
+        quality: QUALITY(),
         output_format: 'jpeg',
         output_compression: 85,
         prompt: `${prompt}. ${STYLE_PROMPTS[style] || ''}. Vertical 9:16 composition, no text, no logos, no recognizable real people.`,
