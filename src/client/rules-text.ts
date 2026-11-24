@@ -83,7 +83,26 @@ ${fb.enabled ? `<h3>Expedition kaufen</h3>
 
 export function historyHtml(entries: readonly HistoryEntry[]): string {
   if (entries.length === 0) return '<p>Noch keine Runde gespielt.</p>';
-  const rows = entries.map((e, i) => `<tr><td>${i + 1}</td><td>${e.kind === 'buy' ? 'Kauf' : 'Spin'}</td><td>${formatMoney(e.stake)}</td><td>${formatMoney(e.win)}</td><td>${e.picks.length ? e.picks.map((p) => p + 1).join(', ') : '–'}</td><td class="seed">${esc(e.seed)}</td></tr>`).join('');
-  return `<p>Letzte ${entries.length} Runden, neueste zuerst. Mit Seed, Rundenart und Kammerwahl lässt sich jede Runde exakt wiedergeben.</p>
-<div class="scroll"><table><thead><tr><th>#</th><th>Art</th><th>Kosten</th><th>Gewinn</th><th>Kammern</th><th>Seed</th></tr></thead><tbody>${rows}</tbody></table></div>`;
+  const rows = entries.map((e, i) => `<tr><td>${i + 1}</td><td>${e.kind === 'buy' ? 'Kauf' : 'Spin'}</td><td>${formatMoney(e.stake)}</td><td>${formatMoney(e.win)}</td><td>${e.picks.length ? e.picks.map((p) => p + 1).join(', ') : '–'}</td><td class="seed">${esc(e.seed)}</td><td><button data-action="replay" data-value="${i}">Wiedergabe</button></td></tr>`).join('');
+  return `<p>Letzte ${entries.length} Runden, neueste zuerst. Mit Seed, Rundenart und Kammerwahl lässt sich jede Runde exakt wiedergeben. Die Wiedergabe ändert das Guthaben nicht.</p>
+<div class="scroll"><table><thead><tr><th>#</th><th>Art</th><th>Kosten</th><th>Gewinn</th><th>Kammern</th><th>Seed</th><th></th></tr></thead><tbody>${rows}</tbody></table></div>`;
+}
+
+export interface PerfInfo { frames: number; seconds: number; fps: number; slowShare: number; worstMs: number; dpr: number; canvas: string; renderer: string; reducedMotion: boolean }
+
+export function perfHtml(p: PerfInfo, verdict: string): string {
+  const row = (k: string, v: string) => `<tr><th scope="row">${k}</th><td>${esc(v)}</td></tr>`;
+  return `<p>Gemessen wird nur, während eine Runde abläuft. Spiele etwa 20 Runden ohne Beschleunigen (zweimal AUTO), dann hierher zurück.</p>
+<p><b>${esc(verdict)}</b></p>
+<table><tbody>
+${row('Bilder pro Sekunde (Durchschnitt)', p.fps.toFixed(1))}
+${row('Anteil langsamer Bilder (unter 30 pro Sekunde)', `${(p.slowShare * 100).toFixed(1)} %`)}
+${row('Längstes Einzelbild', `${p.worstMs.toFixed(0)} ms`)}
+${row('Gemessene Dauer', `${p.seconds.toFixed(0)} s (${p.frames} Bilder)`)}
+${row('Pixeldichte / Zeichenfläche', `${p.dpr} / ${p.canvas}`)}
+${row('Darstellung', p.renderer)}
+${row('Reduzierte Bewegung', p.reducedMotion ? 'ein' : 'aus')}
+</tbody></table>
+<p><button data-action="perf-reset" data-value="">Messung zurücksetzen</button></p>
+<p class="dim">Bildwiederholraten über 60 sind auf Displays mit 90 oder 120 Hz normal.</p>`;
 }

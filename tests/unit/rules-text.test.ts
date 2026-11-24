@@ -38,6 +38,7 @@ describe('rules and paytable texts', () => {
     expect(historyHtml([])).toContain('Noch keine Runde');
     const html = historyHtml([{ seed: '<7>', kind: 'buy', bet: 100, stake: 5800, picks: [2, 0], win: 12345, configVersion: '1.0.0' }]);
     expect(html).toContain('<td>Kauf</td><td>58.00</td><td>123.45</td><td>3, 1</td>');
+    expect(html).toContain('data-action="replay" data-value="0"');
     expect(html).toContain('&lt;7&gt;');
   });
 });

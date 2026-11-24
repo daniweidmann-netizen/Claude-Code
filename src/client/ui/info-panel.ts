@@ -24,6 +24,7 @@ const CSS = `
 .tls-info th img { width: 28px; height: 28px; vertical-align: middle; margin-right: 8px; }
 .tls-info .seed { font-family: ui-monospace, monospace; font-size: 12px; }
 .tls-info .dim { color: #9aa3b8; }
+.tls-info td button { min-height: 36px; padding: 0 10px; font-size: 13px; }
 `;
 
 export class InfoPanel {
@@ -31,6 +32,9 @@ export class InfoPanel {
   private readonly main: HTMLElement;
   private readonly tabButtons = new Map<string, HTMLButtonElement>();
   onClose: (() => void) | null = null;
+  /** Called for clicks on elements carrying data-action inside the content. */
+  onAction: ((action: string, value: string) => void) | null = null;
+  private currentId = '';
 
   constructor(private readonly tabs: InfoTab[]) {
     const style = document.createElement('style');
@@ -57,6 +61,10 @@ export class InfoPanel {
     close.addEventListener('click', () => this.close());
     header.appendChild(close);
     this.main = document.createElement('main');
+    this.main.addEventListener('click', (e) => {
+      const el = (e.target as HTMLElement).closest<HTMLElement>('[data-action]');
+      if (el) this.onAction?.(el.dataset.action ?? '', el.dataset.value ?? '');
+    });
     this.root.append(header, this.main);
     document.body.appendChild(this.root);
     window.addEventListener('keydown', (e) => { if (e.key === 'Escape' && this.isOpen) this.close(); });
@@ -66,12 +74,16 @@ export class InfoPanel {
 
   show(id: string): void {
     const tab = this.tabs.find((t) => t.id === id) ?? this.tabs[0];
+    this.currentId = tab.id;
     this.main.innerHTML = tab.html();
     this.main.scrollTop = 0;
     this.tabButtons.forEach((b, key) => b.setAttribute('aria-selected', String(key === tab.id)));
     this.root.classList.add('open');
     this.tabButtons.get(tab.id)?.focus();
   }
+
+  /** Re-renders the visible tab (after its data changed). */
+  refresh(): void { if (this.isOpen) this.show(this.currentId); }
 
   close(): void {
     this.root.classList.remove('open');

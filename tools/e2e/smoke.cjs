@@ -1,5 +1,5 @@
 /**
- * End-to-end smoke test of the built client (run `npm run build:client` and
+ * End-to-end smoke test of the built client (run `npm run build`, `npm run build:client` and
  * `npx vite preview --port 4173` first):  node tools/e2e/smoke.cjs [outDir]
  *
  * Plays normal and bought rounds through the real UI in portrait and
@@ -91,6 +91,66 @@ async function finishRound(p, w, h) {
     console.log(name, 'rounds', rounds, 'balance', balance);
     await p.close();
   }
+
+  // Temple Bonus and Temple Finale through the UI: seeds that are known to reach a chamber pick.
+  const engine = await import('../../dist/src/engine/index.js');
+  const tables = new engine.Tables(engine.CONFIG_V1);
+  const seedsFor = (buy, count) => {
+    const found = [];
+    for (let s = 0; found.length < count; s++) {
+      const r = new engine.Round(tables, engine.Xoshiro256.fromSeed(BigInt(s)));
+      if (buy) r.startBought(); else r.start();
+      if (r.awaitingPick) found.push(s);
+    }
+    return found;
+  };
+  let bonusRounds = 0;
+  for (const [kind, seeds] of [['spin', seedsFor(false, 6)], ['buy', seedsFor(true, 3)]]) {
+    for (const seed of seeds) {
+      const w = 390, h = 844;
+      const p = await browser.newPage({ viewport: { width: w, height: h } });
+      p.on('console', (m) => { if (m.type() === 'error') problems.push(`bonus ${seed}: ${m.text()}`); });
+      p.on('pageerror', (e) => problems.push(`bonus ${seed}: ${e.message}`));
+      await p.goto(`${URL}?seed=${seed}&fast=25&balance=1000000`);
+      await p.waitForFunction(() => window.__tls, null, { timeout: 20000 });
+      const before = (await p.evaluate(() => window.__tls.state())).balance;
+      await p.evaluate((k) => window.__tls[k](), kind);
+      if (out && bonusRounds === 0) {
+        await p.waitForFunction(() => window.__tls.state().modal, null, { timeout: 120000 });
+        await p.waitForTimeout(200);
+        await p.screenshot({ path: `${out}/bonus_chambers.png` });
+      }
+      await finishRound(p, w, h);
+      const s = await p.evaluate(() => window.__tls.state());
+      const last = s.history[0];
+      if (last.picks.length === 0) problems.push(`bonus ${kind} seed ${seed}: no pick recorded`);
+      if (s.balance !== before - last.stake + last.win) problems.push(`bonus ${kind} seed ${seed}: balance`);
+      if (s.mismatches !== 0 || s.modal) problems.push(`bonus ${kind} seed ${seed}: view state`);
+      picksSeen += last.picks.length;
+      bonusRounds++;
+
+      if (bonusRounds === 1) {
+        // Replay of that round from the history: same presentation, balance untouched.
+        const u = Math.min(w / 390, h / 760), m = Math.round(Math.min(w, h) * 0.03);
+        await p.mouse.click(w - m - 124 * u, m + 22 * u);
+        await p.getByRole('tab', { name: 'Verlauf' }).click();
+        await p.getByRole('button', { name: 'Wiedergabe' }).first().click();
+        await p.waitForFunction(() => window.__tls.state().replays === 1 && !window.__tls.state().busy, null, { timeout: 120000 });
+        const r = await p.evaluate(() => window.__tls.state());
+        if (r.balance !== s.balance || r.history.length !== s.history.length) problems.push('replay changed the balance or the history');
+        if (r.mismatches !== 0 || r.modal) problems.push('replay: view state');
+        // Performance tab renders and resets.
+        await p.mouse.click(w - m - 124 * u, m + 22 * u);
+        await p.getByRole('tab', { name: 'Leistung' }).click();
+        if (!(await p.locator('.tls-info main').innerText()).includes('Bilder pro Sekunde')) problems.push('performance tab incomplete');
+        await p.getByRole('button', { name: 'Messung zurücksetzen' }).click();
+        if ((await p.evaluate(() => window.__tls.state())).perf.frames !== 0) problems.push('performance reset failed');
+      }
+      await p.close();
+    }
+  }
+  console.log('bonus rounds through the UI:', bonusRounds);
+
   await browser.close();
   console.log('chamber picks made through the UI:', picksSeen);
   if (picksSeen === 0) problems.push('no Temple Bonus occurred; the pick path was not exercised');

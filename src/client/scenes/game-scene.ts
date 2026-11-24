@@ -1,11 +1,12 @@
 import Phaser from 'phaser';
 import { CONFIG_V1 } from '../../engine/index.js';
-import { LocalGameService, type GameService, type RoundKind } from '../../session/game-service.js';
+import { LocalGameService, replay, type GameService, type HistoryEntry, type RoundKind } from '../../session/game-service.js';
 import { Sfx } from '../audio/sfx.js';
 import { DPR, REDUCED_MOTION } from '../env.js';
 import { computeLayout, formatMoney } from '../layout.js';
 import { Presenter } from '../presentation/presenter.js';
-import { historyHtml, paytableHtml, rulesHtml } from '../rules-text.js';
+import { PerfMeter, perfVerdict } from '../perf.js';
+import { historyHtml, paytableHtml, perfHtml, rulesHtml } from '../rules-text.js';
 import { InfoPanel } from '../ui/info-panel.js';
 import { createPlaceholderTextures, preloadReferenceArt } from '../textures.js';
 import { COLOR } from '../theme.js';
@@ -31,6 +32,8 @@ export class GameScene extends Phaser.Scene {
   private shade: Phaser.GameObjects.Rectangle | null = null;
   private plate: Phaser.GameObjects.Graphics | null = null;
   private autoLeft = 0;
+  private readonly perf = new PerfMeter();
+  private replays = 0;
   private readonly loadErrors: string[] = [];
   private readonly sfx = new Sfx();
   private info!: InfoPanel;
@@ -86,7 +89,21 @@ export class GameScene extends Phaser.Scene {
       { id: 'rules', label: 'Regeln', html: () => rulesHtml(cfg) },
       { id: 'pays', label: 'Auszahlungen', html: () => paytableHtml(cfg, this.service.bet) },
       { id: 'history', label: 'Verlauf', html: () => historyHtml(this.service.history()) },
+      { id: 'perf', label: 'Leistung', html: () => {
+        const st = this.perf.stats;
+        return perfHtml({
+          ...st, dpr: DPR, canvas: `${this.scale.width}×${this.scale.height}`,
+          renderer: this.game.renderer.type === Phaser.WEBGL ? 'WebGL' : 'Canvas', reducedMotion: REDUCED_MOTION,
+        }, perfVerdict(st.fps, st.slowShare, st.frames));
+      } },
     ]);
+    this.info.onAction = (action, value) => {
+      if (action === 'perf-reset') { this.perf.reset(); this.info.refresh(); }
+      if (action === 'replay') {
+        const entry = this.service.history()[Number(value)];
+        if (entry) { this.info.close(); void this.playReplay(entry); }
+      }
+    };
     this.info.onClose = () => { this.input.enabled = true; };
     this.modal = new Modal(this);
     this.banner = new Banner(this);
@@ -109,6 +126,7 @@ export class GameScene extends Phaser.Scene {
       state: () => ({
         dpr: DPR, reducedMotion: REDUCED_MOTION, loadErrors: this.loadErrors, textureSize: this.grid.textureSize,
         canvas: [this.scale.width, this.scale.height],
+        replays: this.replays, perf: this.perf.stats,
         busy: this.busy, rounds: this.rounds, autoLeft: this.autoLeft, info: this.info.isOpen, balance: this.service.balance, bet: this.service.bet,
         modal: this.modal.open, mismatches: this.presenter.mismatches, grid: this.grid.snapshot(),
         history: this.service.history().slice(0, 5),
@@ -118,6 +136,24 @@ export class GameScene extends Phaser.Scene {
       auto: () => this.toggleAuto(),
       banner: () => this.banner.current,
     };
+  }
+
+  override update(_time: number, delta: number): void {
+    if (this.busy) this.perf.add(delta);
+  }
+
+  /** Shows a finished round again from its seed and picks. Display only: the service and the balance are not touched. */
+  private async playReplay(entry: HistoryEntry): Promise<void> {
+    if (this.busy || this.modal.open) return;
+    this.busy = true;
+    this.hud.setBusy(true, false, false);
+    this.presenter.beginRound(entry.bet);
+    await this.banner.show('Wiedergabe', 500);
+    await this.presenter.play(replay(this.service.config, entry));
+    this.setSpeed(this.baseSpeed);
+    this.busy = false;
+    this.replays++;
+    this.refreshHud();
   }
 
   private baseSpeed = 1;
