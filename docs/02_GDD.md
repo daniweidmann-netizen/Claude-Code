@@ -214,13 +214,13 @@ Da die Zuordnung der Preise zu den Kammern gleichverteilt zufällig ist, hat jed
 
 Die drei Preise werden nacheinander unabhängig aus der Stufentabelle gezogen. Der Hauptschatz kann je Bonus höchstens einmal vorkommen (bei erneutem Ziehen wird wiederholt). Anschliessend werden die Preise gleichverteilt auf die Kammern gemischt (v1.0.1: ohne das Mischen wären die Kammern wegen der Hauptschatz-Regel nicht gleichwertig).
 
-**Preistabellen (Kandidat v0.3, relative Gewichte; Wahrscheinlichkeit = Gewicht ÷ Summe der Tabelle):**
+**Preistabellen (Kandidat v0.3.2, relative Gewichte; Wahrscheinlichkeit = Gewicht ÷ Summe der Tabelle):**
 
 | Basisrunde | Gewicht | | Finale | 1 Siegel | 2 Siegel | 3 Siegel |
 |---|---|---|---|---|---|---|
 | Schatz 7× | 300 | | Schatz 10× | 300 | 150 | – |
 | Schatz 14× | 240 | | Schatz 20× | 240 | 220 | 150 |
-| Schatz 28× | 150 | | Schatz 40× | 240 | 200 | 220 |
+| Schatz 30× | 150 | | Schatz 40× | 240 | 200 | 220 |
 | Schatz 56× | 80 | | Schatz 80× | 80 | 140 | 200 |
 | Schatz 140× | 30 | | Schatz 200× | 30 | 70 | 130 |
 | Relic Bonus (25× und weitere Kammer) | 100 | | Relic Bonus (25× und weitere Kammer) | 100 | 120 | 150 |
