@@ -1,0 +1,326 @@
+{
+ "version": "0.3.0-candidate",
+ "cols": 6,
+ "rows": 5,
+ "minClusterSize": 5,
+ "maxCascades": 50,
+ "maxWin": 1000000,
+ "weights": {
+  "base": [
+   2000,
+   1950,
+   1900,
+   1850,
+   1800,
+   0,
+   92,
+   200
+  ],
+  "free": [
+   2000,
+   1950,
+   1900,
+   1850,
+   1800,
+   0,
+   60,
+   91
+  ]
+ },
+ "payBrackets": [
+  5,
+  6,
+  7,
+  8,
+  10,
+  12,
+  15,
+  20
+ ],
+ "paytable": [
+  [
+   10,
+   20,
+   30,
+   40,
+   70,
+   130,
+   350,
+   1000
+  ],
+  [
+   20,
+   30,
+   30,
+   50,
+   90,
+   190,
+   500,
+   1750
+  ],
+  [
+   30,
+   30,
+   50,
+   80,
+   160,
+   320,
+   750,
+   2500
+  ],
+  [
+   30,
+   50,
+   80,
+   130,
+   260,
+   510,
+   1250,
+   5000
+  ],
+  [
+   70,
+   90,
+   160,
+   260,
+   510,
+   940,
+   2500,
+   10000
+  ]
+ ],
+ "stationSteps": [
+  1,
+  2,
+  4,
+  6,
+  9
+ ],
+ "discoveryWilds": 2,
+ "treasureMultiplier": 2,
+ "relicValues": [
+  {
+   "value": 2,
+   "weight": 500
+  },
+  {
+   "value": 3,
+   "weight": 280
+  },
+  {
+   "value": 5,
+   "weight": 150
+  },
+  {
+   "value": 10,
+   "weight": 55
+  },
+  {
+   "value": 25,
+   "weight": 15
+  }
+ ],
+ "relicValuesFree": [
+  {
+   "value": 5,
+   "weight": 480
+  },
+  {
+   "value": 10,
+   "weight": 290
+  },
+  {
+   "value": 25,
+   "weight": 150
+  },
+  {
+   "value": 50,
+   "weight": 60
+  },
+  {
+   "value": 100,
+   "weight": 20
+  }
+ ],
+ "freeSpins": {
+  "awards": [
+   {
+    "minCompass": 5,
+    "spins": 12,
+    "baseCamp": 2
+   },
+   {
+    "minCompass": 4,
+    "spins": 10,
+    "baseCamp": 1
+   },
+   {
+    "minCompass": 3,
+    "spins": 8,
+    "baseCamp": 1
+   }
+  ],
+  "retriggerCompass": 3,
+  "retriggerSpins": 4,
+  "maxSpins": 30,
+  "maxBaseCamp": 3,
+  "maxSeals": 3
+ },
+ "templeBonus": {
+  "chambers": 3,
+  "base": [
+   {
+    "kind": "treasure",
+    "value": 700,
+    "weight": 300
+   },
+   {
+    "kind": "treasure",
+    "value": 1400,
+    "weight": 240
+   },
+   {
+    "kind": "treasure",
+    "value": 2800,
+    "weight": 150
+   },
+   {
+    "kind": "treasure",
+    "value": 5600,
+    "weight": 80
+   },
+   {
+    "kind": "treasure",
+    "value": 14000,
+    "weight": 30
+   },
+   {
+    "kind": "relic",
+    "value": 2500,
+    "weight": 100
+   },
+   {
+    "kind": "freeSpins",
+    "value": 0,
+    "weight": 90
+   },
+   {
+    "kind": "grand",
+    "value": 250000,
+    "weight": 10
+   }
+  ],
+  "finale": [
+   [
+    {
+     "kind": "treasure",
+     "value": 1000,
+     "weight": 300
+    },
+    {
+     "kind": "treasure",
+     "value": 2000,
+     "weight": 240
+    },
+    {
+     "kind": "treasure",
+     "value": 4000,
+     "weight": 240
+    },
+    {
+     "kind": "treasure",
+     "value": 8000,
+     "weight": 80
+    },
+    {
+     "kind": "treasure",
+     "value": 20000,
+     "weight": 30
+    },
+    {
+     "kind": "relic",
+     "value": 2500,
+     "weight": 100
+    },
+    {
+     "kind": "grand",
+     "value": 250000,
+     "weight": 10
+    }
+   ],
+   [
+    {
+     "kind": "treasure",
+     "value": 1000,
+     "weight": 150
+    },
+    {
+     "kind": "treasure",
+     "value": 2000,
+     "weight": 220
+    },
+    {
+     "kind": "treasure",
+     "value": 4000,
+     "weight": 200
+    },
+    {
+     "kind": "treasure",
+     "value": 8000,
+     "weight": 140
+    },
+    {
+     "kind": "treasure",
+     "value": 20000,
+     "weight": 70
+    },
+    {
+     "kind": "relic",
+     "value": 2500,
+     "weight": 120
+    },
+    {
+     "kind": "grand",
+     "value": 500000,
+     "weight": 20
+    }
+   ],
+   [
+    {
+     "kind": "treasure",
+     "value": 2000,
+     "weight": 150
+    },
+    {
+     "kind": "treasure",
+     "value": 4000,
+     "weight": 220
+    },
+    {
+     "kind": "treasure",
+     "value": 8000,
+     "weight": 200
+    },
+    {
+     "kind": "treasure",
+     "value": 20000,
+     "weight": 130
+    },
+    {
+     "kind": "relic",
+     "value": 2500,
+     "weight": 150
+    },
+    {
+     "kind": "grand",
+     "value": 1000000,
+     "weight": 30
+    }
+   ]
+  ],
+  "bonusFreeSpins": {
+   "spins": 8,
+   "baseCamp": 2
+  }
+ }
+}

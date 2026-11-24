@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { CONFIG_V0_1, CONFIG_V0_2_CANDIDATE, EMPTY, Sym, applyGravity, findClusters, validateConfig } from '../../src/engine/index.js';
+import { CONFIG_V0_1, CONFIG_V0_3_CANDIDATE, EMPTY, Sym, applyGravity, findClusters, validateConfig } from '../../src/engine/index.js';
 
 const W = Sym.WILD, X = Sym.EXPLORER, K = Sym.KEY, C = Sym.COMPASS;
 const find = (rows: number[][]) => findClusters(rows.flat(), 6, 5, 5);
@@ -84,7 +84,7 @@ describe('applyGravity', () => {
 describe('validateConfig', () => {
   it('accepts the draft and the candidate configuration', () => {
     expect(validateConfig(CONFIG_V0_1)).toEqual([]);
-    expect(validateConfig(CONFIG_V0_2_CANDIDATE)).toEqual([]);
+    expect(validateConfig(CONFIG_V0_3_CANDIDATE)).toEqual([]);
   });
   it('reports broken configurations', () => {
     const bad = structuredClone(CONFIG_V0_1);

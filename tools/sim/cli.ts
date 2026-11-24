@@ -4,7 +4,7 @@ import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { availableParallelism } from 'node:os';
 import { dirname } from 'node:path';
 import { Worker, isMainThread, parentPort, workerData } from 'node:worker_threads';
-import { CONFIG_V0_1, CONFIG_V0_2_CANDIDATE, assertValidConfig, type GameConfig } from '../../src/engine/index.js';
+import { CONFIG_V0_1, CONFIG_V0_3_CANDIDATE, assertValidConfig, type GameConfig } from '../../src/engine/index.js';
 import { allBonusExact, compassFirstDrop } from './bonus-math.js';
 import { WIN_CLASS_LABELS, emptyAcc, merge, runStream, type Acc } from './core.js';
 
@@ -25,8 +25,8 @@ function arg(name: string, fallback: string): string {
 async function main(): Promise<void> {
   // --config <file.json>: partial overrides merged over the built-in configuration (top-level keys).
   const override = arg('config', '');
-  // --preset v0.1 (GDD draft) | v0.2 (tuning candidate, default)
-  const preset = arg('preset', 'v0.2') === 'v0.1' ? CONFIG_V0_1 : CONFIG_V0_2_CANDIDATE;
+  // --preset v0.1 (GDD v1.0 draft) | v0.3 (tuning candidate, default)
+  const preset = arg('preset', 'v0.3') === 'v0.1' ? CONFIG_V0_1 : CONFIG_V0_3_CANDIDATE;
   const cfg: GameConfig = override ? { ...preset, ...JSON.parse(readFileSync(override, 'utf8')) } : preset;
   assertValidConfig(cfg);
   const rounds = Number(arg('rounds', '10000000'));
