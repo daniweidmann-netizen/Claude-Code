@@ -138,7 +138,7 @@ Die Anpassungen betrafen jeweils nur Schatzpreise des Temple Bonus der Basisrund
 | R-02 | Rechtekette bei KI-unterstützten Assets | hoch | Asset-Register, menschliche Bearbeitung dokumentieren, rechtliche Prüfung vor Vertrag |
 | R-03 | Free Spins mathematisch zu stark | mittel | isolierte Simulation, definierte Stellschrauben |
 | R-04 | Grafikqualität in Eigenleistung unter Premium-Niveau | hoch | zwei Referenzsymbole als frühes Qualitätstor (T-103) |
-| R-05 | Name bereits als Marke oder Spieltitel belegt | mittel | Markenrecherche T-508 in Woche 2 |
+| R-05 | Name bereits als Marke oder Spieltitel belegt | mittel | Websuche vom 2026-11-24: kein Slot mit dem Titel «Temple of the Lost Sun» gefunden. Ähnliche Titel existieren: «Temple of the Sun» (Noble Gaming, laut Reviewseite nicht mehr verfügbar), «Lost Temple» (Merkur), «Solar Temple» (Playson), «Aztec Sun» (Booongo). **Keine Markenregister geprüft** (EUIPO, IGE, USPTO, WIPO) – das ist vor dem Verkauf nötig und ersetzt keine anwaltliche Prüfung. |
 | R-06 | Zeitplan zu knapp | mittel | Stufe A klar abgegrenzt, 14 statt 12 Wochen eingeplant |
 | R-07 | Simulationsgeschwindigkeit | niedrig | früh messen, parallelisieren |
 
