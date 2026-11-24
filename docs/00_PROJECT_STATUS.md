@@ -14,7 +14,8 @@ Für Dokumente bedeutet `IMPLEMENTED` «fertig geschrieben, wartet auf Freigabe�
 - Sitzungsschicht `src/session` (Demo-Guthaben, Einsatzstufen, Feature-Kauf, Rundenhistorie mit Seed, Wiedergabe) – 5 Tests, u. a. exakte Buchführung über 3 000 Runden und Prüfung, dass geschlossene Kammern vor der Wahl nicht übermittelt werden.
 - Phaser-Client `src/client` mit **Platzhaltergrafik** (im Code gezeichnet, eigene Arbeit): Raster mit Fall- und Kaskadenanimation aus dem Ereignisprotokoll, Expedition Track mit Base Camp und Siegeln, Multiplikatoranzeige, Bedienleiste, Temple Bonus mit Kammerwahl, Free Spins, Feature-Kauf mit Bestätigung, Beschleunigen per Tippen, Hoch- und Querformat.
 - Browser-Test `tools/e2e/smoke.cjs` (Chromium, 390×844, 1280×720, 360×640; je 40 Runden inkl. 5 Käufen): keine Konsolenfehler, gezeichnetes Raster immer identisch mit dem Protokoll, Guthaben stimmt mit der Historie überein. Die Kammerwahl über die Oberfläche kam dabei nur einmal vor – dieser Pfad ist dünn abgedeckt.
-- **Noch nicht vorhanden:** Regeln/Auszahlungstabelle, Historienansicht, Autoplay, Einstellungen, reduzierte Bewegung, Big-Win-Darstellung, Ladebildschirm, Ton, finale Grafik, Tests in Firefox/WebKit und auf echten Geräten, Leistungsmessung. Die Darstellung ist auf hochauflösenden Displays noch nicht geschärft.
+- Nachtrag: Regeln, Auszahlungstabelle und Rundenverlauf (aus der Konfiguration erzeugt, 5 Tests), Autoplay über 10 Runden (hält bei jeder Kammerwahl an), KI-generierter Symbolsatz als Standard. Der Browser-Test prüft zusätzlich Autoplay und Info-Ansicht.
+- **Noch nicht vorhanden:** Wiedergabe einer Runde aus dem Verlauf, Einstellungen, reduzierte Bewegung, Big-Win-Darstellung, Ladebildschirm, Ton, finale Grafik, Tests in Firefox/WebKit und auf echten Geräten, Leistungsmessung. Die Darstellung ist auf hochauflösenden Displays noch nicht geschärft.
 
 **Freigaben:** Phase 1 samt CR-01 bis CR-08 am 2026-11-23 («Alles gut»). Fortschrittsbericht Nr. 2 mit den offenen Fragen 1–3 wurde am 2026-11-24 mit «Weiter» beantwortet; das wurde als Zustimmung zu CR-09 (Trittsteine), zum Trefferfrequenz-Ziel 30–35 % und zur höheren Volatilität gewertet. Diese Auslegung kann jederzeit widerrufen werden.
 
@@ -94,7 +95,7 @@ Die Anpassungen betrafen jeweils nur Schatzpreise des Temple Bonus der Basisrund
 | F-22 | Feature-Kauf | GDD 7.5 | TESTED; Kauf-RTP simuliert 96,81 % bei Preis 58× |
 | F-14 | Client: Raster und Kaskaden | GDD 9 | IMPLEMENTED (Platzhaltergrafik, Browser-Smoke-Test) |
 | F-15 | Client: Expedition Track | GDD 9 | IMPLEMENTED (Platzhaltergrafik) |
-| F-16 | Client: UI, Demo-Guthaben, Historie | GDD 9 | IN PROGRESS (Sitzungsschicht TESTED; Regeln, Historienansicht, Autoplay fehlen) |
+| F-16 | Client: UI, Demo-Guthaben, Historie | GDD 9 | IMPLEMENTED (Sitzungsschicht und Regeltexte TESTED; Wiedergabe aus dem Verlauf und Einstellungen fehlen) |
 | F-17 | Client: Temple Bonus und Free Spins | GDD 6, 7 | IMPLEMENTED (Platzhaltergrafik) |
 | F-18 | Art Assets | GDD 10 | IN PROGRESS (Stil freigegeben; 9 Symbole KI-generiert und eingebunden, ohne menschliche Überarbeitung; Hintergrund, Logo, Key Art, UI-Kit fehlen) |
 | F-19 | Audio | GDD 11 | NOT STARTED |

@@ -50,6 +50,34 @@ async function finishRound(p, w, h) {
       if (s.mismatches !== 0) problems.push(`${name}: round ${i} grid mismatches ${s.mismatches}`);
     }
     if (out) await p.screenshot({ path: `${out}/${name}_end.png` });
+
+    // Autoplay: ten rounds, books still exact, controls return afterwards.
+    const before = await p.evaluate(() => window.__tls.state().rounds);
+    await p.evaluate(() => window.__tls.auto());
+    for (;;) {
+      await finishRound(p, w, h);
+      const s = await p.evaluate(() => window.__tls.state());
+      if (s.autoLeft === 0 && !s.busy) break;
+      await p.waitForTimeout(30);
+    }
+    const afterAuto = await p.evaluate(() => window.__tls.state());
+    if (afterAuto.rounds - before !== 10) problems.push(`${name}: autoplay played ${afterAuto.rounds - before} rounds`);
+    if (afterAuto.mismatches !== 0) problems.push(`${name}: grid mismatches after autoplay`);
+
+    // Info panel through the real button: rules, paytable, history.
+    const u = w >= h ? Math.min(w / 900, h / 480) : Math.min(w / 390, h / 760), m = Math.round(Math.min(w, h) * 0.03);
+    await p.mouse.click(w - m - (w >= h ? 110 : 86) * u, m + 22 * u);
+    await p.waitForSelector('.tls-info.open', { timeout: 5000 }).catch(() => problems.push(`${name}: info panel did not open`));
+    const rules = await p.locator('.tls-info main').innerText().catch(() => '');
+    if (!rules.includes('Nicht zertifiziert') || !rules.includes('Expedition Track')) problems.push(`${name}: rules text incomplete`);
+    if (out) await p.screenshot({ path: `${out}/${name}_rules.png` });
+    await p.getByRole('tab', { name: 'Auszahlungen' }).click();
+    if (await p.locator('.tls-info td').count() !== 40) problems.push(`${name}: paytable cells`);
+    if (out) await p.screenshot({ path: `${out}/${name}_paytable.png` });
+    await p.getByRole('tab', { name: 'Verlauf' }).click();
+    if (await p.locator('.tls-info tbody tr').count() !== 50) problems.push(`${name}: history rows`);
+    await p.getByRole('button', { name: 'Schliessen' }).click();
+    if (await p.locator('.tls-info.open').count() !== 0) problems.push(`${name}: info panel did not close`);
     console.log(name, 'rounds 40, balance', balance);
     await p.close();
   }
