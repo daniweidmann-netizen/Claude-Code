@@ -32,7 +32,8 @@ export type GameEvent =
   | { type: 'templeReached'; mode: SpinMode; seals: number }
   | { type: 'cascadeLimitReached' }
   | { type: 'spinEnded'; mode: SpinMode; win: number; compass: number }
-  | { type: 'freeSpinsAwarded'; spins: number; total: number; baseCamp: number; source: 'compass' | 'retrigger' | 'bonus' }
+  | { type: 'freeSpinsAwarded'; spins: number; total: number; baseCamp: number; source: 'compass' | 'retrigger' | 'bonus' | 'buy' }
+  | { type: 'featureBought'; price: number }
   | { type: 'templeBonusStarted'; tier: 'base' | 'finale'; seals: number; chambers: number }
   | { type: 'chamberPicked'; chamber: number; prize: PrizeView }
   | { type: 'chambersRevealed'; prizes: { chamber: number; prize: PrizeView }[] }

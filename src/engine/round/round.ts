@@ -49,6 +49,8 @@ export interface RoundStats {
   baseBonus: boolean;
   freeSpinsTriggered: boolean;
   freeSpinsFromBonus: boolean;
+  /** Round was started through the feature buy (no base spin). */
+  bought: boolean;
   freeSpinsPlayed: number;
   finalBaseCamp: number;
   finalSunBonus: number;
@@ -84,7 +86,7 @@ interface BonusState {
 export class Round {
   readonly stats: RoundStats = {
     baseWin: 0, baseBonusWin: 0, freeWin: 0, finaleWin: 0, baseHit: false, baseCascades: 0,
-    baseStation: 0, baseBonus: false, freeSpinsTriggered: false, freeSpinsFromBonus: false,
+    baseStation: 0, baseBonus: false, freeSpinsTriggered: false, freeSpinsFromBonus: false, bought: false,
     freeSpinsPlayed: 0, finalBaseCamp: 0, finalSunBonus: 0, seals: 0, cascadeLimitHit: false,
     maxCascadesInSpin: 0,
   };
@@ -136,6 +138,20 @@ export class Round {
       this.openBonus('base', this.t.bonusBase, this.cfg.templeBonus.base, 0);
       return;
     }
+    this.afterBaseBonus();
+  }
+
+  /**
+   * Starts the round through the feature buy: no base spin, the free spins
+   * begin immediately. The caller charges `featureBuy.price` instead of the bet.
+   */
+  startBought(): void {
+    if (this.phase !== 'new') throw new Error('Round already started');
+    const fb = this.cfg.featureBuy;
+    if (!fb.enabled) throw new Error('Feature buy is disabled in this configuration');
+    this.stats.bought = true;
+    this.events?.push({ type: 'featureBought', price: fb.price });
+    this.awardFreeSpins(fb.spins, fb.baseCamp, 'buy');
     this.afterBaseBonus();
   }
 
@@ -200,7 +216,7 @@ export class Round {
     this.events?.push({ type: 'roundEnded', totalWin: this.totalWin });
   }
 
-  private awardFreeSpins(spins: number, baseCamp: number, source: 'compass' | 'retrigger' | 'bonus'): void {
+  private awardFreeSpins(spins: number, baseCamp: number, source: 'compass' | 'retrigger' | 'bonus' | 'buy'): void {
     const granted = Math.min(spins, this.cfg.freeSpins.maxSpins - this.freeAwarded);
     this.freeAwarded += granted;
     this.freeRemaining += granted;

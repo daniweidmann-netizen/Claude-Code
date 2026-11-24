@@ -1,5 +1,5 @@
 {
-  "version": "0.3.2-candidate",
+  "version": "0.3.3-candidate",
   "cols": 6,
   "rows": 5,
   "minClusterSize": 5,
@@ -322,5 +322,11 @@
       "spins": 8,
       "baseCamp": 2
     }
+  },
+  "featureBuy": {
+    "enabled": true,
+    "price": 5860,
+    "spins": 8,
+    "baseCamp": 1
   }
 }

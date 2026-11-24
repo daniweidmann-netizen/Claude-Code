@@ -80,4 +80,10 @@ export interface GameConfig {
     finale: PrizeEntry[][];
     bonusFreeSpins: { spins: number; baseCamp: number };
   };
+  /**
+   * Feature buy: the player pays `price` (centibet) instead of the bet and the
+   * round starts directly with `spins` free spins at `baseCamp`; no base spin
+   * is played. The win cap stays `maxWin` (relative to the bet, not the price).
+   */
+  featureBuy: { enabled: boolean; price: number; spins: number; baseCamp: number };
 }

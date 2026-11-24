@@ -66,7 +66,7 @@ class Game:
         self.cols_n, self.rows_n = cfg["cols"], cfg["rows"]
 
     # ---- one round -------------------------------------------------------
-    def play(self):
+    def play(self, buy=False):
         c = self.c
         self.total = 0
         self.src = {"base": 0, "bonus": 0, "free": 0, "finale": 0}
@@ -79,8 +79,14 @@ class Game:
         self.fs_played = 0
         self.temple = False
 
-        compass, self.base_station, self.base_cascades = self.spin(False)
-        if not self.capped:
+        if buy:
+            fb = c["featureBuy"]
+            assert fb["enabled"]
+            self.base_station, self.base_cascades = 0, 0
+            self.award(fb["spins"], fb["baseCamp"])
+        else:
+            compass, self.base_station, self.base_cascades = self.spin(False)
+        if not buy and not self.capped:
             for a in c["freeSpins"]["awards"]:
                 if compass >= a["minCompass"]:
                     self.award(a["spins"], a["baseCamp"])
@@ -260,10 +266,11 @@ class Game:
 def main():
     cfg = json.load(open(sys.argv[1]))
     seed, stream, rounds = int(sys.argv[2]), int(sys.argv[3]), int(sys.argv[4])
+    buy = len(sys.argv) > 5 and sys.argv[5] == "buy"
     game = Game(cfg, Xoshiro256(seed, stream))
     out = sys.stdout
     for _ in range(rounds):
-        out.write(",".join(map(str, game.play())) + "\n")
+        out.write(",".join(map(str, game.play(buy))) + "\n")
 
 
 if __name__ == "__main__":

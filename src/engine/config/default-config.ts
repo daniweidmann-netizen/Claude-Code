@@ -95,4 +95,5 @@ export const CONFIG_V0_1: GameConfig = {
     ],
     bonusFreeSpins: { spins: 8, baseCamp: 2 },
   },
+  featureBuy: { enabled: false, price: 10_000, spins: 8, baseCamp: 1 },
 };

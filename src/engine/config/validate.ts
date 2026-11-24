@@ -63,6 +63,14 @@ export function validateConfig(c: GameConfig): string[] {
   };
   checkTable('templeBonus.base', tb.base, true);
   tb.finale.forEach((t, i) => checkTable(`templeBonus.finale[${i}]`, t, false));
+  const fb = c.featureBuy;
+  if (!fb || typeof fb.enabled !== 'boolean') e.push('featureBuy missing');
+  else {
+    if (!isPosInt(fb.price) || fb.price % 10 !== 0) e.push('featureBuy.price must be a positive multiple of 10 centibet');
+    if (!isPosInt(fb.spins) || fb.spins > fs.maxSpins) e.push('featureBuy.spins invalid');
+    if (!isNonNegInt(fb.baseCamp) || fb.baseCamp > fs.maxBaseCamp) e.push('featureBuy.baseCamp invalid');
+    if (fb.price >= c.maxWin) e.push('featureBuy.price must be below maxWin');
+  }
   return e;
 }
 

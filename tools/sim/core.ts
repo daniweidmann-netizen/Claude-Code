@@ -82,17 +82,18 @@ export function merge(a: Acc, b: Acc): Acc {
  * through the whole stream, so (config, seed, stream, rounds) fixes the result.
  * Picks always take the first closed chamber; chambers are exchangeable.
  */
-export function runStream(cfg: GameConfig, seed: bigint, stream: number, rounds: number, batchSize: number): Acc {
+export function runStream(cfg: GameConfig, seed: bigint, stream: number, rounds: number, batchSize: number, buy = false): Acc {
   const tables = new Tables(cfg);
   const rng = Xoshiro256.fromSeed(seed, BigInt(stream));
   const acc = emptyAcc(cfg);
   const hist = new Uint32Array(acc.clusters.length);
   const opts = { clusterHistogram: hist };
+  const stake = buy ? cfg.featureBuy.price : 100;
   let batchWin = 0, batchCount = 0, topMin = 0;
 
   for (let i = 0; i < rounds; i++) {
     const r = new Round(tables, rng, opts);
-    r.start();
+    if (buy) r.startBought(); else r.start();
     while (r.awaitingPick) r.pick(r.availableChambers[0]);
     const s = r.stats, w = r.totalWin;
 
@@ -128,7 +129,7 @@ export function runStream(cfg: GameConfig, seed: bigint, stream: number, rounds:
       topMin = acc.top[acc.top.length - 1].win;
     }
     batchWin += w;
-    if (++batchCount === batchSize) { acc.batchRtp.push(batchWin / (batchCount * 100)); batchWin = 0; batchCount = 0; }
+    if (++batchCount === batchSize) { acc.batchRtp.push(batchWin / (batchCount * stake)); batchWin = 0; batchCount = 0; }
   }
   for (let i = 0; i < hist.length; i++) acc.clusters[i] = hist[i];
   return acc;

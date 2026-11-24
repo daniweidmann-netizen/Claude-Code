@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { CONFIG_V0_1 as CFG, Round, Sym, Tables, centibetToMoney, type GameEvent } from '../../src/engine/index.js';
+import { CONFIG_V0_1 as CFG, Round, Sym, Tables, Xoshiro256, centibetToMoney, type GameEvent } from '../../src/engine/index.js';
 import { ScriptedRng, drawFor, drawsForGrid, quietGrid } from '../support/scripted-rng.js';
 import { verifyEvents } from '../support/verify-events.js';
 
@@ -143,5 +143,43 @@ describe('round – scripted scenarios', () => {
     })();
     expect(round).toMatchObject({ done: true, capped: true, totalWin: 10 });
     expect(types(events).slice(-3)).toEqual(['maxWinReached', 'spinEnded', 'roundEnded']);
+  });
+});
+
+describe('round – feature buy', () => {
+  const cfg = { ...structuredClone(CFG), featureBuy: { enabled: true, price: 6000, spins: 8, baseCamp: 1 } };
+  const t = new Tables(cfg);
+
+  it('is refused when the configuration disables it', () => {
+    const round = new Round(tables, new ScriptedRng([]), { recordEvents: true });
+    expect(() => round.startBought()).toThrow(/disabled/);
+  });
+
+  it('starts directly with the configured free spins and plays no base spin', () => {
+    for (let s = 0; s < 300; s++) {
+      const round = new Round(t, Xoshiro256.fromSeed(BigInt(s)), { recordEvents: true });
+      round.startBought();
+      while (round.awaitingPick) round.pick(round.availableChambers[0]);
+      const ev = round.events as GameEvent[];
+      expect(ev[0]).toEqual({ type: 'featureBought', price: 6000 });
+      expect(ev[1]).toEqual({ type: 'freeSpinsAwarded', spins: 8, total: 8, baseCamp: 1, source: 'buy' });
+      expect(ev[2]).toMatchObject({ type: 'spinStarted', mode: 'free', freeSpinIndex: 1, station: 1, sunBonus: 0 });
+      expect(ev.some((e) => e.type === 'spinStarted' && e.mode === 'base')).toBe(false);
+      expect(round.done).toBe(true);
+      expect(round.stats.bought).toBe(true);
+      expect(round.stats.baseWin + round.stats.baseBonusWin).toBe(0);
+      expect(round.stats.freeSpinsPlayed).toBeGreaterThanOrEqual(8);
+      expect(round.stats.freeSpinsPlayed).toBeLessThanOrEqual(cfg.freeSpins.maxSpins);
+      expect(round.totalWin).toBeLessThanOrEqual(cfg.maxWin);
+      expect(verifyEvents(cfg, ev)).toBe(round.totalWin);
+    }
+  });
+
+  it('cannot be combined with a normal start', () => {
+    const round = new Round(t, Xoshiro256.fromSeed(1n));
+    round.startBought();
+    while (round.awaitingPick) round.pick(round.availableChambers[0]);
+    expect(() => round.start()).toThrow();
+    expect(() => round.startBought()).toThrow();
   });
 });

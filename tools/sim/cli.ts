@@ -8,11 +8,11 @@ import { CONFIG_V0_1, CONFIG_V0_3_CANDIDATE, assertValidConfig, type GameConfig 
 import { allBonusExact, compassFirstDrop } from './bonus-math.js';
 import { WIN_CLASS_LABELS, emptyAcc, merge, runStream, type Acc } from './core.js';
 
-interface Job { cfg: GameConfig; seed: string; stream: number; rounds: number; batchSize: number }
+interface Job { cfg: GameConfig; seed: string; stream: number; rounds: number; batchSize: number; buy: boolean }
 
 if (!isMainThread) {
   const j = workerData as Job;
-  parentPort!.postMessage(runStream(j.cfg, BigInt(j.seed), j.stream, j.rounds, j.batchSize));
+  parentPort!.postMessage(runStream(j.cfg, BigInt(j.seed), j.stream, j.rounds, j.batchSize, j.buy));
 } else {
   await main();
 }
@@ -27,12 +27,18 @@ async function main(): Promise<void> {
   const override = arg('config', '');
   // --preset v0.1 (GDD v1.0 draft) | v0.3 (tuning candidate, default)
   const preset = arg('preset', 'v0.3') === 'v0.1' ? CONFIG_V0_1 : CONFIG_V0_3_CANDIDATE;
-  const cfg: GameConfig = override ? { ...preset, ...JSON.parse(readFileSync(override, 'utf8')) } : preset;
+  const cfg: GameConfig = override ? { ...preset, ...JSON.parse(readFileSync(override, 'utf8')) } : { ...preset };
   assertValidConfig(cfg);
   const rounds = Number(arg('rounds', '10000000'));
   const seed = arg('seed', '20261123');
   const workers = Number(arg('workers', String(availableParallelism())));
   const out = arg('out', '');
+  // --mode buy: every round is a bought feature; RTP is measured against featureBuy.price.
+  const buy = arg('mode', 'spin') === 'buy';
+  // --buy-price <x bet>: overrides featureBuy.price for this run.
+  const price = arg('buy-price', '');
+  if (price) cfg.featureBuy = { ...cfg.featureBuy, enabled: true, price: Math.round(Number(price) * 100) };
+  assertValidConfig(cfg);
   const per = Math.floor(rounds / workers);
   const batchSize = Math.max(1, Math.floor(per / 25));
   const started = Date.now();
@@ -40,7 +46,7 @@ async function main(): Promise<void> {
   const parts = await Promise.all(
     Array.from({ length: workers }, (_, stream) =>
       new Promise<Acc>((resolve, reject) => {
-        const job: Job = { cfg, seed, stream, rounds: per, batchSize };
+        const job: Job = { cfg, seed, stream, rounds: per, batchSize, buy };
         const w = new Worker(new URL(import.meta.url), { workerData: job });
         w.once('message', resolve); w.once('error', reject);
       })),
@@ -51,7 +57,7 @@ async function main(): Promise<void> {
   let commit = 'unknown';
   try { commit = execSync('git rev-parse --short HEAD', { encoding: 'utf8' }).trim(); } catch { /* not a git checkout */ }
   const configHash = createHash('sha256').update(JSON.stringify(cfg)).digest('hex').slice(0, 16);
-  const report = buildReport(cfg, acc, { seed, workers, roundsPerWorker: per, batchSize, seconds, commit, configHash });
+  const report = buildReport(cfg, acc, { seed, workers, roundsPerWorker: per, batchSize, seconds, commit, configHash, mode: buy ? 'buy' : 'spin' });
   console.log(process.argv.includes('--brief') ? report.text.split('## Win distribution')[0] + report.text.split('## Free-spin feature')[1].split('## Paying clusters')[0] : report.text);
   if (out) {
     mkdirSync(dirname(out), { recursive: true });
@@ -63,10 +69,13 @@ async function main(): Promise<void> {
 function buildReport(cfg: GameConfig, a: Acc, run: Record<string, string | number>) {
   const n = a.rounds;
   const pct = (x: number, d = 3) => `${(x * 100).toFixed(d)} %`;
-  const mean = a.sumWin / n / 100;
-  const variance = a.sumWinSq / n / 10000 - mean * mean;
-  const sd = Math.sqrt(variance);
-  const se = sd / Math.sqrt(n);
+  const buy = run.mode === 'buy';
+  // Stake per round in bets: 1 for a normal spin, the price for a bought feature.
+  const stake = buy ? cfg.featureBuy.price / 100 : 1;
+  const meanWin = a.sumWin / n / 100;
+  const sd = Math.sqrt(a.sumWinSq / n / 10000 - meanWin * meanWin);
+  const mean = meanWin / stake;
+  const se = sd / Math.sqrt(n) / stake;
   const b = a.batchRtp;
   const bMean = b.reduce((x, y) => x + y, 0) / b.length;
   const bSe = Math.sqrt(b.reduce((x, y) => x + (y - bMean) ** 2, 0) / (b.length - 1) / b.length);
@@ -82,6 +91,8 @@ function buildReport(cfg: GameConfig, a: Acc, run: Record<string, string | numbe
   row('Item', 'Value'); row('---', '---');
   row('Rounds', n.toLocaleString('en-US'));
   row('Master seed', run.seed); row('Workers (RNG streams)', run.workers); row('Rounds per worker', run.roundsPerWorker);
+  row('Mode', buy ? `feature buy, price ${stake} x bet (RTP = win / price)` : 'normal spins');
+  if (buy) row('Average win per bought feature', `${meanWin.toFixed(3)} x bet (95 % interval ± ${(1.96 * sd / Math.sqrt(n)).toFixed(3)})`);
   row('Config hash', run.configHash); row('Git commit (code base)', run.commit);
   row('Duration', `${run.seconds} s (${Math.round(n / Number(run.seconds)).toLocaleString('en-US')} rounds/s)`);
   L.push('', '## RTP', '');
@@ -90,10 +101,10 @@ function buildReport(cfg: GameConfig, a: Acc, run: Record<string, string | numbe
   row('95 % confidence interval', `${pct(mean - 1.96 * se, 4)} … ${pct(mean + 1.96 * se, 4)}`);
   row('Standard deviation per round', `${sd.toFixed(3)} x bet`);
   row('Standard error (analytic / batch means)', `${pct(se, 4)} / ${pct(bSe, 4)}`);
-  row('RTP base game clusters', pct(a.bySource.base / n / 100));
-  row('RTP Temple Bonus (base game)', pct(a.bySource.baseBonus / n / 100));
-  row('RTP free-spin clusters', pct(a.bySource.free / n / 100));
-  row('RTP Temple Finale', pct(a.bySource.finale / n / 100));
+  row('RTP base game clusters', pct(a.bySource.base / n / 100 / stake));
+  row('RTP Temple Bonus (base game)', pct(a.bySource.baseBonus / n / 100 / stake));
+  row('RTP free-spin clusters', pct(a.bySource.free / n / 100 / stake));
+  row('RTP Temple Finale', pct(a.bySource.finale / n / 100 / stake));
   L.push('', '## Frequencies', '');
   row('Metric', 'Value'); row('---', '---');
   row('Hit frequency (base spin with a cluster)', pct(a.baseHits / n));

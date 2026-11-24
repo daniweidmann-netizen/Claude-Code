@@ -1,12 +1,12 @@
 #!/bin/bash
 # Differential test: TypeScript engine vs. Python reference implementation.
-# usage: tools/reference/diff.sh <config.json> <seed> <streams> <rounds-per-stream>
+# usage: tools/reference/diff.sh <config.json> <seed> <streams> <rounds-per-stream> [buy]
 set -euo pipefail
-cfg=$1; seed=$2; streams=$3; rounds=$4
+cfg=$1; seed=$2; streams=$3; rounds=$4; mode=${5:-}
 tmp=$(mktemp -d)
 for s in $(seq 0 $((streams - 1))); do
-  ( node dist/tools/sim/dump.js "$cfg" "$seed" "$s" "$rounds" > "$tmp/ts_$s.txt"
-    python3 tools/reference/reference_engine.py "$cfg" "$seed" "$s" "$rounds" > "$tmp/py_$s.txt" ) &
+  ( node dist/tools/sim/dump.js "$cfg" "$seed" "$s" "$rounds" $mode > "$tmp/ts_$s.txt"
+    python3 tools/reference/reference_engine.py "$cfg" "$seed" "$s" "$rounds" $mode > "$tmp/py_$s.txt" ) &
 done
 wait
 for s in $(seq 0 $((streams - 1))); do
