@@ -8,16 +8,20 @@ Stand: 2026-11-23 · Status: zur Freigabe vorgelegt
 
 | Kennzahl | Ziel | Abnahmekriterium für VALIDATED |
 |---|---|---|
-| RTP | 96,00 % | 95 %-Konfidenzintervall der Abnahmesimulation liegt vollständig in 95,90–96,10 % |
-| Trefferfrequenz | 22–30 % | Messwert im Bereich |
+| RTP | 96,00 % | Punktschätzung in 96,00 ± 0,10 % **und** halbe Breite des 95 %-Intervalls höchstens 0,10 Prozentpunkte (geändert am 2026-11-24, siehe Abschnitt 1.1) |
+| Trefferfrequenz | 30–35 % | Messwert im Bereich |
 | Free-Spin-Frequenz | 1 in 150–250 | Messwert im Bereich; Erstfall-Anteil stimmt mit exakter Rechnung überein |
 | Temple Bonus (Basis) | 1 in 250–450 | Messwert im Bereich |
-| RTP-Aufteilung | 56 / 12 / 28 % | Abweichung je Anteil höchstens ±3 Prozentpunkte, begründet |
-| Maximalgewinn | 10 000× | kein simulierter Gewinn über der Obergrenze; Häufigkeit des Erreichens ausgewiesen |
+| RTP-Aufteilung | 50 / 16 / 30 % | Abweichung je Anteil höchstens ±3 Prozentpunkte, begründet |
+| Maximalgewinn | 10 000× | kein simulierter Gewinn über der Obergrenze; Obergrenze wird erreicht, aber seltener als 1 in 1 Mio. Runden; Häufigkeit ausgewiesen |
 | Terminierung | – | 0 Fälle des Kaskadenlimits; Verteilung der Kaskadenlänge ausgewiesen |
 | Volatilität | hoch | Standardabweichung je Spin und Gewinnverteilung ausgewiesen; Einstufung begründet |
 
 Werden Ziele verfehlt, werden zuerst Parameter angepasst; Regeländerungen brauchen eine Freigabe.
+
+### 1.1 Änderung des RTP-Kriteriums (2026-11-24)
+
+Das ursprüngliche Kriterium («Intervall vollständig in 95,90–96,10 %») ist bei der gemessenen Standardabweichung von rund 21× Einsatz je Runde praktisch nicht erfüllbar: Schon für eine halbe Intervallbreite von 0,10 Prozentpunkten sind etwa 1,8 Mrd. Runden nötig, und das Intervall läge nur dann vollständig im Band, wenn der wahre Wert fast exakt 96,00 % wäre. Das neue Kriterium trennt Genauigkeit der Messung (Intervallbreite) und Zielabweichung (Punktschätzung). Die Zielwerte für Trefferfrequenz und RTP-Aufteilung wurden mit der Entscheidung für höhere Volatilität angepasst.
 
 ## 2. Modellbeschreibung
 

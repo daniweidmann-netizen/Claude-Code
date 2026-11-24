@@ -1,10 +1,10 @@
-# 02 – Game Design Document v1.0
+# 02 – Game Design Document v1.1
 
 **TEMPLE OF THE LOST SUN** – *Every relic reveals a secret.*
 
-Stand: 2026-11-23 · Status: APPROVED (Freigabe vom 2026-11-23, einschliesslich CR-01 bis CR-08) · Präzisierungen v1.0.1 aus der Implementierung sind mit «v1.0.1» markiert · CR-09 (Abschnitt 5.5) ist offen.
+Stand: 2026-11-24 · Status: Regeln APPROVED (Phase-1-Freigabe vom 2026-11-23 mit CR-01 bis CR-08; CR-09 und die angepassten Zielwerte mit «Weiter» vom 2026-11-24) · Parameter: Kandidat v0.3 (`config/game-config.v0.3-candidate.json`), Validierungsstand siehe Dokument 00.
 
-> **Hinweis zu allen Zahlen:** Regeln und Abläufe in diesem Dokument sind verbindlich definiert. Gewichte, Auszahlungswerte und Preistabellen sind **Startwerte (Entwurf v0.1)** für die Simulation und noch nicht validiert. RTP, Trefferfrequenz und Volatilität sind **Zielwerte**, keine Messergebnisse.
+> **Hinweis zu allen Zahlen:** Regeln und Abläufe sind verbindlich. Gewichte, Auszahlungswerte und Preistabellen entsprechen dem Abstimmungskandidaten v0.3; massgeblich ist die Konfigurationsdatei. Gemessene Kennzahlen stehen ausschliesslich in den Berichten unter `docs/math/reports/`.
 
 ---
 
@@ -19,7 +19,7 @@ Stand: 2026-11-23 · Status: APPROVED (Freigabe vom 2026-11-23, einschliesslich 
 | Features | Temple Bonus (3 Kammern), Free Spins mit Base Camp, Temple Finale |
 | Ziel-RTP | 96,00 % (weitere Varianten ableitbar) |
 | Ziel-Volatilität | hoch |
-| Ziel-Trefferfrequenz | 22–30 % |
+| Ziel-Trefferfrequenz | 30–35 % |
 | Maximalgewinn | 10 000× Einsatz (harte Obergrenze) |
 | Plattform | Mobile-first (Hochformat), Desktop, Querformat |
 | Zielgruppe | Spieler von Kaskaden-/Cluster-Slots mit Feature-Fokus |
@@ -59,7 +59,7 @@ Ein Abenteurer dringt in einen vergessenen Dschungeltempel ein, in dem eine vers
 2. **Start-Effekte:** nur in Free Spins – Effekte des Base Camps (Abschnitt 7).
 3. **Auswerten:** Alle Cluster werden bestimmt. Gibt es keinen, weiter mit Schritt 9.
 4. **Auszahlen:** Jeder Cluster zahlt `Auszahlungswert(Symbol, Grösse) × Einsatz × M`, wobei M der in diesem Moment gültige Multiplikator ist (Abschnitt 5.3).
-5. **Fortschritt:** Der Track rückt um 1 Station vor, zusätzlich um 1 je Temple Key, der sich auf dem Raster befindet (Keys werden dabei eingesammelt). Maximum ist Station 5.
+5. **Fortschritt:** Der Explorer geht 1 Schritt, zusätzlich 1 Schritt je Temple Key, der sich auf dem Raster befindet (Keys werden dabei eingesammelt). Die Stationen liegen nach 1 / 2 / 4 / 6 / 9 Schritten (Abschnitt 5.1).
 6. **Entfernen:** Alle Positionen der Gewinncluster und alle eingesammelten Keys werden geleert. Der Explorer wird nie entfernt.
 7. **Fallen und Nachfüllen:** Verbleibende Symbole fallen spaltenweise nach unten; leere Positionen werden von oben neu gezogen (gleiche Zugreihenfolge wie in Schritt 1).
 8. **Stationseffekte:** Für jede in Schritt 5 neu erreichte Station wird ihr Effekt in aufsteigender Reihenfolge auf dem neuen Raster ausgeführt (Abschnitt 5.2). Danach zurück zu Schritt 3.
@@ -92,32 +92,34 @@ Die Auszahlung eines Schritts erfolgt **vor** dem Fortschritt. Eine neu erreicht
 
 Compass, Key, Explorer und Sun Relic haben keine eigene Clusterauszahlung. Compass und Key ersetzen nichts und werden nicht durch Wilds ersetzt.
 
-### 4.2 Auszahlungstabelle (Entwurf v0.1, × Gesamteinsatz)
+### 4.2 Auszahlungstabelle (Kandidat v0.3, × Gesamteinsatz)
 
 | Clustergrösse | 5 | 6 | 7 | 8–9 | 10–11 | 12–14 | 15–19 | 20+ |
 |---|---|---|---|---|---|---|---|---|
-| Jade Mask | 1,00 | 1,50 | 2,50 | 4,00 | 8,00 | 15,00 | 40,00 | 150,00 |
-| Ruby Crown | 0,50 | 0,80 | 1,20 | 2,00 | 4,00 | 8,00 | 20,00 | 75,00 |
-| Golden Chalice | 0,40 | 0,50 | 0,80 | 1,20 | 2,50 | 5,00 | 12,00 | 40,00 |
-| Golden Scarab | 0,30 | 0,40 | 0,50 | 0,80 | 1,50 | 3,00 | 8,00 | 25,00 |
-| Sapphire Gem | 0,20 | 0,30 | 0,40 | 0,60 | 1,00 | 2,00 | 5,00 | 15,00 |
+| Jade Mask | 0,70 | 0,90 | 1,60 | 2,60 | 5,10 | 9,40 | 25,00 | 100,00 |
+| Ruby Crown | 0,30 | 0,50 | 0,80 | 1,30 | 2,60 | 5,10 | 12,50 | 50,00 |
+| Golden Chalice | 0,30 | 0,30 | 0,50 | 0,80 | 1,60 | 3,20 | 7,50 | 25,00 |
+| Golden Scarab | 0,20 | 0,30 | 0,30 | 0,50 | 0,90 | 1,90 | 5,00 | 17,50 |
+| Sapphire Gem | 0,10 | 0,20 | 0,30 | 0,40 | 0,70 | 1,30 | 3,50 | 10,00 |
 
-### 4.3 Symbolgewichte (Entwurf v0.1, je 1 000)
+Die Werte sind das Ergebnis der Abstimmung und werden vor dem Einfrieren noch geglättet (z. B. gleiche Werte benachbarter Stufen).
+
+### 4.3 Symbolgewichte (Kandidat v0.3, je 10 000)
 
 Jede Position wird unabhängig aus einer gewichteten Tabelle gezogen. Es gibt getrennte Tabellen für Basisrunde und Free Spins.
 
 | Symbol | Basisrunde | Free Spins |
 |---|---|---|
-| Sapphire Gem | 250 | 250 |
-| Golden Scarab | 220 | 220 |
-| Golden Chalice | 190 | 190 |
-| Ruby Crown | 160 | 160 |
-| Jade Mask | 125 | 125 |
-| Wild | 12 | 15 |
-| Ancient Compass | 8 | 5 |
-| Temple Key | 35 | 35 |
+| Sapphire Gem | 2 000 | 2 000 |
+| Golden Scarab | 1 950 | 1 950 |
+| Golden Chalice | 1 900 | 1 900 |
+| Ruby Crown | 1 850 | 1 850 |
+| Jade Mask | 1 800 | 1 800 |
+| Wild | 0 | 0 |
+| Ancient Compass | 92 | 60 |
+| Temple Key | 200 | 91 |
 
-Diese Werte sind die Stellschrauben der Mathematikphase und werden sich ändern.
+Wilds fallen im Kandidaten nicht natürlich; sie entstehen durch Discovery und Sun Relic, der Explorer durch Ancient Power.
 
 ### 4.4 Gestaltung, Animation und Sound je Symbol
 
@@ -140,14 +142,18 @@ Alle Symbole haben zusätzlich eine Lande-Animation (kurzes Stauchen, Staub) und
 
 ## 5. Das Expedition System (USP)
 
-### 5.1 Fortschritt
+### 5.1 Fortschritt («Trittsteine», CR-09)
 
-- Zu Beginn jedes bezahlten Spins steht der Track auf Station 0.
-- **Jede Gewinnkaskade** rückt den Track um eine Station vor.
-- **Jeder Temple Key**, der bei einer Gewinnkaskade auf dem Raster liegt, rückt den Track um eine weitere Station vor und wird eingesammelt.
+- Zu Beginn jedes bezahlten Spins steht der Explorer am Anfang des Pfads (0 Schritte).
+- **Jede Gewinnkaskade** ist ein Schritt.
+- **Jeder Temple Key**, der bei einer Gewinnkaskade auf dem Raster liegt, ist ein weiterer Schritt und wird eingesammelt.
+- Die Stationen werden nach insgesamt **1 / 2 / 4 / 6 / 9** Schritten erreicht. Zwischen den Stationen 2–3 und 3–4 liegt je ein Trittstein, zwischen 4 und 5 liegen zwei.
 - Keys auf einem Raster ohne Gewinn bleiben wirkungslos liegen.
-- Stationen können übersprungen werden; alle übersprungenen Effekte werden trotzdem der Reihe nach ausgeführt.
+- Werden mit einem Zug mehrere Stationen erreicht, werden alle Effekte der Reihe nach ausgeführt.
 - Nach Station 5 gibt es keinen weiteren Fortschritt; Kaskaden laufen weiter.
+- In Free Spins beginnt jeder Spin genau auf der Base-Camp-Station.
+
+Die Schrittzahlen sind der Parameter `stationSteps`.
 
 ### 5.2 Die fünf Stationen
 
@@ -159,13 +165,17 @@ Alle Symbole haben zusätzlich eine Lande-Animation (kurzes Stauchen, Staub) und
 | 4 | **Relic** | Eine zufällige Position mit Gewinnsymbol wird zum Sun Relic. Sein Wert wird aus einer Tabelle gezogen und zum Sonnenbonus S addiert; danach wird das Relic zum Wild | S bis Spin-Ende (in Free Spins: bis Feature-Ende) |
 | 5 | **Temple** | Der Temple Bonus wird ausgelöst (nach Ende der Kaskaden) | – |
 
-Zufällige Positionen werden gleichverteilt unter allen Positionen mit Gewinnsymbol gezogen. Gibt es weniger geeignete Positionen als benötigt, werden nur die vorhandenen umgewandelt.
+Zufällige Positionen werden gleichverteilt unter allen Positionen mit Gewinnsymbol gezogen (Zählreihenfolge der Kandidaten: zeilenweise von oben links; beim Sun Relic wird zuerst die Position, dann der Wert gezogen). Gibt es weniger geeignete Positionen als benötigt, werden nur die vorhandenen umgewandelt.
 
-**Sun-Relic-Werte (Entwurf v0.1):**
+**Sun-Relic-Werte (Kandidat v0.3, Gewichte je 1 000):**
 
-| Wert | +2 | +3 | +5 | +10 | +25 |
+| Basisrunde | +2 | +3 | +5 | +10 | +25 |
 |---|---|---|---|---|---|
 | Gewicht | 500 | 280 | 150 | 55 | 15 |
+
+| Free Spins | +5 | +10 | +25 | +50 | +100 |
+|---|---|---|---|---|---|
+| Gewicht | 480 | 290 | 150 | 60 | 20 |
 
 ### 5.3 Multiplikator
 
@@ -180,19 +190,15 @@ M gilt für alle Clusterauszahlungen, die nach seiner Änderung ausgewertet werd
 
 Jede Station verändert Raster oder Multiplikator direkt und nachvollziehbar. Der Spieler sieht vor jedem Schritt, was als Nächstes freigeschaltet wird. Keys erzeugen Sprünge, die Erwartungen bewusst durchbrechen. In Free Spins verschiebt das Base Camp den Startpunkt dauerhaft – der Track wird zum Träger des gesamten Features.
 
-### 5.5 Messbefund und offener Änderungsvorschlag CR-09 («Trittsteine»)
+### 5.5 Warum Trittsteine
 
-Die Simulation der freigegebenen Regel zeigt: Mit einer Station je Gewinnkaskade wird Station 5 auch ganz ohne Temple Keys etwa jeden 50.–80. Spin erreicht (Messwerte in `docs/math/reports/`). Der Temple Bonus könnte dann im Schnitt nur etwa 7–10× Einsatz wert sein und wäre kein Höhepunkt mehr; Keys müssten praktisch entfallen.
-
-**Vorschlag CR-09:** Zwischen den Stationen liegen Trittsteine. Jede Gewinnkaskade und jeder Key ist ein Schritt; die Stationen werden nach insgesamt **1 / 2 / 4 / 6 / 9** Schritten erreicht. Alles andere bleibt unverändert. In Free Spins beginnt jeder Spin genau auf der Base-Camp-Station.
-
-Die Engine führt die Schrittzahlen als Parameter `stationSteps`; `[1,2,3,4,5]` entspricht der freigegebenen Regel, `[1,2,4,6,9]` dem Vorschlag. Der Abstimmungskandidat v0.2 verwendet den Vorschlag und ist bis zur Entscheidung nur ein Kandidat.
+Mit der ursprünglichen Regel «eine Station je Gewinnkaskade» wurde Station 5 in der Simulation auch ohne Temple Keys etwa jeden 50.–80. Spin erreicht. Der Temple Bonus wäre damit häufig und klein gewesen, und Keys hätten praktisch entfallen müssen. Mit Trittsteinen bewegt sich der Explorer weiterhin bei jedem Gewinn, die Stationen 1 und 2 bleiben häufig, und der Tempel wird zum seltenen Höhepunkt.
 
 ## 6. Temple Bonus
 
 ### 6.1 Auslösung
 
-- **Basisrunde:** Erreicht ein Spin Station 5, beginnt der Temple Bonus nach der letzten Kaskade (Stufe *Bronze*).
+- **Basisrunde:** Erreicht ein Spin Station 5, beginnt der Temple Bonus nach der letzten Kaskade (Preistabelle «Basisrunde»).
 - **Free Spins:** siehe Temple Finale (Abschnitt 7.4).
 
 ### 6.2 Ablauf (echte Auswahl, CR-04)
@@ -208,21 +214,20 @@ Da die Zuordnung der Preise zu den Kammern gleichverteilt zufällig ist, hat jed
 
 Die drei Preise werden nacheinander unabhängig aus der Stufentabelle gezogen. Der Hauptschatz kann je Bonus höchstens einmal vorkommen (bei erneutem Ziehen wird wiederholt). Anschliessend werden die Preise gleichverteilt auf die Kammern gemischt (v1.0.1: ohne das Mischen wären die Kammern wegen der Hauptschatz-Regel nicht gleichwertig).
 
-**Preistabelle (Entwurf v0.1, relative Gewichte; Wahrscheinlichkeit = Gewicht ÷ Summe der Stufe):**
+**Preistabellen (Kandidat v0.3, relative Gewichte; Wahrscheinlichkeit = Gewicht ÷ Summe der Tabelle):**
 
-| Preis | Bronze | Silber | Gold |
-|---|---|---|---|
-| Schatz 10× | 300 | 150 | – |
-| Schatz 20× | 240 | 220 | 150 |
-| Schatz 40× | 150 | 200 | 220 |
-| Schatz 80× | 80 | 140 | 200 |
-| Schatz 200× | 30 | 70 | 130 |
-| Relic Bonus (25× und zweite Kammer) | 100 | 120 | 150 |
-| Free Spins (8, Base Camp auf Station 2) | 90 | – | – |
-| Hauptschatz | 10 (1 000×) | 20 (2 500×) | 30 (5 000×) |
-| Summe der Gewichte | 1 000 | 920 | 880 |
+| Basisrunde | Gewicht | | Finale | 1 Siegel | 2 Siegel | 3 Siegel |
+|---|---|---|---|---|---|---|
+| Schatz 7× | 300 | | Schatz 10× | 300 | 150 | – |
+| Schatz 14× | 240 | | Schatz 20× | 240 | 220 | 150 |
+| Schatz 28× | 150 | | Schatz 40× | 240 | 200 | 220 |
+| Schatz 56× | 80 | | Schatz 80× | 80 | 140 | 200 |
+| Schatz 140× | 30 | | Schatz 200× | 30 | 70 | 130 |
+| Relic Bonus (25× und weitere Kammer) | 100 | | Relic Bonus (25× und weitere Kammer) | 100 | 120 | 150 |
+| Free Spins (8, Base Camp auf Station 2) | 90 | | Free Spins | – | – | – |
+| Hauptschatz 2 500× | 10 | | Hauptschatz | 10 (2 500×) | 20 (5 000×) | 30 (10 000×) |
 
-v1.0.1: Im Temple Finale mit einem Siegel gilt die Bronze-Tabelle ohne den Free-Spin-Preis; dessen Gewicht (90) geht auf «Schatz 40×».
+Der Hauptschatz des Finales mit drei Siegeln entspricht der Gewinnobergrenze.
 
 Der Erwartungswert jeder Stufe ist exakt berechenbar und wird als analytische Kontrollgrösse für die Simulation verwendet (Dokument 04).
 
@@ -261,22 +266,22 @@ Damit hat das Feature einen klaren Spannungsbogen: Keys bauen das Lager aus, Rel
 ### 7.4 Temple Finale
 
 - Erreicht ein Free Spin Station 5, wird ein **Tempelsiegel** gesammelt (höchstens eines je Free Spin, höchstens drei je Feature).
-- Nach dem letzten Free Spin wird bei mindestens einem Siegel der Temple Bonus genau einmal gespielt: 1 Siegel = Bronze, 2 = Silber, 3 = Gold.
+- Nach dem letzten Free Spin wird bei mindestens einem Siegel der Temple Bonus genau einmal gespielt: die Preistabelle richtet sich nach der Anzahl der Siegel (Abschnitt 6.3).
 - Im Finale gibt es in keiner Stufe einen Free-Spin-Preis; das Finale kann keine weiteren Free Spins auslösen.
 
-## 8. Zielkennzahlen (Entwicklungsziele, nicht gemessen)
+## 8. Zielkennzahlen (Entwicklungsziele; Messwerte stehen in den Berichten)
 
 | Kennzahl | Ziel |
 |---|---|
 | RTP gesamt | 96,00 % |
-| davon Basisrunde (Cluster inkl. Stationseffekte) | ca. 56 % |
-| davon Temple Bonus aus der Basisrunde | ca. 12 % |
-| davon Free Spins inkl. Temple Finale | ca. 28 % |
-| Trefferfrequenz | 22–30 % |
+| davon Basisrunde (Cluster inkl. Stationseffekte) | ca. 50 % |
+| davon Temple Bonus aus der Basisrunde | ca. 16 % |
+| davon Free Spins inkl. Temple Finale | ca. 30 % |
+| Trefferfrequenz | 30–35 % |
 | Free Spins | 1 in 150–250 Spins |
 | Temple Bonus (Basisrunde) | 1 in 250–450 Spins |
 | Volatilität | hoch |
-| Maximalgewinn | 10 000× |
+| Maximalgewinn | 10 000×, erreichbar, aber seltener als 1 in 1 Mio. Runden |
 
 ## 9. Benutzeroberfläche und UX
 
