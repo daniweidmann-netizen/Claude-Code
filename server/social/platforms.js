@@ -4,6 +4,7 @@ const env = (k) => (process.env[k] || '').trim(); // trim: eingefügte Werte ent
 // TikTok: Direct Post (direkt veröffentlichen, braucht Scope video.publish) nur mit TIKTOK_DIRECT_POST=true.
 // Standard: Upload als Entwurf in die TikTok-App (Scope video.upload) – der Nutzer veröffentlicht dort selbst.
 const tiktokDirect = () => env('TIKTOK_DIRECT_POST') === 'true';
+const FB_V = 'v21.0'; // Graph-API-Version für Instagram über „Unified Login“
 
 export const PLATFORMS = {
   tiktok: {
@@ -95,15 +96,33 @@ export const PLATFORMS = {
     },
   },
   instagram: {
-    // Instagram API mit Instagram-Login (kein Facebook-Konto/-Seite nötig; Instagram-Profi-Konto erforderlich)
+    // Zwei Wege, je nach Meta-App:
+    // 1. „Unified Login“ (neue Meta-Apps, ab 2026): Facebook Login for Business mit Konfiguration (config_id),
+    //    Token eines Business-Systemnutzers auf graph.facebook.com. Keine Facebook-Seite nötig.
+    // 2. Älterer Weg „mit Instagram-Login“ (INSTAGRAM_APP_ID/-SECRET), Token auf graph.instagram.com.
     label: 'Instagram',
-    configured: () => !!(env('INSTAGRAM_APP_ID') && env('INSTAGRAM_APP_SECRET')),
+    unified: () => !!(env('META_APP_ID') && env('META_APP_SECRET') && env('INSTAGRAM_CONFIG_ID')),
+    configured() { return this.unified() || !!(env('INSTAGRAM_APP_ID') && env('INSTAGRAM_APP_SECRET')); },
     get available() { return this.configured(); },
-    authUrl: (state, redirectUri) => `https://www.instagram.com/oauth/authorize?${new URLSearchParams({
-      client_id: env('INSTAGRAM_APP_ID'), redirect_uri: redirectUri, response_type: 'code', state,
-      scope: 'instagram_business_basic,instagram_business_content_publish',
-    })}`,
+    authUrl(state, redirectUri) {
+      if (this.unified()) return `https://www.facebook.com/${FB_V}/dialog/oauth?${new URLSearchParams({ client_id: env('META_APP_ID'), redirect_uri: redirectUri, config_id: env('INSTAGRAM_CONFIG_ID'), response_type: 'code', state })}`;
+      return `https://www.instagram.com/oauth/authorize?${new URLSearchParams({ client_id: env('INSTAGRAM_APP_ID'), redirect_uri: redirectUri, response_type: 'code', state, scope: 'instagram_business_basic,instagram_business_content_publish' })}`;
+    },
+    // Unified Login: verbundenes Instagram-Profi-Konto des Tokens (ID für die Veröffentlichung, Name für die Anzeige)
+    async unifiedAccount(token) {
+      const d = await (await fetch(`https://graph.facebook.com/${FB_V}/me/assigned_instagram_accounts?fields=id,username&access_token=${encodeURIComponent(token)}`)).json();
+      if (d.error) throw new Error(`Instagram-Konto konnte nicht gelesen werden: ${d.error.message}`);
+      return d.data?.[0] || null;
+    },
     async exchangeCode(code, redirectUri) {
+      if (this.unified()) {
+        const d = await (await fetch(`https://graph.facebook.com/${FB_V}/oauth/access_token?${new URLSearchParams({ client_id: env('META_APP_ID'), client_secret: env('META_APP_SECRET'), redirect_uri: redirectUri, code })}`)).json();
+        if (!d.access_token) throw new Error(`Instagram-Token fehlgeschlagen: ${d.error?.message || ''}`);
+        const acc = await this.unifiedAccount(d.access_token);
+        if (!acc) throw new Error('Kein Instagram-Konto freigegeben – bitte beim Verbinden dein Instagram-Profi-Konto auswählen.');
+        // Systemnutzer-Token laufen in der Regel nicht ab; liefert Meta eine Laufzeit mit, wird sie gespeichert
+        return { access_token: d.access_token, expires_in: d.expires_in || null, account_id: acc.username ? `@${acc.username}` : acc.id };
+      }
       const res = await fetch('https://api.instagram.com/oauth/access_token', {
         method: 'POST',
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
@@ -118,8 +137,9 @@ export const PLATFORMS = {
       try { account = (await (await fetch(`https://graph.instagram.com/me?fields=username&access_token=${encodeURIComponent(token)}`)).json()).username || null; } catch {}
       return { access_token: token, expires_in: long.expires_in || 3600, account_id: account ? `@${account}` : null };
     },
-    // Langlebiges Token vor Ablauf verlängern (gültig 60 Tage, verlängerbar ab 24 h Alter)
+    // Nur der ältere Weg kennt verlängerbare 60-Tage-Token; Systemnutzer-Token werden nicht erneuert
     async refresh(conn) {
+      if (this.unified()) return null;
       if (conn.expires_at && new Date(conn.expires_at) > new Date(Date.now() + 7 * 864e5)) return null;
       const d = await (await fetch(`https://graph.instagram.com/refresh_access_token?grant_type=ig_refresh_token&access_token=${encodeURIComponent(conn.access_token)}`)).json();
       if (!d.access_token) throw new Error('Instagram-Verbindung abgelaufen – bitte im Konto neu verbinden.');
@@ -128,9 +148,15 @@ export const PLATFORMS = {
     // Reel veröffentlichen: Container mit öffentlicher Video-URL anlegen → verarbeiten lassen → veröffentlichen
     async publish({ connection, videoUrl, caption }) {
       const tok = encodeURIComponent(connection.access_token);
-      const g = 'https://graph.instagram.com/v21.0';
-      const me = await (await fetch(`${g}/me?fields=user_id&access_token=${tok}`)).json();
-      const uid = me.user_id || me.id;
+      let g; let uid;
+      if (this.unified()) {
+        g = `https://graph.facebook.com/${FB_V}`;
+        uid = (await this.unifiedAccount(connection.access_token))?.id;
+      } else {
+        g = 'https://graph.instagram.com/v21.0';
+        const me = await (await fetch(`${g}/me?fields=user_id&access_token=${tok}`)).json();
+        uid = me.user_id || me.id;
+      }
       if (!uid) throw new Error('Instagram-Konto nicht gefunden – bitte neu verbinden.');
       const c = await (await fetch(`${g}/${uid}/media`, {
         method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
