@@ -131,13 +131,13 @@ export class BonusView {
     }
     await tween(this.scene, { targets: c.door, alpha: chosen ? 0.22 : 0.14, duration: chosen ? 300 : 180 });
     const key = this.scene.textures.exists(tx.image) ? tx.image : null;
-    const size = c.w * (chosen ? 0.78 : 0.5);
+    const size = c.w * (chosen ? 0.74 : 0.46);
     if (key) {
-      c.prize = this.scene.add.image(c.x, c.y - c.h * 0.2, key).setDisplaySize(size, size).setAlpha(0);
+      c.prize = this.scene.add.image(c.x, c.y - c.h * 0.22, key).setDisplaySize(size, size).setAlpha(0);
       if (!chosen) c.prize.setTint(0x8a8f9c);
       this.layer.add(c.prize);
     }
-    c.line1.setText(tx.value ? `${tx.title}\n${tx.value}` : tx.title).setPosition(c.x, c.y + c.h * 0.27).setColor(chosen ? COLOR.win : COLOR.dim);
+    c.line1.setText(tx.value ? `${tx.title}\n${tx.value}` : tx.title).setPosition(c.x, c.y + c.h * 0.14).setColor(chosen ? COLOR.win : COLOR.dim);
     c.line2.setText(chosen ? tx.money : `${tx.money ? tx.money.split('\n')[0] + '\n' : ''}(${t('notChosen')})`)
       .setPosition(c.x, c.line1.y + c.line1.height / 2 + 2 * DPR).setColor(chosen ? COLOR.text : COLOR.dim).setWordWrapWidth(c.w);
     const targets = [c.line1, c.line2, ...(c.prize ? [c.prize] : [])];

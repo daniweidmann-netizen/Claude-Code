@@ -195,7 +195,7 @@ export class GameScene extends Phaser.Scene {
     } else items.push(this.add.text(w / 2, h * 0.36, 'TEMPLE OF THE LOST SUN', { fontFamily: DISPLAY, fontSize: `${Math.round(26 * u)}px`, color: COLOR.win, align: 'center', wordWrap: { width: w * 0.86 } }).setOrigin(0.5));
     const tag = this.add.text(w / 2, h * 0.52, 'EVERY RELIC REVEALS A SECRET.', { fontFamily: DISPLAY, fontSize: `${Math.round(12.5 * u)}px`, color: COLOR.text }).setOrigin(0.5);
     const go = this.add.text(w / 2, h * 0.64, t('tapStart'), { fontFamily: DISPLAY, fontSize: `${Math.round(22 * u)}px`, color: COLOR.win }).setOrigin(0.5);
-    const demo = this.add.text(w / 2, h * 0.71, t('demoLong'), { fontFamily: TEXT, fontSize: `${Math.round(12 * u)}px`, color: COLOR.dim }).setOrigin(0.5);
+    const demo = this.add.text(w / 2, h * 0.75, t('demoLong'), { fontFamily: TEXT, fontSize: `${Math.round(12 * u)}px`, color: COLOR.dim }).setOrigin(0.5);
     items.push(tag, go, demo);
     if (!REDUCED_MOTION) this.tweens.add({ targets: go, alpha: 0.45, duration: 900, yoyo: true, repeat: -1, ease: 'Sine.easeInOut' });
     this.startLayer = this.add.container(0, 0, items).setDepth(DEPTH.start);

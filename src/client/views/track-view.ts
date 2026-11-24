@@ -87,7 +87,7 @@ export class TrackView extends Phaser.GameObjects.Container {
     this.names.forEach((n, i) => {
       const p = this.pts[i + 1];
       n.setVisible(r.vertical).setFontSize(`${Math.max(10 * DPR, Math.round(11.5 * ui))}px`);
-      if (p) n.setPosition(p.x + this.radius + 8 * ui, p.y);
+      if (p) n.setPosition(p.x + this.radius + 8 * ui, p.y).setWordWrapWidth(Math.max(20, r.w - (p.x + this.radius + 8 * ui) - pad)).setLineSpacing(-3 * ui);
     });
     // Stepping stones: one per step that does not complete a station.
     this.stones = [];

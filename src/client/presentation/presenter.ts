@@ -157,7 +157,7 @@ export class Presenter {
             this.fsWinStart = this.win;
             await grid.highlight(grid.cellsOf(6), COLOR.goldBright);
             // Change of scenery: into the temple.
-            await banner.wipe(0xffe9a8, () => { this.freeMode = true; this.v.setMode(true); hud.setFreeSpins(t('freeSpinOf', { i: 0, n: e.total })); });
+            await banner.wipe(0xffe9a8, () => { this.freeMode = true; this.v.setMode(true); hud.setFreeSpins(`${t('freeSpins')} ${e.total}`); });
             await banner.show(t('fsAward', { n: e.spins }), 800);
           } else {
             await grid.highlight(grid.cellsOf(6), COLOR.goldBright);
