@@ -78,7 +78,7 @@ removed and new ones fall in. Every winning cascade advances the expedition by o
 every Temple Key on the grid adds another. Stations are reached after 1, 2, 4, 6 and 9 steps and
 act immediately: Discovery turns two pay symbols into Wilds; Treasure raises the base multiplier
 from 1 to 2; Ancient Power creates an Explorer, a Wild that stays in place after wins; the Sun
-Relic draws a value (2 to 25 in the base game, 5 to 100 in free spins), adds it to the multiplier
+Relic draws a value, adds it to the multiplier
 and turns into a Wild; the Temple opens the Temple Bonus, where the player opens one of three
 chambers whose prizes are fixed before the choice.
 
@@ -86,9 +86,9 @@ chambers whose prizes are fixed before the choice.
 on a Base Camp station, so the lower stations take effect at once; Temple Keys move the Base Camp
 up for the rest of the feature. The sun bonus is not reset between free spins. Reaching the
 temple during free spins collects up to three seals, which upgrade the prize table of the Temple
-Finale played after the last spin. Three Compass symbols retrigger four spins, up to 30 in total.
+Finale played after the last spin.
 
-*Numbers.* One configuration exists. An internal simulation over two billion rounds measured an
+*Numbers.* One configuration exists. An internal two-billion-round simulation measured an
 RTP of 95.995 % (95 % interval 95.902–96.088 %), a hit frequency of 32.80 % and a standard
 deviation of 21.14× bet per round. Free spins occur about once in 222 rounds, the Temple Bonus
 once in 326. The win is capped at 10,000× bet. These figures are not independently verified or certified.
