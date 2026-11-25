@@ -1,4 +1,5 @@
 import Phaser from 'phaser';
+import { asset } from './asset.js';
 import { symbolKey } from './theme.js';
 
 /**
@@ -16,13 +17,13 @@ export const REFERENCE_ART: Record<number, string> = Object.fromEntries(
 );
 
 export function preloadReferenceArt(scene: Phaser.Scene): void {
-  for (const [id, url] of Object.entries(REFERENCE_ART)) scene.load.image(symbolKey(Number(id)), url);
-  for (const k of ['bg_portrait', 'bg_landscape', 'bgfs_portrait', 'bgfs_landscape']) scene.load.image(k, `${k}.webp`);
-  scene.load.image('logo', 'logo.webp');
-  for (let i = 1; i <= 5; i++) scene.load.image(`station${i}`, `ui/station${i}.png`);
-  for (const k of ['tile', 'spin']) scene.load.image(k, `ui/${k}.png`);
-  for (const k of ['treasure', 'frame', 'gate', 'door_sun', 'door_jade', 'door_moon', 'door_sun_open', 'door_jade_open', 'door_moon_open']) scene.load.image(k, `ui/${k}.webp`);
-  scene.load.json('frameMeta', 'ui/frame.json');
+  for (const [id, url] of Object.entries(REFERENCE_ART)) scene.load.image(symbolKey(Number(id)), asset(url));
+  for (const k of ['bg_portrait', 'bg_landscape', 'bgfs_portrait', 'bgfs_landscape']) scene.load.image(k, asset(`${k}.webp`));
+  scene.load.image('logo', asset('logo.webp'));
+  for (let i = 1; i <= 5; i++) scene.load.image(`station${i}`, asset(`ui/station${i}.png`));
+  for (const k of ['tile', 'spin']) scene.load.image(k, asset(`ui/${k}.png`));
+  for (const k of ['treasure', 'frame', 'gate', 'door_sun', 'door_jade', 'door_moon', 'door_sun_open', 'door_jade_open', 'door_moon_open']) scene.load.image(k, asset(`ui/${k}.webp`));
+  scene.load.json('frameMeta', asset('ui/frame.json'));
 }
 
 export function createPlaceholderTextures(scene: Phaser.Scene): void {

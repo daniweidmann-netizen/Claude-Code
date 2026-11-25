@@ -1,3 +1,5 @@
+import { asset } from '../asset.js';
+
 /**
  * Sound through the Web Audio API. Recorded effects and two music loops are
  * loaded from public/audio after the first user gesture (provenance in
@@ -77,7 +79,7 @@ export class Sfx {
 
   private async loadOne(key: string, file: string): Promise<void> {
     try {
-      const res = await fetch(`audio/${file}.mp3`);
+      const res = await fetch(asset(`audio/${file}.mp3`));
       if (!res.ok) throw new Error(String(res.status));
       const data = await res.arrayBuffer();
       const buf = await new Promise<AudioBuffer>((ok, fail) => { void this.ctx!.decodeAudioData(data, ok, fail)?.catch?.(fail); });

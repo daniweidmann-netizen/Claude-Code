@@ -13,7 +13,8 @@
     "build:client": "tsc -p tsconfig.client.json && vite build",
     "preview": "vite preview",
     "e2e": "node tools/e2e/smoke.cjs",
-    "e2e:quick": "SMOKE_QUICK=1 node tools/e2e/smoke.cjs"
+    "e2e:quick": "SMOKE_QUICK=1 node tools/e2e/smoke.cjs",
+    "build:single": "node tools/build-single.cjs"
   },
   "devDependencies": {
     "@types/node": "^22.0.0",

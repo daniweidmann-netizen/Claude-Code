@@ -1,6 +1,7 @@
 import type { GameConfig } from '../engine/index.js';
 import type { HistoryEntry } from '../session/game-service.js';
 import type { Lang } from './i18n.js';
+import { asset } from './asset.js';
 import { formatMoney, formatMultiple } from './layout.js';
 import { STATION_NAMES, SYMBOL_NAMES } from './theme.js';
 
@@ -36,7 +37,7 @@ export function paytableHtml(cfg: GameConfig, bet: number, lang: Lang = 'en'): s
   const head = bracketLabels(cfg).map((l) => `<th>${l}</th>`).join('');
   const rows = cfg.paytable.map((row, s) => {
     const cells = row.map((v) => `<td>${formatMultiple(v)}</td>`).join('');
-    return `<tr><th scope="row"><img src="symbols/sym${s}.png" alt="">${esc(SYMBOL_NAMES[s])}</th>${cells}</tr>`;
+    return `<tr><th scope="row"><img src="${asset(`symbols/sym${s}.png`)}" alt="">${esc(SYMBOL_NAMES[s])}</th>${cells}</tr>`;
   }).slice().reverse().join('');
   return `<p>${de
     ? `Gewinn je Cluster als Vielfaches des Gesamteinsatzes (aktueller Einsatz ${formatMoney(bet)}), vor dem Multiplikator. Spalten: Anzahl verbundener Symbole.`
@@ -80,11 +81,11 @@ export function rulesHtml(cfg: GameConfig, lang: Lang = 'en'): string {
 </ul>
 <h3>Symbole</h3>
 <div class="sym">
-<img src="symbols/sym4.png" alt=""><span><b>Gewinnsymbole</b> (hoch nach tief): Jade Mask, Ruby Crown, Golden Chalice, Golden Scarab, Sapphire Gem. Werte siehe Reiter «Auszahlungen».</span>
-<img src="symbols/sym5.png" alt=""><span><b>Wild</b>: zählt für jedes Gewinnsymbol und kann zu mehreren Clustern gleichzeitig gehören. Ein Cluster braucht mindestens ein Gewinnsymbol. Wilds fallen nicht von oben; sie entstehen durch die Stationen Discovery und Relic.</span>
-<img src="symbols/sym8.png" alt=""><span><b>Explorer</b>: ein Wild, das nach einem Gewinn stehen bleibt. Entsteht durch die Station Ancient Power.</span>
-<img src="symbols/sym6.png" alt=""><span><b>Compass</b>: zahlt nicht. 3 oder mehr auf dem Raster am Ende eines Spins lösen Free Spins aus.</span>
-<img src="symbols/sym7.png" alt=""><span><b>Temple Key</b>: zahlt nicht. Jeder Key auf dem Raster zählt bei einer Gewinnkaskade als zusätzlicher Schritt und wird dann entfernt.</span>
+<img src="${asset('symbols/sym4.png')}" alt=""><span><b>Gewinnsymbole</b> (hoch nach tief): Jade Mask, Ruby Crown, Golden Chalice, Golden Scarab, Sapphire Gem. Werte siehe Reiter «Auszahlungen».</span>
+<img src="${asset('symbols/sym5.png')}" alt=""><span><b>Wild</b>: zählt für jedes Gewinnsymbol und kann zu mehreren Clustern gleichzeitig gehören. Ein Cluster braucht mindestens ein Gewinnsymbol. Wilds fallen nicht von oben; sie entstehen durch die Stationen Discovery und Relic.</span>
+<img src="${asset('symbols/sym8.png')}" alt=""><span><b>Explorer</b>: ein Wild, das nach einem Gewinn stehen bleibt. Entsteht durch die Station Ancient Power.</span>
+<img src="${asset('symbols/sym6.png')}" alt=""><span><b>Compass</b>: zahlt nicht. 3 oder mehr auf dem Raster am Ende eines Spins lösen Free Spins aus.</span>
+<img src="${asset('symbols/sym7.png')}" alt=""><span><b>Temple Key</b>: zahlt nicht. Jeder Key auf dem Raster zählt bei einer Gewinnkaskade als zusätzlicher Schritt und wird dann entfernt.</span>
 </div>
 <h3>Expedition Track</h3>
 <p>Jede Gewinnkaskade ist ein Schritt, jeder Temple Key auf dem Raster ein weiterer. Der Track beginnt bei jedem bezahlten Spin neu.</p>
@@ -124,11 +125,11 @@ ${langSwitch}`;
 </ul>
 <h3>Symbols</h3>
 <div class="sym">
-<img src="symbols/sym4.png" alt=""><span><b>Pay symbols</b> (high to low): Jade Mask, Ruby Crown, Golden Chalice, Golden Scarab, Sapphire Gem. Values are on the Paytable tab.</span>
-<img src="symbols/sym5.png" alt=""><span><b>Wild</b>: counts as any pay symbol and can belong to several clusters at once. A cluster needs at least one pay symbol. Wilds do not fall from above; they are created by the stations Discovery and Relic.</span>
-<img src="symbols/sym8.png" alt=""><span><b>Explorer</b>: a Wild that stays in place after a win. Created by the station Ancient Power.</span>
-<img src="symbols/sym6.png" alt=""><span><b>Compass</b>: does not pay. 3 or more on the grid at the end of a spin trigger free spins.</span>
-<img src="symbols/sym7.png" alt=""><span><b>Temple Key</b>: does not pay. Every key on the grid counts as one extra step in a winning cascade and is then removed.</span>
+<img src="${asset('symbols/sym4.png')}" alt=""><span><b>Pay symbols</b> (high to low): Jade Mask, Ruby Crown, Golden Chalice, Golden Scarab, Sapphire Gem. Values are on the Paytable tab.</span>
+<img src="${asset('symbols/sym5.png')}" alt=""><span><b>Wild</b>: counts as any pay symbol and can belong to several clusters at once. A cluster needs at least one pay symbol. Wilds do not fall from above; they are created by the stations Discovery and Relic.</span>
+<img src="${asset('symbols/sym8.png')}" alt=""><span><b>Explorer</b>: a Wild that stays in place after a win. Created by the station Ancient Power.</span>
+<img src="${asset('symbols/sym6.png')}" alt=""><span><b>Compass</b>: does not pay. 3 or more on the grid at the end of a spin trigger free spins.</span>
+<img src="${asset('symbols/sym7.png')}" alt=""><span><b>Temple Key</b>: does not pay. Every key on the grid counts as one extra step in a winning cascade and is then removed.</span>
 </div>
 <h3>Expedition Track</h3>
 <p>Every winning cascade is one step, and every Temple Key on the grid is one more. The track starts again with every paid spin.</p>
