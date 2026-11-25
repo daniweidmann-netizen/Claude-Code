@@ -40,7 +40,10 @@ Stand: 25.11.2026 · Repository `daniweidmann-netizen/claude-code`, Branch
 | Thema | Datei |
 |---|---|
 | Abnahmelauf 2 Mrd. Runden (massgebliche Kennzahlen) | `docs/math/reports/2026-11-24_v0.3.2-candidate_2G_acceptance.md` und `.json` |
-| Feature-Kauf, 100 Mio. Käufe | `docs/math/reports/2026-11-24_v0.3.3-candidate_featurebuy_100M.md` und `.json` |
+| **Abnahmelauf auf Konfiguration 1.0.0** (bitgenau gleich) | `docs/math/reports/2026-11-25_v1.0.0_2G_acceptance.md` und `.json` |
+| Feature-Kauf bei 58× auf 1.0.0 | `docs/math/reports/2026-11-25_v1.0.0_featurebuy_100M.md` und `.json` |
+| Retrigger und Multiplikator | `docs/math/reports/2026-11-25_v1.0.0_extra-stats_100M.md`, `tools/sim/extra-stats.ts` |
+| Feature-Kauf, erster Lauf bei 58,6× | `docs/math/reports/2026-11-24_v0.3.3-candidate_featurebuy_100M.md` und `.json` |
 | Frühere Läufe (0.1, 0.2, 0.3, 0.3.1) | `docs/math/reports/` |
 | Simulator | `tools/sim/` (`cli.ts`, `core.ts`, `bonus-math.ts`) |
 | Zweitimplementierung und Vergleich | `tools/reference/reference_engine.py`, `tools/reference/diff.sh` |

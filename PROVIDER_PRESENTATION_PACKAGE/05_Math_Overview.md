@@ -16,7 +16,10 @@ Stand: 25.11.2026 · Konfiguration 1.0.0
 | Kandidat | 0.3 (`d2c94def…`) | 1 Mrd. | 20261124 | 95,850 % | 95,719–95,980 | 21,07× | 32,80 % | `…_v0.3-candidate_1G_seedA.md` |
 | Abnahme 1 | 0.3.1 (`b6ca9b0d…`) | 2 Mrd. | 20261125 | 96,107 % | 96,014–96,200 | 21,23× | 32,80 % | `…_v0.3.1-candidate_2G_acceptance.md` |
 | **Abnahme 2** | **0.3.2** (`3161a5c3…`) | **2 Mrd.** | 20261126 | **95,995 %** | **95,902–96,088** | 21,14× | 32,80 % | `…_v0.3.2-candidate_2G_acceptance.md` |
+| **Abnahme auf 1.0.0** | **1.0.0** (`943082d6…`) | 2 Mrd. | 20261126 | **95,995 %** | 95,902–96,088 | 21,14× | 32,80 % | `2026-11-25_v1.0.0_2G_acceptance.md` |
+| Zusatzwerte | 1.0.0 (`943082d6…`) | 100 Mio. | 20261128 | 95,941 % | – | – | – | `2026-11-25_v1.0.0_extra-stats_100M.md` |
 | Feature-Kauf | 0.3.3 (`71630094…`) | 100 Mio. Käufe | 20261127 | 95,815 % bei Preis 58,6× | 95,752–95,879 | 189,51× | – | `…_v0.3.3-candidate_featurebuy_100M.md` |
+| **Feature-Kauf auf 1.0.0** | **1.0.0** (`943082d6…`) | 100 Mio. Käufe | 20261129 | **96,831 % bei Preis 58×** | 96,767–96,895 | 189,58× | – | `2026-11-25_v1.0.0_featurebuy_100M.md` |
 
 Einordnung der Läufe:
 
@@ -24,19 +27,29 @@ Einordnung der Läufe:
 - 0.3 → 0.3.1 → 0.3.2 sind Abstimmungsschritte. 0.3.1 lag ausserhalb der eigenen Toleranz
   (±0,10 Prozentpunkte um 96,00 %); daraufhin wurde ein Schatzpreis von 15× auf 14× gesenkt.
   Das ist dokumentiert und kein Widerspruch, sondern der Verlauf der Abstimmung.
-- **Wichtig:** Mit der ausgelieferten Konfiguration **1.0.0 selbst (Hash `943082d6…`) gibt es
-  keinen eigenen Abnahmelauf.** 1.0.0 unterscheidet sich von 0.3.2 durch die Versionsnummer und
-  den Block «Feature-Kauf». Laut `docs/publisher/02_MATH_DOCUMENTATION.md` (Abschn. 1) wurden
-  300 000 normale Runden beider Konfigurationen Ausgabe für Ausgabe verglichen und waren
-  identisch. Ein Prüflabor würde vermutlich einen Lauf auf dem endgültigen Hash verlangen.
-- **Feature-Kauf:** simuliert wurde bei Preis 58,6×; ausgeliefert ist Preis **58×**
-  (Entscheidung des Eigentümers). Der Kauf-RTP von 96,81 % ist **abgeleitet**
-  (56,148 ÷ 58), nicht separat simuliert. Der mittlere Gewinn je Kauf hängt nicht vom Preis ab.
+- **Konfiguration 1.0.0 selbst ist seit dem 25.11.2026 gemessen.** Der Abnahmelauf wurde mit der
+  ausgelieferten Konfiguration (SHA-256 `943082d640a065931a87d21e3bb84a953ae27ba653531d4303b22857d75698e3`,
+  im Bericht gekürzt `943082d640a06593`) und demselben Seed 20261126 wiederholt. Ergebnis:
+  **alle Zähler bitgenau identisch** mit dem Lauf auf 0.3.2 (Gewinnsumme 191 990 090 170 Hundertstel-Einsätze
+  über 2 000 000 000 Runden, gleiche Verteilungen, gleiche zehn grössten Gewinne). Damit ist belegt,
+  dass 0.3.2 und 1.0.0 für normale Runden dieselben Spielwerte haben. Der Vergleich der beiden
+  Konfigurationen im Versionsverlauf zeigt als einzige Unterschiede die Versionsnummer und den
+  Block «Feature-Kauf». Bericht: `docs/math/reports/2026-11-25_v1.0.0_2G_acceptance.md`.
+  Hinweis: Weil derselbe Seed verwendet wurde, ist das eine Gleichheitsprüfung und **keine
+  zusätzliche statistische Stichprobe**; die Unsicherheit des RTP bleibt beim angegebenen Intervall.
+- **Feature-Kauf:** Der erste Lauf (0.3.3) rechnete mit Preis 58,6× und ergab 95,82 %; daraus wurde
+  für den ausgelieferten Preis 58× ein RTP von 96,81 % **abgeleitet** (56,148 ÷ 58). Am 25.11.2026
+  wurde der Kauf **direkt auf Konfiguration 1.0.0 bei 58×** simuliert (100 Mio. Käufe, neuer Seed
+  20261129): mittlerer Gewinn 56,162× (±0,037), **RTP 96,831 %** (95-%-Intervall 96,767–96,895 %).
+  Beide Werte liegen innerhalb der gegenseitigen Intervalle; der abgeleitete Wert ist bestätigt.
+  Beide Läufe zusammen (200 Mio. Käufe): 56,155× → 96,82 %. Im Spiel angezeigt wird weiterhin
+  96,81 % (Intervall 96,74–96,87 %) aus dem ersten Lauf.
 
 ## 2. Kennzahlen (normale Runden, Abnahme 2)
 
 Methode: Monte-Carlo-Simulation mit der Spiel-Engine selbst (`tools/sim/`), 4 unabhängige
-Zufallsströme, 2 000 000 000 Runden. «Z.» = Zeile im Bericht `…_v0.3.2-candidate_2G_acceptance.md`;
+Zufallsströme, 2 000 000 000 Runden. «Z.» = Zeile im Bericht `…_v0.3.2-candidate_2G_acceptance.md`
+(der Bericht auf 1.0.0 hat dieselben Zeilen und Werte);
 «JSON» = gleichnamige `.json`-Datei.
 
 | Kennzahl | Wert | Quelle | Art | Unabh. geprüft | Zertifiziert |
@@ -69,9 +82,10 @@ Zufallsströme, 2 000 000 000 Runden. «Z.» = Zeile im Bericht `…_v0.3.2-cand
 | Free Spins aus dem Basis-Bonus | 9,980 % simuliert · 9,991 % exakt | Z. 121 | beides | nein | nein |
 | Höchstgewinn | 10 000× Einsatz | Konfig. Z. 7 | Regel | nein | nein |
 | Höchstgewinn erreicht | 659-mal, 1 in 3 034 901 | Z. 39 | simuliert | nein | nein |
-| Feature-Kauf: mittlerer Gewinn | 56,148× (±0,037) | Kauf-Bericht Z. 14 | simuliert | nein | nein |
-| Feature-Kauf: RTP bei 58× | 96,81 % | abgeleitet | abgeleitet | nein | nein |
-| Feature-Kauf: Höchstgewinn erreicht | 1 in 17 940 Käufen | Kauf-Bericht Z. 41 | simuliert | nein | nein |
+| Feature-Kauf: mittlerer Gewinn | 56,162× (±0,037) auf 1.0.0 · 56,148× (±0,037) im ersten Lauf | `2026-11-25_v1.0.0_featurebuy_100M.md`; `…_v0.3.3-…` Z. 14 | simuliert | nein | nein |
+| Feature-Kauf: RTP bei 58× | 96,831 % (96,767–96,895) simuliert auf 1.0.0 · 96,81 % abgeleitet aus dem ersten Lauf | wie oben | simuliert / abgeleitet | nein | nein |
+| Feature-Kauf: Standardabweichung | 189,58× Einsatz je Kauf | wie oben | simuliert | nein | nein |
+| Feature-Kauf: Höchstgewinn erreicht | 1 in 18 252 Käufen (erster Lauf: 1 in 17 940) | wie oben | simuliert | nein | nein |
 
 **Warum zwei Trefferangaben?** 32,80 % ist der Anteil der Runden, deren **Basis-Spin** mindestens
 einen Cluster hat (Hit Frequency). 33,01 % ist der Anteil der Runden, die **irgendetwas**
@@ -137,8 +151,6 @@ Paytable und Bonus-Preistabellen: `04_Feature_Overview.md`.
 | Fehlend | Bedeutung |
 |---|---|
 | Unabhängige Prüfung und Zertifizierung | Voraussetzung für jeden regulierten Markt |
-| Abnahmelauf auf dem Hash der Konfiguration 1.0.0 | formale Lücke (siehe Abschn. 1) |
-| Simulation des Feature-Kaufs beim ausgelieferten Preis 58× | Kauf-RTP bisher nur abgeleitet |
 | Weitere RTP-Varianten (üblich sind mehrere je Titel) | nur eine vorhanden; Werkzeuge existieren |
 | Gewinn je Station | vom Simulator nicht erfasst |
 | Anerkannte Volatilitätskennzahl des Zielanbieters | jeder Anbieter rechnet nach eigener Skala |

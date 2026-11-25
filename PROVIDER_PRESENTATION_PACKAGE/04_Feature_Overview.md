@@ -171,7 +171,7 @@ Multiplikatoren im Bonus: **keine.** T und S wirken nur auf Clustergewinne.
 | Sonnenbonus / Sun Relic | vollständig | vollständig (eigenes Artefaktbild seit 25.11.) | vorhanden, nicht angehört | wie oben |
 | Free Spins, Retrigger, Base Camp, Siegel | vollständig | vollständig | vorhanden, nicht angehört | wie oben |
 | Temple Bonus und Finale | vollständig | vollständig | vorhanden, nicht angehört | wie oben; exakte Erwartungswerte |
-| Feature-Kauf | vollständig | vollständig | – | Tests; Simulation bei abweichendem Preis (siehe `05`) |
+| Feature-Kauf | vollständig | vollständig | – | Tests; Simulation bei 58× auf 1.0.0 (siehe `05`) |
 | Symbolanimationen (Einzelbilder) | – | **nicht vorhanden** (Standbilder mit Licht- und Bewegungseffekten) | – | – |
 | Dschungel-Atmosphäre | – | – | **nicht vorhanden** | – |
 | Jackpot, Gamble, Bonus-Wetten, Turniere | **nicht vorhanden**, nicht geplant | – | – | – |

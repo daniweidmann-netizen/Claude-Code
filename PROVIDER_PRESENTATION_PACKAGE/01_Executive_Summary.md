@@ -20,7 +20,7 @@ weiter oben auf dem Track.
 |---|---|
 | Spiellogik | vollständig implementiert, reine TypeScript-Engine ohne Abhängigkeit von der Darstellung |
 | Mathematik | eine Konfiguration (Ziel-RTP 96,00 %), eingefroren mit Prüfsumme; Simulator und unabhängige Zweitimplementierung |
-| Simulierter RTP | 95,995 % (2 Mrd. Runden; 95-%-Intervall 95,902–96,088 %) |
+| Simulierter RTP | 95,995 % (2 Mrd. Runden auf Konfiguration 1.0.0; 95-%-Intervall 95,902–96,088 %) |
 | Trefferquote | 32,80 % der Basis-Spins |
 | Höchstgewinn | 10 000× Einsatz (Kappung), in der Simulation 1 in 3,03 Mio. Runden |
 | Client | spielbare Web-Demo (Phaser 3), Hoch- und Querformat, zwei Sprachen, drei Tempo-Modi, Regeln, Verlauf mit Wiedergabe |

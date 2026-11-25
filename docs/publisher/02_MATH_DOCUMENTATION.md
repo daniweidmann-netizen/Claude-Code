@@ -20,8 +20,9 @@ Configuration **1.0.0**, file `config/game-config.v1.0.0.json`, SHA-256 of the c
 | Cascade limit reached | 0; longest sequence 23 | same run |
 | Buy feature, average win | 56.148× bet (95 % interval ±0.037) | 100,000,000 bought features, seed 20261127 |
 | Buy feature RTP at price 58× | **96.81 %** (95 % interval 96.74–96.87 %) | derived: 56.148 / 58 |
+| Buy feature RTP at price 58×, simulated directly on configuration 1.0.0 | **96.83 %** (95 % interval 96.77–96.90 %); average win 56.162× | 100,000,000 bought features, seed 20261129 (25 November 2026) |
 
-The buy-feature RTP differs from normal play by design decision of the owner (round price). The figures for normal rounds were measured on configuration 0.3.2; configuration 1.0.0 has identical parameters for normal rounds (only the buy-feature block was added), which was verified by comparing 300,000 rounds output for output.
+The buy-feature RTP differs from normal play by design decision of the owner (round price). The figures for normal rounds were first measured on configuration 0.3.2; configuration 1.0.0 has identical parameters for normal rounds (only the version string and the buy-feature block differ). On 25 November 2026 the 2-billion-round run was repeated on configuration 1.0.0 itself with the same seed: every counter is bit-identical (`docs/math/reports/2026-11-25_v1.0.0_2G_acceptance.md`). Retrigger and multiplier statistics: `docs/math/reports/2026-11-25_v1.0.0_extra-stats_100M.md`.
 
 Volatility: high. Win distribution per round (2 billion rounds):
 

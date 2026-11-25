@@ -23,7 +23,7 @@ Stand: 25.11.2026
 | 5 | Einzelentwickler ohne veröffentlichte Titel | hoch | Zweifel an Lieferfähigkeit und Support | realistische Zusagen; Modell B oder C erwägen |
 | 6 | Client-Technik passt eventuell nicht zum Framework des Anbieters | mittel | Neuaufbau der Darstellung | Trennung Engine/Client hervorheben; früh erfragen |
 | 7 | Nur eine RTP-Variante | mittel | Betreiber erwarten mehrere | Werkzeuge vorhanden; Aufwand je Variante: Abstimmung und Abnahmelauf |
-| 8 | Kein Abnahmelauf auf dem Hash 1.0.0; Feature-Kauf-RTP nur abgeleitet | mittel | formale Lücken in der Nachweisführung | zwei Simulationsläufe nachholen (braucht Freigabe, ändert keine Parameter) |
+| 8 | (erledigt am 25.11.2026) Abnahmelauf auf 1.0.0 und Feature-Kauf bei 58× | – | beide Läufe nachgeholt, ohne Parameteränderung | – |
 | 9 | Themenfeld «Tempel/Abenteuer» ist dicht besetzt | mittel | Abgrenzung nur über die Mechanik | Expedition Track in den Mittelpunkt stellen |
 | 10 | Kein Spielertest | mittel | Verständlichkeit des Systems unbelegt | kleiner Test mit unbeteiligten Personen |
 | 11 | Standbild-Symbole, 256 px | mittel | wirkt gegenüber aktuellen Premium-Titeln einfacher | Symbolanimationen, höhere Auflösung (Kunstauftrag) |
@@ -36,8 +36,8 @@ Stand: 25.11.2026
 |---|---|---|---|
 | Mindestcluster | frühe Auftragstexte: 8 | Konfiguration, Code, alle aktuellen Dokumente: **5** | Geklärt am 25.11.2026: 5 ist die beabsichtigte Regel (`docs/12_CLUSTER_RULE_CONFIRMATION.md`). 8 steht nur noch als Historie in `docs/01_CONCEPT_REVIEW.md` |
 | RTP | Ziel 96,00 % | simuliert 95,995 % (0.3.2); früherer Lauf 96,107 % (0.3.1) | kein Widerspruch: verschiedene Abstimmungsstände; gültig ist 0.3.2 = Spielwerte von 1.0.0 |
-| Konfiguration der Messung | Messläufe: 0.3.2 (Hash `3161a5c3…`) | ausgeliefert: 1.0.0 (Hash `943082d6…`) | Unterschied laut Dokumentation nur Version und Feature-Kauf-Block; **kein Lauf auf 1.0.0** |
-| Feature-Kauf-RTP | Simulation: 95,82 % bei Preis 58,6× | Spiel und Dokumente: 96,81 % bei Preis 58× | beide richtig für ihren Preis; der zweite Wert ist abgeleitet |
+| Konfiguration der Messung | Messläufe: 0.3.2 (Hash `3161a5c3…`) | ausgeliefert: 1.0.0 (Hash `943082d6…`) | **Geklärt am 25.11.2026:** Lauf auf 1.0.0 mit gleichem Seed ist bitgenau identisch |
+| Feature-Kauf-RTP | erster Lauf: 95,82 % bei Preis 58,6× → abgeleitet 96,81 % bei 58× | Lauf auf 1.0.0 bei 58× (25.11.2026): 96,83 % | kein Widerspruch: innerhalb der Intervalle; im Spiel steht 96,81 % |
 | Sun Relic | `docs/02_GDD.md` Z. 91 führt es in der Symboltabelle als «Feature-Symbol» | Entscheidung 25.11.2026: kein Walzensymbol | inhaltlich gleich (es fiel nie auf die Walzen); die GDD-Bezeichnung ist missverständlich |
 | Versionsnummern | `package.json`: 0.1.0 | Konfiguration: 1.0.0 | zwei Zähler; nicht abgeglichen |
 | Anzahl Tests | ältere Berichte: 79 bzw. 82 | aktuell: 86 | zeitlicher Verlauf |

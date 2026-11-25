@@ -89,13 +89,13 @@ Keine Behauptung zu Marktneuheit oder Spielererfolg; dafür gibt es keine Daten.
 | Free Spins | 1 in 222 Runden; im Mittel 8,21 Spins; mittlerer Feature-Gewinn 67,90× | simuliert |
 | Temple Bonus | 1 in 326 Runden; Erwartungswert 50,97× (exakt), 50,83× (simuliert) | beides |
 | Höchstgewinn 10 000× | 1 in 3,03 Mio. Runden | simuliert |
-| Feature-Kauf | mittlerer Gewinn 56,15×; RTP bei 58× = 96,81 % | simuliert / abgeleitet |
+| Feature-Kauf | mittlerer Gewinn 56,16×; RTP bei 58× = 96,83 % (96,77–96,90); zuvor abgeleitet 96,81 % | simuliert, 100 Mio. Käufe auf 1.0.0 |
 | Retrigger | in 1,36 % der Features; 1 je 596 Free Spins | simuliert, 100 Mio. Runden |
 | Mittlerer Multiplikator je Gewinnkaskade | Basisrunde 1,42 · Free Spins 9,47 | simuliert, 100 Mio. Runden |
 | Weitere RTP-Varianten | **nicht vorhanden** | – |
 
-Formale Lücken: kein Abnahmelauf auf dem Hash der Konfiguration 1.0.0 (gemessen wurde 0.3.2 mit
-gleichen Spielwerten); Feature-Kauf beim ausgelieferten Preis nicht separat simuliert. → `05`
+Der Abnahmelauf wurde am 25.11.2026 auf der ausgelieferten Konfiguration 1.0.0
+(Hash `943082d6…98e3`) wiederholt und ist bitgenau identisch mit dem früheren Lauf auf 0.3.2. → `05`
 
 ## F. Technical Overview
 
@@ -169,6 +169,8 @@ Keine Preise, kein vorliegendes Angebot, kein bisheriger Kontakt. → `10`
 | Formelle Einreichung in ein Partnerprogramm | **nein** – Rechte, Geräte, Ton fehlen |
 | Verhandlung eines IP-Verkaufs | **nein** – Rechtekette ungeklärt |
 | Zertifizierung | **nein** – braucht Plattform und Prüflabor |
+
+Abschliessende Prüfung mit Freigabe-Entscheidung: `FINAL_PROVIDER_READINESS_REPORT.md`.
 
 ## Inhalt des Pakets
 
