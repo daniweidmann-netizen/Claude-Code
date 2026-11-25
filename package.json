@@ -15,6 +15,7 @@
     "e2e": "node tools/e2e/smoke.cjs",
     "e2e:quick": "SMOKE_QUICK=1 node tools/e2e/smoke.cjs",
     "e2e:final": "node tools/e2e/final.cjs",
+    "e2e:resilience": "node tools/e2e/resilience.cjs",
     "build:single": "node tools/build-single.cjs"
   },
   "devDependencies": {
