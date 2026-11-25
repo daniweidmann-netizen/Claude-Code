@@ -3,7 +3,7 @@ import { CONFIG_V1 } from '../../engine/index.js';
 import { LocalGameService, replay, type GameService, type HistoryEntry, type RoundKind } from '../../session/game-service.js';
 import { tween } from '../anim.js';
 import { Sfx } from '../audio/sfx.js';
-import { DPR, REDUCED_MOTION } from '../env.js';
+import { DPR, REDUCED_MOTION, DEV_TOOLS } from '../env.js';
 import { Fx } from '../fx.js';
 import { LANG, storeLang, t } from '../i18n.js';
 import { FRAME, computeLayout, formatMoney, previewGrid } from '../layout.js';
@@ -34,6 +34,9 @@ const DEMO_ROUNDS: { label: 'demo1' | 'demo2' | 'demo3' | 'demo4'; entry: Omit<H
   { label: 'demo3', entry: { seed: '697', kind: 'spin', bet: 100, stake: 100, picks: [], win: 3880 } },
   { label: 'demo4', entry: { seed: '1168', kind: 'spin', bet: 100, stake: 100, picks: [0], win: 4230 } },
 ];
+
+/** Seed used by the presentation mode: its ordinary result reaches the temple in the base spin. */
+const PRESENTATION_SEED = 1168n;
 
 export class GameScene extends Phaser.Scene {
   private service!: GameService;
@@ -72,6 +75,9 @@ export class GameScene extends Phaser.Scene {
   private demoStop = false;
   private demoQueued = false;
   private demoChip: Phaser.GameObjects.Text | null = null;
+  /** Presentation mode (demo build only): fixed seed, permanent label. */
+  private presentation = false;
+  private presentChip: Phaser.GameObjects.Text | null = null;
   private tension = false;
   private pendingLayout = false;
   private drift: Phaser.Tweens.Tween | null = null;
@@ -95,13 +101,19 @@ export class GameScene extends Phaser.Scene {
   }
 
   create(): void {
-    const params = new URLSearchParams(window.location.search);
+    const userParams = new URLSearchParams(window.location.search);
+    // Developer and presentation parameters exist only in the demo build (see DEV_TOOLS).
+    const params = DEV_TOOLS ? userParams : new URLSearchParams('');
+    // ?present=temple: presentation mode. Every round uses one fixed seed whose ordinary result
+    // reaches the temple, so the complete Temple Bonus can be shown on demand. The engine,
+    // its configuration and all probabilities are untouched; only the seed is not random.
+    this.presentation = params.get('present') === 'temple';
     // ?seed=n makes the demo deterministic (testing and replays only).
-    const seedParam = params.get('seed');
+    const seedParam = this.presentation ? null : params.get('seed');
     let next = seedParam !== null ? BigInt(seedParam) : null;
     this.service = new LocalGameService(CONFIG_V1, {
       balance: Number(params.get('balance') ?? 100_000),
-      nextSeed: next !== null ? () => next!++ : undefined,
+      nextSeed: this.presentation ? () => PRESENTATION_SEED : next !== null ? () => next!++ : undefined,
     });
     const cfg = this.service.config;
 
@@ -152,7 +164,7 @@ export class GameScene extends Phaser.Scene {
           renderer: this.game.renderer.type === Phaser.WEBGL ? 'WebGL' : 'Canvas', reducedMotion: REDUCED_MOTION, fxLevel: this.fx.level,
         }, perfVerdict(st.fps, st.slowShare, st.frames, LANG), LANG);
       } },
-      { id: 'settings', label: LANG === 'de' ? 'Einstellungen' : 'Settings', html: () => settingsHtml({ volume: this.sfx.volume, muted: this.sfx.muted, fxLevel: this.fx.level, reducedMotion: REDUCED_MOTION, demo: this.demoStep > 0 }, LANG) },
+      { id: 'settings', label: LANG === 'de' ? 'Einstellungen' : 'Settings', html: () => settingsHtml({ volume: this.sfx.volume, muted: this.sfx.muted, fxLevel: this.fx.level, reducedMotion: REDUCED_MOTION, demo: this.demoStep > 0, tools: DEV_TOOLS && !this.presentation }, LANG) },
     ], LANG === 'de' ? 'Schliessen' : 'Close');
     this.info.onClose = () => { this.input.enabled = true; };
     this.info.onAction = (action, value) => {
@@ -161,7 +173,7 @@ export class GameScene extends Phaser.Scene {
       if (action === 'mute') { this.sfx.setMuted(!this.sfx.muted); this.hud.setMuted(this.sfx.muted); this.info.refresh(); }
       if (action === 'fx') { this.fx.level = (Number(value) as 0 | 1 | 2); this.fxPinned = true; this.relayout(); this.info.refresh(); }
       if (action === 'lang') { storeLang(value === 'de' ? 'de' : 'en'); window.location.reload(); }
-      if (action === 'demo') { this.info.close(); if (this.demoStep > 0) this.demoStop = true; else void this.runDemo(); }
+      if (action === 'demo' && DEV_TOOLS && !this.presentation) { this.info.close(); if (this.demoStep > 0) this.demoStop = true; else void this.runDemo(); }
       if (action === 'replay') {
         const entry = this.service.history()[Number(value)];
         if (entry) { this.info.close(); void this.playReplay(entry); }
@@ -186,22 +198,28 @@ export class GameScene extends Phaser.Scene {
     let stored: string | null = null;
     try { stored = window.localStorage.getItem(SPEED_KEY); } catch { /* storage unavailable */ }
     // Normal is the default on first start; ?speed= sets the mode for demonstrations and tests.
-    this.speedMode = parseSpeedMode(params.get('speed')) ?? parseSpeedMode(stored) ?? 'normal';
+    this.speedMode = parseSpeedMode(userParams.get('speed')) ?? parseSpeedMode(stored) ?? 'normal';
     this.hud.setSpeedMode(this.speedMode);
     this.applySpeed();
     if (params.get('start') === '0' || seedParam !== null) { this.started = true; } else this.showStart();
-    this.demoQueued = params.get('demo') === '1';
+    this.demoQueued = !this.presentation && params.get('demo') === '1';
+    if (this.presentation) {
+      this.presentChip = this.add.text(0, 0, t('presentChip'), {
+        fontFamily: DISPLAY, fontSize: '12px', color: '#2a1703', backgroundColor: '#f2c14e', padding: { x: 8 * DPR, y: 2 * DPR },
+      }).setOrigin(0.5, 1).setDepth(DEPTH.start + 1);
+      this.relayout();
+    }
     if (this.demoQueued && this.started) { this.demoQueued = false; void this.runDemo(); }
 
     // Read-only hook for automated end-to-end tests.
     const css = (p: { x: number; y: number }) => ({ x: p.x / DPR, y: p.y / DPR });
-    (window as unknown as Record<string, unknown>).__tls = {
+    if (DEV_TOOLS) (window as unknown as Record<string, unknown>).__tls = {
       state: () => ({
         dpr: DPR, reducedMotion: REDUCED_MOTION, lang: LANG, loadErrors: this.loadErrors, textureSize: this.grid.textureSize,
         canvas: [this.scale.width, this.scale.height], started: this.started, freeMode: this.freeMode, fxLevel: this.fx.level,
         speedMode: this.speedMode, timeScale: this.time.timeScale, spinLog: this.presenter.spinLog.slice(-40), outroMs: this.presenter.outroMs,
         replays: this.replays, perf: this.perf.stats, volume: this.sfx.volume, objects: this.children.length, tweens: this.tweens.getTweens().length, audioLoaded: this.sfx.loadedCount, audioFailed: this.sfx.failed, caption: this.track.captionText,
-        demo: this.demoStep, tension: this.tension, startButton: this.startPoint ? css(this.startPoint) : null,
+        demo: this.demoStep, presentation: this.presentation, presentChip: this.presentChip?.text ?? '', tension: this.tension, startButton: this.startPoint ? css(this.startPoint) : null,
         busy: this.busy, rounds: this.rounds, autoLeft: this.autoLeft, info: this.info.isOpen, balance: this.service.balance, bet: this.service.bet,
         modal: this.bonus.open, dialog: this.modal.open, mismatches: this.presenter.mismatches, distortion: this.presenter.distortion,
         grid: this.grid.snapshot(), field: this.grid.fieldCount(), history: this.service.history().slice(0, 5),
@@ -348,6 +366,7 @@ export class GameScene extends Phaser.Scene {
       img.setPosition(width / 2, height / 2).setScale(Math.max(width / img.width, height / img.height));
     }
     this.shade?.setSize(width, height);
+    this.presentChip?.setFontSize(Math.round(Math.max(10 * DPR, 11 * l.ui))).setPosition(width / 2, height - 1 * DPR);
     this.demoChip?.setPosition(l.grid.x + (l.grid.cell * cfg.cols) / 2, l.grid.y - l.grid.cell * 0.2).setFontSize(Math.round(Math.max(11 * DPR, l.grid.cell * 0.2)));
     this.grid.layout(l.grid.x, l.grid.y, l.grid.cell);
     this.track.layout(l.track, l.ui, l.portrait ? l.mult.w : 0);

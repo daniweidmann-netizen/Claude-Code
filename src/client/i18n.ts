@@ -51,6 +51,7 @@ const S = {
   demoTitle: { en: 'DEMONSTRATION', de: 'DEMONSTRATION' },
   demoIntro: { en: 'Fixed seeds · real game results', de: 'Feste Seeds · echte Spielergebnisse' },
   demoStep: { en: 'DEMONSTRATION {i}/{n} · {what}', de: 'DEMONSTRATION {i}/{n} · {what}' },
+  presentChip: { en: 'PRESENTATION MODE · FIXED SEED · VIRTUAL CREDITS', de: 'PRÄSENTATIONSMODUS · FESTER SEED · SPIELGELD' },
   demo1: { en: 'Win and cascade', de: 'Gewinn und Kaskade' },
   demo2: { en: 'Expedition to the Relic', de: 'Expedition bis zum Relikt' },
   demo3: { en: 'Free Spins', de: 'Free Spins' },

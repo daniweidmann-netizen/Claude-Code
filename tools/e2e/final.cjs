@@ -91,6 +91,36 @@ const URL = process.env.TLS_URL || 'http://localhost:4173/';
     if (played.history.length !== 1) problems.push('demo: normal play did not continue');
     await p.close();
   }
+  // 5: presentation mode (demo build only): labelled, fixed seed, the real Temple Bonus with a real pick
+  {
+    const p = await page(393, 852, '?present=temple&start=0&fast=4');
+    let s = await p.evaluate(() => window.__tls.state());
+    if (!s.presentation || !/PRESENTATION MODE/.test(s.presentChip)) problems.push('present: mode or label missing');
+    for (let round = 0; round < 2; round++) {
+      await p.evaluate(() => window.__tls.spin());
+      await p.waitForFunction(() => window.__tls.state().modal, null, { timeout: 120000 });
+      await p.waitForTimeout(1500);
+      s = await p.evaluate(() => window.__tls.state());
+      if (out && round === 0) await p.screenshot({ path: `${out}/present-bonus.png` });
+      const d = s.doors[round === 0 ? 2 : 1];
+      for (let k = 0; k < 40 && (await p.evaluate(() => window.__tls.state().busy)); k++) {
+        await p.mouse.click(d.x, d.y); await p.waitForTimeout(1500);
+        const st = await p.evaluate(() => window.__tls.state());
+        if (st.modal) for (const dd of st.doors) await p.mouse.click(dd.x, dd.y);
+      }
+    }
+    s = await p.evaluate(() => window.__tls.state());
+    note.push(`present: rounds ${s.history.length}, seeds ${s.history.map((h) => h.seed).join(',')}, picks ${s.history.map((h) => h.picks.join('+')).join(' / ')}, mismatches ${s.mismatches}`);
+    if (s.history.length !== 2 || s.history.some((h) => h.seed !== '1168')) problems.push('present: seed not fixed');
+    if (s.mismatches) problems.push('present: grid mismatches');
+    if (!/PRESENTATION MODE/.test(s.presentChip)) problems.push('present: label lost');
+    await p.close();
+    // normal play is not affected: without the parameter the seed is random and there is no label
+    const q = await page(393, 852, '?start=0&fast=4');
+    const n = await q.evaluate(() => window.__tls.state());
+    if (n.presentation || n.presentChip) problems.push('present: active without parameter');
+    await q.close();
+  }
   await browser.close();
   console.log(note.join('\n'));
   console.log(problems.length ? 'PROBLEMS\n' + problems.join('\n') : 'FINAL CHECKS OK');
