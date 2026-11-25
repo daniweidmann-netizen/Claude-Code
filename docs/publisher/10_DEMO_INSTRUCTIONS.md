@@ -25,6 +25,25 @@ A hosted private demo page exists for the owner; access is granted by the owner.
 | i | Rules, paytable, history with replay, performance, settings (volume, effects, language) |
 | Space bar | Spin / speed up (desktop) |
 
+## Presentation mode
+
+`?demo=1` (or **i → Settings → Start demonstration**) plays four prepared rounds one after another:
+
+| Step | Seed | Shows | Round win |
+|---|---|---|---|
+| 1 | 5 | win, two cascades, Discovery and Treasure | 2.20× bet |
+| 2 | 57 | six cascades, expedition up to the Relic, growing multiplier | 11.30× bet |
+| 3 | 697 | three Compasses, 8 free spins, Base Camp, sun bonus, summary | 38.80× bet |
+| 4 | 1168 | the expedition reaches the Temple: Temple Bonus with three chambers | 42.30× bet |
+
+- A gold label «DEMONSTRATION n/4» stays on screen the whole time.
+- The rounds are **not staged**: each is computed by the engine from its seed, on the same path as a
+  history replay. The seeds were found by searching ordinary results of configuration 1.0.0. They are
+  **selected examples and not typical**: most rounds win nothing (hit rate 32.8 %).
+- Balance and history are not touched. Afterwards normal demo play continues.
+- The speed selector works during the demonstration; for a talk, Normal is recommended.
+- **End demonstration** in the settings stops after the current round.
+
 ## Useful addresses for a presentation
 
 Add these to the address. They are for demonstration and testing only.

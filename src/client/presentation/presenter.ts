@@ -21,6 +21,8 @@ export interface Views {
   normalSpeed(): void;
   /** Current time scale of tweens and timers. */
   scale(): number;
+  /** Slightly darker surroundings for the last two free spins, so the play field stands out. */
+  setTension(on: boolean): void;
   /** Back to the player's chosen speed after a scene that ran at capped speed. */
   resumeSpeed(): void;
 }
@@ -65,6 +67,7 @@ export class Presenter {
   beginRound(bet: number): void {
     this.bet = bet; this.win = 0; this.fsTotal = 0; this.treasure = 1; this.sun = 0; this.seals = 0; this.station = 0; this.bestMult = 1; this.fsIndex = 0;
     this.v.hud.setFreeSpinTension(false);
+    this.v.setTension(false);
     this.v.hud.setFooterText(t('maxWinNote', { x: `${(this.cfg.maxWin / 100).toLocaleString('en-US')}×` }));
     this.v.hud.setWin(0);
     this.v.hud.setFreeSpins('');
@@ -110,6 +113,7 @@ export class Presenter {
             this.fsIndex = e.freeSpinIndex;
             hud.setFreeSpins(t('freeSpinOf', { i: e.freeSpinIndex, n: this.fsTotal }));
             hud.setFreeSpinTension(this.lastSpins);
+            this.v.setTension(this.lastSpins);
             hud.pulseFreeSpins();
             track.setBaseCamp(e.station, true);
             track.setSeals(this.seals, true);
@@ -176,6 +180,7 @@ export class Presenter {
           sfx.play('relic');
           track.announce(t('fxRelic', { v: e.value }), 4);
           await fx.fly(track.worldOf(4), grid.center(e.position), STATION_COLOR[3], 280);
+          await grid.showRelic(e.position, e.value);
           await fx.fly(grid.center(e.position), hud.multiplierPoint, COLOR.goldBright, 300);
           this.sun = e.sunBonus;
           hud.setMultiplier(this.treasure, this.sun);
@@ -271,11 +276,12 @@ export class Presenter {
           if (this.freeMode) {
             const outroStart = performance.now();
             hud.setFreeSpinTension(false);
+            this.v.setTension(false);
             this.v.normalSpeed();
             // Summary of the feature, then back to the jungle.
             if (!capped) sfx.play('complete');
             if (!capped) await banner.celebrate(t('fsDone') + '\n' + t('totalWin'), this.money(e.totalWin - this.fsWinStart), 1, undefined,
-              [t('fsBest', { m: this.bestMult }), ...(this.seals > 0 ? [t('fsSeals', { n: this.seals })] : [])].join('  ·  '));
+              [t('fsPlayed', { n: this.fsIndex }), t('fsBest', { m: this.bestMult }), ...(this.seals > 0 ? [t('fsSeals', { n: this.seals })] : [])].join('  ·  ') + '\n' + t('fsBack'));
             await banner.wipe(0x0b0e16, () => {
               this.freeMode = false; this.v.setMode(false);
               hud.setFreeSpins(''); track.setBaseCamp(0, false); track.setSeals(0, false);

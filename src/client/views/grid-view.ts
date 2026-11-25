@@ -141,30 +141,37 @@ export class GridView extends Phaser.GameObjects.Container {
     this.auras.forEach((a) => a.setAlpha(0));
     this.shadows.forEach((a) => a.setAlpha(0));
     this.marks.clear();
-    if (old.length) {
-      await tween(this.scene, REDUCED_MOTION
-        ? { targets: old, alpha: 0, duration: 120 }
-        : { targets: old, y: `+=${this.cell * (this.rows + 0.6)}`, duration: 260, ease: 'Cubic.easeIn' });
-      old.forEach((s) => s.destroy());
-    }
     if (REDUCED_MOTION) {
+      // Cross-fade: the play field is never empty.
       const fresh = grid.map((id, i) => this.spawn(i, id).setAlpha(0));
+      if (old.length) void tween(this.scene, { targets: old, alpha: 0, duration: 180 }).then(() => old.forEach((s) => s.destroy()));
       await tween(this.scene, { targets: fresh, alpha: 1, duration: 180 });
       grid.forEach((id, i) => this.setAura(i, id));
       return;
     }
     const jobs: Promise<void>[] = [];
+    // The old symbols drop out column by column while the new ones follow right behind them,
+    // like one continuous reel movement: there is no frame with an empty play field.
+    // Each column moves as one strip: the new symbols sit directly above the old ones and
+    // travel the same distance with the same easing, so every column stays filled throughout.
+    const strip = old.length > 0;
+    const travel = this.cell * (this.rows + 0.35);
+    const ms = strip ? 380 : 320;
+    for (const s of old) {
+      const col = Math.max(0, Math.min(this.cols - 1, Math.floor(s.x / this.cell)));
+      this.scene.tweens.add({ targets: s, y: s.y + travel, duration: ms, ease: 'Cubic.easeIn', delay: col * 60, onComplete: () => s.destroy() });
+    }
     grid.forEach((id, i) => {
       const s = this.spawn(i, id);
       const col = i % this.cols, row = Math.floor(i / this.cols);
-      s.y -= this.cell * (this.rows + 1);
+      s.y -= strip ? travel : this.cell * (this.rows + 1);
       jobs.push(tween(this.scene, {
-        targets: s, y: this.cy(i), duration: 320, ease: 'Cubic.easeIn', delay: col * 60 + (this.rows - 1 - row) * 22,
+        targets: s, y: this.cy(i), duration: ms, ease: 'Cubic.easeIn', delay: col * 60 + (strip ? 0 : (this.rows - 1 - row) * 22),
       }).then(() => this.settle(s, i)));
     });
     for (let c = 0; c < this.cols; c++) {
       // A puff of dust where each column lands.
-      this.scene.time.delayedCall(320 + c * 60 + 88, () => this.fx.flash(this.x + (c + 0.5) * this.cell, this.y + this.cell * this.rows, 0xcdbb95, this.cell * 0.55, 240));
+      this.scene.time.delayedCall(ms + c * 60 + (strip ? 0 : 88), () => this.fx.flash(this.x + (c + 0.5) * this.cell, this.y + this.cell * this.rows, 0xcdbb95, this.cell * 0.55, 240));
     }
     await Promise.all(jobs);
     grid.forEach((id, i) => this.setAura(i, id));
@@ -305,10 +312,37 @@ export class GridView extends Phaser.GameObjects.Container {
     if (jobs.length) { await Promise.all(jobs); await wait(this.scene, 130); }
   }
 
+  /**
+   * The Sun Relic's moment: its emblem and value appear on the cell before the
+   * cell turns into a Wild (the transformation itself follows with the next grid state).
+   */
+  async showRelic(cell: number, value: number): Promise<void> {
+    const key = this.scene.textures.exists('station4') ? 'station4' : symbolKey(5);
+    const size = this.cell * 0.98;
+    const img = this.scene.add.image(this.cx(cell), this.cy(cell), key).setDisplaySize(size, size).setAlpha(0);
+    const label = this.scene.add.text(this.cx(cell), this.cy(cell) + this.cell * 0.02, `+${value}`, {
+      fontFamily: DISPLAY, fontSize: `${Math.round(this.cell * 0.4)}px`, color: '#fff6d6', stroke: '#05070c', strokeThickness: Math.round(this.cell * 0.1),
+    }).setOrigin(0.5).setAlpha(0);
+    this.add([img, label]);
+    this.fx.raysBrief(this.x + this.cx(cell), this.y + this.cy(cell), this.cell * 1.3, COLOR.goldBright, 900);
+    if (!REDUCED_MOTION) { img.setScale(img.scale * 0.6); this.scene.tweens.add({ targets: img, scale: size / img.width, duration: 260, ease: 'Back.easeOut' }); }
+    await tween(this.scene, { targets: [img, label], alpha: 1, duration: 180 });
+    await wait(this.scene, 520);
+    await tween(this.scene, { targets: [img, label], alpha: 0, duration: 200 });
+    img.destroy(); label.destroy();
+  }
+
   /** Cells currently showing the given symbol. */
   cellsOf(id: number): number[] { return this.ids.flatMap((v, i) => (v === id ? [i] : [])); }
   /** Symbols currently shown, for consistency checks. */
   snapshot(): number[] { return [...this.ids]; }
+  /** Number of symbols whose centre is inside the play field right now (leaving and arriving ones included). */
+  fieldCount(): number {
+    const h = this.cell * this.rows;
+    let n = 0;
+    for (const s of this.symbols.list as Phaser.GameObjects.Image[]) if (s.y >= 0 && s.y <= h && s.alpha > 0.3) n++;
+    return n;
+  }
   /** Largest deviation of any symbol from its natural aspect ratio (must stay 0). */
   maxDistortion(): number {
     let worst = 0;

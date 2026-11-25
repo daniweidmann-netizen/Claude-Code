@@ -37,7 +37,8 @@ export function computeLayout(w: number, h: number, cols: number, rows: number):
     const speed = { x: m, y: winBar.y - u(8) - u(44), w: w - 2 * m, h: u(44) };
     const bottom = speed.y - u(8);
     // The grid is usually limited by the width; spare height goes to the Expedition Track (the game's signature).
-    const minTrack = u(88), maxTrack = u(132);
+    // On wide portrait screens (tablets) the height limits the grid: there the track keeps more room, so its medallions stay prominent.
+    const minTrack = u(w / h > 0.62 ? 112 : 88), maxTrack = u(132);
     const fv = FRAME.top + FRAME.bottom;
     const cell = Math.floor(Math.min((w - m) / (cols + 2 * FRAME.side), (bottom - trackY - minTrack - u(10)) / (rows + fv)));
     const spare = bottom - trackY - u(10) - cell * (rows + fv);
