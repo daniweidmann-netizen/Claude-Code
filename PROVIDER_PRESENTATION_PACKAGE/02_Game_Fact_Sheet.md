@@ -26,7 +26,7 @@ Spalte «Quelle» nennt Datei und Zeilen; Geldwerte der Konfiguration sind in Hu
 | Multiplikator | M = T + S. T = 1, ab Station Treasure 2 (je Spin). S = Sonnenbonus aus der Station Relic. Gilt für Clustergewinne | Konfig. Z. 100–144; `round.ts` Z. 350, 291–293, 300–311 |
 | Bonus-Auslöser | Expedition erreicht in der Basisrunde Station 5 (9 Schritte in einem Spin) → Temple Bonus | Konfig. Z. 92–98; `round.ts` Z. 312–317, 136–140 |
 | Temple Finale | Free Spins: jedes Erreichen des Tempels gibt ein Siegel (höchstens 1 je Spin, 3 je Feature); nach den Free Spins Bonus mit besserer Preistabelle | Konfig. Z. 167, 213–320; `round.ts` Z. 204–209, 398–401 |
-| Feature-Kauf | 58× Einsatz → 8 Free Spins ab Base Camp 1 | Konfig. Z. 326–331; `round.ts` Z. 148–157 |
+| Feature-Kauf (im Spiel beschriftet «BUY EXPEDITION» / «Expedition kaufen»; in den englischen Unterlagen auch «Buy feature») | 58× Einsatz → 8 Free Spins ab Base Camp 1 | Konfig. Z. 326–331; `round.ts` Z. 148–157 |
 | Höchstgewinn | 10 000× Einsatz je Runde (harte Kappung) | Konfig. Z. 7; `round.ts` Z. 252–262 |
 | Einsatzstufen der Demo | 0.20 / 0.50 / 1.00 / 2.00 / 5.00 / 10.00 (Spielgeld) | `src/session/game-service.ts` Z. 79 |
 | Ziel-RTP | 96,00 % (Entwurfsziel, kein Messwert) | `docs/04_MATH_MODELING_PLAN.md` |

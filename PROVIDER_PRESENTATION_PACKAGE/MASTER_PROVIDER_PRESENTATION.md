@@ -90,7 +90,8 @@ Keine Behauptung zu Marktneuheit oder Spielererfolg; dafür gibt es keine Daten.
 | Temple Bonus | 1 in 326 Runden; Erwartungswert 50,97× (exakt), 50,83× (simuliert) | beides |
 | Höchstgewinn 10 000× | 1 in 3,03 Mio. Runden | simuliert |
 | Feature-Kauf | mittlerer Gewinn 56,15×; RTP bei 58× = 96,81 % | simuliert / abgeleitet |
-| Retrigger-Frequenz, mittlerer Multiplikator | **NICHT VERIFIZIERT / DATEN FEHLEN** | – |
+| Retrigger | in 1,36 % der Features; 1 je 596 Free Spins | simuliert, 100 Mio. Runden |
+| Mittlerer Multiplikator je Gewinnkaskade | Basisrunde 1,42 · Free Spins 9,47 | simuliert, 100 Mio. Runden |
 | Weitere RTP-Varianten | **nicht vorhanden** | – |
 
 Formale Lücken: kein Abnahmelauf auf dem Hash der Konfiguration 1.0.0 (gemessen wurde 0.3.2 mit

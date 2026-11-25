@@ -1,0 +1,27 @@
+{
+ "configHash": "943082d640a065931a87d21e3bb84a953ae27ba653531d4303b22857d75698e3",
+ "rounds": 100000000,
+ "sumWin": 9594119420,
+ "features": 450865,
+ "featuresWithRetrigger": 6133,
+ "retriggers": 6208,
+ "freeSpins": 3701000,
+ "retriggersCapped": 0,
+ "baseCascades": 64995645,
+ "baseMultSum": 92442474,
+ "baseWin": 4982114650,
+ "baseRawWin": 3414760570,
+ "freeCascades": 4155428,
+ "freeMultSum": 39339941,
+ "freeWin": 2568861930,
+ "freeRawWin": 258329500,
+ "baseMultHist": {
+  "1": 44534825,
+  "2": 18471826,
+  "4": 995440,
+  "5": 556563,
+  "7": 297379,
+  "12": 110117,
+  "27": 29495
+ }
+}

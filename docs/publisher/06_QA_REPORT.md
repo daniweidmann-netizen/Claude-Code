@@ -46,7 +46,7 @@ Build of 25 November 2026, configuration 1.0.0. All tests were run by the develo
 
 | Suite | Scope | Result |
 |---|---|---|
-| Automated tests (`npm test`) | 79 tests | 79 passed |
+| Automated tests (`npm test`) | 86 tests | 86 passed (25 November 2026) |
 | Full browser suite | 6 formats, 102 rounds, autoplay, info panel, 9 bonus rounds with 15 picks, replay | **passed on 25 November 2026 on the current build** (a first run that day failed on an overlap of the free-spin counter and the speed buttons in landscape; fixed, second run passed) |
 | Quick browser suite | 393×852, 16 rounds, 3 bonus rounds, audio and settings checks | passed on the current build |
 | Long-session test | 300 rounds | passed on the current build |

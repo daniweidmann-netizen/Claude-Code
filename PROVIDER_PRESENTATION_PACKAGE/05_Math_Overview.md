@@ -47,7 +47,7 @@ Zufallsströme, 2 000 000 000 Runden. «Z.» = Zeile im Bericht `…_v0.3.2-cand
 | Standardfehler | 0,0473 % (analytisch) / 0,0538 % (Blockmittel) | Z. 24 | simuliert | nein | nein |
 | Standardabweichung je Runde | 21,141× Einsatz | Z. 23 | simuliert | nein | nein |
 | Volatilität | «hoch» – Einordnung des Entwicklers anhand Std.-Abw. und Verteilung; keine anerkannte Skala angewendet | `docs/12_CLUSTER_RULE_CONFIRMATION.md` | Einschätzung | nein | nein |
-| Hit Frequency (Basis-Spin mit Cluster) | 32,795 % | Z. 34 | simuliert | nein | nein |
+| Hit Frequency (Basis-Spin mit Cluster) – siehe Erklärung unter der Tabelle | 32,795 % | Z. 34 | simuliert | nein | nein |
 | Win Frequency (Runden mit Gewinn) | 33,011 % | Z. 35 | simuliert | nein | nein |
 | Mittlerer Gewinn je Runde | 0,95995× Einsatz | = RTP | simuliert | nein | nein |
 | Mittlerer Gewinn je **Gewinnrunde** | 2,908× Einsatz | abgeleitet: JSON `sumWin` ÷ `roundsWithWin` | abgeleitet | nein | nein |
@@ -59,10 +59,10 @@ Zufallsströme, 2 000 000 000 Runden. «Z.» = Zeile im Bericht `…_v0.3.2-cand
 | Free Spins über den Temple Bonus | 1 in 3267 | abgeleitet: JSON `fsFromBonus` | abgeleitet | nein | nein |
 | 3+ Compass beim ersten Fall | 0,2785 % | Z. 122 | exakt berechnet (Binomial) | nein | nein |
 | Mittlere Free Spins je Feature | 8,21 | Z. 107 | simuliert | nein | nein |
-| **Retrigger-Frequenz** | **NICHT VERIFIZIERT / DATEN FEHLEN** – der Simulator zählt Retrigger nicht einzeln | – | – | – | – |
+| Retrigger-Frequenz | 1,360 % der Features haben mindestens einen Retrigger (1 in 73,5); 1 Retrigger je 596 Free Spins; 1 in 16 305 Runden | Zusatzlauf 100 Mio. Runden auf 1.0.0: `docs/math/reports/2026-11-25_v1.0.0_extra-stats_100M.md` | simuliert | nein | nein |
 | Mittlerer Feature-Gewinn inkl. Finale | 67,90× (Std.-Abw. 212,44×) | Z. 105–106 | simuliert | nein | nein |
 | Mittlerer End-Sonnenbonus im Feature | 14,72 (höchster Wert 400) | Z. 108 | simuliert | nein | nein |
-| **Mittlerer Multiplikator je Gewinn** | **NICHT VERIFIZIERT / DATEN FEHLEN** | – | – | – | – |
+| Mittlerer Multiplikator je Gewinnkaskade | Basisrunde 1,42 (gewinngewichtet 1,46) · Free Spins 9,47 (9,94) · gesamt 1,91 (2,06) | Zusatzlauf wie oben | simuliert | nein | nein |
 | Temple Bonus in der Basisrunde | 1 in 326,1 | Z. 38 | simuliert | nein | nein |
 | Mittlerer Gewinn Temple Bonus (Basis) | 50,826× simuliert · 50,971× exakt | Z. 116 | beides | nein | nein |
 | Temple Finale 1/2/3 Siegel | 63,034 / 176,550 / 454,174× simuliert · 63,360 / 174,954 / 476,347× exakt | Z. 117–119 | beides | nein | nein |
@@ -72,6 +72,14 @@ Zufallsströme, 2 000 000 000 Runden. «Z.» = Zeile im Bericht `…_v0.3.2-cand
 | Feature-Kauf: mittlerer Gewinn | 56,148× (±0,037) | Kauf-Bericht Z. 14 | simuliert | nein | nein |
 | Feature-Kauf: RTP bei 58× | 96,81 % | abgeleitet | abgeleitet | nein | nein |
 | Feature-Kauf: Höchstgewinn erreicht | 1 in 17 940 Käufen | Kauf-Bericht Z. 41 | simuliert | nein | nein |
+
+**Warum zwei Trefferangaben?** 32,80 % ist der Anteil der Runden, deren **Basis-Spin** mindestens
+einen Cluster hat (Hit Frequency). 33,01 % ist der Anteil der Runden, die **irgendetwas**
+auszahlen (Win Frequency). Die Differenz von 0,216 Prozentpunkten sind Runden, deren Basis-Spin
+keinen Cluster hat, die aber über drei Compass-Symbole Free Spins auslösen und dort gewinnen.
+Jede Runde mit Cluster im Basis-Spin zahlt etwas; umgekehrt gilt das nicht. Für Provider-Unterlagen
+ist die übliche «Hit Frequency» die erste Zahl; beide stammen aus demselben Lauf
+(JSON `baseHits` = 655 907 798, `roundsWithWin` = 660 211 562 von 2 000 000 000).
 
 ## 3. RTP-Aufteilung (Z. 25–28)
 
@@ -132,7 +140,7 @@ Paytable und Bonus-Preistabellen: `04_Feature_Overview.md`.
 | Abnahmelauf auf dem Hash der Konfiguration 1.0.0 | formale Lücke (siehe Abschn. 1) |
 | Simulation des Feature-Kaufs beim ausgelieferten Preis 58× | Kauf-RTP bisher nur abgeleitet |
 | Weitere RTP-Varianten (üblich sind mehrere je Titel) | nur eine vorhanden; Werkzeuge existieren |
-| Retrigger-Frequenz, mittlerer Multiplikator, Gewinn je Station | vom Simulator nicht erfasst |
+| Gewinn je Station | vom Simulator nicht erfasst |
 | Anerkannte Volatilitätskennzahl des Zielanbieters | jeder Anbieter rechnet nach eigener Skala |
 | Statistische Testbatterie für den Zufallsgenerator (z. B. TestU01, PractRand) | nicht ausgeführt |
 | Anteil des durch die Kappung abgeschnittenen Gewinns | nicht ausgewiesen |

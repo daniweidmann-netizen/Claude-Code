@@ -44,7 +44,7 @@ Zweitimplementierung (zuletzt 80 000 Runden identisch am 25.11.2026).
 | Expedition-Fortschritt | Integrationstests mit vorgegebenen Ziehungen; Eigenschaftstests | bestanden |
 | SUN-Mechanik | Integrationstests (Relikt, Multiplikator); Simulation | bestanden |
 | Free Spins | Tests und Browser (Zähler lückenlos, Kulisse zurück) | bestanden |
-| Retrigger | Eigenschaftstests (Obergrenze 30) | bestanden; **Häufigkeit nicht gemessen** |
+| Retrigger | Eigenschaftstests (Obergrenze 30); Zusatzlauf 100 Mio. Runden | bestanden; Häufigkeit 1,36 % der Features |
 | Temple Bonus | Tests; 9 Bonusrunden über die Oberfläche; exakte Erwartungswerte | bestanden |
 | Geschwindigkeitsmodi | Zeitmessung; Moduswechsel mitten im Feature; sechsfaches Tippen startet keinen zweiten Spin | bestanden (Chromium) |
 | Sound | nur: Dateien laden, kein Fehler | **Wirkung NICHT geprüft – nie angehört** |

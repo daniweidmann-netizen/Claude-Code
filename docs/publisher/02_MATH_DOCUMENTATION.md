@@ -102,7 +102,7 @@ The grand treasure can occur at most once per bonus (redraw otherwise). After th
 
 ```
 npm install
-npm test                                                  # 79 automated tests
+npm test                                                  # 86 automated tests
 npm run sim -- --rounds 2000000000 --seed 20261126        # acceptance run (about 75 minutes on 4 cores)
 npm run sim -- --mode buy --rounds 100000000 --seed 20261127
 tools/reference/diff.sh config/game-config.v1.0.0.json 777 4 250000        # engine vs. Python reference
