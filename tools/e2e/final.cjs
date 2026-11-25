@@ -115,6 +115,39 @@ const URL = process.env.TLS_URL || 'http://localhost:4173/';
     if (s.mismatches) problems.push('present: grid mismatches');
     if (!/PRESENTATION MODE/.test(s.presentChip)) problems.push('present: label lost');
     await p.close();
+    // the same mode through the in-game switch (no address parameter): Settings -> Start presentation mode
+    {
+      const r = await page(393, 852, '?start=0&fast=4');
+      const info = (await r.evaluate(() => window.__tls.state().buttons)).find((b) => b.name === 'info');
+      await r.mouse.click(info.x + info.w / 2, info.y + info.h / 2);
+      await r.getByRole('tab', { name: 'Settings' }).click();
+      await r.locator('button[data-action="present"]').click();
+      await r.waitForTimeout(2500);
+      let st = await r.evaluate(() => window.__tls.state());
+      if (!st.presentation || !/PRESENTATION MODE/.test(st.presentChip) || st.balance !== 100000) problems.push('switch: mode not started');
+      await r.evaluate(() => window.__tls.spin());
+      await r.waitForFunction(() => window.__tls.state().modal, null, { timeout: 120000 });
+      if (out) { await r.waitForTimeout(1200); await r.screenshot({ path: `${out}/present-switch.png` }); }
+      for (let k = 0; k < 60 && (await r.evaluate(() => window.__tls.state().busy)); k++) {
+        const s2 = await r.evaluate(() => window.__tls.state());
+        if (s2.modal) for (const dd of s2.doors) await r.mouse.click(dd.x, dd.y);
+        await r.waitForTimeout(1200);
+      }
+      st = await r.evaluate(() => window.__tls.state());
+      if (st.history.length !== 1 || st.history[0].seed !== '1168') problems.push('switch: fixed seed not used');
+      await r.mouse.click(info.x + info.w / 2, info.y + info.h / 2);
+      await r.getByRole('tab', { name: 'Settings' }).click();
+      await r.locator('button[data-action="present"]').click();
+      await r.waitForTimeout(2500);
+      st = await r.evaluate(() => window.__tls.state());
+      if (st.presentation || st.presentChip || st.history.length !== 0 || st.balance !== 100000) problems.push('switch: normal session not restored');
+      await r.evaluate(() => window.__tls.spin());
+      await r.waitForFunction(() => !window.__tls.state().busy || window.__tls.state().modal, null, { timeout: 120000 });
+      st = await r.evaluate(() => window.__tls.state());
+      if (st.history[0] && st.history[0].seed === '1168') problems.push('switch: seed still fixed after leaving the mode');
+      note.push(`switch: presentation on and off through Settings, seed after leaving ${st.history[0] ? 'random' : 'n/a'}`);
+      await r.close();
+    }
     // normal play is not affected: without the parameter the seed is random and there is no label
     const q = await page(393, 852, '?start=0&fast=4');
     const n = await q.evaluate(() => window.__tls.state());

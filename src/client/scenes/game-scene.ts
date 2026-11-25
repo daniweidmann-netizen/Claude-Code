@@ -107,13 +107,13 @@ export class GameScene extends Phaser.Scene {
     // ?present=temple: presentation mode. Every round uses one fixed seed whose ordinary result
     // reaches the temple, so the complete Temple Bonus can be shown on demand. The engine,
     // its configuration and all probabilities are untouched; only the seed is not random.
-    this.presentation = params.get('present') === 'temple';
+    const presentParam = params.get('present') === 'temple';
     // ?seed=n makes the demo deterministic (testing and replays only).
-    const seedParam = this.presentation ? null : params.get('seed');
+    const seedParam = presentParam ? null : params.get('seed');
     let next = seedParam !== null ? BigInt(seedParam) : null;
     this.service = new LocalGameService(CONFIG_V1, {
       balance: Number(params.get('balance') ?? 100_000),
-      nextSeed: this.presentation ? () => PRESENTATION_SEED : next !== null ? () => next!++ : undefined,
+      nextSeed: next !== null ? () => next!++ : undefined,
     });
     const cfg = this.service.config;
 
@@ -164,7 +164,7 @@ export class GameScene extends Phaser.Scene {
           renderer: this.game.renderer.type === Phaser.WEBGL ? 'WebGL' : 'Canvas', reducedMotion: REDUCED_MOTION, fxLevel: this.fx.level,
         }, perfVerdict(st.fps, st.slowShare, st.frames, LANG), LANG);
       } },
-      { id: 'settings', label: LANG === 'de' ? 'Einstellungen' : 'Settings', html: () => settingsHtml({ volume: this.sfx.volume, muted: this.sfx.muted, fxLevel: this.fx.level, reducedMotion: REDUCED_MOTION, demo: this.demoStep > 0, tools: DEV_TOOLS && !this.presentation }, LANG) },
+      { id: 'settings', label: LANG === 'de' ? 'Einstellungen' : 'Settings', html: () => settingsHtml({ volume: this.sfx.volume, muted: this.sfx.muted, fxLevel: this.fx.level, reducedMotion: REDUCED_MOTION, demo: this.demoStep > 0, tools: DEV_TOOLS, presenting: this.presentation }, LANG) },
     ], LANG === 'de' ? 'Schliessen' : 'Close');
     this.info.onClose = () => { this.input.enabled = true; };
     this.info.onAction = (action, value) => {
@@ -173,6 +173,7 @@ export class GameScene extends Phaser.Scene {
       if (action === 'mute') { this.sfx.setMuted(!this.sfx.muted); this.hud.setMuted(this.sfx.muted); this.info.refresh(); }
       if (action === 'fx') { this.fx.level = (Number(value) as 0 | 1 | 2); this.fxPinned = true; this.relayout(); this.info.refresh(); }
       if (action === 'lang') { storeLang(value === 'de' ? 'de' : 'en'); window.location.reload(); }
+      if (action === 'present' && DEV_TOOLS) { this.info.close(); this.setPresentation(!this.presentation); }
       if (action === 'demo' && DEV_TOOLS && !this.presentation) { this.info.close(); if (this.demoStep > 0) this.demoStop = true; else void this.runDemo(); }
       if (action === 'replay') {
         const entry = this.service.history()[Number(value)];
@@ -202,13 +203,8 @@ export class GameScene extends Phaser.Scene {
     this.hud.setSpeedMode(this.speedMode);
     this.applySpeed();
     if (params.get('start') === '0' || seedParam !== null) { this.started = true; } else this.showStart();
+    if (presentParam) this.setPresentation(true);
     this.demoQueued = !this.presentation && params.get('demo') === '1';
-    if (this.presentation) {
-      this.presentChip = this.add.text(0, 0, t('presentChip'), {
-        fontFamily: DISPLAY, fontSize: '12px', color: '#2a1703', backgroundColor: '#f2c14e', padding: { x: 8 * DPR, y: 2 * DPR },
-      }).setOrigin(0.5, 1).setDepth(DEPTH.start + 1);
-      this.relayout();
-    }
     if (this.demoQueued && this.started) { this.demoQueued = false; void this.runDemo(); }
 
     // Read-only hook for automated end-to-end tests.
@@ -385,6 +381,30 @@ export class GameScene extends Phaser.Scene {
       this.drift = this.tweens.add({ targets, scale: base * 1.035, duration: 16000, yoyo: true, repeat: -1, ease: 'Sine.easeInOut' });
     }
     if (this.startLayer) { this.startLayer.destroy(); this.startLayer = null; this.showStart(); }
+  }
+
+  /**
+   * Presentation mode (demo build only). Switching it on starts a separate session with its own
+   * virtual credits in which every round uses one fixed seed whose ordinary result reaches the
+   * temple, so the complete Temple Bonus can be shown on demand. Engine, configuration and
+   * probabilities are untouched; the normal session is replaced by a fresh one when the mode ends.
+   */
+  private setPresentation(on: boolean): void {
+    if (!DEV_TOOLS || this.busy || this.autoLeft > 0 || this.demoStep > 0 || on === this.presentation) return;
+    this.presentation = on;
+    this.service = new LocalGameService(CONFIG_V1, on ? { nextSeed: () => PRESENTATION_SEED } : {});
+    this.presentChip?.destroy();
+    this.presentChip = on ? this.add.text(0, 0, t('presentChip'), {
+      fontFamily: DISPLAY, fontSize: '12px', color: '#2a1703', backgroundColor: '#f2c14e', padding: { x: 8 * DPR, y: 2 * DPR },
+    }).setOrigin(0.5, 1).setDepth(DEPTH.start + 1) : null;
+    this.played = false;
+    this.grid.show(previewGrid(CONFIG_V1.cols, CONFIG_V1.rows));
+    this.track.reset(0, 0);
+    this.hud.setWin(0, false);
+    this.hud.setMultiplier(1, 0);
+    this.relayout();
+    this.refreshHud();
+    if (this.started) void this.banner.show(t(on ? 'presentOn' : 'presentOff'), 1600);
   }
 
   private refreshHud(): void {

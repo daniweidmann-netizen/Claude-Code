@@ -52,6 +52,8 @@ const S = {
   demoIntro: { en: 'Fixed seeds · real game results', de: 'Feste Seeds · echte Spielergebnisse' },
   demoStep: { en: 'DEMONSTRATION {i}/{n} · {what}', de: 'DEMONSTRATION {i}/{n} · {what}' },
   presentChip: { en: 'PRESENTATION MODE · FIXED SEED · VIRTUAL CREDITS', de: 'PRÄSENTATIONSMODUS · FESTER SEED · SPIELGELD' },
+  presentOn: { en: 'PRESENTATION MODE\nTemple Bonus on demand · fixed seed · virtual credits', de: 'PRÄSENTATIONSMODUS\nTemple Bonus auf Abruf · fester Seed · Spielgeld' },
+  presentOff: { en: 'Presentation mode ended · normal demo play', de: 'Präsentationsmodus beendet · normales Demo-Spiel' },
   demo1: { en: 'Win and cascade', de: 'Gewinn und Kaskade' },
   demo2: { en: 'Expedition to the Relic', de: 'Expedition bis zum Relikt' },
   demo3: { en: 'Free Spins', de: 'Free Spins' },

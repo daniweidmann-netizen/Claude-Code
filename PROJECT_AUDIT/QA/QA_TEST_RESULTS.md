@@ -25,11 +25,12 @@ Type check: PASS.
 
 | Run | Scope | Result |
 |---|---|---|
-| Full suite `npm run e2e` | six formats, 102 rounds, 9 bonus rounds and 15 chamber picks through the UI; console errors, loaded art, grid equals event log, distortion, overlap, accounting, scenery reset | **PASS** |
-| `npm run e2e:final` | title screen and layout in five formats; reel changeover (least symbols on the field: 27 of 30 over 477 frames); demonstration (four steps, balance and history untouched); **presentation mode** (two rounds, fixed seed, real chamber picks, label kept; inactive without the parameter) | **PASS** |
+| Full suite `npm run e2e` | six formats, 102 rounds, 9 bonus rounds and 15 chamber picks through the UI; console errors, loaded art, grid equals event log, distortion, overlap, accounting, scenery reset | **PASS** (run on the build before the in-game presentation switch was added; after that addition the additional checks, the quick play-through and the resilience checks were repeated and passed) |
+| Quick play-through `npm run e2e:quick` on the final build | 16 rounds, 3 bonus rounds through the UI | **PASS** |
+| `npm run e2e:final` | title screen and layout in five formats; reel changeover (least symbols on the field: 27 of 30 over 504 frames); demonstration (four steps, balance and history untouched); **presentation mode** by address parameter (two rounds, fixed seed, real chamber picks, label kept) and by the in-game switch under Settings (on, one bonus round, off, normal session with random seed restored); inactive otherwise | **PASS** |
 | `npm run e2e:resilience` | reload mid-round → clean fresh start; all symbol images blocked → placeholders, correct result; all audio blocked → game plays; offline after load → round completes | **PASS** |
-| Long session, 300 rounds | memory, object count, stuck animations | {{SOAK}} |
-| Speed modes | Normal / Fast / Skip in two formats, same seeds | {{TIMING}} |
+| Long session, 300 rounds | memory, object count, stuck animations | PASS – memory 13.7 → 19.8 MB, stable from round 50; 47 objects; no stuck animations (run on the build before the in-game presentation switch was added; after that addition the additional checks, the quick play-through and the resilience checks were repeated and passed) |
+| Speed modes | Normal / Fast / Skip in two formats, same seeds | PASS – wins per seed identical in all three modes; free spin without a win on the phone format: Normal 3.5 s · Fast 2.1 s · Skip 1.4 s (test browser at 17 fps) (run on the build before the in-game presentation switch was added; after that addition the additional checks, the quick play-through and the resilience checks were repeated and passed) |
 
 ## 3. Required areas
 
@@ -51,7 +52,7 @@ Type check: PASS.
 | Temple Bonus | tests; UI clicks; presentation mode | PASS |
 | Restart and recovery | reload mid-round | PASS for a clean restart; **no recovery exists** |
 | Error handling | blocked images, blocked audio, offline | PASS |
-| Normal / Fast / Skip | see timing run | {{TIMING_SHORT}} |
+| Normal / Fast / Skip | see timing run | PASS – identical results in all modes; mode switch works |
 
 ## 4. Mathematics-related checks
 

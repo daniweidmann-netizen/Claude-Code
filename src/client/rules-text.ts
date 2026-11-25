@@ -198,7 +198,7 @@ ${row(de ? 'Reduzierte Bewegung' : 'Reduced motion', p.reducedMotion ? (de ? 'ei
 <p class="dim">${de ? 'Bildwiederholraten über 60 sind auf Displays mit 90 oder 120 Hz normal. Sinkt die Bildrate, schaltet das Spiel die Effekte selbst zurück.' : 'Frame rates above 60 are normal on 90 or 120 Hz displays. If the frame rate drops, the game reduces its effects by itself.'}</p>`;
 }
 
-export interface SettingsInfo { volume: number; muted: boolean; fxLevel: number; reducedMotion: boolean; demo?: boolean; tools?: boolean }
+export interface SettingsInfo { volume: number; muted: boolean; fxLevel: number; reducedMotion: boolean; demo?: boolean; tools?: boolean; presenting?: boolean }
 
 export function settingsHtml(v: SettingsInfo, lang: Lang = 'en'): string {
   const de = lang === 'de';
@@ -214,7 +214,10 @@ export function settingsHtml(v: SettingsInfo, lang: Lang = 'en'): string {
 <p class="dim">${v.reducedMotion ? (de ? 'Reduzierte Bewegung ist aktiv (Systemeinstellung): Bewegungen werden durch kurze Überblendungen ersetzt.' : 'Reduced motion is active (system setting): movement is replaced by short fades.') : (de ? 'Reduzierte Bewegung folgt der Systemeinstellung des Geräts.' : 'Reduced motion follows the device\'s system setting.')}</p>
 <h3>${de ? 'Sprache' : 'Language'}</h3>
 <div class="row"><button data-action="lang" data-value="${de ? 'en' : 'de'}">${de ? 'Switch to English' : 'Auf Deutsch wechseln'}</button></div>
-${v.tools === false ? '' : `<h3>${de ? 'Demonstration' : 'Demonstration'}</h3>
+${v.tools === false ? '' : `<h3>${de ? 'Präsentationsmodus' : 'Presentation mode'}</h3>
+<p>${de ? 'Zeigt den vollständigen Temple Bonus auf Abruf: Jede Runde verwendet denselben festen Seed, dessen gewöhnliches Ergebnis den Tempel erreicht. Engine, Wahrscheinlichkeiten und Auszahlungen sind unverändert; es wird mit eigenem Spielgeld gespielt. Beim Ein- und Ausschalten beginnt eine neue Sitzung.' : 'Shows the complete Temple Bonus on demand: every round uses the same fixed seed, whose ordinary result reaches the temple. Engine, probabilities and payouts are unchanged; play uses separate virtual credits. Switching the mode on or off starts a new session.'}</p>
+<div class="row"><button data-action="present" data-value="">${v.presenting ? (de ? 'Präsentationsmodus beenden' : 'End presentation mode') : (de ? 'Präsentationsmodus starten (Temple Bonus)' : 'Start presentation mode (Temple Bonus)')}</button></div>
+${v.presenting ? '' : `<h3>${de ? 'Demonstration' : 'Demonstration'}</h3>
 <p>${de ? 'Spielt vier vorbereitete Runden mit festen Seeds: eine Kaskade, eine lange Expedition, Free Spins und den Temple Bonus. Die Ergebnisse berechnet dieselbe Engine wie bei jeder anderen Runde; nichts ist gestellt.' : 'Plays four prepared rounds with fixed seeds: a cascade, a long expedition, free spins and the Temple Bonus. The results are computed by the same engine as every other round; nothing is staged.'} ${de ? 'Guthaben und Verlauf bleiben unverändert.' : 'Balance and history stay unchanged.'}</p>
-<div class="row"><button data-action="demo" data-value="">${v.demo ? (de ? 'Demonstration beenden' : 'End demonstration') : (de ? 'Demonstration starten' : 'Start demonstration')}</button></div>`}`;
+<div class="row"><button data-action="demo" data-value="">${v.demo ? (de ? 'Demonstration beenden' : 'End demonstration') : (de ? 'Demonstration starten' : 'Start demonstration')}</button></div>`}`}`;
 }

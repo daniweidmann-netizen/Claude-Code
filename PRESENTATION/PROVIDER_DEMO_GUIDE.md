@@ -14,13 +14,14 @@ Date: 25 November 2026 · how to show the game in a meeting (about 8 minutes)
 |---|---|---|---|
 | Normal demo play | (no parameter) | random rounds with play money | DEMO PLAY |
 | Demonstration | `?demo=1` or **i → Settings → Start demonstration** | four prepared rounds in a row: cascade, long expedition, Free Spins, Temple Bonus; balance and history untouched | DEMONSTRATION n/4 |
-| **Presentation mode** | `?present=temple` | every spin is the same prepared round that reaches the Temple, so the **complete Temple Bonus can be shown on demand – with your own chamber pick** | PRESENTATION MODE · FIXED SEED · VIRTUAL CREDITS |
+| **Presentation mode** | **i → Settings → Start presentation mode (Temple Bonus)**, or `?present=temple` | every spin is the same prepared round that reaches the Temple, so the **complete Temple Bonus can be shown on demand – with your own chamber pick** | PRESENTATION MODE · FIXED SEED · VIRTUAL CREDITS |
 
 What presentation mode is and is not:
 - It uses the real game engine and the real Temple Bonus with all animations and sounds.
 - Only the seed is fixed instead of random. Probabilities, RTP and payouts are untouched.
-- Credits are virtual. Nothing is stored; there are no real gameplay statistics to contaminate.
-- It never starts by itself: only with the address parameter, only in the demo build.
+- Credits are virtual. Nothing is stored; the demo keeps no gameplay statistics that could be contaminated.
+- It never starts by itself: only through the Settings switch or the address parameter, only in the demo build.
+- Switching it on starts a separate session with its own virtual credits; switching it off starts a fresh normal session.
 - A production build (`TLS_PRODUCTION=1`) contains neither this mode nor the demonstration, the
   fixed seeds or the test hook.
 

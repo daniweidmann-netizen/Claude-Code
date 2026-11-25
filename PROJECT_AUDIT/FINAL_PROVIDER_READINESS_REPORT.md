@@ -37,7 +37,7 @@ a formal submission, an exclusive licence or an IP sale.
 | Speed modes Normal / Fast / Skip (results identical in all modes) | VERIFIED |
 | History with exact replay; rules and paytable in the game; English and German | COMPLETED |
 | Demonstration (four fixed seeds) | VERIFIED |
-| **Presentation mode for the Temple Bonus** (`?present=temple`, demo build only) | VERIFIED – added in this audit |
+| **Presentation mode for the Temple Bonus** (Settings switch or `?present=temple`; demo build only) | VERIFIED – added in this audit |
 | Production build switch removing all developer tools | COMPLETED – added in this audit |
 
 ## 3. Remaining development work
@@ -121,9 +121,9 @@ and the legal form exist.
 | Additional browser checks (title, five formats, reel changeover, demonstration, presentation mode) | PASS |
 | Resilience (reload mid-round, blocked images, blocked audio, offline) | PASS |
 | Production build: test hook absent | PASS |
-| Full browser suite, six formats | {{FULL}} |
-| Long session, 300 rounds | {{SOAK}} |
-| Speed modes | {{TIMING}} |
+| Full browser suite, six formats | PASS – 102 rounds, 9 bonus rounds, 15 chamber picks (run on the build before the in-game presentation switch was added; after that addition the additional checks, the quick play-through and the resilience checks were repeated and passed) |
+| Long session, 300 rounds | PASS – memory 13.7 → 19.8 MB, stable from round 50; 47 objects; no stuck animations |
+| Speed modes | PASS – wins per seed identical in all three modes; free spin without a win on the phone format: Normal 3.5 s · Fast 2.1 s · Skip 1.4 s (test browser at 17 fps) |
 
 ## 12. Changes made in this audit
 

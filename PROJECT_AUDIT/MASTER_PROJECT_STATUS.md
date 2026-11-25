@@ -65,9 +65,9 @@ Earlier German-language material remains valid and more detailed: `docs/`,
 
 | Change | Affects gameplay or math? |
 |---|---|
-| Presentation mode `?present=temple` (demo build only) | No. Fixed seed instead of a random one; engine, configuration and probabilities untouched |
+| Presentation mode (Settings switch or `?present=temple`; demo build only) | No. A separate session with a fixed seed instead of a random one; engine, configuration and probabilities untouched |
 | Build switch `TLS_PRODUCTION=1` that removes all developer tools | No. Default build behaves as before |
-| One additional browser check | No |
+| Browser checks for presentation mode and resilience | No |
 | New documents in `PROJECT_AUDIT/`, `PRESENTATION/`, `COMMERCIAL/` | No |
 
 Backup before the changes: local Git tag `pre-master-audit`. Engine, session layer and

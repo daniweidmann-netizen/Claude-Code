@@ -44,6 +44,16 @@ A hosted private demo page exists for the owner; access is granted by the owner.
 - The speed selector works during the demonstration; for a talk, Normal is recommended.
 - **End demonstration** in the settings stops after the current round.
 
+## Presentation mode for the Temple Bonus
+
+**i → Settings → Start presentation mode (Temple Bonus)**, or the address parameter `?present=temple`.
+Every spin then uses the same fixed seed (1168), whose ordinary result reaches the Temple, so the
+complete Temple Bonus – including your own chamber pick – can be shown on demand. A gold label
+"PRESENTATION MODE · FIXED SEED · VIRTUAL CREDITS" stays on screen. The engine, its configuration
+and all probabilities are untouched; the mode runs in a separate session with virtual credits and
+exists only in the demo build. A production build (`TLS_PRODUCTION=1 npx vite build`) contains no
+developer tools: no fixed seeds, no demonstration, no presentation mode, no test hook.
+
 ## Useful addresses for a presentation
 
 Add these to the address. They are for demonstration and testing only.
