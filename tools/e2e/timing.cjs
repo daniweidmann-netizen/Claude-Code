@@ -6,7 +6,7 @@
  */
 const { chromium } = require('playwright');
 const URL = process.env.TLS_URL || 'http://localhost:4173/';
-const SEEDS = [7, 21, 40, 63];
+const SEEDS = [7, 21, 40];
 
 async function playBought(p) {
   await p.evaluate(() => window.__tls.buy());

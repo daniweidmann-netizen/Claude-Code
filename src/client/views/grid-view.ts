@@ -159,12 +159,12 @@ export class GridView extends Phaser.GameObjects.Container {
       const col = i % this.cols, row = Math.floor(i / this.cols);
       s.y -= this.cell * (this.rows + 1);
       jobs.push(tween(this.scene, {
-        targets: s, y: this.cy(i), duration: 330, ease: 'Cubic.easeIn', delay: col * 85 + (this.rows - 1 - row) * 26,
+        targets: s, y: this.cy(i), duration: 320, ease: 'Cubic.easeIn', delay: col * 70 + (this.rows - 1 - row) * 24,
       }).then(() => this.settle(s, i)));
     });
     for (let c = 0; c < this.cols; c++) {
       // A puff of dust where each column lands.
-      this.scene.time.delayedCall(330 + c * 85 + 100, () => this.fx.flash(this.x + (c + 0.5) * this.cell, this.y + this.cell * this.rows, 0xcdbb95, this.cell * 0.55, 240));
+      this.scene.time.delayedCall(320 + c * 70 + 96, () => this.fx.flash(this.x + (c + 0.5) * this.cell, this.y + this.cell * this.rows, 0xcdbb95, this.cell * 0.55, 240));
     }
     await Promise.all(jobs);
     grid.forEach((id, i) => this.setAura(i, id));
@@ -207,8 +207,8 @@ export class GridView extends Phaser.GameObjects.Container {
     const dim = others.length ? tween(this.scene, { targets: others, alpha: 0.38, duration: 160 }) : Promise.resolve();
     await Promise.all([show, dim]);
     if (REDUCED_MOTION) await wait(this.scene, 420);
-    else await tween(this.scene, { targets, scale: this.scaleFor() * 1.1, duration: 200, yoyo: true, repeat: 1, ease: 'Sine.easeInOut' });
-    await wait(this.scene, 260);
+    else await tween(this.scene, { targets, scale: this.scaleFor() * 1.1, duration: 180, yoyo: true, repeat: 1, ease: 'Sine.easeInOut' });
+    await wait(this.scene, 200);
     await tween(this.scene, { targets: [this.glow, ...labels], alpha: 0, duration: 140 });
     labels.forEach((l) => l.destroy());
     this.glow.clear();

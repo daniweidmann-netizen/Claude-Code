@@ -20,23 +20,25 @@ export const MAX_SCENE_SCALE = 1.6;
 /** Pauses at NORMAL pace, in milliseconds: [duration, minimum in real time at any pace]. */
 export const HOLD = {
   /** Before a free spin starts: the counter has changed. */
-  freeSpinStart: [320, 120],
+  freeSpinStart: [260, 100],
+  /** Base Camp effects at the start of a free spin, shown together. */
+  campEffects: [420, 220],
   /** After the grid has landed, before evaluation. */
-  afterLanding: [200, 0],
+  afterLanding: [160, 0],
   /** A win stays marked after its presentation. */
-  afterWin: [220, 150],
+  afterWin: [160, 120],
   /** A station has just been unlocked. */
-  stationUnlocked: [520, 320],
+  stationUnlocked: [420, 300],
   /** A station effect has been applied (Wilds placed, multiplier raised). */
-  stationEffect: [380, 220],
+  stationEffect: [260, 180],
   /** End of a spin without a win. */
-  spinEndNoWin: [480, 120],
+  spinEndNoWin: [420, 120],
   /** End of a spin with a win. */
-  spinEndWin: [620, 260],
+  spinEndWin: [480, 240],
   /** Between two free spins. */
-  betweenFreeSpins: [520, 100],
+  betweenFreeSpins: [450, 100],
   /** Extra breath before each of the last two free spins and after their result. */
-  lastSpins: [420, 0],
+  lastSpins: [380, 0],
   /** After the last free spin, before the summary. */
   beforeSummary: [600, 300],
 } as const satisfies Record<string, readonly [number, number]>;

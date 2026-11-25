@@ -22,7 +22,7 @@ describe('pacing', () => {
       // Faster modes never make a pause longer than a slower mode.
       expect(realHoldMs(name, SPEED_SCALE.skip)).toBeLessThanOrEqual(realHoldMs(name, SPEED_SCALE.fast) + 1e-9);
     }
-    expect(holdMs('stationUnlocked', 5)).toBe(1600); // 320 ms real at five times speed
+    expect(holdMs('stationUnlocked', 5)).toBe(1500); // 300 ms real at five times speed
   });
 
   it('accepts only the three mode names', () => {

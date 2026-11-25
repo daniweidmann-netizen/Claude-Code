@@ -46,6 +46,12 @@ export class Presenter {
   private picksInBonus = 0;
   private bestMult = 1;
   private fsIndex = 0;
+  /**
+   * True between the start of a free spin and its first evaluation: the Base Camp
+   * effects are already owned, so they are shown together and briefly instead of
+   * being unlocked one after the other again.
+   */
+  private campPhase = false;
   private spinClock = 0;
   private spinWin = 0;
   private spinCascades = 0;
@@ -99,6 +105,7 @@ export class Presenter {
           track.reset(e.station, e.steps);
           hud.setMultiplier(this.treasure, this.sun);
           this.spinClock = performance.now(); this.spinWin = 0; this.spinCascades = 0;
+          this.campPhase = e.mode === 'free' && e.station > 0;
           if (e.mode === 'free') {
             this.fsIndex = e.freeSpinIndex;
             hud.setFreeSpins(t('freeSpinOf', { i: e.freeSpinIndex, n: this.fsTotal }));
@@ -117,6 +124,7 @@ export class Presenter {
           await this.hold('afterLanding');
           break;
         case 'gridCascaded':
+          if (this.campPhase) { this.campPhase = false; await this.hold('campEffects'); }
           await grid.cascade(e.grid); this.check(e.grid);
           break;
         case 'clustersWon':
@@ -147,18 +155,21 @@ export class Presenter {
           await grid.clear(e.positions);
           break;
         case 'discovery':
+          if (this.campPhase) { e.positions.forEach((p) => void fx.fly(track.worldOf(1), grid.center(p), STATION_COLOR[0], 320)); break; }
           track.announce(t('fxDiscovery'), 1);
           await Promise.all(e.positions.map((p) => fx.fly(track.worldOf(1), grid.center(p), STATION_COLOR[0], 320)));
           await this.hold('stationEffect');
           break;
         case 'treasure':
           this.treasure = e.multiplier;
+          if (this.campPhase) { void fx.fly(track.worldOf(2), hud.multiplierPoint, STATION_COLOR[1], 300); hud.setMultiplier(this.treasure, this.sun); break; }
           track.announce(t('fxTreasure', { m: e.multiplier }), 2);
           await fx.fly(track.worldOf(2), hud.multiplierPoint, STATION_COLOR[1], 300);
           hud.setMultiplier(this.treasure, this.sun);
           await this.hold('stationEffect');
           break;
         case 'ancientPower':
+          if (this.campPhase) { if (e.position >= 0) void fx.fly(track.worldOf(3), grid.center(e.position), STATION_COLOR[2], 340); break; }
           track.announce(t('fxAncient'), 3);
           if (e.position >= 0) await fx.fly(track.worldOf(3), grid.center(e.position), STATION_COLOR[2], 340);
           await this.hold('stationEffect');
