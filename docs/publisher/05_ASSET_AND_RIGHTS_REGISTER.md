@@ -14,7 +14,7 @@ Summary in English. The detailed register with every file, prompt and job identi
 |---|---|---|---|---|
 | 9 symbols | `public/symbols/sym0–8.png` | AI-generated (Higgsfield, model `gpt_image_2_6`), account of the owner | none; automatic cut-out and resize only | UNVERIFIED |
 | 5 station medallions, tile, spin disc | `public/ui/station*.png`, `tile.png`, `spin.png` | same | none | UNVERIFIED |
-| 3 chamber doors (closed and open), treasure, temple gate, play-field frame | `public/ui/*.webp` | same; open doors generated with the closed doors as reference | none | UNVERIFIED |
+| 3 chamber doors (closed and open), treasure, temple gate, play-field frame, Sun Relic artefact (added 25 November 2026) | `public/ui/*.webp` | same; open doors generated with the closed doors as reference | none | UNVERIFIED |
 | 4 backgrounds | `public/bg*.webp` | same | none | UNVERIFIED |
 | Logo | `public/logo.webp` | same; raster only, no vector | none | UNVERIFIED |
 | Effect textures (sparks, glow, rays, coins, shadows) | generated in code at runtime | own work | – | CLEAR |

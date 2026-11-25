@@ -47,12 +47,12 @@ Build of 25 November 2026, configuration 1.0.0. All tests were run by the develo
 | Suite | Scope | Result |
 |---|---|---|
 | Automated tests (`npm test`) | 79 tests | 79 passed |
-| Full browser suite | 6 formats, 102 rounds, autoplay, info panel, 9 bonus rounds with 14 picks, replay | passed – **run on the build before audio, settings and scenery motion were added** |
+| Full browser suite | 6 formats, 102 rounds, autoplay, info panel, 9 bonus rounds with 15 picks, replay | **passed on 25 November 2026 on the current build** (a first run that day failed on an overlap of the free-spin counter and the speed buttons in landscape; fixed, second run passed) |
 | Quick browser suite | 393×852, 16 rounds, 3 bonus rounds, audio and settings checks | passed on the current build |
 | Long-session test | 300 rounds | passed on the current build |
 | Engine unchanged | `git diff` of engine, session layer and configuration since before the interface work | 0 lines |
 
-The full browser suite has not been repeated on the final build. It takes about 20 minutes because the test browser renders without a graphics card.
+The full browser suite was repeated on 25 November 2026 and passed. It takes about 20 minutes because the test browser renders without a graphics card. The automated test count is now 86.
 
 ## 3. Defects found and fixed during development
 
@@ -74,5 +74,4 @@ The full browser suite has not been repeated on the final build. It takes about 
 | Audio not reviewed; two effects shorter than specified; music loops not cut on bar lines | high |
 | Delivery about 5.6 MB | medium |
 | Frame around the play field is squeezed about 10 % horizontally to fit | low |
-| Full browser suite not repeated on the final build | medium |
 | No critical defect is known in game logic or accounting | – |
