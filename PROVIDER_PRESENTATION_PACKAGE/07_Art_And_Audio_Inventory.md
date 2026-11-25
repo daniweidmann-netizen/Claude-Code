@@ -59,8 +59,9 @@ knapp (nicht auf Geräten geprüft).
 | Musik Free Spins | `music_free.mp3` | 45,0 s | 616 | Schleife | KI | UNGEPRÜFT |
 | Ersatztöne | im Code synthetisiert | – | – | Rückfall | eigene Arbeit | KLAR |
 
-**Niemand hat die Tondateien angehört.** Lautstärkeverhältnisse, Schleifenpunkte der Musik und
-möglicher Gesang in der Musik sind ungeprüft. Eine Dschungel-Atmosphäre wurde erzeugt, aber nicht
+Der Projektinhaber hat die Töne am 25.11.2026 im Spiel angehört: «Die Musik und die Töne klingen
+gut und passen zum Slot.» Lautstärkeverhältnisse und Schleifenpunkte der Musik sind nicht
+technisch geprüft. Eine Dschungel-Atmosphäre wurde erzeugt, aber nicht
 ausgeliefert (Clip zu kurz für eine Schleife).
 
 ## 3. Schriften
@@ -100,4 +101,4 @@ Skala 1–10; «–» = nicht bewertbar, weil ungeprüft.
 | Mobile UX | – (im Browser-Test 6,5) | zehn Formate ohne Überlappung | **kein echtes Gerät** |
 | Performance | – | Langzeittest stabil | **keine Messung auf Hardware** |
 | Wiedererkennungswert | 7 | Sonnenmotiv zieht sich durch | Markenrecherche fehlt; nur Rasterlogo |
-| Ton | – | vollständig eingebunden | **nie angehört** |
+| Ton | – (keine eigene Note) | vollständig eingebunden; vom Projektinhaber angehört: «klingen gut und passen zum Slot» (25.11.2026) | keine Zweitmeinung, keine technische Prüfung |

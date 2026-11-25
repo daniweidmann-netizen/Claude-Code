@@ -54,7 +54,8 @@ Auffälligkeit: Die Rohdateien `bonus.mp3` und `bonus_v2.mp3` sind **byte-identi
 Gong-Fassung ist also nicht mehr vorhanden (im Asset-Register berichtigt).
 
 Rechte Dritter an den Dateien: keine bekannt. **Nicht geprüft:** Ähnlichkeit der Musik mit
-bestehenden Werken; **niemand hat die Dateien angehört.**
+bestehenden Werken. Der Projektinhaber hat die Töne am 25.11.2026 im Spiel angehört und für gut und
+passend befunden; das betrifft den Klang, nicht die Rechte.
 
 ## 3. Vertragsbedingungen
 

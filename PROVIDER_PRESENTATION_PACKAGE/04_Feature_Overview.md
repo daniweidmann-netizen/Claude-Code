@@ -78,7 +78,7 @@ bis zum Base Camp bei **jedem** Spin erneut zu Beginn.
 Darstellung (implementiert): eigene Freischalt-Geste und Farbe je Station, Trittsteine zwischen
 den Stationen, Lichtstrahl von der Station ins Raster, Textzeile mit dem nächsten Ziel
 (`src/client/views/track-view.ts`, `presenter.ts`). Töne: `step`, `station`, `relic`, `bonus`
-(`src/client/audio/sfx.ts`) – **vorhanden, aber nie angehört**.
+(`src/client/audio/sfx.ts`) – vorhanden; vom Projektinhaber angehört und für gut befunden (25.11.2026).
 
 Warum eigenständig: Die fünf Stationen verändern Raster (Wilds, Explorer), Multiplikator (T, S)
 und Spielzustand (Bonus, Siegel). Der Spieler sieht innerhalb eines Spins, wie weit er ist und
@@ -166,11 +166,11 @@ Multiplikatoren im Bonus: **keine.** T und S wirken nur auf Clustergewinne.
 
 | Feature | Logik | Darstellung | Ton | Geprüft |
 |---|---|---|---|---|
-| Cluster, Kaskaden, Wild, Explorer | vollständig | vollständig | vorhanden, nicht angehört | automatische Tests, Simulation, Browser (Chromium) |
-| Expedition Track, fünf Stationen | vollständig | vollständig | vorhanden, nicht angehört | wie oben |
-| Sonnenbonus / Sun Relic | vollständig | vollständig (eigenes Artefaktbild seit 25.11.) | vorhanden, nicht angehört | wie oben |
-| Free Spins, Retrigger, Base Camp, Siegel | vollständig | vollständig | vorhanden, nicht angehört | wie oben |
-| Temple Bonus und Finale | vollständig | vollständig | vorhanden, nicht angehört | wie oben; exakte Erwartungswerte |
+| Cluster, Kaskaden, Wild, Explorer | vollständig | vollständig | vorhanden, vom Projektinhaber für gut befunden | automatische Tests, Simulation, Browser (Chromium) |
+| Expedition Track, fünf Stationen | vollständig | vollständig | vorhanden, vom Projektinhaber für gut befunden | wie oben |
+| Sonnenbonus / Sun Relic | vollständig | vollständig (eigenes Artefaktbild seit 25.11.) | vorhanden, vom Projektinhaber für gut befunden | wie oben |
+| Free Spins, Retrigger, Base Camp, Siegel | vollständig | vollständig | vorhanden, vom Projektinhaber für gut befunden | wie oben |
+| Temple Bonus und Finale | vollständig | vollständig | vorhanden, vom Projektinhaber für gut befunden | wie oben; exakte Erwartungswerte |
 | Feature-Kauf | vollständig | vollständig | – | Tests; Simulation bei 58× auf 1.0.0 (siehe `05`) |
 | Symbolanimationen (Einzelbilder) | – | **nicht vorhanden** (Standbilder mit Licht- und Bewegungseffekten) | – | – |
 | Dschungel-Atmosphäre | – | – | **nicht vorhanden** | – |

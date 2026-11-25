@@ -8,7 +8,7 @@ Stand: 25.11.2026
 |---|---|---|
 | Spielregeln und Engine | Mathematik: eine RTP-Variante, intern geprüft | Zertifizierung, unabhängige Prüfung |
 | Alle Features (Expedition, Free Spins, Temple Bonus und Finale, Feature-Kauf) | Tests: automatisch und in Chromium bestanden, nicht auf Geräten | Echte Geräte, Safari, Firefox |
-| Web-Demo, Hoch- und Querformat, zwei Sprachen, Tempo-Modi, Regeln, Verlauf | Ton: eingebunden, nie angehört | Rechteklärung, Markenrecherche |
+| Web-Demo, Hoch- und Querformat, zwei Sprachen, Tempo-Modi, Regeln, Verlauf | Ton: eingebunden, vom Projektinhaber für gut befunden; Rechte offen | Rechteklärung, Markenrecherche |
 | Präsentationsmodus | Bilder: vollständig, KI-erzeugt ohne Überarbeitung, Standbilder | Server/RGS, Wallet, Wiederaufnahme |
 | Simulator, Zweitimplementierung, Dokumentation | Publisher-Unterlagen: vorhanden, ohne Folien und Video | Weitere RTP-Varianten, Jurisdiktions-Schalter |
 
@@ -17,8 +17,8 @@ Stand: 25.11.2026
 | # | Risiko | Schwere | Was es bedeutet | Abhilfe |
 |---|---|---|---|---|
 | 1 | Rechte an KI-Bildern, KI-Ton und KI-gestütztem Code ungeklärt | **hoch** | Ein Partner kann Exklusivität oder Übertragung nicht sicher erwerben | Rechtsberatung; Schlüsselbilder und Musik durch beauftragte Werke ersetzen oder überarbeiten lassen |
-| 2 | Keine Geräte- und Safari-Prüfung | **hoch** | Die Demo kann beim Provider anders aussehen oder ruckeln | Prüfliste auf iPhone, Android, Tablet abarbeiten; Bildrate notieren |
-| 3 | Ton ungeprüft | **hoch** | unpassende oder fehlerhafte Töne im ersten Eindruck | anhören, auswählen, ersetzen; bis dahin Vorführung notfalls ohne Ton |
+| 2 | Geräteprüfung unvollständig (iPhone 15 Pro vom Projektinhaber positiv getestet; Android, Tablet, Desktop-Safari offen) | mittel | Die Demo kann beim Provider anders aussehen oder ruckeln | Prüfliste auf iPhone, Android, Tablet abarbeiten; Bildrate notieren |
+| 3 | Ton klanglich in Ordnung (Hörprüfung des Projektinhabers, 25.11.2026), aber Nutzungsrechte für Echtgeld-Einsatz ungeklärt | **hoch** (wegen der Rechte) | Ton müsste ersetzt oder vom Anbieter freigegeben werden | siehe `IP_AND_LICENSE_AUDIT/ELEVENLABS_AUDIO_LICENSE_AUDIT.md` |
 | 4 | Keine Zertifizierung, kein unabhängiger Mathematik-Bericht | hoch (für Veröffentlichung), mittel (für Erstgespräch) | Zahlen gelten als Angaben des Entwicklers | offen so benennen; Prüfung meist über den Partner |
 | 5 | Einzelentwickler ohne veröffentlichte Titel | hoch | Zweifel an Lieferfähigkeit und Support | realistische Zusagen; Modell B oder C erwägen |
 | 6 | Client-Technik passt eventuell nicht zum Framework des Anbieters | mittel | Neuaufbau der Darstellung | Trennung Engine/Client hervorheben; früh erfragen |
@@ -51,7 +51,7 @@ Nicht gefunden wurden Widersprüche bei: Höchstgewinn (überall 10 000×), Free
 
 | Phase | Schritte | Wer |
 |---|---|---|
-| **Vor dem ersten Kontakt** | Geräteprüfung (iPhone, Android, Tablet) · Ton anhören und bereinigen · Erstberatung zu Rechten und Rechtsform · Folien und kurzes Gameplay-Video · Demo-Link für Dritte | Eigentümer, Entwickler, Rechtsberatung |
+| **Vor dem ersten Kontakt** | weitere Geräte (Android, Tablet; iPhone 15 Pro ist erledigt) · Ton ist angehört · Erstberatung zu Rechten und Rechtsform · Folien und kurzes Gameplay-Video · Demo-Link für Dritte | Eigentümer, Entwickler, Rechtsberatung |
 | Nach erstem Interesse | technische Anforderungen des Programms klären · Entscheidung: Bild/Ton ersetzen oder überarbeiten · Markenrecherche · fehlende Simulationsläufe · weitere RTP-Varianten | Eigentümer, Partner |
 | Integration | Engine auf den Server des Partners · Wallet, Sitzung, Wiederaufnahme · Jurisdiktions-Einstellungen · gegebenenfalls Client im Framework des Partners · Lokalisierung | Entwickler mit Partner |
 | Prüfung | Zertifizierung von RNG und Mathematik · Geräte- und Browser-Matrix · Last- und Sicherheitstests | Prüflabor, Partner |

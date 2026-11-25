@@ -14,6 +14,30 @@ akkreditierten Prüflabor bescheinigt. **Extern geprüft oder zertifiziert ist n
 
 ---
 
+## Nachtrag vom 25.11.2026: Rückmeldung des Projektinhabers
+
+Nach Abschluss dieser Prüfung hat der Projektinhaber gemeldet:
+
+> «Die Musik und die Töne klingen gut und passen zum Slot.»
+> «Ich habe die Demo auf meinem iPhone 15 Pro getestet und finde es sehr gut.»
+
+Einordnung:
+
+| Punkt | Stand vorher | Stand jetzt |
+|---|---|---|
+| Hörprüfung | nicht durchgeführt | **durch den Projektinhaber durchgeführt, positiv.** Persönlicher Höreindruck; keine technische Prüfung von Lautheit oder Schleifenpunkten, keine Zweitmeinung |
+| Echter iPhone-Test | nicht durchgeführt | **durch den Projektinhaber auf einem iPhone 15 Pro durchgeführt, positiv.** Ein Gerät; Browser, Bildrate, Ladezeit und die Punkte der Prüfliste sind nicht mitgeteilt |
+| Bedingung 1 für das Erstgespräch (Abschn. 7) | offen | **erfüllt** |
+
+Weiterhin offen: Android-Gerät und Tablet, Safari und Firefox am Desktop, gemessene Bildrate und
+Ladezeit, die schriftliche Prüfliste (`docs/08_DEVICE_TEST_CHECKLIST.md`). Unverändert bleiben
+alle Rechtefragen – auch für den Ton (siehe `IP_AND_LICENSE_AUDIT/`): Dass die Töne gut klingen,
+sagt nichts darüber, ob sie in einem Echtgeld-Slot verwendet werden dürfen.
+
+Die Abschnitte unten zeigen den Stand **vor** dieser Rückmeldung; betroffene Zeilen sind markiert.
+
+---
+
 ## 0. Was in dieser Prüfung gemacht wurde
 
 | Schritt | Ergebnis |
@@ -217,10 +241,10 @@ des Sun-Relic-Bildes und wurden danach nicht wiederholt.
 
 | Test | Wer |
 |---|---|
-| **Echter iPhone-Test** (Safari): Start, 20 Runden, Free Spins, Bonus, Drehen, App-Wechsel, Bildrate | Eigentümer |
+| **Echter iPhone-Test** – *erledigt laut Nachtrag (iPhone 15 Pro, positiv)*; offen bleiben Bildrate und Prüfliste | Eigentümer |
 | Android-Gerät und ein Tablet | Eigentümer |
 | **Safari und Firefox** am Desktop | Eigentümer / Entwickler mit Gerät |
-| **Soundprüfung:** alle 17 Dateien im Spiel anhören; Lautstärken, Schleifen, Gesang in der Musik | Eigentümer |
+| **Soundprüfung** – *erledigt laut Nachtrag (Höreindruck positiv)*; offen bleibt eine technische Prüfung von Lautheit und Schleifenpunkten | Eigentümer |
 | **Bild- und Assetqualität** auf echten Bildschirmen (256-px-Symbole, gestauchter Rahmen, KI-Artefakte) | Eigentümer, besser eine Grafikerin oder ein Grafiker |
 | **Mobile Performance:** Bildrate («i → Leistung»), Ladezeit im Mobilfunknetz, Erwärmung | Eigentümer |
 | Langzeittest und Zeitmessung auf dem aktuellen Build wiederholen | Entwickler |
@@ -245,7 +269,7 @@ des Sun-Relic-Bildes und wurden danach nicht wiederholt.
 
 Die Bedingungen sind keine Formsache:
 
-1. **Vorher** die Demo auf mindestens einem echten iPhone durchspielen und den Ton anhören.
+1. *(erfüllt laut Nachtrag)* **Vorher** die Demo auf mindestens einem echten iPhone durchspielen und den Ton anhören.
    Ein Provider darf nicht der Erste sein, der das tut. Fällt der Ton durch: stumm vorführen.
 2. Im Gespräch **von sich aus** sagen: KI-erzeugte Bilder und Töne, Rechte in Klärung, nicht
    zertifiziert, ein Entwickler, keine veröffentlichten Titel.
@@ -263,7 +287,7 @@ Gründe, in der Reihenfolge ihres Gewichts:
 
 1. **Rechte nicht geklärt** – der wichtigste Punkt für jedes der drei Geschäftsmodelle, für den
    IP-Verkauf ausschlaggebend.
-2. **Keine Geräte- und Safari-Prüfung, Ton ungeprüft.**
+2. **Geräteprüfung unvollständig:** ein iPhone 15 Pro durch den Projektinhaber (positiv, siehe Nachtrag); Android, Tablet, Safari/Firefox am Desktop und Messwerte fehlen. Der Ton ist angehört, aber rechtlich ungeklärt.
 3. **Keine Integration und keine Zertifizierung;** nur eine RTP-Variante.
 4. **Unterlagen unvollständig für eine Einreichung:** keine Folien, kein Video, kein für Dritte
    zugänglicher Demo-Link, keine Kontaktdaten und keine Rechtsform im Paket; alle Dokumente ausser
@@ -299,8 +323,8 @@ Gründe, in der Reihenfolge ihres Gewichts:
 
 Die Stärke des Projekts ist seine Nachvollziehbarkeit: Regeln, Zahlen und Tests lassen sich
 Zeile für Zeile belegen, und die Messung liegt jetzt auf der ausgelieferten Konfiguration vor.
-Die Schwäche ist alles, was ein Computer allein nicht leisten kann: Niemand hat das Spiel auf
-einem Gerät geprüft, niemand hat es gehört, kein Jurist hat die Rechte angesehen, und es gibt
+Die Schwäche ist alles, was ein Computer allein nicht leisten kann: Bis zur Rückmeldung des Projektinhabers (siehe Nachtrag) hatte niemand das Spiel auf
+einem Gerät geprüft oder gehört; kein Jurist hat die Rechte angesehen, und es gibt
 weder Markt- noch Spielerdaten. Ein Provider kauft kein Dokument, sondern ein Produkt mit
 sauberer Rechtekette und einem lieferfähigen Team. Davon ist das Projekt noch ein Stück entfernt;
 für ein ehrliches erstes Gespräch reicht es.

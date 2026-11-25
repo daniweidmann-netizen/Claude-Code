@@ -47,16 +47,16 @@ Zweitimplementierung (zuletzt 80 000 Runden identisch am 25.11.2026).
 | Retrigger | Eigenschaftstests (Obergrenze 30); Zusatzlauf 100 Mio. Runden | bestanden; Häufigkeit 1,36 % der Features |
 | Temple Bonus | Tests; 9 Bonusrunden über die Oberfläche; exakte Erwartungswerte | bestanden |
 | Geschwindigkeitsmodi | Zeitmessung; Moduswechsel mitten im Feature; sechsfaches Tippen startet keinen zweiten Spin | bestanden (Chromium) |
-| Sound | nur: Dateien laden, kein Fehler | **Wirkung NICHT geprüft – nie angehört** |
+| Sound | Dateien laden ohne Fehler; Hörprüfung durch den Projektinhaber am 25.11.2026 | «Die Musik und die Töne klingen gut und passen zum Slot.» Persönlicher Eindruck; Lautheit und Schleifenpunkte nicht technisch geprüft |
 | Mobile Spielfeldübergänge | Messung im Handyformat im Testbrowser | bestanden; **auf echtem Gerät NICHT geprüft** |
 
 ## 5. Nicht ausgeführte Tests
 
 | Test | Status |
 |---|---|
-| Echte Geräte (iPhone/Safari, Android/Chrome, Tablets) | **nicht ausgeführt.** Der Eigentümer hat die Demo auf einem iPhone 15 Pro geöffnet und Rückmeldung zum Tempo gegeben; eine Prüfliste (`docs/08_DEVICE_TEST_CHECKLIST.md`) ist nicht abgearbeitet |
+| Echte Geräte | **teilweise:** iPhone 15 Pro durch den Projektinhaber getestet, Urteil «sehr gut» (25.11.2026); Browser, Bildrate und Prüfliste (`docs/08_DEVICE_TEST_CHECKLIST.md`) nicht mitgeteilt. Android und Tablets: nicht ausgeführt |
 | Safari und Firefox am Desktop | nicht ausgeführt |
-| Hörprüfung | nicht ausgeführt |
+| Hörprüfung | **ausgeführt** durch den Projektinhaber (25.11.2026), positiv; keine Zweitmeinung |
 | Bildrate und Ladezeit auf Hardware / im Mobilfunknetz | nicht ausgeführt |
 | Statistische Testbatterie des Zufallsgenerators | nicht ausgeführt |
 | Unabhängige Prüfung, Zertifizierung | nicht ausgeführt |
@@ -75,8 +75,8 @@ leeres Spielfeld beim Walzenwechsel, Überlappung des Free-Spins-Zählers im Que
 
 | Punkt | Schwere |
 |---|---|
-| Keine Bestätigung auf echten Geräten und in Safari | hoch |
-| Ton ungeprüft; zwei Effekte kürzer als gewünscht; Musikschleifen nicht auf Taktgrenzen geschnitten | hoch |
+| Bestätigung nur auf einem Gerät (iPhone 15 Pro, positiv); Android, Tablet, Safari/Firefox am Desktop offen | mittel |
+| Ton: vom Projektinhaber für gut befunden; zwei Effekte kürzer als ursprünglich gewünscht; Musikschleifen nicht auf Taktgrenzen geschnitten (nicht beanstandet) | niedrig |
 | Einzeldatei-Fassung öffnet auf iPhone nicht | mittel |
 | Auslieferung rund 5,6 MB | mittel |
 | Rahmen rund 10 % gestaucht | niedrig |

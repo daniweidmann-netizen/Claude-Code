@@ -19,7 +19,8 @@ laufenden Spin auf unterschiedliche Weise, und wer den Tempel erreicht, öffnet 
 
 Vorhanden sind eine vollständige, von der Darstellung getrennte Spiel-Engine, eine eingefrorene
 Mathematik-Konfiguration mit Simulationsnachweisen, eine spielbare Web-Demo für Hoch- und
-Querformat und ein dokumentiertes Datenpaket. Nicht vorhanden sind Geräteprüfung, Hörprüfung,
+Querformat und ein dokumentiertes Datenpaket. Der Projektinhaber hat die Demo auf einem iPhone 15
+Pro getestet und den Ton angehört (beides positiv, 25.11.2026). Nicht vorhanden sind eine vollständige Geräteprüfung,
 geklärte Rechte, Zertifizierung, Server-Anbindung und weitere RTP-Varianten.
 
 Gesucht wird bevorzugt eine Studio-Partnerschaft; Lizenz oder IP-Verkauf sind möglich. → `01`
@@ -114,7 +115,8 @@ Bildwelt aus Stein, Gold, Jade und Türkis mit dem Sonnenmotiv als rotem Faden; 
 15 Soundeffekte und 2 Musikschleifen; Schriften Cinzel und Source Sans 3 (OFL).
 
 Alle Bilder und Töne sind **KI-erzeugt und nicht von Hand überarbeitet**; die Symbole sind
-Standbilder. **Der Ton wurde nie angehört.** → `07`, Rechte → `09`
+Standbilder. Der Ton wurde vom Projektinhaber angehört: «Die Musik und die Töne klingen gut und
+passen zum Slot» (25.11.2026). → `07`, Rechte → `09`
 
 ## H. Development Status
 
@@ -134,7 +136,9 @@ nach einem behobenen Layoutfehler) · Zusatzprüfungen in fünf weiteren Formate
 Langzeittest über 300 Runden stabil · Ergebnisse in allen drei Tempo-Modi identisch ·
 Clusterregel in 4000 echten Runden nachgeprüft · Zweitimplementierung identisch.
 
-Nicht ausgeführt: Geräte, Safari/Firefox, Hörprüfung, Leistung auf Hardware, RNG-Testbatterie,
+Vom Projektinhaber ausgeführt (25.11.2026): Test auf einem iPhone 15 Pro («sehr gut») und
+Hörprüfung (positiv) – jeweils als persönlicher Eindruck ohne Messwerte.
+Nicht ausgeführt: weitere Geräte, Safari/Firefox am Desktop, Leistungsmessung auf Hardware, RNG-Testbatterie,
 Spielertest, externe QA. → `08`
 
 ## J. Commercial Proposal
@@ -165,7 +169,7 @@ Keine Preise, kein vorliegendes Angebot, kein bisheriger Kontakt. → `10`
 
 | Zweck | Bereit? |
 |---|---|
-| Informelles Erstgespräch mit Demo und diesem Paket | **ja, mit offener Benennung der Lücken** – nach Geräteprüfung und Hörprüfung |
+| Informelles Erstgespräch mit Demo und diesem Paket | **ja, mit offener Benennung der Lücken** – iPhone-Test und Hörprüfung sind durch den Projektinhaber erfolgt |
 | Formelle Einreichung in ein Partnerprogramm | **nein** – Rechte, Geräte, Ton fehlen |
 | Verhandlung eines IP-Verkaufs | **nein** – Rechtekette ungeklärt |
 | Zertifizierung | **nein** – braucht Plattform und Prüflabor |

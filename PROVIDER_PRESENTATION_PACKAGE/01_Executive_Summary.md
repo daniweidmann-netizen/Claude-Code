@@ -29,8 +29,9 @@ weiter oben auf dem Track.
 
 ## Was fehlt (ehrlich)
 
-1. **Keine Prüfung auf echten Geräten und in Safari.** Getestet wurde nur in einem Chromium ohne Grafikkarte.
-2. **Ton nie angehört.** 17 Tondateien sind eingebunden, ihre Wirkung ist ungeprüft.
+1. **Geräteprüfung unvollständig.** Der Projektinhaber hat die Demo auf einem iPhone 15 Pro getestet («sehr gut», 25.11.2026); automatisch getestet wurde nur in einem Chromium ohne Grafikkarte. Android, Tablet, Safari/Firefox am Desktop und Messwerte fehlen.
+2. **Ton:** vom Projektinhaber angehört und für gut und passend befunden (25.11.2026); eine
+   technische Tonprüfung und die Klärung der Nutzungsrechte stehen aus.
 3. **Rechtekette offen.** Bilder und Ton sind KI-erzeugt und nicht von Hand überarbeitet; die
    Lizenzbedingungen der Werkzeuge sind nicht juristisch geprüft; keine Markenrecherche in Registern.
 4. **Keine Zertifizierung**, keine unabhängige Prüfung von Mathematik und Zufallsgenerator.

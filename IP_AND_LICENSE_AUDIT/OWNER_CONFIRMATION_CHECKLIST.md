@@ -32,7 +32,7 @@ Repositorys ablegen (Rechnungen enthalten persönliche Daten).
 - [ ] Keine Stimme, kein Voice Cloning, keine Voice Library, kein Music Marketplace für das Projekt genutzt.
 - [ ] Bedingungen (Terms of Use EU, Music Terms, Use Policy) als PDF gespeichert, Datum: ______
 - [ ] Anfrage an ElevenLabs gestellt (Fragen E1–E8). Datum: ______ Antwort: ______
-- [ ] Ich habe alle 17 Tondateien angehört. Ergebnis: __________
+- [x] Ich habe die Töne im Spiel angehört. Ergebnis (25.11.2026): «Die Musik und die Töne klingen gut und passen zum Slot.»
 
 ## 4. Higgsfield / Bilder
 
