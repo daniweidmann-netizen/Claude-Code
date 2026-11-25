@@ -9,7 +9,7 @@ import { LANG, storeLang, t } from '../i18n.js';
 import { FRAME, computeLayout, formatMoney, previewGrid } from '../layout.js';
 import { PerfMeter, perfVerdict } from '../perf.js';
 import { Presenter } from '../presentation/presenter.js';
-import { MEASURED, historyHtml, paytableHtml, perfHtml, rulesHtml } from '../rules-text.js';
+import { AUTO_NOTE, MEASURED, historyHtml, paytableHtml, perfHtml, rulesHtml, settingsHtml } from '../rules-text.js';
 import { createPlaceholderTextures, preloadReferenceArt } from '../textures.js';
 import { COLOR, DEPTH, DISPLAY, TEXT } from '../theme.js';
 import { InfoPanel } from '../ui/info-panel.js';
@@ -21,7 +21,7 @@ import { TrackView } from '../views/track-view.js';
 
 const TURBO = 4;
 /** Rounds per autoplay run (demo only). It stops early when a round cannot be paid; a chamber pick always waits for the player. */
-const AUTO_ROUNDS = 10;
+const AUTO_ROUNDS = AUTO_NOTE;
 
 export class GameScene extends Phaser.Scene {
   private service!: GameService;
@@ -50,6 +50,9 @@ export class GameScene extends Phaser.Scene {
   private readonly loadErrors: string[] = [];
   private baseSpeed = 1;
   private pendingLayout = false;
+  private drift: Phaser.Tweens.Tween | null = null;
+  /** True once the player chose an effect level; the automatic step-down then stays out of the way. */
+  private fxPinned = false;
   private played = false;
   private footerOk = true;
 
@@ -121,10 +124,14 @@ export class GameScene extends Phaser.Scene {
           renderer: this.game.renderer.type === Phaser.WEBGL ? 'WebGL' : 'Canvas', reducedMotion: REDUCED_MOTION, fxLevel: this.fx.level,
         }, perfVerdict(st.fps, st.slowShare, st.frames, LANG), LANG);
       } },
+      { id: 'settings', label: LANG === 'de' ? 'Einstellungen' : 'Settings', html: () => settingsHtml({ volume: this.sfx.volume, muted: this.sfx.muted, fxLevel: this.fx.level, reducedMotion: REDUCED_MOTION }, LANG) },
     ], LANG === 'de' ? 'Schliessen' : 'Close');
     this.info.onClose = () => { this.input.enabled = true; };
     this.info.onAction = (action, value) => {
       if (action === 'perf-reset') { this.perf.reset(); this.info.refresh(); }
+      if (action === 'volume') { this.sfx.setVolume(Number(value) / 100); this.sfx.unlock(); this.sfx.play('button'); }
+      if (action === 'mute') { this.sfx.setMuted(!this.sfx.muted); this.hud.setMuted(this.sfx.muted); this.info.refresh(); }
+      if (action === 'fx') { this.fx.level = (Number(value) as 0 | 1 | 2); this.fxPinned = true; this.relayout(); this.info.refresh(); }
       if (action === 'lang') { storeLang(value === 'de' ? 'de' : 'en'); window.location.reload(); }
       if (action === 'replay') {
         const entry = this.service.history()[Number(value)];
@@ -156,7 +163,7 @@ export class GameScene extends Phaser.Scene {
       state: () => ({
         dpr: DPR, reducedMotion: REDUCED_MOTION, lang: LANG, loadErrors: this.loadErrors, textureSize: this.grid.textureSize,
         canvas: [this.scale.width, this.scale.height], started: this.started, freeMode: this.freeMode, fxLevel: this.fx.level,
-        replays: this.replays, perf: this.perf.stats, audioLoaded: this.sfx.loadedCount, audioFailed: this.sfx.failed, caption: this.track.captionText,
+        replays: this.replays, perf: this.perf.stats, volume: this.sfx.volume, objects: this.children.length, tweens: this.tweens.getTweens().length, audioLoaded: this.sfx.loadedCount, audioFailed: this.sfx.failed, caption: this.track.captionText,
         busy: this.busy, rounds: this.rounds, autoLeft: this.autoLeft, info: this.info.isOpen, balance: this.service.balance, bet: this.service.bet,
         modal: this.bonus.open, dialog: this.modal.open, mismatches: this.presenter.mismatches, distortion: this.presenter.distortion,
         grid: this.grid.snapshot(), history: this.service.history().slice(0, 5),
@@ -178,7 +185,7 @@ export class GameScene extends Phaser.Scene {
     this.perf.add(delta);
     // Effect budget: step down when the device cannot hold the frame rate.
     const st = this.perf.stats;
-    if (st.frames > 0 && st.frames % 240 === 0 && this.fx.level > 0) {
+    if (!this.fxPinned && st.frames > 0 && st.frames % 240 === 0 && this.fx.level > 0) {
       if (st.fps < 32) this.fx.level = 0; else if (st.fps < 45 && this.fx.level === 2) this.fx.level = 1;
     }
   }
@@ -247,6 +254,15 @@ export class GameScene extends Phaser.Scene {
     if (!l.portrait) this.hud.setFooter(t('maxWinNote', { x: `${(cfg.maxWin / 100).toLocaleString('en-US')}×` }), l.status.x + l.status.w * 0.5, noteY, this.played);
     this.footerOk = l.portrait ? gap >= 20 * l.ui : true;
     this.fx.ambient(true);
+    // Living scenery: sunlight breathing behind the temple's sun disc and a very slow drift of the background.
+    this.fx.sunShafts(width / 2, l.portrait ? height * 0.07 : height * 0.02, Math.max(width, height) * 0.55);
+    this.drift?.stop();
+    if (!REDUCED_MOTION && this.bg) {
+      const targets = [this.bg, ...(this.bgFree ? [this.bgFree] : [])];
+      const base = this.bg.scale;
+      targets.forEach((t) => t.setScale(base * 1.0));
+      this.drift = this.tweens.add({ targets, scale: base * 1.035, duration: 16000, yoyo: true, repeat: -1, ease: 'Sine.easeInOut' });
+    }
     if (this.startLayer) { this.startLayer.destroy(); this.startLayer = null; this.showStart(); }
   }
 

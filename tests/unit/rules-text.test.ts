@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { CONFIG_V1 } from '../../src/engine/index.js';
-import { MEASURED, bracketLabels, historyHtml, paytableHtml, rulesHtml } from '../../src/client/rules-text.js';
+import { MEASURED, bracketLabels, historyHtml, paytableHtml, rulesHtml, settingsHtml } from '../../src/client/rules-text.js';
 
 describe('rules and paytable texts', () => {
   it('labels the cluster-size brackets', () => {
@@ -56,5 +56,16 @@ describe('rules and paytable texts', () => {
     // Both languages carry exactly the same figures.
     const figures = (h: string) => (h.match(/\d+(?:[.,]\d+)?[×%]?/g) ?? []).map((x) => x.replace(',', '.')).sort().join(' ');
     expect(figures(rulesHtml(CONFIG_V1, 'en').replace(/2 billion/, '2 Mrd.'))).toBe(figures(rulesHtml(CONFIG_V1, 'de')));
+  });
+
+  it('explains symbols, Wild and controls in both languages, and renders the settings', () => {
+    for (const [lang, parts] of [['en', ['<b>Wild</b>: counts as any pay symbol', '<b>Explorer</b>: a Wild that stays', 'trigger free spins', 'up to 10 rounds']], ['de', ['<b>Wild</b>: zählt für jedes Gewinnsymbol', '<b>Explorer</b>: ein Wild, das', 'lösen Free Spins aus', 'bis zu 10 Runden']]] as const) {
+      const html = rulesHtml(CONFIG_V1, lang);
+      for (const part of parts) expect(html, part).toContain(part);
+    }
+    const st = settingsHtml({ volume: 0.7, muted: false, fxLevel: 2, reducedMotion: false }, 'en');
+    expect(st).toContain('value="70" data-action="volume"');
+    expect(st).toContain('data-action="fx" data-value="2" aria-pressed="true"');
+    expect(settingsHtml({ volume: 0, muted: true, fxLevel: 0, reducedMotion: true }, 'de')).toContain('Ton einschalten');
   });
 });

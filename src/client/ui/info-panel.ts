@@ -25,6 +25,10 @@ const CSS = `
 .tls-info .seed { font-family: ui-monospace, monospace; font-size: 12px; }
 .tls-info .dim { color: #9aa3b8; }
 .tls-info td button { min-height: 36px; padding: 0 10px; font-size: 13px; }
+.tls-info input[type=range] { width: 100%; max-width: 420px; height: 44px; accent-color: #e8b84a; }
+.tls-info .row { display: flex; gap: 8px; flex-wrap: wrap; margin: 8px 0 16px; }
+.tls-info .sym { display: grid; grid-template-columns: 40px 1fr; gap: 6px 12px; align-items: center; margin: 8px 0; }
+.tls-info .sym img { width: 40px; height: 40px; }
 `;
 
 export class InfoPanel {
@@ -55,6 +59,10 @@ export class InfoPanel {
       this.tabButtons.set(t.id, b);
       header.appendChild(b);
     }
+    this.root.addEventListener('input', (e) => {
+      const el = e.target as HTMLInputElement;
+      if (el?.dataset?.action) this.onAction?.(el.dataset.action, el.value);
+    });
     const close = document.createElement('button');
     close.className = 'close';
     close.textContent = closeLabel;
@@ -62,7 +70,7 @@ export class InfoPanel {
     header.appendChild(close);
     this.main = document.createElement('main');
     this.main.addEventListener('click', (e) => {
-      const el = (e.target as HTMLElement).closest<HTMLElement>('[data-action]');
+      const el = (e.target as HTMLElement).closest<HTMLElement>('button[data-action]');
       if (el) this.onAction?.(el.dataset.action ?? '', el.dataset.value ?? '');
     });
     this.root.append(header, this.main);

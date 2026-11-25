@@ -5,7 +5,7 @@
  * missing, the same event plays a tone synthesised here in code, so the game
  * is never silent because of a failed download.
  */
-export type SfxName = 'button' | 'spin' | 'land' | 'win' | 'remove' | 'step' | 'station' | 'relic' | 'bonus' | 'pick' | 'freeSpins' | 'bigWin';
+export type SfxName = 'button' | 'spin' | 'land' | 'win' | 'remove' | 'step' | 'station' | 'relic' | 'bonus' | 'pick' | 'freeSpins' | 'retrigger' | 'complete' | 'bigWin';
 export type MusicName = 'base' | 'free';
 
 /** Files under audio/ and their playback gain. `pick` uses the door recording. */
@@ -14,8 +14,11 @@ const SAMPLES: Record<string, { file: string; gain: number }> = {
   win: { file: 'win', gain: 0.7 }, winMid: { file: 'winMid', gain: 0.8 }, remove: { file: 'remove', gain: 0.6 },
   step: { file: 'step', gain: 0.8 }, station: { file: 'station', gain: 0.75 }, relic: { file: 'relic', gain: 0.9 },
   bonus: { file: 'bonus', gain: 0.9 }, pick: { file: 'door', gain: 0.9 }, freeSpins: { file: 'freeSpins', gain: 0.9 },
-  bigWin: { file: 'bigWin', gain: 1 },
+  bigWin: { file: 'bigWin', gain: 1 }, retrigger: { file: 'retrigger', gain: 0.85 }, complete: { file: 'complete', gain: 0.85 },
 };
+/** Quiet jungle bed under the base-game music. */
+const AMBIENCE = { file: 'ambience', gain: 0.5, enabled: false };
+const VOL_KEY = 'tls.volume';
 const MUSIC: Record<MusicName, string> = { base: 'music_base', free: 'music_free' };
 const MUSIC_GAIN = 0.42;
 
@@ -25,6 +28,8 @@ export class Sfx {
   private ctx: AudioContext | null = null;
   private master: GainNode | null = null;
   private _muted = false;
+  private _volume = 0.7;
+  private ambience: { src: AudioBufferSourceNode; gain: GainNode } | null = null;
   private readonly buffers = new Map<string, AudioBuffer>();
   private loading = false;
   private musicWanted: MusicName | null = null;
@@ -33,7 +38,19 @@ export class Sfx {
   readonly failed: string[] = [];
 
   constructor() {
-    try { this._muted = window.localStorage.getItem(KEY) === '1'; } catch { /* storage unavailable */ }
+    try {
+      this._muted = window.localStorage.getItem(KEY) === '1';
+      const v = Number(window.localStorage.getItem(VOL_KEY));
+      if (window.localStorage.getItem(VOL_KEY) !== null && v >= 0 && v <= 1) this._volume = v;
+    } catch { /* storage unavailable */ }
+  }
+
+  /** Master volume 0..1 (separate from mute). */
+  get volume(): number { return this._volume; }
+  setVolume(v: number): void {
+    this._volume = Math.min(1, Math.max(0, v));
+    try { window.localStorage.setItem(VOL_KEY, String(this._volume)); } catch { /* storage unavailable */ }
+    if (this.master) this.master.gain.value = this._muted ? 0 : this._volume * 0.8;
   }
 
   get muted(): boolean { return this._muted; }
@@ -41,7 +58,7 @@ export class Sfx {
   setMuted(m: boolean): void {
     this._muted = m;
     try { window.localStorage.setItem(KEY, m ? '1' : '0'); } catch { /* storage unavailable */ }
-    if (this.master) this.master.gain.value = m ? 0 : 0.5;
+    if (this.master) this.master.gain.value = m ? 0 : this._volume * 0.8;
   }
 
   /** Browsers only start audio after a user gesture; call this from one. */
@@ -52,7 +69,7 @@ export class Sfx {
     try {
       this.ctx = new Ctor();
       this.master = this.ctx.createGain();
-      this.master.gain.value = this._muted ? 0 : 0.5;
+      this.master.gain.value = this._muted ? 0 : this._volume * 0.8;
       this.master.connect(this.ctx.destination);
       void this.loadAll();
     } catch { this.ctx = null; }
@@ -73,6 +90,8 @@ export class Sfx {
     if (this.loading || !this.ctx) return;
     this.loading = true;
     await Promise.all(Object.entries(SAMPLES).map(([key, s]) => this.loadOne(key, s.file)));
+    // The jungle bed is prepared but not shipped yet: the generator only returned a 2-second clip, too short to loop unnoticed.
+    if (AMBIENCE.enabled) { await this.loadOne('ambience', AMBIENCE.file); this.applyAmbience(); }
     for (const name of Object.keys(MUSIC) as MusicName[]) {
       await this.loadOne(`music:${name}`, MUSIC[name]);
       if (this.musicWanted === name) this.music(name);
@@ -81,9 +100,25 @@ export class Sfx {
 
   get loadedCount(): number { return this.buffers.size; }
 
+  /** The jungle bed plays in the base game and fades out inside the temple. */
+  private applyAmbience(): void {
+    const c = this.ctx, buf = this.buffers.get('ambience');
+    if (!c || !this.master || !buf) return;
+    if (!this.ambience) {
+      const src = c.createBufferSource(), gain = c.createGain();
+      src.buffer = buf; src.loop = true; gain.gain.value = 0;
+      src.connect(gain).connect(this.master); src.start();
+      this.ambience = { src, gain };
+    }
+    const t = c.currentTime, g = this.ambience.gain.gain;
+    g.cancelScheduledValues(t); g.setValueAtTime(g.value, t);
+    g.linearRampToValueAtTime(this.musicWanted === 'free' ? 0 : AMBIENCE.gain, t + 1.2);
+  }
+
   /** Switches the background loop with a cross-fade; does nothing until the file is loaded. */
   music(name: MusicName): void {
     this.musicWanted = name;
+    this.applyAmbience();
     const c = this.ctx, buf = this.buffers.get(`music:${name}`);
     if (!c || !this.master || !buf || this.musicNow?.name === name) return;
     const t = c.currentTime;
@@ -153,7 +188,7 @@ export class Sfx {
       : name === 'step' || name === 'station' ? this.sample(name, 1 + level * 0.05)
       : name === 'bigWin' ? this.sample('bigWin', level >= 3 ? 0.9 : 1)
       : this.sample(name)) {
-      if (name === 'bigWin' || name === 'bonus' || name === 'freeSpins') this.duck(name === 'bigWin' ? 3 : 2);
+      if (name === 'bigWin' || name === 'bonus' || name === 'freeSpins' || name === 'complete') this.duck(name === 'bigWin' ? 4 : 2.5);
       return;
     }
     const scale = [262, 294, 330, 392, 440, 523, 587, 659, 784, 880];
@@ -169,6 +204,8 @@ export class Sfx {
       case 'pick': this.tone(196, 0, 0.25, 'triangle', 0.25, 392); break;
       case 'bonus': [0, 2, 4, 7].forEach((s, i) => this.tone(scale[s], i * 0.11, 0.3, 'sawtooth', 0.12)); break;
       case 'freeSpins': [4, 5, 7, 9].forEach((s, i) => this.tone(scale[s], i * 0.1, 0.32, 'triangle', 0.2)); break;
+      case 'retrigger': [5, 7, 9].forEach((s, i) => this.tone(scale[s], i * 0.07, 0.25, 'triangle', 0.2)); break;
+      case 'complete': [7, 5, 4, 7].forEach((s, i) => this.tone(scale[s], i * 0.12, 0.4, 'triangle', 0.18)); break;
       case 'bigWin': [0, 2, 4, 5, 7, 9].forEach((s, i) => this.tone(scale[s] * (level > 1 ? 2 : 1), i * 0.09, 0.45, 'triangle', 0.2)); break;
     }
   }

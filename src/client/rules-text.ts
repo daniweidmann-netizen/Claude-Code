@@ -17,6 +17,8 @@ export const MEASURED = {
   rtp: '95,995 %', rtpInterval: '95,90–96,09 %',
   buyRtp: '96,81 %', buyInterval: '96,74–96,87 %',
 };
+/** Rounds per autoplay run, shown in the rules (must match the scene's constant). */
+export const AUTO_NOTE = 10;
 const num = (s: string, lang: Lang) => (lang === 'de' ? s : s.replace(/,/g, '.'));
 
 const esc = (s: string) => s.replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]!));
@@ -76,6 +78,14 @@ export function rulesHtml(cfg: GameConfig, lang: Lang = 'en'): string {
 <li>Gewinncluster werden entfernt, Symbole rücken nach, neue fallen von oben. Das wiederholt sich, bis kein Cluster mehr entsteht (höchstens ${cfg.maxCascades} Kaskaden je Spin).</li>
 <li>Gewinn = Clusterwert × Multiplikator. Multiplikator = Grundmultiplikator + Sonnenbonus.</li>
 </ul>
+<h3>Symbole</h3>
+<div class="sym">
+<img src="symbols/sym4.png" alt=""><span><b>Gewinnsymbole</b> (hoch nach tief): Jade Mask, Ruby Crown, Golden Chalice, Golden Scarab, Sapphire Gem. Werte siehe Reiter «Auszahlungen».</span>
+<img src="symbols/sym5.png" alt=""><span><b>Wild</b>: zählt für jedes Gewinnsymbol und kann zu mehreren Clustern gleichzeitig gehören. Ein Cluster braucht mindestens ein Gewinnsymbol. Wilds fallen nicht von oben; sie entstehen durch die Stationen Discovery und Relic.</span>
+<img src="symbols/sym8.png" alt=""><span><b>Explorer</b>: ein Wild, das nach einem Gewinn stehen bleibt. Entsteht durch die Station Ancient Power.</span>
+<img src="symbols/sym6.png" alt=""><span><b>Compass</b>: zahlt nicht. 3 oder mehr auf dem Raster am Ende eines Spins lösen Free Spins aus.</span>
+<img src="symbols/sym7.png" alt=""><span><b>Temple Key</b>: zahlt nicht. Jeder Key auf dem Raster zählt bei einer Gewinnkaskade als zusätzlicher Schritt und wird dann entfernt.</span>
+</div>
 <h3>Expedition Track</h3>
 <p>Jede Gewinnkaskade ist ein Schritt, jeder Temple Key auf dem Raster ein weiterer. Der Track beginnt bei jedem bezahlten Spin neu.</p>
 <ol>${stations}</ol>
@@ -92,6 +102,13 @@ export function rulesHtml(cfg: GameConfig, lang: Lang = 'en'): string {
 </ul>
 ${fb.enabled ? `<h3>Expedition kaufen</h3>
 <p>Für ${formatMultiple(fb.price)} Einsatz startet die Runde direkt mit ${fb.spins} Free Spins und Base Camp auf Station ${fb.baseCamp}${same ? ' – wie nach 3 Compass' : ''}. Eine Basisrunde findet nicht statt. Ein Gewinn ist nicht garantiert.</p>` : ''}
+<h3>Bedienung</h3>
+<ul>
+<li>Einsatz: Minus und Plus, oder den Betrag antippen und eine Stufe wählen. Der Einsatz gilt für die ganze Runde und kann während einer Runde nicht geändert werden.</li>
+<li>Sonnenscheibe: startet einen Spin. Während einer Runde beschleunigt sie die Darstellung.</li>
+<li>AUTO: spielt bis zu ${AUTO_NOTE} Runden hintereinander; erneutes Antippen stoppt. Eine Kammerwahl wartet immer auf dich.</li>
+<li>Alle Gewinne werden als Vielfaches des Gesamteinsatzes berechnet und auf die kleinste Währungseinheit genau ausgezahlt.</li>
+</ul>
 <h3>Grenzen</h3>
 <p>Höchstgewinn je Runde: ${formatMultiple(cfg.maxWin)} Einsatz. Wird er erreicht, endet die Runde sofort.</p>
 <h3>Auszahlungsquote</h3>
@@ -105,6 +122,14 @@ ${langSwitch}`;
 <li>Winning clusters are removed, symbols drop down and new ones fall in from above. This repeats until no cluster forms (at most ${cfg.maxCascades} cascades per spin).</li>
 <li>Win = cluster value × multiplier. Multiplier = base multiplier + sun bonus.</li>
 </ul>
+<h3>Symbols</h3>
+<div class="sym">
+<img src="symbols/sym4.png" alt=""><span><b>Pay symbols</b> (high to low): Jade Mask, Ruby Crown, Golden Chalice, Golden Scarab, Sapphire Gem. Values are on the Paytable tab.</span>
+<img src="symbols/sym5.png" alt=""><span><b>Wild</b>: counts as any pay symbol and can belong to several clusters at once. A cluster needs at least one pay symbol. Wilds do not fall from above; they are created by the stations Discovery and Relic.</span>
+<img src="symbols/sym8.png" alt=""><span><b>Explorer</b>: a Wild that stays in place after a win. Created by the station Ancient Power.</span>
+<img src="symbols/sym6.png" alt=""><span><b>Compass</b>: does not pay. 3 or more on the grid at the end of a spin trigger free spins.</span>
+<img src="symbols/sym7.png" alt=""><span><b>Temple Key</b>: does not pay. Every key on the grid counts as one extra step in a winning cascade and is then removed.</span>
+</div>
 <h3>Expedition Track</h3>
 <p>Every winning cascade is one step, and every Temple Key on the grid is one more. The track starts again with every paid spin.</p>
 <ol>${stations}</ol>
@@ -121,6 +146,13 @@ ${langSwitch}`;
 </ul>
 ${fb.enabled ? `<h3>Buy Expedition</h3>
 <p>For ${formatMultiple(fb.price)} bet the round starts directly with ${fb.spins} free spins and Base Camp on station ${fb.baseCamp}${same ? ' – the same as after 3 Compass' : ''}. No base spin is played. A win is not guaranteed.</p>` : ''}
+<h3>Controls</h3>
+<ul>
+<li>Bet: minus and plus, or tap the amount and choose a level. The bet applies to the whole round and cannot be changed during a round.</li>
+<li>Sun disc: starts a spin. During a round it speeds up the presentation.</li>
+<li>AUTO: plays up to ${AUTO_NOTE} rounds in a row; tap again to stop. A chamber choice always waits for you.</li>
+<li>All wins are calculated as multiples of the total bet and paid exactly to the smallest currency unit.</li>
+</ul>
 <h3>Limits</h3>
 <p>Maximum win per round: ${formatMultiple(cfg.maxWin)} bet. When it is reached, the round ends at once.</p>
 <h3>Return to player</h3>
@@ -161,4 +193,22 @@ ${row(de ? 'Reduzierte Bewegung' : 'Reduced motion', p.reducedMotion ? (de ? 'ei
 </tbody></table>
 <p><button data-action="perf-reset" data-value="">${de ? 'Messung zurücksetzen' : 'Reset measurement'}</button></p>
 <p class="dim">${de ? 'Bildwiederholraten über 60 sind auf Displays mit 90 oder 120 Hz normal. Sinkt die Bildrate, schaltet das Spiel die Effekte selbst zurück.' : 'Frame rates above 60 are normal on 90 or 120 Hz displays. If the frame rate drops, the game reduces its effects by itself.'}</p>`;
+}
+
+export interface SettingsInfo { volume: number; muted: boolean; fxLevel: number; reducedMotion: boolean }
+
+export function settingsHtml(v: SettingsInfo, lang: Lang = 'en'): string {
+  const de = lang === 'de';
+  const fx = de ? ['Aus', 'Leicht', 'Voll'] : ['Off', 'Light', 'Full'];
+  const fxButtons = fx.map((label, i) => `<button data-action="fx" data-value="${i}" aria-pressed="${v.fxLevel === i}"${v.fxLevel === i ? ' aria-selected="true"' : ''}>${label}</button>`).join('');
+  return `<h3>${de ? 'Ton' : 'Sound'}</h3>
+<label for="tls-volume">${de ? 'Lautstärke' : 'Volume'}</label>
+<input id="tls-volume" type="range" min="0" max="100" step="5" value="${Math.round(v.volume * 100)}" data-action="volume">
+<div class="row"><button data-action="mute" data-value="">${v.muted ? (de ? 'Ton einschalten' : 'Unmute') : (de ? 'Stumm schalten' : 'Mute')}</button></div>
+<h3>${de ? 'Effekte' : 'Effects'}</h3>
+<p>${de ? 'Lichteffekte und Partikel. Das Spiel senkt die Stufe selbst, wenn die Bildrate fällt; eine eigene Wahl bleibt bestehen.' : 'Light effects and particles. The game lowers the level by itself when the frame rate drops; your own choice is kept.'}</p>
+<div class="row">${fxButtons}</div>
+<p class="dim">${v.reducedMotion ? (de ? 'Reduzierte Bewegung ist aktiv (Systemeinstellung): Bewegungen werden durch kurze Überblendungen ersetzt.' : 'Reduced motion is active (system setting): movement is replaced by short fades.') : (de ? 'Reduzierte Bewegung folgt der Systemeinstellung des Geräts.' : 'Reduced motion follows the device\'s system setting.')}</p>
+<h3>${de ? 'Sprache' : 'Language'}</h3>
+<div class="row"><button data-action="lang" data-value="${de ? 'en' : 'de'}">${de ? 'Switch to English' : 'Auf Deutsch wechseln'}</button></div>`;
 }

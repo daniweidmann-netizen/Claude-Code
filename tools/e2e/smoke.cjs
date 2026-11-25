@@ -85,11 +85,11 @@ async function finishRound(p, w, h) {
       if (s.freeMode) problems.push(`${name}: round ${i} still in free-spin scenery after the round`);
     }
     if (out) await p.screenshot({ path: `${out}/${name}_end.png` });
-    // Audio: after the first click all 13 effects and both music loops must be loaded and decoded.
+    // Audio: after the first click all 15 effects and both music loops must be loaded and decoded.
     await p.mouse.click(w / 2, h * 0.02);
-    await p.waitForFunction(() => window.__tls.state().audioLoaded + window.__tls.state().audioFailed.length >= 15, null, { timeout: 60000 }).catch(() => undefined);
+    await p.waitForFunction(() => window.__tls.state().audioLoaded + window.__tls.state().audioFailed.length >= 17, null, { timeout: 60000 }).catch(() => undefined);
     const audio = await p.evaluate(() => window.__tls.state());
-    if (audio.audioLoaded !== 15 || audio.audioFailed.length) problems.push(`${name}: audio loaded ${audio.audioLoaded}/15, failed: ${audio.audioFailed}`);
+    if (audio.audioLoaded !== 17 || audio.audioFailed.length) problems.push(`${name}: audio loaded ${audio.audioLoaded}/17, failed: ${audio.audioFailed}`);
 
     // Autoplay: ten rounds, books still exact, controls return afterwards.
     const before = await p.evaluate(() => window.__tls.state().rounds);
@@ -118,6 +118,11 @@ async function finishRound(p, w, h) {
     if (out) await p.screenshot({ path: `${out}/${name}_paytable.png` });
     await p.getByRole('tab', { name: de ? 'Verlauf' : 'History' }).click();
     if (await p.locator('.tls-info tbody tr').count() !== Math.min(50, rounds + 10)) problems.push(`${name}: history rows`);
+    // Settings: the volume slider changes the stored volume.
+    await p.getByRole('tab', { name: de ? 'Einstellungen' : 'Settings' }).click();
+    await p.locator('#tls-volume').fill('30');
+    if (Math.abs((await p.evaluate(() => window.__tls.state())).volume - 0.3) > 0.001) problems.push(`${name}: volume slider had no effect`);
+    await p.locator('#tls-volume').fill('70');
     await p.getByRole('button', { name: de ? 'Schliessen' : 'Close' }).click();
     if (await p.locator('.tls-info.open').count() !== 0) problems.push(`${name}: info panel did not close`);
     console.log(name, 'rounds', rounds, 'balance', balance);

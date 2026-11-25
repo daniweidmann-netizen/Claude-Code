@@ -160,8 +160,8 @@ export class Presenter {
           await wait(this.scene, e.win > 0 ? 240 : 110);
           break;
         case 'freeSpinsAwarded': {
-          sfx.play('freeSpins');
           const first = this.fsTotal === 0;
+          sfx.play(first ? 'freeSpins' : 'retrigger');
           this.fsTotal = e.total;
           if (first) {
             this.fsWinStart = this.win;
@@ -196,6 +196,7 @@ export class Presenter {
           await wait(this.scene, 350);
           break;
         case 'chambersRevealed':
+          sfx.play('complete');
           await bonus.revealRest(e.prizes);
           await bonus.close();
           break;
@@ -213,6 +214,7 @@ export class Presenter {
           const capped = e.totalWin >= this.cfg.maxWin;
           if (this.freeMode) {
             // Summary of the feature, then back to the jungle.
+            if (!capped) sfx.play('complete');
             if (!capped) await banner.celebrate(t('fsDone') + '\n' + t('totalWin'), this.money(e.totalWin - this.fsWinStart), 1, undefined,
               [t('fsBest', { m: this.bestMult }), ...(this.seals > 0 ? [t('fsSeals', { n: this.seals })] : [])].join('  ·  '));
             await banner.wipe(0x0b0e16, () => {

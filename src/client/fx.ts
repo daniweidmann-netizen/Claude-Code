@@ -14,6 +14,7 @@ export class Fx {
   private readonly sparks: Phaser.GameObjects.Particles.ParticleEmitter;
   private readonly coins: Phaser.GameObjects.Particles.ParticleEmitter;
   private dust: Phaser.GameObjects.Particles.ParticleEmitter | null = null;
+  private shafts: Phaser.GameObjects.Image | null = null;
 
   constructor(private readonly scene: Phaser.Scene) {
     Fx.makeTextures(scene);
@@ -111,6 +112,20 @@ export class Fx {
       this.scene.tweens.add({ targets: c, x: x + dx, duration: 520, ease: 'Linear' });
       this.scene.tweens.add({ targets: c, y: y - (26 + (i % 3) * 8) * DPR, duration: 260, yoyo: true, ease: 'Quad.easeOut', onComplete: () => c.destroy() });
     }
+  }
+
+  /**
+   * Soft shafts of sunlight breathing at the top of the scene. Returns the
+   * object so the scene can position it; null when effects are reduced.
+   */
+  sunShafts(x: number, y: number, radius: number): Phaser.GameObjects.Image | null {
+    if (this.shafts) { this.shafts.destroy(); this.shafts = null; }
+    if (this.level < 2) return null;
+    const r = this.scene.add.image(x, y, 'fx_rays').setBlendMode('ADD').setDepth(DEPTH.shade + 0.4).setScale((radius * 2) / 512).setAlpha(0.1).setTint(0xffe2a0);
+    this.scene.tweens.add({ targets: r, alpha: 0.24, duration: 3800, yoyo: true, repeat: -1, ease: 'Sine.easeInOut' });
+    this.scene.tweens.add({ targets: r, angle: 360, duration: 120000, repeat: -1 });
+    this.shafts = r;
+    return r;
   }
 
   /** Slowly drifting dust while the game is idle or running; off at reduced effect levels. */
