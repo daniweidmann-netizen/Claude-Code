@@ -1,6 +1,6 @@
 # 06 – Premium Publisher Polish: Audit und Designplan
 
-Stand: 2026-11-24 · Status: Phase A und B vorgelegt, **Phase C wartet auf Freigabe**
+Stand: 2026-11-25 · Status: Phasen A–C umgesetzt (Pakete 1–5); Paket 6 und die Qualitätsprüfung (Phase D) sind im Folgevorhaben aufgegangen – Ergebnisse und Bewertung stehen in Dokument 07, Abschnitt 8.
 
 Grundlage: Client-Stand Commit `1535797` (Branch `claude/awesome-heisenberg-7vbnfn`), Konfiguration v1.0.0 (eingefroren). Untersucht mit emulierten iPhone-Ansichten (SE 375×667, 14 390×844, 14 Pro Max 430×932, 14 quer) in Chromium, Bildfolgen während Kaskaden, Free Spins und Temple Bonus sowie Durchsicht von `src/client`.
 

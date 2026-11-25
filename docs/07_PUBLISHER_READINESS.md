@@ -1,6 +1,6 @@
 # 07 – Publisher Readiness: Audit, Gap-Analyse und Verbesserungsplan
 
-Stand: 2026-11-24 · Status: Audit und Plan vorgelegt, **Umsetzung wartet auf Freigabe**
+Stand: 2026-11-25 · Status: Pakete A–E und Ton umgesetzt (Freigabe «Alles machen» vom 2026-11-25); Abschlussbericht in Abschnitt 8. Abschnitte 1–7 beschreiben den Stand **vor** der Umsetzung.
 
 Ziel: Publishing- oder Lizenzpartnerschaft mit BGaming (erste Wahl) oder Relax Gaming (zweite Wahl).
 
@@ -209,3 +209,63 @@ Quellen: https://igamingfuture.com/helping-small-studios-scale-faster-with-bgami
 2. Sieben neue Bilder für geschätzt 5–6 Credits erzeugen?
 3. Ton und Musik als eigenes Vorhaben danach angehen – und auf welchem Weg?
 4. Rückmeldung vom iPhone 15 Pro (Darstellung, Ton, Werte aus «Performance»): ohne sie bleiben R-28 und die Mobile-Bewertung offen.
+
+## 8. Abschlussbericht (2026-11-25)
+
+### 8.1 Umgesetzt
+
+| Paket | Massnahmen | Stand |
+|---|---|---|
+| A – Reel Quality | A1 Kaskade ohne Pause · A2 Steinrahmen · A3 Schatten, hellere Kacheln · A4 Akzent beim Aufsetzen · A5 Schimmer auf Wild, Ring um Explorer · A6 Leerlauf-Staub | umgesetzt |
+| B – Expedition | B1 eigene Freischaltgeste je Station · B2 bleibender Ring, grössere Trittsteine · B3 Tempel-Moment · B4 Lichtstrahl mit Spur · B5 Sonnenkranz am Multiplikator · B6 Überblendung der Infozeile | umgesetzt |
+| C – Free Spins und Temple Bonus | C1 Einstieg mit Tor-Bild · C2 grosser Zähler, stärkere Abdunklung · C3 grosse Tore · C4 Öffnung mit Bild des offenen Tors, zählender Betrag · C5 Abschlusstafel mit Kennzahlen · C6 neue Tore | umgesetzt |
+| D – Mobile UI | D1 Max-Win-Zeile bzw. Feature-Gewinn · D2 grösserer Kaufpreis · D3 grösseres Logo, Fassung für den Demo-Hinweis · D4 Einsatz-Schnellwahl | umgesetzt; «Auto schmaler» aus D2 nicht (gestapelte Knöpfe gleicher Breite wirken ruhiger) |
+| E – Technik | E1 WebP, Phaser als eigene Datei · E2 zweistufiger Browser-Test · E3 Geräte-Prüfliste (Dokument 08) · E4 dieser Bericht | umgesetzt; Ziel «unter 3 MB Erstladung» **nicht erreicht** (siehe 8.3) |
+| Ton | 13 aufgenommene Effekte, 2 Musikschleifen, Überblendung zwischen Basisrunde und Free Spins, Absenken bei grossen Momenten, synthetischer Ersatz bei Ladefehler | umgesetzt, **nicht angehört** |
+
+### 8.2 Testergebnisse
+
+- **Automatisierte Tests:** 78 von 78 grün (Engine, Sitzungsschicht, Layout für 13 Bildschirmgrössen in zwei Pixeldichten, Texte in beiden Sprachen, Leistungsmesser).
+- **Engine, Sitzungsschicht, Konfiguration:** gegenüber dem Stand vor dem Polish unverändert (`git diff pre-polish HEAD -- src/engine src/session config`: 0 Zeilen). Der Hash-Test der Konfiguration v1.0.0 ist grün.
+- **Vollständiger Browser-Test** (Chromium, Pakete A–D, vor dem Einbau des Tons): bestanden. Sechs Formate (iPhone 15 Pro 40 Runden · Desktop quer 9 · 360×640 mit reduzierter Bewegung 24 · iPhone SE auf Deutsch 16 · Handy quer 9 · Pixeldichte 3: 4), dazu Autoplay, Info-Ansicht, 9 Runden mit Temple Bonus oder Finale über die Oberfläche (14 Kammerwahlen), Wiedergabe, Leistungsansicht. Geprüft und ohne Beanstandung: keine Konsolenfehler, alle Bilder geladen, kein verzerrtes Symbol, gezeichnetes Raster immer gleich dem Ereignisprotokoll, kein Text über einem Knopf, kein Knopf unter 44 px, Kulisse nach Free Spins zurück in der Basisrunde, Buchführung exakt.
+- **Schneller Browser-Test nach dem Einbau des Tons:** bestanden (iPhone-15-Pro-Format 16 Runden, 3 Bonusrunden, alle 15 Tondateien geladen und dekodiert). **Der vollständige Test wurde mit Ton nicht wiederholt.**
+
+### 8.3 Nicht erreicht oder offen
+
+| Punkt | Stand |
+|---|---|
+| Mobile Safari, echte Geräte (R-28) | weiterhin ungetestet; Prüfliste liegt dem Auftraggeber vor, keine Rückmeldung |
+| Bildrate auf echten Geräten | unbekannt; die neuen Effekte (Staub, Strahlen, Lichtspuren) erhöhen die Last. Das Effekt-Budget schaltet bei unter 45 bzw. 32 Bildern pro Sekunde selbst zurück – ungetestet auf echter Hardware |
+| Ladegrösse (R-29) | Auslieferung 5,5 MB (Bilder 2,5 · Ton 1,5 · Skripte 1,6). Ziel unter 3 MB verfehlt. Die Musik wird erst nach dem ersten Antippen geladen und blockiert den Start nicht; ohne Ton sind es 4,0 MB |
+| Ton-Qualität (R-32) | Dateien eingebunden, aber von niemandem angehört. Zwei Effekte sind deutlich kürzer als bestellt (Big Win 1 s, Bonus-Gong 0,5 s); bei der Musik ist Gesang nicht ausgeschlossen; Schleifen sind nicht taktgenau geschnitten |
+| Firefox, WebKit (R-30) | in dieser Umgebung nicht verfügbar |
+| Wiederaufnahme nach Verbindungsabbruch (R-31) | nicht umgesetzt (für den Demo-Client nicht nötig) |
+| Rahmen | wird rund 10 % in der Breite gestaucht, damit seine Öffnung auf das Raster passt |
+| Rastergrösse | durch den Rahmen kleiner: auf dem iPhone 15 Pro rund 56 statt 61 px je Zelle |
+| Rechtekette | 21 neue KI-Bilder und 15 KI-Tondateien seit dem ersten Audit, alle ohne menschliche Überarbeitung und ohne Lizenzprüfung |
+| Mathematische Punkte M-01 bis M-05 | unverändert, nicht Teil dieses Vorhabens |
+
+### 8.4 Bewertung
+
+Eigene Einschätzung nach den Bildschirmaufnahmen und Tests; **kein** Urteil eines Publishers und ohne Bestätigung auf einem echten Gerät. «Vorher» ist der Stand von Abschnitt 4.
+
+| Kriterium | Vorher | Jetzt | Begründung |
+|---|---|---|---|
+| Eigenständigkeit | 6 | 6 | Mechanik unverändert eigenständig; das Thema bleibt stark besetzt, und es gibt weiterhin keine Ähnlichkeitsprüfung |
+| Visuelle Qualität | 7 | 8 | Steinrahmen, Schatten, Tore mit echter Öffnung, eigene Stationsgesten. Abzug: unbearbeitete KI-Bilder, gestauchter Rahmen |
+| Gameplay | 7 | 8 | Höhepunkte (Tempel, Sonnenbonus, Kammeröffnung) werden jetzt inszeniert; Regeln unverändert |
+| User Experience | 7 | 8 | grosser Free-Spin-Zähler, Einsatz-Schnellwahl, Max-Win-Zeile, keine Kaskadenpause |
+| Technische Stabilität | 7 | 7 | Tests breiter (Verzerrung, Überlappung, Ton), aber weiterhin nur Chromium; Ladegrösse gestiegen |
+| Mobile Qualität | 6 | 6 | Layout in sechs Formaten geprüft; **ohne echtes Gerät bleibt die Note stehen** |
+| Bonusfeatures | 7 | 8 | Kammern sind jetzt das stärkste Bild des Spiels; Free-Spin-Einstieg und Abschluss vollständig |
+| Kommerzielles Differenzierungspotenzial | 5 | 5 | unverändert: eine RTP-Variante, keine Zertifizierung, offene Rechtekette, kein Verkaufspaket |
+
+Für die sieben Kategorien aus dem ersten Polish-Auftrag (Dokument 06): Visual Design 8 · UI/UX 8 · Gameplay Feedback 8 · Animationen 7 · Mobile Experience 6 (ungeprüft auf Geräten) · Technical Stability 7 · Publisher Presentation 6.
+
+### 8.5 Was für eine Erstpräsentation noch fehlt (Reihenfolge nach Gewicht)
+
+1. Test auf echten Geräten mit der Prüfliste, Korrekturen daraus.
+2. Ton anhören, zu kurze Effekte ersetzen, Musikschleifen sauber schneiden.
+3. Rechtekette: Lizenzbedingungen von Higgsfield und ElevenLabs prüfen lassen, Bilder handwerklich überarbeiten, Markenregister.
+4. RTP-Varianten und die offenen Mathematik-Nachweise (eigene Freigabe).
+5. Verkaufspaket: Game Sheet, Mathematikdokument, kurzer Trailer, Integrationsbeschreibung; Erstkontakt mit der Frage, ob eine Portierung auf die Plattform des Anbieters nötig ist.

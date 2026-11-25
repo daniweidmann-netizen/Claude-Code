@@ -1,6 +1,6 @@
 # 00 – Projektstatus (zentrales Register)
 
-Stand: 2026-11-24
+Stand: 2026-11-25
 
 Statusstufen: `NOT STARTED` · `IN PROGRESS` · `IMPLEMENTED` · `TESTED` · `VALIDATED` · `APPROVED`
 
@@ -9,6 +9,8 @@ Für Dokumente bedeutet `IMPLEMENTED` «fertig geschrieben, wartet auf Freigabe�
 ## 1. Fortschrittsbericht Nr. 3 – Mathematik abgestimmt, Abnahmelauf bestanden, M3 freigegeben
 
 **Meilenstein M3 wurde am 2026-11-24 freigegeben.** Die Konfiguration ist als **v1.0.0** eingefroren (`config/game-config.v1.0.0.json`; ein Test prüft den Hash). Kaufpreis nach Entscheid des Auftraggebers 58× → simulierter Kauf-RTP 96,81 % (95 %-Intervall 96,74–96,87 %), getrennt vom RTP normaler Runden (95,995 %) auszuweisen. Die Parameter normaler Runden sind identisch mit v0.3.2. Phase 4 (Client) hat begonnen.
+
+**Premium-Polish und Publisher Readiness (2026-11-24/25):** Oberfläche, Raster, Expedition Track, Free Spins, Temple Bonus und Ton überarbeitet; Engine, Sitzungsschicht und Konfiguration unverändert. Audit, Plan, Testergebnisse, offene Punkte und Bewertung stehen in `docs/06_POLISH_AUDIT_AND_PLAN.md` und `docs/07_PUBLISHER_READINESS.md` (Abschnitt 8); die Prüfliste für echte Geräte in `docs/08_DEVICE_TEST_CHECKLIST.md`. Die folgenden Absätze beschreiben den Stand davor.
 
 **Phase 4 (Client), erster Stand vom 2026-11-24:**
 - Sitzungsschicht `src/session` (Demo-Guthaben, Einsatzstufen, Feature-Kauf, Rundenhistorie mit Seed, Wiedergabe) – 5 Tests, u. a. exakte Buchführung über 3 000 Runden und Prüfung, dass geschlossene Kammern vor der Wahl nicht übermittelt werden.
@@ -103,7 +105,7 @@ Die Anpassungen betrafen jeweils nur Schatzpreise des Temple Bonus der Basisrund
 | F-16 | Client: UI, Demo-Guthaben, Historie | GDD 9 | IMPLEMENTED (Sitzungsschicht und Regeltexte TESTED; Wiedergabe aus dem Verlauf und Einstellungen fehlen) |
 | F-17 | Client: Temple Bonus und Free Spins | GDD 6, 7 | IMPLEMENTED (Platzhaltergrafik) |
 | F-18 | Art Assets | GDD 10 | IN PROGRESS (Stil freigegeben; 9 Symbole KI-generiert und eingebunden, ohne menschliche Überarbeitung; Hintergrund, Logo, Key Art, UI-Kit fehlen) |
-| F-19 | Audio | GDD 11 | IN PROGRESS (synthetisierte Platzhalter-Effekte IMPLEMENTED, nicht angehört; Musik fehlt) |
+| F-19 | Audio | GDD 11 | IMPLEMENTED (13 Effekte und 2 Musikschleifen KI-erzeugt, geladen im Browser-Test; **nicht angehört**, Lizenz ungeprüft) |
 | F-20 | Barrierefreiheit / reduzierte Bewegung | GDD 9.4 | IMPLEMENTED (reduzierte Bewegung, Mindestgrösse der Bedienelemente; Info-Ansicht als HTML. Kontraste, Screenreader im Spielfeld und Farbfehlsichtigkeit nicht geprüft) |
 | F-21 | B2B-Verkaufspaket | Backlog Phase 7 | NOT STARTED |
 
