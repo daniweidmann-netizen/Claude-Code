@@ -49,9 +49,33 @@ for i, n in enumerate(symbols):
 for i, n in enumerate(['st1_discovery', 'st2_treasure', 'st3_ancient', 'st4_relic', 'st5_temple']):
     fit_square(cutout(RAW + n + '.png'), 192, 0.98).save(f'public/ui/station{i + 1}.png', optimize=True)
 
+# Chamber doors: closed (v2) and open versions share one canvas so they register exactly when cross-faded.
 for n in ['door_sun', 'door_jade', 'door_moon']:
-    im = cutout(RAW + n + '.png'); im = im.crop(im.getbbox())
-    im.thumbnail((360, 480), Image.LANCZOS); im.save(f'public/ui/{n}.png', optimize=True)
+    closed = cutout(RAW + n + '_v2.png'); opened = cutout(RAW + n + '_open.png')
+    box = closed.getbbox(); ob = opened.getbbox()
+    box = (min(box[0], ob[0]), min(box[1], ob[1]), max(box[2], ob[2]), max(box[3], ob[3]))
+    for im, suffix in ((closed, ''), (opened, '_open')):
+        im = im.crop(box); im.thumbnail((450, 600), Image.LANCZOS)
+        im.save(f'public/ui/{n}{suffix}.png', optimize=True)
+
+# Frame around the play field: the flat inside is cut out from the centre; the opening's box is written
+# to public/ui/frame.json so the client can align the opening with the 6x5 grid.
+import json
+fr = Image.open(RAW + 'frame.png').convert('RGB')
+work = fr.copy(); cx, cy = fr.width // 2, fr.height // 2
+ImageDraw.floodfill(work, (cx, cy), MAGIC, thresh=40)
+hole = ImageChops.difference(work, Image.new('RGB', fr.size, MAGIC)).convert('L').point(lambda v: 0 if v > 0 else 255)
+hb = hole.getbbox()
+outer = cutout(RAW + 'frame.png')
+alpha = ImageChops.multiply(outer.getchannel('A'), hole.point(lambda v: 255 - v).filter(ImageFilter.GaussianBlur(1.0)))
+fr = fr.convert('RGBA'); fr.putalpha(alpha)
+ob = fr.getbbox(); fr = fr.crop(ob)
+scale = 1100 / fr.width
+fr = fr.resize((1100, round(fr.height * scale)), Image.LANCZOS)
+fr.save('public/ui/frame.png', optimize=True)
+json.dump({'w': fr.width, 'h': fr.height, 'hole': [round((hb[0] - ob[0]) * scale), round((hb[1] - ob[1]) * scale), round((hb[2] - ob[0]) * scale), round((hb[3] - ob[1]) * scale)]}, open('public/ui/frame.json', 'w'))
+
+fit_square(cutout(RAW + 'gate_open.png', 30), 512, 0.98).save('public/ui/gate.png', optimize=True)
 
 fit_square(cutout(RAW + 'treasure.png', 30), 320, 0.98).save('public/ui/treasure.png', optimize=True)
 fit_square(cutout(RAW + 'spin.png'), 256, 0.98).save('public/ui/spin.png', optimize=True)
@@ -60,8 +84,25 @@ tile = Image.open(RAW + 'tile.png').convert('RGB')
 w, h = tile.size; c = int(min(w, h) * 0.04)
 tile = tile.crop((c, c, w - c, h - c)).resize((256, 256), Image.LANCZOS).convert('RGBA')
 m = Image.new('L', (1024, 1024), 0); ImageDraw.Draw(m).rounded_rectangle((8, 8, 1016, 1016), 96, fill=255)
-tile.putalpha(m.resize((256, 256), Image.LANCZOS)); tile.save('public/ui/tile.png', optimize=True)
+from PIL import ImageEnhance
+rgb = ImageEnhance.Contrast(ImageEnhance.Brightness(tile.convert('RGB')).enhance(1.55)).enhance(1.12).convert('RGBA')  # lighter slab so symbols sit on a visible tile
+rgb.putalpha(m.resize((256, 256), Image.LANCZOS)); rgb.save('public/ui/tile.png', optimize=True)
 
-for n in ['portrait', 'landscape']:
-    Image.open(RAW + f'bgfs_{n}.png').convert('RGB').save(f'public/bgfs_{n}.jpg', quality=86, optimize=True)
+# Large pictures are stored as WebP only (smaller download; all current browsers including Safari 14+ read WebP).
+import os
+for n in ['bg_portrait', 'bg_landscape', 'bgfs_portrait', 'bgfs_landscape']:
+    Image.open(RAW + n + '.png').convert('RGB').save(f'public/{n}.webp', quality=80, method=6)
+    if os.path.exists(f'public/{n}.jpg'): os.remove(f'public/{n}.jpg')
+for n in ['frame', 'gate', 'treasure', 'door_sun', 'door_jade', 'door_moon', 'door_sun_open', 'door_jade_open', 'door_moon_open']:
+    Image.open(f'public/ui/{n}.png').save(f'public/ui/{n}.webp', quality=86, method=6)
+    os.remove(f'public/ui/{n}.png')
+
+# Logo: dark background made transparent by brightness, cropped, 720 px wide.
+lg = Image.open(RAW + 'logo_b.png').convert('RGB')
+al = lg.convert('L').point(lambda v: 0)  # placeholder, replaced below
+r, g, b2 = lg.split()
+mx = ImageChops.lighter(ImageChops.lighter(r, g), b2)
+al = mx.point(lambda v: max(0, min(255, round((v - 44) / 50 * 255))))
+lg = lg.convert('RGBA'); lg.putalpha(al); lg = lg.crop(lg.getbbox()); lg.thumbnail((720, 720), Image.LANCZOS)
+lg.save('public/logo.webp', quality=90, method=6)
 print('done')
