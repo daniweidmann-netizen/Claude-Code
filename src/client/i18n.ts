@@ -69,6 +69,7 @@ const S = {
   bonusAgain: { en: 'Relic Bonus – choose another chamber', de: 'Relic Bonus – wähle eine weitere Kammer' },
   bonusRevealed: { en: 'The other chambers held:', de: 'In den anderen Kammern lag:' },
   notChosen: { en: 'not chosen', de: 'nicht gewählt' },
+  tapContinue: { en: 'Tap to continue', de: 'Tippen, um fortzufahren' },
   chamberSun: { en: 'SUN CHAMBER', de: 'SONNENKAMMER' },
   chamberJade: { en: 'JADE CHAMBER', de: 'JADEKAMMER' },
   chamberMoon: { en: 'MOON CHAMBER', de: 'MONDKAMMER' },

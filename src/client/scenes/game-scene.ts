@@ -110,6 +110,7 @@ export class GameScene extends Phaser.Scene {
     this.presenter = new Presenter(this, cfg, {
       grid: this.grid, track: this.track, hud: this.hud, banner: this.banner, bonus: this.bonus, sfx: this.sfx, fx: this.fx,
       setMode: (free) => this.setMode(free),
+      normalSpeed: () => this.setSpeed(this.baseSpeed),
     });
     this.previewNote = this.add.text(0, 0, t('preview'), { fontFamily: TEXT, fontSize: '12px', color: COLOR.dim }).setOrigin(0.5, 0).setDepth(DEPTH.hud);
 

@@ -143,8 +143,17 @@ export class BonusView {
     const openKey = `${c.key}_open`;
     const hasOpen = this.scene.textures.exists(openKey) && c.door instanceof Phaser.GameObjects.Image;
     if (chosen) {
-      this.fx.flash(c.x, c.y, c.color, c.w * 0.9, 420);
-      if (!REDUCED_MOTION) await tween(this.scene, { targets: c.door, x: c.x + c.w * 0.02, duration: 45, yoyo: true, repeat: 3 });
+      // Anticipation: the other doors step back, the chosen one glows and trembles before it opens.
+      const others = this.chambers.filter((o) => o !== c && !o.opened).map((o) => o.door);
+      if (others.length) this.scene.tweens.add({ targets: others, alpha: 0.45, duration: 300 });
+      this.fx.flash(c.x, c.y, c.color, c.w * 0.9, 700);
+      this.fx.ring(c.x, c.y, c.color, c.w * 0.3, c.w * 0.9, 800);
+      if (REDUCED_MOTION) await wait(this.scene, 700);
+      else {
+        await tween(this.scene, { targets: c.door, scale: c.door.scale * 1.05, duration: 420, ease: 'Sine.easeInOut' });
+        await tween(this.scene, { targets: c.door, x: c.x + c.w * 0.018, duration: 55, yoyo: true, repeat: 5 });
+      }
+      await wait(this.scene, 250);
     }
     if (hasOpen) {
       // The open door has the same canvas as the closed one, so the wings appear to swing open in place.
@@ -153,14 +162,15 @@ export class BonusView {
       this.layer.addAt(open, this.layer.getIndex(c.door) + 1);
       c.openDoor = open;
       await Promise.all([
-        tween(this.scene, { targets: open, alpha: chosen ? 1 : 0.8, duration: chosen ? 380 : 220 }),
-        tween(this.scene, { targets: c.door, alpha: 0, duration: chosen ? 380 : 220 }),
+        tween(this.scene, { targets: open, alpha: chosen ? 1 : 0.8, duration: chosen ? 900 : 550, ease: 'Sine.easeInOut' }),
+        tween(this.scene, { targets: c.door, alpha: 0, duration: chosen ? 900 : 550, ease: 'Sine.easeInOut' }),
       ]);
       if (chosen) {
         // Light floods out of the chamber.
-        this.fx.raysBrief(c.x, c.y + c.h * 0.05, c.w * 1.5, c.color, 900);
-        this.fx.ring(c.x, c.y, c.color, c.w * 0.2, c.w * 1.1, 600);
+        this.fx.raysBrief(c.x, c.y + c.h * 0.05, c.w * 1.5, c.color, 1600);
+        this.fx.ring(c.x, c.y, c.color, c.w * 0.2, c.w * 1.1, 900);
         this.fx.burst(c.x, c.y + c.h * 0.1, c.color, 30);
+        await wait(this.scene, 500);
       }
     } else {
       await tween(this.scene, { targets: c.door, alpha: chosen ? 0.22 : 0.14, duration: chosen ? 300 : 180 });
@@ -181,25 +191,37 @@ export class BonusView {
     c.line2.setText(chosen ? tx.money : `${moneyFirst ? moneyFirst + '\n' : ''}(${t('notChosen')})`)
       .setPosition(c.x, c.line1.y + c.line1.height / 2 + 2 * DPR).setOrigin(0.5, 0).setColor(chosen ? '#fff6d6' : COLOR.dim).setWordWrapWidth(c.w * 1.05);
     const targets = [c.line1, c.line2, ...(c.prize ? [c.prize] : [])];
-    if (chosen && c.prize && !REDUCED_MOTION) this.scene.tweens.add({ targets: c.prize, y: restY, duration: 520, ease: 'Cubic.easeOut' });
-    await tween(this.scene, { targets, alpha: chosen ? 1 : 0.9, duration: chosen ? 300 : 180 });
+    if (chosen && c.prize && !REDUCED_MOTION) this.scene.tweens.add({ targets: c.prize, y: restY, duration: 1000, ease: 'Cubic.easeOut' });
+    await tween(this.scene, { targets, alpha: chosen ? 1 : 0.9, duration: chosen ? 600 : 400 });
     if (chosen) {
       // The amount counts up; the final text is exactly the prize from the event.
       const total = Math.round((prize.value / 10) * (this.bet / 10));
       if (moneyFirst && !REDUCED_MOTION) {
-        await countUp(this.scene, total, 700, (v) => c.line2.setText(formatMoney(Math.floor(v)) + rest));
+        await countUp(this.scene, total, 1500, (v) => c.line2.setText(formatMoney(Math.floor(v)) + rest));
         c.line2.setText(tx.money);
       }
       this.fx.burst(c.x, restY, COLOR.goldBright, 18);
-      await wait(this.scene, 550);
+      await wait(this.scene, 1300);
     }
   }
 
   /** Shows the remaining chambers after the choice is final. */
   async revealRest(list: { chamber: number; prize: PrizeInfo }[]): Promise<void> {
-    if (list.length) this.hint.setText(t('bonusRevealed')).setColor(COLOR.dim);
-    for (const p of list) await this.reveal(p.chamber, p.prize, false);
-    await wait(this.scene, 1500);
+    if (list.length) { this.hint.setText(t('bonusRevealed')).setColor(COLOR.dim); await wait(this.scene, 700); }
+    for (const p of list) { await this.reveal(p.chamber, p.prize, false); await wait(this.scene, 650); }
+    // The result stays until the player taps (or for eight seconds), so nothing is whisked away.
+    this.hint.setText(t('tapContinue')).setColor(COLOR.win);
+    if (!REDUCED_MOTION) this.scene.tweens.add({ targets: this.hint, alpha: 0.5, duration: 700, yoyo: true, repeat: -1 });
+    await wait(this.scene, 500);
+    await new Promise<void>((resolve) => {
+      let done = false;
+      const finish = () => { if (done) return; done = true; this.dim.off('pointerup', finish); timer.remove(); resolve(); };
+      const timer = this.scene.time.delayedCall(8000, finish);
+      this.dim.once('pointerup', finish);
+      this.chambers.forEach((c) => { c.door.setInteractive(); c.door.once('pointerup', finish); c.openDoor?.setInteractive().once('pointerup', finish); });
+    });
+    this.scene.tweens.killTweensOf(this.hint);
+    this.hint.setAlpha(1);
   }
 
   async close(): Promise<void> {

@@ -16,6 +16,8 @@ export interface Views {
   grid: GridView; track: TrackView; hud: Hud; banner: Banner; bonus: BonusView; sfx: Sfx; fx: Fx;
   /** Switches the scenery between base game and free spins. */
   setMode(free: boolean): void;
+  /** Returns the presentation to normal speed (a speed-up never carries into the Temple Bonus). */
+  normalSpeed(): void;
 }
 
 /**
@@ -180,20 +182,23 @@ export class Presenter {
           break;
         }
         case 'templeBonusStarted':
+          this.v.normalSpeed();
           sfx.play('bonus');
           this.picksInBonus = 0;
           // Into the temple: a wash of white-gold light, and the chamber scene stands behind it.
+          await wait(this.scene, 500);
           await banner.wipe(0xfff1c4, () => bonus.show(
             e.tier === 'finale' ? `${t('finaleTitle')} · ${t(e.seals === 1 ? 'finaleSeals' : 'finaleSealsPl', { n: e.seals })}` : t('bonusTitle'),
             e.chambers, this.bet,
           ));
           break;
         case 'chamberPicked':
+          this.v.normalSpeed();
           sfx.play('pick');
           this.picksInBonus++;
           await bonus.reveal(e.chamber, e.prize, true);
           if (e.prize.kind !== 'freeSpins') this.addWin(e.prize.value);
-          await wait(this.scene, 350);
+          await wait(this.scene, 600);
           break;
         case 'chambersRevealed':
           sfx.play('complete');
