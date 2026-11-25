@@ -85,7 +85,7 @@ w, h = tile.size; c = int(min(w, h) * 0.04)
 tile = tile.crop((c, c, w - c, h - c)).resize((256, 256), Image.LANCZOS).convert('RGBA')
 m = Image.new('L', (1024, 1024), 0); ImageDraw.Draw(m).rounded_rectangle((8, 8, 1016, 1016), 96, fill=255)
 from PIL import ImageEnhance
-rgb = ImageEnhance.Contrast(ImageEnhance.Brightness(tile.convert('RGB')).enhance(1.55)).enhance(1.12).convert('RGBA')  # lighter slab so symbols sit on a visible tile
+rgb = ImageEnhance.Contrast(ImageEnhance.Brightness(tile.convert('RGB')).enhance(1.22)).enhance(1.15).convert('RGBA')  # lighter slab so symbols sit on a visible tile
 rgb.putalpha(m.resize((256, 256), Image.LANCZOS)); rgb.save('public/ui/tile.png', optimize=True)
 
 # Large pictures are stored as WebP only (smaller download; all current browsers including Safari 14+ read WebP).

@@ -22,6 +22,11 @@ export class GridView extends Phaser.GameObjects.Container {
   private readonly frame: Phaser.GameObjects.Graphics;
   private readonly tiles: Phaser.GameObjects.Image[] = [];
   private readonly auras: Phaser.GameObjects.Image[] = [];
+  private readonly shadows: Phaser.GameObjects.Image[] = [];
+  private readonly marks: Phaser.GameObjects.Graphics;
+  private frameArt: Phaser.GameObjects.Image | null = null;
+  private frameHole: number[] | null = null;
+  private shimmer = 0;
   private readonly glow: Phaser.GameObjects.Graphics;
   private readonly symbols: Phaser.GameObjects.Container;
   private readonly maskShape: Phaser.GameObjects.Graphics;
@@ -39,10 +44,22 @@ export class GridView extends Phaser.GameObjects.Container {
     for (let i = 0; i < n; i++) {
       if (this.hasTiles) { const t = scene.add.image(0, 0, 'tile'); this.tiles.push(t); this.add(t); }
       const a = scene.add.image(0, 0, 'fx_glow').setAlpha(0).setBlendMode('ADD'); this.auras.push(a); this.add(a);
+      const sh = scene.add.image(0, 0, 'fx_shadow').setAlpha(0); this.shadows.push(sh); this.add(sh);
     }
+    this.marks = scene.add.graphics();
+    this.add(this.marks);
+    // Carved frame around the play field; its opening is aligned with the grid.
+    const meta = scene.cache.json.get('frameMeta') as { w: number; h: number; hole: number[] } | undefined;
+    if (scene.textures.exists('frame') && meta) {
+      this.frameArt = scene.add.image(0, 0, 'frame').setOrigin(0, 0);
+      this.frameHole = [meta.hole[0] / meta.w, meta.hole[1] / meta.h, meta.hole[2] / meta.w, meta.hole[3] / meta.h];
+    }
+    // Slow shimmer on Wilds and the Explorer (decoration only).
+    if (!REDUCED_MOTION) scene.tweens.addCounter({ from: 0, to: 1, duration: 1400, yoyo: true, repeat: -1, ease: 'Sine.easeInOut', onUpdate: (tw) => { this.shimmer = tw.getValue() ?? 0; this.applyShimmer(); } });
     this.glow = scene.add.graphics();
     this.symbols = scene.add.container(0, 0);
     this.add([this.glow, this.symbols]);
+    if (this.frameArt) this.add(this.frameArt);
     this.maskShape = scene.make.graphics({}, false);
     this.symbols.setMask(this.maskShape.createGeometryMask());
     this.setDepth(DEPTH.grid);
@@ -54,15 +71,28 @@ export class GridView extends Phaser.GameObjects.Container {
     this.setPosition(x, y);
     this.cell = cell;
     const w = cell * this.cols, h = cell * this.rows, p = Math.round(cell * 0.07);
-    this.frame.clear().fillStyle(0x070a11, 0.86).fillRoundedRect(-p, -p, w + 2 * p, h + 2 * p, p * 2)
-      .lineStyle(Math.max(2, p / 2.5), COLOR.goldDark, 1).strokeRoundedRect(-p, -p, w + 2 * p, h + 2 * p, p * 2)
-      .lineStyle(Math.max(1, p / 6), COLOR.goldBright, 0.5).strokeRoundedRect(-p * 0.55, -p * 0.55, w + p * 1.1, h + p * 1.1, p * 1.6);
+    this.frame.clear();
+    if (this.frameArt && this.frameHole) {
+      // Dark recess behind the tiles, a soft drop shadow, then the carved frame whose opening matches the grid.
+      const [hx0, hy0, hx1, hy1] = this.frameHole;
+      const fw = (w + p * 1.2) / (hx1 - hx0), fh = (h + p * 1.2) / (hy1 - hy0);
+      const fx = -p * 0.6 - hx0 * fw, fy = -p * 0.6 - hy0 * fh;
+      this.frame.fillStyle(0x000000, 0.35).fillRoundedRect(fx + p * 0.4, fy + p * 0.9, fw, fh, p * 2);
+      this.frame.fillStyle(0x05080e, 0.94).fillRect(-p, -p, w + 2 * p, h + 2 * p);
+      this.frameArt.setPosition(fx, fy).setDisplaySize(fw, fh);
+    } else {
+      this.frame.fillStyle(0x070a11, 0.86).fillRoundedRect(-p, -p, w + 2 * p, h + 2 * p, p * 2)
+        .lineStyle(Math.max(2, p / 2.5), COLOR.goldDark, 1).strokeRoundedRect(-p, -p, w + 2 * p, h + 2 * p, p * 2)
+        .lineStyle(Math.max(1, p / 6), COLOR.goldBright, 0.5).strokeRoundedRect(-p * 0.55, -p * 0.55, w + p * 1.1, h + p * 1.1, p * 1.6);
+    }
     this.maskShape.clear().fillStyle(0xffffff).fillRect(x - p * 0.5, y - p * 0.5, w + p, h + p);
     for (let i = 0; i < this.cols * this.rows; i++) {
       this.tiles[i]?.setPosition(this.cx(i), this.cy(i)).setDisplaySize(cell * 0.96, cell * 0.96);
-      this.auras[i].setPosition(this.cx(i), this.cy(i)).setDisplaySize(cell * 1.05, cell * 1.05);
+      this.auras[i].setPosition(this.cx(i), this.cy(i)).setDisplaySize(cell * 1.1, cell * 1.1);
+      this.shadows[i].setPosition(this.cx(i), this.cy(i) + cell * 0.36).setDisplaySize(cell * 0.78, cell * 0.24);
     }
     this.sprites.forEach((s, i) => { if (s) this.place(s, i); });
+    this.drawMarks();
   }
 
   private cx(i: number) { return ((i % this.cols) + 0.5) * this.cell; }
@@ -70,7 +100,22 @@ export class GridView extends Phaser.GameObjects.Container {
   private scaleFor() { return (this.cell * 0.9) / this.texSize; }
   private place(s: Phaser.GameObjects.Image, i: number) { s.setPosition(this.cx(i), this.cy(i)).setScale(this.scaleFor()).setAlpha(1); }
   private setAura(i: number, id: number) {
-    this.auras[i].setTint(SYMBOL_ACCENT[id] ?? 0xffffff).setAlpha(id === EMPTY ? 0 : id === 5 || id === 8 ? 0.42 : 0.2);
+    this.auras[i].setTint(SYMBOL_ACCENT[id] ?? 0xffffff).setAlpha(id === EMPTY ? 0 : id === 5 || id === 8 ? 0.5 : 0.3);
+    this.shadows[i].setAlpha(id === EMPTY ? 0 : 0.6);
+  }
+  /** Wilds and the Explorer pulse gently so they stand out between cascades. */
+  private applyShimmer(): void {
+    for (let i = 0; i < this.ids.length; i++) if (this.ids[i] === 5 || this.ids[i] === 8) this.auras[i].setAlpha(0.38 + this.shimmer * 0.4);
+  }
+  /** Gold ring with an anchor notch around the Explorer: it stays on the grid when it wins. */
+  private drawMarks(): void {
+    const g = this.marks.clear(), r = this.cell * 0.455;
+    this.ids.forEach((id, i) => {
+      if (id !== 8) return;
+      const x = this.cx(i), y = this.cy(i);
+      g.lineStyle(Math.max(2, this.cell * 0.05), COLOR.goldBright, 1).strokeCircle(x, y, r);
+      g.fillStyle(COLOR.goldBright, 1).fillTriangle(x - r * 0.16, y + r * 0.96, x + r * 0.16, y + r * 0.96, x, y + r * 1.2);
+    });
   }
 
   private spawn(i: number, id: number): Phaser.GameObjects.Image {
@@ -86,6 +131,7 @@ export class GridView extends Phaser.GameObjects.Container {
     this.sprites.forEach((s) => s?.destroy());
     this.sprites.fill(null); this.ids.fill(EMPTY);
     grid.forEach((id, i) => { this.spawn(i, id); this.setAura(i, id); });
+    this.drawMarks();
   }
 
   /** New spin: clears the grid and drops in all symbols. */
@@ -93,6 +139,8 @@ export class GridView extends Phaser.GameObjects.Container {
     const old = this.sprites.filter((s): s is Phaser.GameObjects.Image => s !== null);
     this.sprites.fill(null); this.ids.fill(EMPTY);
     this.auras.forEach((a) => a.setAlpha(0));
+    this.shadows.forEach((a) => a.setAlpha(0));
+    this.marks.clear();
     if (old.length) {
       await tween(this.scene, REDUCED_MOTION
         ? { targets: old, alpha: 0, duration: 120 }
@@ -114,8 +162,13 @@ export class GridView extends Phaser.GameObjects.Container {
         targets: s, y: this.cy(i), duration: 270, ease: 'Cubic.easeIn', delay: col * 38 + (this.rows - 1 - row) * 22,
       }).then(() => this.settle(s, i)));
     });
+    for (let c = 0; c < this.cols; c++) {
+      // A puff of dust where each column lands.
+      this.scene.time.delayedCall(270 + c * 38, () => this.fx.flash(this.x + (c + 0.5) * this.cell, this.y + this.cell * this.rows, 0xcdbb95, this.cell * 0.55, 240));
+    }
     await Promise.all(jobs);
     grid.forEach((id, i) => this.setAura(i, id));
+    this.drawMarks();
   }
 
   /** Tiny rebound after landing; position only, the symbol keeps its shape. */
@@ -180,14 +233,19 @@ export class GridView extends Phaser.GameObjects.Container {
         targets.push(s);
         this.fx.burst(this.x + this.cx(i), this.y + this.cy(i), SYMBOL_ACCENT[this.ids[i]] ?? COLOR.gold, 7);
       }
+      // Afterglow in the symbol's colour, so an emptied tile never looks like a gap.
+      this.fx.flash(this.x + this.cx(i), this.y + this.cy(i), SYMBOL_ACCENT[this.ids[i]] ?? COLOR.gold, this.cell * 0.62, 420);
       this.sprites[i] = null; this.ids[i] = EMPTY;
       this.auras[i].setAlpha(0);
+      this.shadows[i].setAlpha(0);
     }
+    this.drawMarks();
     if (!targets.length) return;
-    await tween(this.scene, REDUCED_MOTION
+    // The dissolve runs on its own: falling starts while the last sparks are still in the air (no pause).
+    void tween(this.scene, REDUCED_MOTION
       ? { targets, alpha: 0, duration: 150 }
-      : { targets, scale: this.scaleFor() * 0.55, alpha: 0, duration: 170, ease: 'Cubic.easeIn' });
-    targets.forEach((s) => s.destroy());
+      : { targets, scale: this.scaleFor() * 0.55, alpha: 0, duration: 190, ease: 'Cubic.easeIn' }).then(() => targets.forEach((s) => s.destroy()));
+    await wait(this.scene, REDUCED_MOTION ? 150 : 70);
   }
 
   /** Brings the view to `grid`: gravity and refill after a removal, in-place changes otherwise. */
@@ -209,7 +267,7 @@ export class GridView extends Phaser.GameObjects.Container {
           if (REDUCED_MOTION) k.s.y = this.cy(i);
           else if (Math.abs(k.s.y - this.cy(i)) > 0.5) {
             const dist = (this.cy(i) - k.s.y) / this.cell;
-            jobs.push(tween(this.scene, { targets: k.s, y: this.cy(i), duration: 150 + dist * 45, ease: 'Cubic.easeIn', delay: c * 18 }).then(() => this.settle(k.s, i)));
+            jobs.push(tween(this.scene, { targets: k.s, y: this.cy(i), duration: 140 + dist * 42, ease: 'Cubic.easeIn', delay: c * 12 }).then(() => this.settle(k.s, i)));
           }
         });
         for (let r = 0; r < missing; r++) {
@@ -217,12 +275,13 @@ export class GridView extends Phaser.GameObjects.Container {
           const s = this.spawn(i, grid[i]);
           if (REDUCED_MOTION) { s.setAlpha(0); jobs.push(tween(this.scene, { targets: s, alpha: 1, duration: 180 })); continue; }
           s.y -= this.cell * (missing + 0.6);
-          jobs.push(tween(this.scene, { targets: s, y: this.cy(i), duration: 240, ease: 'Cubic.easeIn', delay: 50 + c * 18 + (missing - 1 - r) * 20 }).then(() => this.settle(s, i)));
+          jobs.push(tween(this.scene, { targets: s, y: this.cy(i), duration: 230, ease: 'Cubic.easeIn', delay: 20 + c * 12 + (missing - 1 - r) * 18 }).then(() => this.settle(s, i)));
         }
       }
       await Promise.all(jobs);
       jobs.length = 0;
       this.ids.forEach((id, i) => this.setAura(i, id));
+      this.drawMarks();
     }
     // Whatever still differs was changed by a station effect: a flash of light and a cross-fade at full size.
     grid.forEach((id, i) => {
@@ -240,6 +299,7 @@ export class GridView extends Phaser.GameObjects.Container {
         await Promise.all([out, tween(this.scene, { targets: fresh, alpha: 1, duration: 190 })]);
         old?.destroy();
         this.setAura(i, id);
+        this.drawMarks();
       })());
     });
     if (jobs.length) { await Promise.all(jobs); await wait(this.scene, 130); }

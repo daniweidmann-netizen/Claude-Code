@@ -13,6 +13,7 @@ export class Fx {
   level: 0 | 1 | 2 = REDUCED_MOTION ? 0 : 2;
   private readonly sparks: Phaser.GameObjects.Particles.ParticleEmitter;
   private readonly coins: Phaser.GameObjects.Particles.ParticleEmitter;
+  private dust: Phaser.GameObjects.Particles.ParticleEmitter | null = null;
 
   constructor(private readonly scene: Phaser.Scene) {
     Fx.makeTextures(scene);
@@ -40,6 +41,7 @@ export class Fx {
     };
     dot('fx_spark', 32, [[0, 'rgba(255,255,255,1)'], [0.35, 'rgba(255,255,255,0.55)'], [1, 'rgba(255,255,255,0)']]);
     dot('fx_glow', 128, [[0, 'rgba(255,255,255,0.9)'], [0.4, 'rgba(255,255,255,0.35)'], [1, 'rgba(255,255,255,0)']]);
+    dot('fx_shadow', 64, [[0, 'rgba(0,0,0,0.75)'], [0.6, 'rgba(0,0,0,0.3)'], [1, 'rgba(0,0,0,0)']]);
     dot('fx_coin', 24, [[0, 'rgba(255,240,170,1)'], [0.7, 'rgba(232,184,74,1)'], [0.86, 'rgba(138,106,30,1)'], [1, 'rgba(138,106,30,0)']]);
     // Sunburst for big wins: sixteen soft wedges.
     const size = 512, tex = scene.textures.createCanvas('fx_rays', size, size)!, ctx = tex.getContext();
@@ -67,13 +69,61 @@ export class Fx {
     this.scene.tweens.add({ targets: g, scale: (radius * 2) / 128, alpha: 0, duration: ms, ease: 'Cubic.easeOut', onComplete: () => g.destroy() });
   }
 
-  /** A spark of light travelling from one point to another (station to grid, key to track). */
-  async fly(from: { x: number; y: number }, to: { x: number; y: number }, color: number, ms = 240): Promise<void> {
+  /**
+   * A beam of light travelling from one point to another (station to grid, key to track).
+   * It leaves a short trail so the eye can follow where the effect comes from.
+   */
+  async fly(from: { x: number; y: number }, to: { x: number; y: number }, color: number, ms = 380): Promise<void> {
     if (this.level === 0) return;
-    const orb = this.scene.add.image(from.x, from.y, 'fx_glow').setTint(color).setBlendMode('ADD').setDepth(DEPTH.fx).setScale(0.5 * DPR);
-    await tween(this.scene, { targets: orb, x: to.x, y: to.y, duration: ms, ease: 'Sine.easeInOut' });
+    const orb = this.scene.add.image(from.x, from.y, 'fx_glow').setTint(color).setBlendMode('ADD').setDepth(DEPTH.fx).setScale(0.9 * DPR);
+    let last = 0;
+    this.flash(from.x, from.y, color, 40 * DPR, 260);
+    await tween(this.scene, {
+      targets: orb, x: to.x, y: to.y, duration: ms, ease: 'Cubic.easeInOut',
+      onUpdate: (tw: Phaser.Tweens.Tween) => { if (tw.progress - last > 0.12) { last = tw.progress; this.burst(orb.x, orb.y, color, 2); } },
+    });
     orb.destroy();
-    this.burst(to.x, to.y, color, 8);
+    this.flash(to.x, to.y, color, 46 * DPR, 360);
+    this.burst(to.x, to.y, color, 10);
+  }
+
+  /** A ring of light that expands and fades (station unlock, door opening). */
+  ring(x: number, y: number, color: number, from: number, to: number, ms = 520): void {
+    if (this.level === 0) return;
+    const c = this.scene.add.circle(x, y, from).setStrokeStyle(3 * DPR, color, 1).setDepth(DEPTH.fx);
+    this.scene.tweens.add({ targets: c, scale: to / from, alpha: 0, duration: ms, ease: 'Cubic.easeOut', onComplete: () => c.destroy() });
+  }
+
+  /** A short burst of rotating sun rays behind a point. */
+  raysBrief(x: number, y: number, radius: number, color: number, ms = 700): void {
+    if (this.level === 0) return;
+    const r = this.scene.add.image(x, y, 'fx_rays').setTint(color).setBlendMode('ADD').setDepth(DEPTH.fx - 1).setScale((radius * 2) / 512).setAlpha(0);
+    this.scene.tweens.add({ targets: r, alpha: 0.95, duration: ms * 0.25, yoyo: true, hold: ms * 0.3 });
+    this.scene.tweens.add({ targets: r, angle: 90, duration: ms, onComplete: () => r.destroy() });
+  }
+
+  /** A few coins hopping out of a point. */
+  coinsAt(x: number, y: number, count = 6): void {
+    if (this.level === 0) return;
+    for (let i = 0; i < Math.round(count * (this.level === 2 ? 1 : 0.5)); i++) {
+      const c = this.scene.add.image(x, y, 'fx_coin').setDepth(DEPTH.fx).setScale(0.5 * DPR);
+      const dx = (i - count / 2 + 0.5) * 9 * DPR;
+      this.scene.tweens.add({ targets: c, x: x + dx, duration: 520, ease: 'Linear' });
+      this.scene.tweens.add({ targets: c, y: y - (26 + (i % 3) * 8) * DPR, duration: 260, yoyo: true, ease: 'Quad.easeOut', onComplete: () => c.destroy() });
+    }
+  }
+
+  /** Slowly drifting dust while the game is idle or running; off at reduced effect levels. */
+  ambient(on: boolean): void {
+    if (this.dust) { this.dust.destroy(); this.dust = null; }
+    if (!on || this.level < 2) return;
+    const { width, height } = this.scene.scale;
+    this.dust = this.scene.add.particles(0, 0, 'fx_spark', {
+      x: { min: 0, max: width }, y: { min: height * 0.15, max: height * 0.85 },
+      speedY: { min: -14 * DPR, max: -4 * DPR }, speedX: { min: -5 * DPR, max: 5 * DPR },
+      lifespan: 5200, scale: { start: 0.1 * DPR, end: 0.04 * DPR }, alpha: { start: 0, end: 0.4, ease: 'Sine.easeInOut' },
+      tint: 0xffe7a8, blendMode: 'ADD', frequency: 420, maxAliveParticles: 16,
+    }).setDepth(DEPTH.shade + 0.5);
   }
 
   /** Falling coins across the screen for big and epic wins. */

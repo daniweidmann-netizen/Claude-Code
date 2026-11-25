@@ -15,6 +15,7 @@ export interface HudActions {
   info(): void;
   mute(): void;
   auto(): void;
+  betPick(): void;
 }
 
 /**
@@ -44,7 +45,11 @@ export class Hud {
   readonly muteBtn: Button;
   private l: Layout | null = null;
   private fsBox = { x: 0, y: 0, w: 0, h: 0 };
+  private demoBox = { x: 0, y: 0, h: 0 };
   private readonly fsPlate: Phaser.GameObjects.Graphics;
+  private readonly crown: Phaser.GameObjects.Graphics;
+  private readonly footer: Phaser.GameObjects.Text;
+  private readonly betHit: Phaser.GameObjects.Zone;
   private shownWin = 0;
   private shownMult = 1;
   private freeMode = false;
@@ -55,6 +60,7 @@ export class Hud {
       scene.add.text(0, 0, text, { fontFamily: font, fontSize: '16px', color }).setDepth(DEPTH.hud);
     this.plates = scene.add.graphics().setDepth(DEPTH.plate);
     this.fsPlate = scene.add.graphics().setDepth(DEPTH.hud - 1);
+    this.crown = scene.add.graphics().setDepth(DEPTH.hud - 1).setBlendMode('ADD');
     this.logo = scene.textures.exists('logo') ? scene.add.image(0, 0, 'logo').setOrigin(0, 0.5).setDepth(DEPTH.hud) : null;
     this.title = txt('TEMPLE OF THE LOST SUN', DISPLAY, COLOR.win).setOrigin(0, 0.5).setVisible(this.logo === null);
     this.demo = txt(t('demo'), TEXT, COLOR.dim).setOrigin(0, 0.5);
@@ -67,10 +73,14 @@ export class Hud {
     this.win = txt(formatMoney(0), DISPLAY, COLOR.win).setOrigin(1, 0.5);
     this.betLabel = txt(t('bet'), TEXT, COLOR.dim).setOrigin(0.5);
     this.bet = txt('', DISPLAY, COLOR.text).setOrigin(0.5);
+    this.footer = txt('', DISPLAY, COLOR.dim).setOrigin(0.5);
+    // Tapping the bet amount opens the quick selection.
+    this.betHit = scene.add.zone(0, 0, 10, 10).setDepth(DEPTH.hud).setInteractive({ useHandCursor: true });
+    this.betHit.on('pointerup', () => actions.betPick());
     const b = (btn: Button) => btn.setDepth(DEPTH.hud);
     this.spinBtn = b(new Button(scene, 'SPIN', actions.spin));
     if (scene.textures.exists('spin')) this.spinBtn.asImage('spin'); else this.spinBtn.setAccent(COLOR.gold);
-    this.buyBtn = b(new Button(scene, t('buy'), actions.buy)).setAccent(COLOR.turquoise);
+    this.buyBtn = b(new Button(scene, t('buy'), actions.buy)).setAccent(COLOR.turquoise).setSubScale(1.5);
     this.minus = b(new Button(scene, '', actions.betDown).asRound('minus'));
     this.plus = b(new Button(scene, '', actions.betUp).asRound('plus'));
     this.infoBtn = b(new Button(scene, '', actions.info).asRound('info'));
@@ -93,7 +103,7 @@ export class Hud {
     this.infoBtn.layout(s.x + s.w - btn / 2, cy, btn, btn, 16 * u);
     this.muteBtn.layout(s.x + s.w - btn * 1.5 - 8 * u, cy, btn, btn, 16 * u);
     if (this.logo) {
-      this.logo.setScale((s.h * 1.02) / this.logo.height).setPosition(s.x, cy);
+      this.logo.setScale((s.h * 1.12) / this.logo.height).setPosition(s.x, cy);
       this.demo.setPosition(s.x + this.logo.displayWidth + 10 * u, cy);
     } else {
       this.title.setFontSize(px(15)).setPosition(s.x, cy);
@@ -101,8 +111,10 @@ export class Hud {
     }
     const freeLeft = this.demo.x, freeRight = this.muteBtn.x - btn / 2 - 8 * u;
     this.demo.setFontSize(px(10)).setWordWrapWidth(Math.max(40, freeRight - freeLeft)).setLineSpacing(-2);
-    this.fs.setFontSize(px(14)).setPosition((freeLeft + freeRight) / 2, cy);
-    this.fsBox = { x: freeLeft, w: freeRight - freeLeft, y: s.y + 3 * u, h: s.h - 6 * u };
+    // In free spins the counter is the headline of the status bar: it takes the place of logo and demo note.
+    this.fs.setFontSize(px(17)).setPosition((s.x + freeRight) / 2, cy);
+    this.fsBox = { x: s.x, w: freeRight - s.x, y: s.y + 2 * u, h: s.h - 4 * u };
+    this.demoBox = { x: this.demo.x - 6 * u, y: cy - 9 * u, h: 18 * u };
 
     // Multiplier medallion.
     if (l.portrait) {
@@ -143,11 +155,12 @@ export class Hud {
       // Bet: label and amount on top, minus and plus side by side below; nothing overlaps the amount.
       this.betLabel.setFontSize(px(10)).setPosition(lx, c.y + 16 * u);
       this.bet.setFontSize(px(17)).setPosition(lx, c.y + 34 * u);
+      this.betHit.setPosition(lx, c.y + 27 * u).setSize(leftW - 8 * u, 44 * u);
       this.minus.layout(lx - rb * 0.62, c.y + c.h - 10 * u - rb / 2, rb, rb, 18 * u);
       this.plus.layout(lx + rb * 0.62, c.y + c.h - 10 * u - rb / 2, rb, rb, 18 * u);
       const rx = c.x + c.w - leftW / 2, bw = leftW - 16 * u;
       this.autoBtn.layout(rx, my - 27 * u, bw, 46 * u, 13 * u);
-      this.buyBtn.layout(rx, my + 27 * u, bw, 46 * u, 9.5 * u);
+      this.buyBtn.layout(rx, my + 27 * u, bw, 46 * u, 9 * u);
     } else {
       const spin = Math.min(c.h - 8 * u, 78 * u), rb = 46 * u;
       this.spinBtn.layout(mx, my, spin, spin, 20 * u);
@@ -156,6 +169,7 @@ export class Hud {
       this.minus.layout(lx - 78 * u, my + 4 * u, rb, rb, 18 * u);
       this.plus.layout(lx + 78 * u, my + 4 * u, rb, rb, 18 * u);
       this.bet.setFontSize(px(15)).setPosition(lx, my + 4 * u);
+      this.betHit.setPosition(lx, my).setSize(100 * u, 50 * u);
       this.autoBtn.layout(c.x + c.w * 0.68, my, 96 * u, 50 * u, 13 * u);
       this.buyBtn.layout(c.x + c.w * 0.87, my, 150 * u, 54 * u, 10.5 * u);
     }
@@ -163,6 +177,15 @@ export class Hud {
   }
 
   setBalance(minor: number): void { this.balance.setText(formatMoney(minor)); }
+
+  /** Small line in the free space under the grid (maximum win, or the feature win during free spins). */
+  setFooter(text: string, x = 0, y = 0, visible = true): void {
+    this.footer.setText(text);
+    if (this.l) this.footer.setFontSize(`${Math.max(10 * DPR, Math.round(11.5 * this.l.ui))}px`);
+    if (x || y) this.footer.setPosition(x, y);
+    this.footer.setVisible(visible && text !== '');
+  }
+  setFooterText(text: string): void { this.footer.setText(text); }
 
   setBet(minor: number, buyPrice: number, buyEnabled: boolean): void {
     this.bet.setText(formatMoney(minor));
@@ -185,7 +208,8 @@ export class Hud {
   /** Multiplier M = base + sun bonus, with both parts readable. */
   setMultiplier(base: number, sun: number): void {
     const m = base + sun;
-    this.multSmall.setText(sun > 0 ? `${base} + ${sun}` : '');
+    this.multSmall.setText(sun > 0 ? `${base} + ${sun} ${t('sun')}` : '');
+    this.drawSunCrown(sun);
     this.multBig.setText(`×${m}`);
     if (m !== this.shownMult && this.l) {
       const up = m > this.shownMult;
@@ -198,10 +222,20 @@ export class Hud {
     }
   }
 
+  /** A crown of light around the multiplier that grows with the sun bonus (derived from the shown value only). */
+  private drawSunCrown(sun: number): void {
+    const g = this.crown.clear();
+    if (!this.l || sun <= 0) return;
+    const m = this.l.mult, k = Math.min(1, Math.log10(1 + sun) / 2.2), pad = (3 + 7 * k) * DPR;
+    for (let i = 3; i >= 1; i--) {
+      g.lineStyle(pad * i * 0.6, COLOR.goldBright, 0.1 + 0.16 * k);
+      g.strokeRoundedRect(m.x - pad * 0.3, m.y - pad * 0.3, m.w + pad * 0.6, m.h + pad * 0.6, this.l.portrait ? (m.h + pad * 0.6) / 2 : 16 * this.l.ui);
+    }
+  }
+
   /** Free-spin counter in the status bar; an empty text returns to the demo note. */
   setFreeSpins(text: string): void {
     this.fs.setText(text);
-    if (this.fsBox.w > 0 && this.fs.width > this.fsBox.w - this.fsBox.h * 0.6) this.fs.setText(text.replace(/^[A-Z ]+ (\d)/, 'FS $1'));
     const on = text !== '';
     if (on && !this.freeMode && !REDUCED_MOTION) this.scene.tweens.add({ targets: this.fs, scale: 1.25, duration: 140, yoyo: true });
     this.freeMode = on;
@@ -217,8 +251,13 @@ export class Hud {
   private applyFs(): void {
     this.fs.setVisible(this.freeMode);
     this.demo.setVisible(!this.freeMode);
+    this.logo?.setVisible(!this.freeMode);
     // The counter sits on its own gold-rimmed chip so it reads on any background.
     this.fsPlate.clear();
+    if (!this.freeMode && this.demoBox.h > 0) {
+      const b = this.demoBox, w = this.demo.width + 12 * (this.l?.ui ?? 1);
+      this.fsPlate.fillStyle(0x070a11, 0.7).fillRoundedRect(b.x, b.y, w, b.h, b.h / 2);
+    }
     if (this.freeMode && this.fsBox.w > 0) {
       const b = this.fsBox, w = Math.min(b.w, this.fs.width + b.h), x = b.x + (b.w - w) / 2;
       this.fsPlate.fillStyle(0x1a1408, 0.95).fillRoundedRect(x, b.y, w, b.h, b.h / 2)
@@ -236,6 +275,7 @@ export class Hud {
     this.spinBtn.setEnabled(busy || (!auto && canSpin));
     this.buyBtn.setEnabled(!busy && !auto && canBuy);
     this.minus.setEnabled(!busy && !auto);
+    if (busy || auto) this.betHit.disableInteractive(); else this.betHit.setInteractive({ useHandCursor: true });
     this.plus.setEnabled(!busy && !auto);
     this.infoBtn.setEnabled(!busy && !auto);
     this.autoBtn.setEnabled(auto || (!busy && canSpin)).setText(auto ? t('stop', { n: autoLeft }) : t('auto')).setAccent(auto ? COLOR.danger : COLOR.goldDark);

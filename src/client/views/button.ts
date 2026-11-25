@@ -19,6 +19,7 @@ export class Button extends Phaser.GameObjects.Container {
   private round = false;
   private glyph: Glyph | null = null;
   private accent: number = COLOR.goldDark;
+  private subScale = 0.95;
 
   constructor(scene: Phaser.Scene, text: string, private readonly onClick: () => void) {
     super(scene);
@@ -42,6 +43,8 @@ export class Button extends Phaser.GameObjects.Container {
     return this;
   }
   setGlyph(glyph: Glyph): this { this.glyph = glyph; this.draw(); return this; }
+  /** Size of the second line relative to the first (the buy button shows its price larger than its label). */
+  setSubScale(k: number): this { this.subScale = k; return this; }
   setAccent(color: number): this { this.accent = color; this.draw(); return this; }
 
   layout(x: number, y: number, w: number, h: number, fontPx: number): this {
@@ -49,7 +52,7 @@ export class Button extends Phaser.GameObjects.Container {
     if (this.round) this.bw = this.bh = Math.max(this.bw, this.bh);
     this.setPosition(Math.round(x), Math.round(y));
     this.label.setFontSize(`${Math.round(fontPx)}px`);
-    this.sub.setFontSize(`${Math.round(fontPx * 0.95)}px`);
+    this.sub.setFontSize(`${Math.round(fontPx * this.subScale)}px`);
     this.setSize(this.bw, this.bh);
     this.setInteractive({ useHandCursor: true });
     this.draw();

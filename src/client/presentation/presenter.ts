@@ -5,7 +5,7 @@ import type { Sfx } from '../audio/sfx.js';
 import type { Fx } from '../fx.js';
 import { t } from '../i18n.js';
 import { WIN_TIERS, formatMoney, winTier } from '../layout.js';
-import { COLOR, STATION_COLOR } from '../theme.js';
+import { COLOR, STATION_COLOR, STATION_NAMES } from '../theme.js';
 import type { BonusView } from '../views/bonus-view.js';
 import type { GridView } from '../views/grid-view.js';
 import type { Hud } from '../views/hud.js';
@@ -37,11 +37,13 @@ export class Presenter {
   private bet = 100;
   private station = 0;
   private picksInBonus = 0;
+  private bestMult = 1;
 
   constructor(private readonly scene: Phaser.Scene, private readonly cfg: GameConfig, private readonly v: Views) {}
 
   beginRound(bet: number): void {
-    this.bet = bet; this.win = 0; this.fsTotal = 0; this.treasure = 1; this.sun = 0; this.seals = 0; this.station = 0;
+    this.bet = bet; this.win = 0; this.fsTotal = 0; this.treasure = 1; this.sun = 0; this.seals = 0; this.station = 0; this.bestMult = 1;
+    this.v.hud.setFooterText(t('maxWinNote', { x: `${(this.cfg.maxWin / 100).toLocaleString('en-US')}×` }));
     this.v.hud.setWin(0);
     this.v.hud.setFreeSpins('');
     this.v.hud.setMultiplier(1, 0);
@@ -54,6 +56,7 @@ export class Presenter {
   private addWin(centibet: number): void {
     this.win = Math.min(this.cfg.maxWin, this.win + centibet);
     this.v.hud.setWin(this.money(this.win), true);
+    if (this.freeMode) this.v.hud.setFooterText(t('featureWin', { v: formatMoney(this.money(this.win - this.fsWinStart)) }));
   }
   private check(grid: number[]): void {
     const shown = this.v.grid.snapshot();
@@ -91,6 +94,7 @@ export class Presenter {
           break;
         case 'clustersWon':
           hud.setMultiplier(this.treasure, this.sun);
+          if (this.freeMode && e.multiplier > this.bestMult) this.bestMult = e.multiplier;
           sfx.play('win', Math.min(5, Math.floor(Math.log2(1 + e.win / 100))));
           await grid.showWin(e.clusters.map((c) => ({ symbol: c.symbol, cells: c.cells, label: `+${formatMoney(this.money(c.win))}` })));
           this.addWin(e.win);
@@ -142,8 +146,14 @@ export class Presenter {
             track.announce(t('fxSeal', { n: e.seals }), 5);
             await wait(this.scene, 350);
           } else {
-            track.announce(t('fxTemple'), 5, 1600);
-            await wait(this.scene, 450);
+            // The biggest moment of the base game: a pause, then light from the temple across the play field.
+            track.announce(t('fxTemple'), 5, 2200);
+            const from = track.worldOf(5), mid = grid.middle;
+            fx.raysBrief(from.x, from.y, Math.max(this.scene.scale.width, this.scene.scale.height) * 0.5, STATION_COLOR[4], 1100);
+            await wait(this.scene, 380);
+            await fx.fly(from, mid, STATION_COLOR[4], 420);
+            fx.ring(mid.x, mid.y, STATION_COLOR[4], 20, Math.max(this.scene.scale.width, this.scene.scale.height) * 0.6, 800);
+            await wait(this.scene, 420);
           }
           break;
         case 'spinEnded':
@@ -157,8 +167,11 @@ export class Presenter {
             this.fsWinStart = this.win;
             await grid.highlight(grid.cellsOf(6), COLOR.goldBright);
             // Change of scenery: into the temple.
-            await banner.wipe(0xffe9a8, () => { this.freeMode = true; this.v.setMode(true); hud.setFreeSpins(`${t('freeSpins')} ${e.total}`); });
-            await banner.show(t('fsAward', { n: e.spins }), 800);
+            await banner.wipe(0xffe9a8, () => { this.freeMode = true; this.v.setMode(true); hud.setFreeSpins(`${t('freeSpins')} ${e.total}`); track.setBaseCamp(e.baseCamp, true); track.setSeals(0, true); });
+            await banner.feature('gate', t('fsAward', { n: e.spins }), [
+              ...(e.baseCamp > 0 ? [t('fsCamp', { name: STATION_NAMES[e.baseCamp - 1] })] : []),
+              t('fsKept'),
+            ], 1500);
           } else {
             await grid.highlight(grid.cellsOf(6), COLOR.goldBright);
             hud.pulseFreeSpins();
@@ -169,10 +182,11 @@ export class Presenter {
         case 'templeBonusStarted':
           sfx.play('bonus');
           this.picksInBonus = 0;
-          bonus.show(
+          // Into the temple: a wash of white-gold light, and the chamber scene stands behind it.
+          await banner.wipe(0xfff1c4, () => bonus.show(
             e.tier === 'finale' ? `${t('finaleTitle')} · ${t(e.seals === 1 ? 'finaleSeals' : 'finaleSealsPl', { n: e.seals })}` : t('bonusTitle'),
             e.chambers, this.bet,
-          );
+          ));
           break;
         case 'chamberPicked':
           sfx.play('pick');
@@ -199,11 +213,13 @@ export class Presenter {
           const capped = e.totalWin >= this.cfg.maxWin;
           if (this.freeMode) {
             // Summary of the feature, then back to the jungle.
-            if (!capped) await banner.celebrate(t('fsDone') + '\n' + t('totalWin'), this.money(e.totalWin - this.fsWinStart), 1);
+            if (!capped) await banner.celebrate(t('fsDone') + '\n' + t('totalWin'), this.money(e.totalWin - this.fsWinStart), 1, undefined,
+              [t('fsBest', { m: this.bestMult }), ...(this.seals > 0 ? [t('fsSeals', { n: this.seals })] : [])].join('  ·  '));
             await banner.wipe(0x0b0e16, () => {
               this.freeMode = false; this.v.setMode(false);
               hud.setFreeSpins(''); track.setBaseCamp(0, false); track.setSeals(0, false);
               track.reset(0, 0); this.sun = 0; this.treasure = 1; hud.setMultiplier(1, 0);
+              hud.setFooterText(t('maxWinNote', { x: `${(this.cfg.maxWin / 100).toLocaleString('en-US')}×` }));
             });
           }
           const tier = winTier(e.totalWin);

@@ -6,7 +6,7 @@ import { Sfx } from '../audio/sfx.js';
 import { DPR, REDUCED_MOTION } from '../env.js';
 import { Fx } from '../fx.js';
 import { LANG, storeLang, t } from '../i18n.js';
-import { computeLayout, formatMoney, previewGrid } from '../layout.js';
+import { FRAME, computeLayout, formatMoney, previewGrid } from '../layout.js';
 import { PerfMeter, perfVerdict } from '../perf.js';
 import { Presenter } from '../presentation/presenter.js';
 import { MEASURED, historyHtml, paytableHtml, perfHtml, rulesHtml } from '../rules-text.js';
@@ -50,6 +50,8 @@ export class GameScene extends Phaser.Scene {
   private readonly loadErrors: string[] = [];
   private baseSpeed = 1;
   private pendingLayout = false;
+  private played = false;
+  private footerOk = true;
 
   constructor() { super('game'); }
 
@@ -92,6 +94,7 @@ export class GameScene extends Phaser.Scene {
       buy: () => void this.confirmBuy(),
       betDown: () => this.changeBet(-1),
       betUp: () => this.changeBet(1),
+      betPick: () => void this.pickBet(),
       info: () => { if (!this.busy && !this.overlayOpen) { this.input.enabled = false; this.info.show('rules'); } },
       auto: () => this.toggleAuto(),
       mute: () => { this.sfx.setMuted(!this.sfx.muted); this.hud.setMuted(this.sfx.muted); },
@@ -215,6 +218,8 @@ export class GameScene extends Phaser.Scene {
   private setMode(free: boolean): void {
     this.freeMode = free;
     if (this.bgFree) this.tweens.add({ targets: this.bgFree, alpha: free ? 1 : 0, duration: REDUCED_MOTION ? 0 : 500 });
+    // The temple interior is brighter than the jungle: a stronger veil keeps track and status bar as readable as in the base game.
+    if (this.shade) this.tweens.add({ targets: this.shade, fillAlpha: free ? 0.5 : 0.3, duration: REDUCED_MOTION ? 0 : 500 });
   }
 
   private relayout(): void {
@@ -232,7 +237,15 @@ export class GameScene extends Phaser.Scene {
     this.grid.layout(l.grid.x, l.grid.y, l.grid.cell);
     this.track.layout(l.track, l.ui, l.portrait ? l.mult.w : 0);
     this.hud.layout(l);
-    this.previewNote?.setFontSize(`${Math.max(10 * DPR, Math.round(11 * l.ui))}px`).setPosition(width / 2, l.grid.y + l.grid.cell * cfg.rows + l.grid.cell * 0.1);
+    // Free space under the grid: preview note before the first spin, afterwards the maximum win (or the feature win).
+    const gridBottom = l.grid.y + l.grid.cell * (cfg.rows + FRAME.bottom);
+    const gap = l.portrait ? l.winBar.y - gridBottom : 0;
+    const noteY = l.portrait ? gridBottom + gap / 2 : l.status.y + l.status.h / 2;
+    this.previewNote?.setFontSize(`${Math.max(10 * DPR, Math.round(11 * l.ui))}px`).setOrigin(0.5).setPosition(width / 2, noteY).setVisible(!this.played && gap >= 20 * l.ui);
+    this.hud.setFooter(t('maxWinNote', { x: `${(cfg.maxWin / 100).toLocaleString('en-US')}×` }), width / 2, noteY, this.played && (l.portrait ? gap >= 20 * l.ui : true));
+    if (!l.portrait) this.hud.setFooter(t('maxWinNote', { x: `${(cfg.maxWin / 100).toLocaleString('en-US')}×` }), l.status.x + l.status.w * 0.5, noteY, this.played);
+    this.footerOk = l.portrait ? gap >= 20 * l.ui : true;
+    this.fx.ambient(true);
     if (this.startLayer) { this.startLayer.destroy(); this.startLayer = null; this.showStart(); }
   }
 
@@ -251,6 +264,13 @@ export class GameScene extends Phaser.Scene {
     this.sfx.play('button');
     this.service.setBet(levels[i]);
     this.refreshHud();
+  }
+
+  private async pickBet(): Promise<void> {
+    if (this.busy || this.autoLeft > 0 || this.overlayOpen) return;
+    const levels = this.service.betLevels;
+    const i = await this.modal.choose(t('betTitle'), levels.map((b) => formatMoney(b)), levels.indexOf(this.service.bet));
+    if (i >= 0 && !this.busy) { this.sfx.play('button'); this.service.setBet(levels[i]); this.refreshHud(); }
   }
 
   private toggleAuto(): void {
@@ -282,6 +302,12 @@ export class GameScene extends Phaser.Scene {
     if (ok) await this.playRound('buy');
   }
 
+  /** After the first round the preview note makes way for the maximum-win line. */
+  private markPlayed(): void {
+    this.previewNote?.setVisible(false);
+    if (!this.played) { this.played = true; this.hud.setFooter(t('maxWinNote', { x: `${(this.service.config.maxWin / 100).toLocaleString('en-US')}×` }), 0, 0, this.footerOk); }
+  }
+
   private endRound(): void {
     this.setSpeed(this.baseSpeed);
     this.busy = false;
@@ -293,7 +319,7 @@ export class GameScene extends Phaser.Scene {
   private async playReplay(entry: HistoryEntry): Promise<void> {
     if (this.busy || this.overlayOpen) return;
     this.busy = true;
-    this.previewNote?.setVisible(false);
+    this.markPlayed();
     this.hud.setBusy(true, false, false);
     this.presenter.beginRound(entry.bet);
     await this.banner.show(t('replay'), 500);
@@ -305,7 +331,7 @@ export class GameScene extends Phaser.Scene {
   private async playRound(kind: RoundKind): Promise<void> {
     if (this.busy || this.overlayOpen || !this.service.canStart(kind)) return;
     this.busy = true;
-    this.previewNote?.setVisible(false);
+    this.markPlayed();
     const before = this.service.balance;
     const stake = this.service.stake(kind);
     this.presenter.beginRound(this.service.bet);

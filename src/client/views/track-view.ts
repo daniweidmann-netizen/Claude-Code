@@ -32,6 +32,8 @@ export class TrackView extends Phaser.GameObjects.Container {
   private sealsOn = false;
   private pulse: Phaser.Tweens.Tween | null = null;
   private captionLock = 0;
+  private capWide = 0;
+  private capNarrow = 0;
 
   constructor(scene: Phaser.Scene, private readonly need: number[], maxSeals: number, private readonly fx: Fx) {
     super(scene);
@@ -81,7 +83,9 @@ export class TrackView extends Phaser.GameObjects.Container {
       this.radius = R;
       const y = pad + (r.h - capH - 2 * pad) / 2 + pad * 0.5, left = pad + R * 0.45, right = r.w - pad - R;
       for (let i = 0; i <= 5; i++) this.pts.push({ x: left + (i * (right - left)) / 5, y });
-      this.caption.setOrigin(0, 0.5).setPosition(pad + 6 * ui, r.h - capH / 2 - pad / 2).setWordWrapWidth(r.w - reserve - 3 * pad - 8 * ui).setLineSpacing(-2 * ui);
+      this.caption.setOrigin(0, 0.5).setPosition(pad + 6 * ui, r.h - capH / 2 - pad / 2).setLineSpacing(-2 * ui);
+      this.capWide = r.w - reserve - 3 * pad - 8 * ui;
+      this.capNarrow = this.capWide - this.sealDots.length * 16 * ui - 46 * ui;
     }
     this.caption.setFontSize(`${Math.max(11 * DPR, Math.round(13 * ui))}px`);
     this.names.forEach((n, i) => {
@@ -131,7 +135,7 @@ export class TrackView extends Phaser.GameObjects.Container {
     }
     // Camp marker at the start.
     g.fillStyle(this.steps > 0 || this.station > 0 ? COLOR.gold : 0x4a5268, 1).fillCircle(this.pts[0].x, this.pts[0].y, this.radius * 0.2);
-    const s = this.radius * 0.17;
+    const s = this.radius * 0.27;
     for (const st of this.stones) {
       const on = this.steps >= st.step;
       g.fillStyle(on ? COLOR.goldBright : 0x2a3144, 1).lineStyle(Math.max(1, DPR), on ? COLOR.gold : 0x4a5268, 1);
@@ -139,6 +143,8 @@ export class TrackView extends Phaser.GameObjects.Container {
     }
     this.medals.forEach((m, i) => {
       const reached = i + 1 <= this.station;
+      // A reached station keeps a ring in its own colour; the active one pulses on top of it.
+      if (reached) g.lineStyle(Math.max(2, this.radius * 0.1), STATION_COLOR[i], 0.95).strokeCircle(this.pts[i + 1].x, this.pts[i + 1].y, this.radius * 1.06);
       if (m instanceof Phaser.GameObjects.Image) m.setTint(reached ? 0xffffff : 0x7a8298);
       else m.setFillStyle(reached ? STATION_COLOR[i] : COLOR.stoneLight);
       this.names[i]?.setColor(reached ? COLOR.win : COLOR.dim);
@@ -152,6 +158,7 @@ export class TrackView extends Phaser.GameObjects.Container {
     }
     this.sealDots.forEach((d, i) => d.setVisible(this.sealsOn).setFillStyle(i < this.seals ? COLOR.goldBright : 0x1d2431));
     this.sealLabel.setVisible(this.sealsOn);
+    if (this.capWide > 0) this.caption.setWordWrapWidth(this.sealsOn ? this.capNarrow : this.capWide);
     this.updatePulse();
     if (this.scene.time.now >= this.captionLock) this.caption.setText(this.nextText()).setColor(COLOR.text);
   }
@@ -182,11 +189,28 @@ export class TrackView extends Phaser.GameObjects.Container {
     while (this.station < to) {
       this.station++;
       this.redraw();
-      const m = this.medals[this.station - 1], p = this.worldOf(this.station), color = STATION_COLOR[this.station - 1];
-      this.fx.flash(p.x, p.y, color, this.radius * 2.6, 420);
-      this.fx.burst(p.x, p.y, color, 14);
+      const m = this.medals[this.station - 1], p = this.worldOf(this.station), color = STATION_COLOR[this.station - 1], R = this.radius;
+      this.fx.flash(p.x, p.y, color, R * 2.6, 420);
+      // Every station unlocks with its own gesture.
+      switch (this.station) {
+        case 1: // Discovery: the torch flares up
+          this.fx.burst(p.x, p.y - R * 0.3, color, 18); this.fx.burst(p.x, p.y - R * 0.9, 0xffe08a, 8);
+          break;
+        case 2: // Treasure: coins jump out of the chest
+          this.fx.coinsAt(p.x, p.y, 7); this.fx.burst(p.x, p.y, color, 8);
+          break;
+        case 3: // Ancient Power: a jade wave spreads from the eye
+          this.fx.ring(p.x, p.y, color, R, R * 3.4, 620); this.fx.ring(p.x, p.y, color, R, R * 2.2, 420);
+          break;
+        case 4: // Relic: sun rays turn behind the disc
+          this.fx.raysBrief(p.x, p.y, R * 3, color, 760); this.fx.burst(p.x, p.y, color, 10);
+          break;
+        default: // Temple: white-gold light, and the whole path answers
+          this.fx.raysBrief(p.x, p.y, R * 4.2, color, 900); this.fx.ring(p.x, p.y, color, R, R * 4, 700);
+          for (let i = 1; i <= 4; i++) { const q = this.worldOf(i); this.scene.time.delayedCall(i * 55, () => this.fx.flash(q.x, q.y, STATION_COLOR[i - 1], R * 1.8, 360)); }
+      }
       if (REDUCED_MOTION) await wait(this.scene, 170);
-      else await tween(this.scene, { targets: m, scale: m.scale * 1.28, duration: 130, yoyo: true, ease: 'Sine.easeOut' });
+      else await tween(this.scene, { targets: m, scale: m.scale * (this.station === 5 ? 1.4 : 1.28), duration: this.station === 5 ? 190 : 130, yoyo: true, ease: 'Sine.easeOut' });
     }
   }
 
@@ -194,6 +218,7 @@ export class TrackView extends Phaser.GameObjects.Container {
   announce(text: string, station: number, ms = 1300): void {
     const c = STATION_COLOR[station - 1] ?? COLOR.goldBright;
     this.caption.setText(text).setColor(`#${c.toString(16).padStart(6, '0')}`);
+    if (!REDUCED_MOTION) { this.caption.setAlpha(0.2); this.scene.tweens.add({ targets: this.caption, alpha: 1, duration: 160 }); }
     this.captionLock = this.scene.time.now + ms;
     this.scene.time.delayedCall(ms + 20, () => { if (this.scene.time.now >= this.captionLock) this.caption.setText(this.nextText()).setColor(COLOR.text); });
   }

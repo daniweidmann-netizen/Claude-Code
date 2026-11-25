@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { CONFIG_V1, findClusters } from '../../src/engine/index.js';
-import { computeLayout, formatMoney, formatMultiple, previewGrid, stonesBefore, winTier, type Rect } from '../../src/client/layout.js';
+import { FRAME, computeLayout, formatMoney, formatMultiple, previewGrid, stonesBefore, winTier, type Rect } from '../../src/client/layout.js';
 import { TEXT_KEYS, t } from '../../src/client/i18n.js';
 
 const inside = (a: Rect, w: number, h: number) => a.x >= 0 && a.y >= 0 && a.x + a.w <= w && a.y + a.h <= h;
@@ -14,7 +14,9 @@ describe('layout', () => {
       const w = cw * d, h = ch * d;
       it(`fits ${cw}×${ch} at density ${d} without overlap`, () => {
         const l = computeLayout(w, h, 6, 5);
-        const grid = { x: l.grid.x, y: l.grid.y, w: l.grid.cell * 6, h: l.grid.cell * 5 };
+        // The grid including its carved frame.
+        const c = l.grid.cell;
+        const grid = { x: l.grid.x - c * FRAME.side, y: l.grid.y - c * FRAME.top, w: c * (6 + 2 * FRAME.side), h: c * (5 + FRAME.top + FRAME.bottom) };
         const zones: Record<string, Rect> = { grid, status: l.status, track: l.track, mult: l.mult, winBar: l.winBar, controls: l.controls };
         const names = Object.keys(zones);
         for (const n of names) expect(inside(zones[n], w, h), n).toBe(true);
@@ -41,7 +43,7 @@ describe('layout', () => {
 
   it('uses the width for the grid on a current phone', () => {
     const l = computeLayout(393, 852, 6, 5);
-    expect(l.grid.cell).toBeGreaterThanOrEqual(61);
+    expect(l.grid.cell).toBeGreaterThanOrEqual(56);
   });
 
   it('formats money and multiples', () => {

@@ -33,7 +33,9 @@ async function finishRound(p, w, h) {
   let picksSeen = 0;
   // name, CSS width, CSS height, device pixel ratio, extra query
   // Large canvases get short runs: headless Chromium renders in software, which is slow at high resolution.
-  for (const [name, w, h, dsf, extra, rounds] of [['iphone15pro', 393, 852, 1, '', 40], ['landscape', 1280, 720, 1, '', 9], ['small', 360, 640, 1, '&motion=reduced', 24], ['iphoneSE', 375, 667, 1, '&lang=de', 16], ['phoneLandscape', 852, 393, 1, '', 9], ['hidpi', 393, 852, 3, '', 4]]) {
+  // SMOKE_QUICK=1: one phone format and three bonus rounds, for every change; the full run before hand-overs.
+  const QUICK = !!process.env.SMOKE_QUICK;
+  for (const [name, w, h, dsf, extra, rounds] of QUICK ? [['iphone15pro', 393, 852, 1, '', 16]] : [['iphone15pro', 393, 852, 1, '', 40], ['landscape', 1280, 720, 1, '', 9], ['small', 360, 640, 1, '&motion=reduced', 24], ['iphoneSE', 375, 667, 1, '&lang=de', 16], ['phoneLandscape', 852, 393, 1, '', 9], ['hidpi', 393, 852, 3, '', 4]]) {
     const p = await browser.newPage({ viewport: { width: w, height: h }, deviceScaleFactor: dsf });
     p.on('console', (m) => { if (m.type() === 'error') problems.push(`${name}: ${m.text()}`); });
     p.on('pageerror', (e) => problems.push(`${name}: ${e.message}`));
@@ -130,7 +132,7 @@ async function finishRound(p, w, h) {
     return found;
   };
   let bonusRounds = 0;
-  for (const [kind, seeds] of [['spin', seedsFor(false, 6)], ['buy', seedsFor(true, 3)]]) {
+  for (const [kind, seeds] of [['spin', seedsFor(false, QUICK ? 2 : 6)], ['buy', seedsFor(true, QUICK ? 1 : 3)]]) {
     for (const seed of seeds) {
       const w = 393, h = 852;
       const p = await browser.newPage({ viewport: { width: w, height: h } });
