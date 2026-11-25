@@ -85,6 +85,11 @@ async function finishRound(p, w, h) {
       if (s.freeMode) problems.push(`${name}: round ${i} still in free-spin scenery after the round`);
     }
     if (out) await p.screenshot({ path: `${out}/${name}_end.png` });
+    // Audio: after the first click all 13 effects and both music loops must be loaded and decoded.
+    await p.mouse.click(w / 2, h * 0.02);
+    await p.waitForFunction(() => window.__tls.state().audioLoaded + window.__tls.state().audioFailed.length >= 15, null, { timeout: 60000 }).catch(() => undefined);
+    const audio = await p.evaluate(() => window.__tls.state());
+    if (audio.audioLoaded !== 15 || audio.audioFailed.length) problems.push(`${name}: audio loaded ${audio.audioLoaded}/15, failed: ${audio.audioFailed}`);
 
     // Autoplay: ten rounds, books still exact, controls return afterwards.
     const before = await p.evaluate(() => window.__tls.state().rounds);

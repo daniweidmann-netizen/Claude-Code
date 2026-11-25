@@ -100,7 +100,7 @@ export class GameScene extends Phaser.Scene {
       mute: () => { this.sfx.setMuted(!this.sfx.muted); this.hud.setMuted(this.sfx.muted); },
     }, this.fx);
     this.hud.setMuted(this.sfx.muted);
-    this.input.on('pointerdown', () => this.sfx.unlock());
+    this.input.on('pointerdown', () => { this.sfx.unlock(); this.sfx.music(this.freeMode ? 'free' : 'base'); });
     this.modal = new Modal(this);
     this.bonus = new BonusView(this, this.fx);
     this.banner = new Banner(this, this.fx);
@@ -156,7 +156,7 @@ export class GameScene extends Phaser.Scene {
       state: () => ({
         dpr: DPR, reducedMotion: REDUCED_MOTION, lang: LANG, loadErrors: this.loadErrors, textureSize: this.grid.textureSize,
         canvas: [this.scale.width, this.scale.height], started: this.started, freeMode: this.freeMode, fxLevel: this.fx.level,
-        replays: this.replays, perf: this.perf.stats, caption: this.track.captionText,
+        replays: this.replays, perf: this.perf.stats, audioLoaded: this.sfx.loadedCount, audioFailed: this.sfx.failed, caption: this.track.captionText,
         busy: this.busy, rounds: this.rounds, autoLeft: this.autoLeft, info: this.info.isOpen, balance: this.service.balance, bet: this.service.bet,
         modal: this.bonus.open, dialog: this.modal.open, mismatches: this.presenter.mismatches, distortion: this.presenter.distortion,
         grid: this.grid.snapshot(), history: this.service.history().slice(0, 5),
@@ -217,6 +217,7 @@ export class GameScene extends Phaser.Scene {
   /** Scenery for base game or free spins (cross-fade of the two backgrounds). */
   private setMode(free: boolean): void {
     this.freeMode = free;
+    this.sfx.music(free ? 'free' : 'base');
     if (this.bgFree) this.tweens.add({ targets: this.bgFree, alpha: free ? 1 : 0, duration: REDUCED_MOTION ? 0 : 500 });
     // The temple interior is brighter than the jungle: a stronger veil keeps track and status bar as readable as in the base game.
     if (this.shade) this.tweens.add({ targets: this.shade, fillAlpha: free ? 0.5 : 0.3, duration: REDUCED_MOTION ? 0 : 500 });

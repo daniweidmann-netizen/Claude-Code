@@ -132,6 +132,30 @@ Die ersten Fassungen der drei Tore (`raw/door_sun.png`, `door_jade.png`, `door_m
 
 **Offene Gestaltungspunkte:** Die offenen Tore zeigen die Innenseiten der Torflügel mit einem gespiegelten Emblem (bei der Jadekammer zwei Maskenhälften); ob das als Fehler gelesen wird, ist nicht geprüft. Der Rahmen trägt an den Ecken Jade- und Türkis-Steine in einem etwas helleren Grün als die Symbole.
 
-### Ton (ElevenLabs) – erzeugt, noch nicht im Projekt
+### Ton (ElevenLabs)
 
-Am 2026-11-25 wurden über das verbundene ElevenLabs-Konto 13 Soundeffekte (`eleven_text_to_sound_v2`, je rund 17 Credits) und 2 Musikstücke (`eleven_music_v2`, je 900 Credits) erzeugt, zusammen rund 2 020 Credits. **Die Dateien sind noch nicht heruntergeladen und nicht eingebunden**: Der Download vom Speicher-Host wurde in dieser Sitzung abgelehnt. Sie liegen im ElevenLabs-Konto (Flows `5u9GnUbCe94xmInirxam` und `pyncmsTd5EqAqJcZZohH`). Die Nutzungsbedingungen von ElevenLabs für kommerzielle Verwendung und Weiterlizenzierung sind nicht geprüft. Bis dahin nutzt das Spiel weiter die zur Laufzeit synthetisierten Platzhaltertöne.
+Erzeugt am 2026-11-25 über das verbundene ElevenLabs-Konto des Auftraggebers; heruntergeladen nach ausdrücklicher Zustimmung. Kosten: 13 Effekte je rund 17 Credits, 2 Musikstücke je 900 Credits, zusammen rund 2 020 Credits.
+
+**Nicht geprüft:** Nutzungsbedingungen von ElevenLabs für kommerzielle Verwendung und Weiterlizenzierung; Schutzfähigkeit KI-erzeugter Musik. **Niemand hat die Dateien angehört** – ich kann keinen Ton wiedergeben. Bei der Musik meldete das Werkzeug die Einstellung «Instrumental: False», obwohl «no vocals» verlangt war; ob Gesang enthalten ist, muss der Auftraggeber anhören.
+
+| Datei (`public/audio/`) | Roh (`assets/audio/raw/`) | Modell | Länge | Auftrag (gekürzt) |
+|---|---|---|---|---|
+| `spin.mp3` | `spin.mp3` | `eleven_text_to_sound_v2` | 0,9 s | leises Rauschen fallender Steinplatten |
+| `land.mp3` | `land.mp3` | ebenso | 0,6 s | kleine Steine landen auf einer Steinplatte |
+| `win.mp3` | `win.mp3` | ebenso | 1,3 s | drei aufsteigende warme Glockentöne |
+| `winMid.mp3` | `winMid.mp3` | ebenso | 1,9 s | aufsteigendes Harfen- und Glocken-Arpeggio |
+| `remove.mp3` | `remove.mp3` | ebenso | 0,7 s | Edelsteine zerfallen zu glitzerndem Staub |
+| `step.mp3` | `step.mp3` | ebenso | 0,5 s | einzelner leiser Stein-Tick |
+| `station.mp3` | `station.mp3` | ebenso | 1,75 s | Bronzeglocke mit aufsteigendem Schimmer |
+| `relic.mp3` | `relic.mp3` | ebenso | 1,8 s | schimmernde hohe Glocken, anschwellend |
+| `bonus.mp3` | `bonus.mp3` | ebenso | 0,5 s | tiefer Gong (verlangt waren 2,5 s; geliefert 0,5 s) |
+| `door.mp3` | `door.mp3` | ebenso | 2,0 s | schweres Steintor öffnet sich, Lichtstoss |
+| `freeSpins.mp3` | `freeSpins.mp3` | ebenso | 2,0 s | kurze triumphale Fanfare |
+| `bigWin.mp3` | `bigWin.mp3` | ebenso | 1,0 s | Orchesterschlag mit Münzen (verlangt waren 4 s; geliefert 1 s) |
+| `button.mp3` | `button.mp3` | ebenso | 0,3 s | kurzer Klick (aus 6 s zugeschnitten) |
+| `music_base.mp3` | `music_base.mp3` | `eleven_music_v2` | 45 s | ruhige, geheimnisvolle Schleife, etwa 80 bpm |
+| `music_free.mp3` | `music_free.mp3` | ebenso | 45 s | treibende, heroische Schleife, etwa 120 bpm |
+
+**Bearbeitung (automatisch, `tools/assets/audio.sh`):** Stille am Anfang entfernt, Länge begrenzt mit kurzem Ausblenden, Lautheit angeglichen, Effekte mono 96 kbit/s, Musik stereo 112 kbit/s mit kurzen Blenden an beiden Enden für die Schleife. Die Schleifen sind nicht auf Taktgrenzen geschnitten; ein hörbarer Übergang ist möglich.
+
+Fällt eine Datei aus, spielt das Spiel für dieses Ereignis den im Code synthetisierten Ersatzton (`src/client/audio/sfx.ts`).
