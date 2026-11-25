@@ -39,6 +39,13 @@ KI-erzeugt, nicht von Hand überarbeitet; Rechtslage wie bei allen KI-Bildern of
 - Kein Relikt im Temple Finale als eigener Moment (das Finale beginnt direkt nach den Free Spins;
   dort flankiert es nur den Titel).
 
-## Prüfung
+## Tests
 
-Siehe Abschnitt «Tests» am Ende dieses Dokuments.
+| Prüfung | Ergebnis |
+|---|---|
+| Engine, Sitzungsschicht, Konfiguration | unverändert (0 geänderte Zeilen, Hash-Test bestanden) |
+| 86 automatische Tests | bestanden |
+| Sichtprüfung per Bildschirmfoto (Handyformat, Seed 1168): Aufstieg über dem Spielfeld, Titel-Embleme, Relic Bonus in einer Kammer, Regeleintrag | durchgeführt, ohne Konsolenfehler |
+| Sichtprüfung Relikt-Moment auf dem Spielfeld (Seed 57) | durchgeführt (mit dem Stationsmedaillon vor dem Bildwechsel; mit dem neuen Bild nicht erneut aufgenommen) |
+| Volltest in sechs Formaten mit dem neuen Bild | bestanden (sechs Formate, 102 Runden, 9 Bonusrunden und 15 Kammerwahlen über die Oberfläche) |
+| Echte Geräte | offen |

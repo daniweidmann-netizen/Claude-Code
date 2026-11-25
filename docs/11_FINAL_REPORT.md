@@ -53,15 +53,15 @@ Es wurde kein Fehler in Spiellogik oder Buchführung gefunden.
 
 | Prüfung | Ergebnis |
 |---|---|
-| Typprüfung, 82 automatische Tests (Engine, Sitzung, Layout, Regeltexte, Zeiten) | bestanden |
+| Typprüfung, 86 automatische Tests (Stand nach der Regelbestätigung; beim Final-Polish 82) (Engine, Sitzung, Layout, Regeltexte, Zeiten) | bestanden |
 | Engine, Sitzungsschicht und Konfiguration gegenüber dem Stand vor der Oberflächenarbeit | 0 geänderte Zeilen |
 | Titelbildschirm und Layout in fünf Formaten | bestanden |
 | Walzenwechsel: geringste Zahl Symbole im Feld über 484 geprüfte Bilder | 27 von 30 (Grenze 24: eine Reihe quert gerade den Rand) |
 | Präsentationsmodus: alle vier Schritte, Raster gleich Ereignisprotokoll, Guthaben und Verlauf unverändert, danach normales Spiel möglich | bestanden |
 | Schnelltest (16 Runden mit Bonus, Handyformat) | bestanden |
-| Volltest in sechs Formaten | läuft, Ergebnis wird nachgetragen |
-| Langzeittest | läuft, Ergebnis wird nachgetragen |
-| Zeitmessung der drei Modi | läuft, Ergebnis wird nachgetragen |
+| Volltest in sechs Formaten | Erster Lauf **fehlgeschlagen**: im Querformat überlappte der Free-Spins-Zähler die Tempo-Knöpfe (Fehler aus der Tempo-Umstellung, bis dahin unentdeckt). Behoben; Wiederholung: bestanden (sechs Formate, 102 Runden, 9 Bonusrunden und 15 Kammerwahlen über die Oberfläche) |
+| Langzeittest | bestanden: 300 Runden, Speicher 18,9–19,8 MB ohne Anstieg, 47 Objekte, keine hängenden Animationen |
+| Zeitmessung der drei Modi | bestanden: Gewinn je Seed in allen Modi identisch. Free Spin ohne Gewinn im Handyformat: Normal 3,5 s · Fast 2,2 s · Skip 1,5 s (bei nur 16–17 Bildern/s im Testbrowser; auf Geräten kürzer) |
 | Sichtprüfung per Bildschirmfoto: Titel, Walzenwechsel, Relikt-Moment, letzte Free Spins, Abschlusstafel, vier Demonstrationsschritte | durchgeführt |
 
 Alle Browser-Tests laufen in Chromium ohne Grafikkarte (9–17 Bilder pro Sekunde). Sie belegen
@@ -182,7 +182,7 @@ Nützliche Adresszusätze: `?demo=1` (Demonstration), `?lang=de`, `?speed=normal
 **Automatische Prüfungen** (bei laufender Vorschau auf Port 4173):
 
 ```bash
-npm run typecheck && npm test       # 82 Tests
+npm run typecheck && npm test       # 86 Tests
 npm run e2e:quick                   # 16 Runden im Handyformat
 npm run e2e:final                   # Titel, fünf Formate, Walzenwechsel, Demonstration
 npm run e2e                         # Volltest in sechs Formaten (langsam)
