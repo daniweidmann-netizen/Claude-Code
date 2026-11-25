@@ -149,10 +149,12 @@ Erzeugt am 2026-11-25 über das verbundene ElevenLabs-Konto des Auftraggebers; h
 | `step.mp3` | `step.mp3` | ebenso | 0,5 s | einzelner leiser Stein-Tick |
 | `station.mp3` | `station.mp3` | ebenso | 1,75 s | Bronzeglocke mit aufsteigendem Schimmer |
 | `relic.mp3` | `relic.mp3` | ebenso | 1,8 s | schimmernde hohe Glocken, anschwellend |
-| `bonus.mp3` | `bonus.mp3` | ebenso | 0,5 s | tiefer Gong (verlangt waren 2,5 s; geliefert 0,5 s) |
+| `bonus.mp3` | `bonus_v2.mp3` | ebenso | 1,0 s | tiefer Tempelgong mit aufsteigendem Schimmer; zweite Fassung vom 25.11.2026 (verlangt waren 3 s, geliefert 1 s). Die erste Fassung `bonus.mp3` (0,5 s) liegt nur noch als Rohdatei vor |
 | `door.mp3` | `door.mp3` | ebenso | 2,0 s | schweres Steintor öffnet sich, Lichtstoss |
 | `freeSpins.mp3` | `freeSpins.mp3` | ebenso | 2,0 s | kurze triumphale Fanfare |
 | `bigWin.mp3` | `bigWin.mp3` | ebenso | 1,0 s | Orchesterschlag mit Münzen (verlangt waren 4 s; geliefert 1 s) |
+| `retrigger.mp3` | `retrigger.mp3` | ebenso | 1,6 s | kurzer heller Belohnungsakzent für zusätzliche Free Spins: aufsteigende Glocken, kleiner Trommelwirbel (25.11.2026; im Register nachgetragen am 25.11.2026) |
+| `complete.mp3` | `complete.mp3` | ebenso | 2,0 s | Abschlussakzent des Features: warmer auflösender Akkord mit Hörnern, Harfenglissando, Glöckchen (25.11.2026; nachgetragen) |
 | `button.mp3` | `button.mp3` | ebenso | 0,3 s | kurzer Klick (aus 6 s zugeschnitten) |
 | `music_base.mp3` | `music_base.mp3` | `eleven_music_v2` | 45 s | ruhige, geheimnisvolle Schleife, etwa 80 bpm |
 | `music_free.mp3` | `music_free.mp3` | ebenso | 45 s | treibende, heroische Schleife, etwa 120 bpm |
