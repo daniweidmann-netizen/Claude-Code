@@ -13,6 +13,8 @@ export interface Layout {
   mult: Rect;
   /** Top-left corner of the grid and the edge length of one cell. */
   grid: { x: number; y: number; cell: number };
+  /** Speed selector (Normal / Fast / Skip); in portrait a row under the grid, in landscape the middle of the status bar. */
+  speed: Rect;
   /** Balance and win. */
   winBar: Rect;
   /** Bet, spin, auto, buy. */
@@ -32,9 +34,10 @@ export function computeLayout(w: number, h: number, cols: number, rows: number):
     const trackY = status.y + status.h + u(6);
     const controls = { x: m, y: h - m - u(116), w: w - 2 * m, h: u(116) };
     const winBar = { x: m, y: controls.y - u(8) - u(46), w: w - 2 * m, h: u(46) };
-    const bottom = winBar.y - u(10);
+    const speed = { x: m, y: winBar.y - u(8) - u(44), w: w - 2 * m, h: u(44) };
+    const bottom = speed.y - u(8);
     // The grid is usually limited by the width; spare height goes to the Expedition Track (the game's signature).
-    const minTrack = u(92), maxTrack = u(132);
+    const minTrack = u(88), maxTrack = u(132);
     const fv = FRAME.top + FRAME.bottom;
     const cell = Math.floor(Math.min((w - m) / (cols + 2 * FRAME.side), (bottom - trackY - minTrack - u(10)) / (rows + fv)));
     const spare = bottom - trackY - u(10) - cell * (rows + fv);
@@ -44,7 +47,7 @@ export function computeLayout(w: number, h: number, cols: number, rows: number):
     const mult = { x: track.x + track.w - multW - u(6), y: track.y + track.h - multH - u(6), w: multW, h: multH };
     const top = track.y + track.h + u(10);
     const grid = { x: Math.round((w - cell * cols) / 2), y: Math.round(top + (bottom - top - cell * (rows + fv)) / 2 + cell * FRAME.top), cell };
-    return { portrait, ui, status, track, mult, grid, winBar, controls };
+    return { portrait, ui, status, track, mult, grid, speed, winBar, controls };
   }
   const ui = Math.min(w / 900, h / 440);
   const u = (n: number) => Math.round(n * ui);
@@ -60,7 +63,9 @@ export function computeLayout(w: number, h: number, cols: number, rows: number):
   const rw = Math.min(sideW, w - m - rx);
   const mult = { x: rx, y: gy, w: rw, h: Math.min(u(110), Math.floor(cell * rows * 0.45)) };
   const winBar = { x: rx, y: mult.y + mult.h + u(8), w: rw, h: Math.min(u(120), cell * rows - mult.h - u(8)) };
-  return { portrait, ui, status, track, mult, grid: { x: gx, y: gy, cell }, winBar, controls };
+  const speedW = u(190);
+  const speed = { x: Math.round(w / 2 - speedW / 2), y: status.y, w: speedW, h: status.h };
+  return { portrait, ui, status, track, mult, grid: { x: gx, y: gy, cell }, speed, winBar, controls };
 }
 
 /** Formats currency minor units as a plain decimal amount. */

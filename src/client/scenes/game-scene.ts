@@ -12,6 +12,7 @@ import { Presenter } from '../presentation/presenter.js';
 import { AUTO_NOTE, MEASURED, historyHtml, paytableHtml, perfHtml, rulesHtml, settingsHtml } from '../rules-text.js';
 import { createPlaceholderTextures, preloadReferenceArt } from '../textures.js';
 import { COLOR, DEPTH, DISPLAY, TEXT } from '../theme.js';
+import { MAX_SCENE_SCALE, SPEED_SCALE, parseSpeedMode, type SpeedMode } from '../timing.js';
 import { InfoPanel } from '../ui/info-panel.js';
 import { BonusView } from '../views/bonus-view.js';
 import { GridView } from '../views/grid-view.js';
@@ -19,7 +20,7 @@ import { Hud } from '../views/hud.js';
 import { Banner, Modal } from '../views/overlays.js';
 import { TrackView } from '../views/track-view.js';
 
-const TURBO = 4;
+const SPEED_KEY = 'tls.speed';
 /** Rounds per autoplay run (demo only). It stops early when a round cannot be paid; a chamber pick always waits for the player. */
 const AUTO_ROUNDS = AUTO_NOTE;
 
@@ -48,13 +49,18 @@ export class GameScene extends Phaser.Scene {
   private readonly perf = new PerfMeter();
   private readonly sfx = new Sfx();
   private readonly loadErrors: string[] = [];
-  private baseSpeed = 1;
+  /** Chosen speed mode (a harmless display preference, stored in the browser). */
+  private speedMode: SpeedMode = 'normal';
+  /** Test override of the time scale (?fast=n); 0 = none. */
+  private testScale = 0;
+  /** True while the player has asked to rush the round that is being shown. */
+  private rushing = false;
+  private sceneCap = false;
   private pendingLayout = false;
   private drift: Phaser.Tweens.Tween | null = null;
   /** True once the player chose an effect level; the automatic step-down then stays out of the way. */
   private fxPinned = false;
   private played = false;
-  private footerOk = true;
 
   constructor() { super('game'); }
 
@@ -93,7 +99,8 @@ export class GameScene extends Phaser.Scene {
     this.grid = new GridView(this, cfg.cols, cfg.rows, this.fx);
     this.track = new TrackView(this, cfg.stationSteps, cfg.freeSpins.maxSeals, this.fx);
     this.hud = new Hud(this, {
-      spin: () => { if (this.busy) this.setSpeed(TURBO); else void this.playRound('spin'); },
+      spin: () => { if (this.busy) this.rush(); else void this.playRound('spin'); },
+      speed: (mode) => this.setSpeedMode(mode),
       buy: () => void this.confirmBuy(),
       betDown: () => this.changeBet(-1),
       betUp: () => this.changeBet(1),
@@ -110,7 +117,9 @@ export class GameScene extends Phaser.Scene {
     this.presenter = new Presenter(this, cfg, {
       grid: this.grid, track: this.track, hud: this.hud, banner: this.banner, bonus: this.bonus, sfx: this.sfx, fx: this.fx,
       setMode: (free) => this.setMode(free),
-      normalSpeed: () => this.setSpeed(this.baseSpeed),
+      normalSpeed: () => { this.sceneCap = true; this.applySpeed(); },
+      resumeSpeed: () => { this.sceneCap = false; this.applySpeed(); },
+      scale: () => this.time.timeScale,
     });
     this.previewNote = this.add.text(0, 0, t('preview'), { fontFamily: TEXT, fontSize: '12px', color: COLOR.dim }).setOrigin(0.5, 0).setDepth(DEPTH.hud);
 
@@ -147,15 +156,20 @@ export class GameScene extends Phaser.Scene {
 
     // Tapping the play field while a round is presented speeds it up; outcomes are already fixed.
     this.input.on('pointerdown', (_p: Phaser.Input.Pointer, over: Phaser.GameObjects.GameObject[]) => {
-      if (this.busy && !this.overlayOpen && over.length === 0) this.setSpeed(TURBO);
+      if (this.busy && !this.overlayOpen && over.length === 0) this.rush();
     });
     this.input.keyboard?.on('keydown-SPACE', () => {
       if (this.info.isOpen) return;
       if (!this.started) { this.dismissStart(); return; }
-      if (this.busy) this.setSpeed(TURBO); else if (this.autoLeft === 0) void this.playRound('spin');
+      if (this.busy) this.rush(); else if (this.autoLeft === 0) void this.playRound('spin');
     });
-    if (params.get('fast') !== null) this.baseSpeed = Number(params.get('fast')) || TURBO;
-    this.setSpeed(this.baseSpeed);
+    if (params.get('fast') !== null) this.testScale = Number(params.get('fast')) || 4;
+    let stored: string | null = null;
+    try { stored = window.localStorage.getItem(SPEED_KEY); } catch { /* storage unavailable */ }
+    // Normal is the default on first start; ?speed= sets the mode for demonstrations and tests.
+    this.speedMode = parseSpeedMode(params.get('speed')) ?? parseSpeedMode(stored) ?? 'normal';
+    this.hud.setSpeedMode(this.speedMode);
+    this.applySpeed();
     if (params.get('start') === '0' || seedParam !== null) { this.started = true; } else this.showStart();
 
     // Read-only hook for automated end-to-end tests.
@@ -164,6 +178,7 @@ export class GameScene extends Phaser.Scene {
       state: () => ({
         dpr: DPR, reducedMotion: REDUCED_MOTION, lang: LANG, loadErrors: this.loadErrors, textureSize: this.grid.textureSize,
         canvas: [this.scale.width, this.scale.height], started: this.started, freeMode: this.freeMode, fxLevel: this.fx.level,
+        speedMode: this.speedMode, timeScale: this.time.timeScale, spinLog: this.presenter.spinLog.slice(-40), outroMs: this.presenter.outroMs,
         replays: this.replays, perf: this.perf.stats, volume: this.sfx.volume, objects: this.children.length, tweens: this.tweens.getTweens().length, audioLoaded: this.sfx.loadedCount, audioFailed: this.sfx.failed, caption: this.track.captionText,
         busy: this.busy, rounds: this.rounds, autoLeft: this.autoLeft, info: this.info.isOpen, balance: this.service.balance, bet: this.service.bet,
         modal: this.bonus.open, dialog: this.modal.open, mismatches: this.presenter.mismatches, distortion: this.presenter.distortion,
@@ -192,6 +207,30 @@ export class GameScene extends Phaser.Scene {
   }
 
   private setSpeed(s: number): void { this.tweens.timeScale = s; this.time.timeScale = s; }
+
+  /**
+   * One place decides the time scale: the chosen mode, a temporary rush of the
+   * current round, and the cap for scenes whose results must be read (Temple
+   * Bonus, feature summary). Only presentation is scaled; the round is already decided.
+   */
+  private applySpeed(): void {
+    let s = this.testScale > 0 ? this.testScale : SPEED_SCALE[this.speedMode];
+    if (this.rushing && this.testScale === 0) s = Math.max(s, SPEED_SCALE.skip);
+    if (this.sceneCap && this.testScale === 0) s = Math.min(s, MAX_SCENE_SCALE);
+    this.setSpeed(s);
+  }
+
+  /** Changing the mode takes effect at once, also in the middle of an animation. */
+  private setSpeedMode(mode: SpeedMode): void {
+    this.speedMode = mode;
+    try { window.localStorage.setItem(SPEED_KEY, mode); } catch { /* storage unavailable */ }
+    this.hud.setSpeedMode(mode);
+    this.sfx.play('button');
+    this.applySpeed();
+  }
+
+  /** Tap on the sun disc or the play field during a round: show the rest of this round at skip pace. */
+  private rush(): void { this.rushing = true; this.applySpeed(); }
 
   /** Start screen over the preview grid: large logo and one clear action. */
   private showStart(): void {
@@ -246,14 +285,9 @@ export class GameScene extends Phaser.Scene {
     this.grid.layout(l.grid.x, l.grid.y, l.grid.cell);
     this.track.layout(l.track, l.ui, l.portrait ? l.mult.w : 0);
     this.hud.layout(l);
-    // Free space under the grid: preview note before the first spin, afterwards the maximum win (or the feature win).
-    const gridBottom = l.grid.y + l.grid.cell * (cfg.rows + FRAME.bottom);
-    const gap = l.portrait ? l.winBar.y - gridBottom : 0;
-    const noteY = l.portrait ? gridBottom + gap / 2 : l.status.y + l.status.h / 2;
-    this.previewNote?.setFontSize(`${Math.max(10 * DPR, Math.round(11 * l.ui))}px`).setOrigin(0.5).setPosition(width / 2, noteY).setVisible(!this.played && gap >= 20 * l.ui);
-    this.hud.setFooter(t('maxWinNote', { x: `${(cfg.maxWin / 100).toLocaleString('en-US')}×` }), width / 2, noteY, this.played && (l.portrait ? gap >= 20 * l.ui : true));
-    if (!l.portrait) this.hud.setFooter(t('maxWinNote', { x: `${(cfg.maxWin / 100).toLocaleString('en-US')}×` }), l.status.x + l.status.w * 0.5, noteY, this.played);
-    this.footerOk = l.portrait ? gap >= 20 * l.ui : true;
+    // Beside the speed selector: the preview note before the first spin, afterwards the maximum win (or the feature win).
+    this.previewNote?.setVisible(false);
+    this.hud.setFooterText(this.played ? t('maxWinNote', { x: `${(cfg.maxWin / 100).toLocaleString('en-US')}×` }) : t('preview'));
     this.fx.ambient(true);
     // Living scenery: sunlight breathing behind the temple's sun disc and a very slow drift of the background.
     this.fx.sunShafts(width / 2, l.portrait ? height * 0.07 : height * 0.02, Math.max(width, height) * 0.55);
@@ -323,11 +357,12 @@ export class GameScene extends Phaser.Scene {
   /** After the first round the preview note makes way for the maximum-win line. */
   private markPlayed(): void {
     this.previewNote?.setVisible(false);
-    if (!this.played) { this.played = true; this.hud.setFooter(t('maxWinNote', { x: `${(this.service.config.maxWin / 100).toLocaleString('en-US')}×` }), 0, 0, this.footerOk); }
+    this.played = true;
   }
 
   private endRound(): void {
-    this.setSpeed(this.baseSpeed);
+    this.rushing = false; this.sceneCap = false;
+    this.applySpeed();
     this.busy = false;
     if (this.pendingLayout) this.relayout();
     this.refreshHud();
@@ -360,7 +395,6 @@ export class GameScene extends Phaser.Scene {
     this.hud.spinKick();
     await this.presenter.play(step.events);
     while (!step.done) {
-      this.setSpeed(this.baseSpeed);
       const chamber = await this.bonus.waitPick(step.availableChambers, this.presenter.pickedInBonus);
       step = this.service.pick(chamber);
       await this.presenter.play(step.events);

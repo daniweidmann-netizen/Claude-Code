@@ -3,6 +3,7 @@ import { DPR, REDUCED_MOTION } from '../env.js';
 import type { Fx } from '../fx.js';
 import { t } from '../i18n.js';
 import { formatMoney, type Layout } from '../layout.js';
+import { SPEED_MODES, type SpeedMode } from '../timing.js';
 import { COLOR, DEPTH, DISPLAY, TEXT } from '../theme.js';
 import { Button } from './button.js';
 import { countUp } from './overlays.js';
@@ -16,6 +17,7 @@ export interface HudActions {
   mute(): void;
   auto(): void;
   betPick(): void;
+  speed(mode: SpeedMode): void;
 }
 
 /**
@@ -43,8 +45,13 @@ export class Hud {
   readonly infoBtn: Button;
   readonly autoBtn: Button;
   readonly muteBtn: Button;
+  /** Normal / Fast / Skip; the active one carries the bright rim. */
+  readonly speedBtns: Button[];
+  private speedMode: SpeedMode = 'normal';
+  private fsTense = false;
   private l: Layout | null = null;
   private fsBox = { x: 0, y: 0, w: 0, h: 0 };
+  private footerBox = { x: 0, y: 0, w: 0, on: false };
   private demoBox = { x: 0, y: 0, h: 0 };
   private readonly fsPlate: Phaser.GameObjects.Graphics;
   private readonly crown: Phaser.GameObjects.Graphics;
@@ -86,6 +93,8 @@ export class Hud {
     this.infoBtn = b(new Button(scene, '', actions.info).asRound('info'));
     this.muteBtn = b(new Button(scene, '', actions.mute).asRound('sound'));
     this.autoBtn = b(new Button(scene, t('auto'), actions.auto));
+    const speedLabel = { normal: t('speedNormal'), fast: t('speedFast'), skip: t('speedSkip') } as const;
+    this.speedBtns = SPEED_MODES.map((m) => b(new Button(scene, speedLabel[m], () => actions.speed(m))));
   }
 
   layout(l: Layout): void {
@@ -173,19 +182,42 @@ export class Hud {
       this.autoBtn.layout(c.x + c.w * 0.68, my, 96 * u, 50 * u, 13 * u);
       this.buyBtn.layout(c.x + c.w * 0.87, my, 150 * u, 54 * u, 10.5 * u);
     }
+    // Speed selector: three segments; in portrait at the right of the row under the grid, in landscape in the status bar.
+    const sp = l.speed, n = this.speedBtns.length;
+    const segW = l.portrait ? Math.min(62 * u, (sp.w * 0.56) / n) : sp.w / n;
+    const right = sp.x + sp.w;
+    this.speedBtns.forEach((btn, i) => btn.layout(right - segW * (n - i - 0.5) - (l.portrait ? 0 : 0), sp.y + sp.h / 2, segW - 4 * u, Math.min(sp.h, 44 * u), 10 * u));
+    this.footerBox = l.portrait
+      ? { x: sp.x + 4 * u, y: sp.y + sp.h / 2, w: sp.w - segW * n - 12 * u, on: true }
+      : { x: 0, y: 0, w: 0, on: false };
+    this.footer.setOrigin(0, 0.5).setPosition(this.footerBox.x, this.footerBox.y).setFontSize(px(10.5)).setWordWrapWidth(Math.max(20, this.footerBox.w)).setVisible(this.footerBox.on && this.footer.text !== '');
+    this.setSpeedMode(this.speedMode);
     this.applyFs();
+  }
+
+  /** Marks the active speed mode. */
+  setSpeedMode(mode: SpeedMode): void {
+    this.speedMode = mode;
+    this.speedBtns.forEach((btn, i) => btn.setAccent(SPEED_MODES[i] === mode ? COLOR.goldBright : COLOR.goldDark).setAlpha(SPEED_MODES[i] === mode ? 1 : 0.72));
   }
 
   setBalance(minor: number): void { this.balance.setText(formatMoney(minor)); }
 
-  /** Small line in the free space under the grid (maximum win, or the feature win during free spins). */
-  setFooter(text: string, x = 0, y = 0, visible = true): void {
-    this.footer.setText(text);
-    if (this.l) this.footer.setFontSize(`${Math.max(10 * DPR, Math.round(11.5 * this.l.ui))}px`);
-    if (x || y) this.footer.setPosition(x, y);
-    this.footer.setVisible(visible && text !== '');
+  /** Small line beside the speed selector (preview note, maximum win, or the feature win during free spins). */
+  setFooterText(text: string): void {
+    this.footer.setText(text).setVisible(this.footerBox.on && text !== '');
   }
-  setFooterText(text: string): void { this.footer.setText(text); }
+
+  /** The last two free spins: the counter chip turns bright and beats, so the end of the feature is felt coming. */
+  setFreeSpinTension(on: boolean): void {
+    if (this.fsTense === on) return;
+    this.fsTense = on;
+    this.scene.tweens.killTweensOf(this.fs);
+    this.fs.setScale(1).setColor(on ? '#fff6d6' : COLOR.win);
+    if (on && !REDUCED_MOTION) this.scene.tweens.add({ targets: this.fs, scale: 1.1, duration: 420, yoyo: true, repeat: -1, ease: 'Sine.easeInOut' });
+    this.applyFs();
+  }
+
 
   setBet(minor: number, buyPrice: number, buyEnabled: boolean): void {
     this.bet.setText(formatMoney(minor));
@@ -260,8 +292,8 @@ export class Hud {
     }
     if (this.freeMode && this.fsBox.w > 0) {
       const b = this.fsBox, w = Math.min(b.w, this.fs.width + b.h), x = b.x + (b.w - w) / 2;
-      this.fsPlate.fillStyle(0x1a1408, 0.95).fillRoundedRect(x, b.y, w, b.h, b.h / 2)
-        .lineStyle(Math.max(2, 1.5 * DPR), COLOR.gold, 1).strokeRoundedRect(x, b.y, w, b.h, b.h / 2);
+      this.fsPlate.fillStyle(this.fsTense ? 0x3a2606 : 0x1a1408, 0.95).fillRoundedRect(x, b.y, w, b.h, b.h / 2)
+        .lineStyle(Math.max(2, (this.fsTense ? 2.5 : 1.5) * DPR), this.fsTense ? COLOR.goldBright : COLOR.gold, 1).strokeRoundedRect(x, b.y, w, b.h, b.h / 2);
     }
   }
 
@@ -292,11 +324,11 @@ export class Hud {
   get winPoint(): { x: number; y: number } { return { x: this.win.x, y: this.win.y }; }
   /** Texts for layout checks in end-to-end tests. */
   texts(): { name: string; x: number; y: number; w: number; h: number; text: string }[] {
-    const list: [string, Phaser.GameObjects.Text][] = [['demo', this.demo], ['fs', this.fs], ['multBig', this.multBig], ['multSmall', this.multSmall], ['balLabel', this.balLabel], ['balance', this.balance], ['winLabel', this.winLabel], ['win', this.win], ['betLabel', this.betLabel], ['bet', this.bet]];
+    const list: [string, Phaser.GameObjects.Text][] = [['footer', this.footer], ['demo', this.demo], ['fs', this.fs], ['multBig', this.multBig], ['multSmall', this.multSmall], ['balLabel', this.balLabel], ['balance', this.balance], ['winLabel', this.winLabel], ['win', this.win], ['betLabel', this.betLabel], ['bet', this.bet]];
     return list.filter(([, o]) => o.visible && o.text !== '').map(([name, o]) => { const b = o.getBounds(); return { name, x: b.x, y: b.y, w: b.width, h: b.height, text: o.text }; });
   }
   buttons(): { name: string; x: number; y: number; w: number; h: number }[] {
-    const list: [string, Button][] = [['spin', this.spinBtn], ['buy', this.buyBtn], ['minus', this.minus], ['plus', this.plus], ['info', this.infoBtn], ['mute', this.muteBtn], ['auto', this.autoBtn]];
+    const list: [string, Button][] = [['spin', this.spinBtn], ['buy', this.buyBtn], ['minus', this.minus], ['plus', this.plus], ['info', this.infoBtn], ['mute', this.muteBtn], ['auto', this.autoBtn], ...this.speedBtns.map((b, i): [string, Button] => [`speed-${SPEED_MODES[i]}`, b])];
     return list.filter(([, o]) => o.visible).map(([name, o]) => ({ name, x: o.x - o.width / 2, y: o.y - o.height / 2, w: o.width, h: o.height }));
   }
 }
