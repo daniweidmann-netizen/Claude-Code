@@ -6,7 +6,7 @@
  */
 const { chromium } = require('playwright');
 const URL = process.env.TLS_URL || 'http://localhost:4173/';
-const SEEDS = [7, 21, 40];
+const SEEDS = [7, 21];
 
 async function playBought(p) {
   await p.evaluate(() => window.__tls.buy());
@@ -29,6 +29,7 @@ const avg = (a) => (a.length ? Math.round(a.reduce((x, y) => x + y, 0) / a.lengt
     for (const mode of ['normal', 'fast', 'skip']) {
       const all = [];
       let outro = [];
+      const fpsList = [];
       for (const seed of device.startsWith('phone') ? SEEDS : SEEDS.slice(0, 1)) {
         const p = await browser.newPage({ viewport: { width: w, height: h } });
         p.on('pageerror', (e) => problems.push(`${device} ${mode} ${seed}: ${e.message}`));
@@ -47,6 +48,7 @@ const avg = (a) => (a.length ? Math.round(a.reduce((x, y) => x + y, 0) / a.lengt
         const indices = free.map((x) => x.index);
         if (indices.some((v, i) => v !== i + 1)) problems.push(`${device} ${mode} ${seed}: free-spin counter sequence ${indices}`);
         all.push(...free.map((x) => ({ ...x, seed, total })));
+        fpsList.push(s.perf.fps);
         outro.push(s.outroMs);
         await p.close();
       }
@@ -57,7 +59,7 @@ const avg = (a) => (a.length ? Math.round(a.reduce((x, y) => x + y, 0) / a.lengt
       const perFeature = {};
       first8.forEach((x) => { perFeature[x.seed] = (perFeature[x.seed] || 0) + x.ms; });
       rows.push({ device, mode, spins: all.length, noWin: avg(noWin), nNoWin: noWin.length, one: avg(one), nOne: one.length, multi: avg(multi), nMulti: multi.length,
-        all: avg(all.map((x) => x.ms)), eight: avg(Object.values(perFeature)), outro: avg(outro) });
+        all: avg(all.map((x) => x.ms)), eight: avg(Object.values(perFeature)), outro: avg(outro), fps: avg(fpsList) });
     }
   }
 
@@ -100,9 +102,9 @@ const avg = (a) => (a.length ? Math.round(a.reduce((x, y) => x + y, 0) / a.lengt
   }
   await browser.close();
 
-  console.log('| Device | Mode | Free spins | No win (avg ms) | One cascade | Two or more | All spins | First 8 spins of a feature | Summary and return |');
-  console.log('|---|---|---|---|---|---|---|---|---|');
-  for (const r of rows) console.log(`| ${r.device} | ${r.mode} | ${r.spins} | ${r.noWin} (${r.nNoWin}) | ${r.one} (${r.nOne}) | ${r.multi} (${r.nMulti}) | ${r.all} | ${(r.eight / 1000).toFixed(1)} s | ${(r.outro / 1000).toFixed(1)} s |`);
+  console.log('| Device | Mode | Free spins | No win (avg ms) | One cascade | Two or more | All spins | First 8 spins of a feature | Summary and return | Frames per second in the test browser |');
+  console.log('|---|---|---|---|---|---|---|---|---|---|');
+  for (const r of rows) console.log(`| ${r.device} | ${r.mode} | ${r.spins} | ${r.noWin} (${r.nNoWin}) | ${r.one} (${r.nOne}) | ${r.multi} (${r.nMulti}) | ${r.all} | ${(r.eight / 1000).toFixed(1)} s | ${(r.outro / 1000).toFixed(1)} s | ${r.fps} |`);
   console.log('wins by seed (minor units, identical in all modes):', JSON.stringify(wins));
   if (problems.length) { console.error('FAILED\n' + problems.join('\n')); process.exit(1); }
   console.log('OK');

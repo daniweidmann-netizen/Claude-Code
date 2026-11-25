@@ -157,8 +157,7 @@ export class Presenter {
         case 'discovery':
           if (this.campPhase) { e.positions.forEach((p) => void fx.fly(track.worldOf(1), grid.center(p), STATION_COLOR[0], 320)); break; }
           track.announce(t('fxDiscovery'), 1);
-          await Promise.all(e.positions.map((p) => fx.fly(track.worldOf(1), grid.center(p), STATION_COLOR[0], 320)));
-          await this.hold('stationEffect');
+          await Promise.all([this.hold('stationEffect'), ...e.positions.map((p) => fx.fly(track.worldOf(1), grid.center(p), STATION_COLOR[0], 320))]);
           break;
         case 'treasure':
           this.treasure = e.multiplier;
@@ -171,8 +170,7 @@ export class Presenter {
         case 'ancientPower':
           if (this.campPhase) { if (e.position >= 0) void fx.fly(track.worldOf(3), grid.center(e.position), STATION_COLOR[2], 340); break; }
           track.announce(t('fxAncient'), 3);
-          if (e.position >= 0) await fx.fly(track.worldOf(3), grid.center(e.position), STATION_COLOR[2], 340);
-          await this.hold('stationEffect');
+          await Promise.all([this.hold('stationEffect'), e.position >= 0 ? fx.fly(track.worldOf(3), grid.center(e.position), STATION_COLOR[2], 340) : Promise.resolve()]);
           break;
         case 'relic':
           sfx.play('relic');

@@ -32,11 +32,11 @@ export const HOLD = {
   /** A station effect has been applied (Wilds placed, multiplier raised). */
   stationEffect: [260, 180],
   /** End of a spin without a win. */
-  spinEndNoWin: [420, 120],
+  spinEndNoWin: [360, 120],
   /** End of a spin with a win. */
   spinEndWin: [480, 240],
   /** Between two free spins. */
-  betweenFreeSpins: [450, 100],
+  betweenFreeSpins: [380, 100],
   /** Extra breath before each of the last two free spins and after their result. */
   lastSpins: [380, 0],
   /** After the last free spin, before the summary. */
