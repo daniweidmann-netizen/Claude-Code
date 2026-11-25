@@ -110,3 +110,28 @@ Werkzeug Higgsfield, Modell `gpt_image_2_6`, je 1 Variante. Kosten: 13 Bilder, g
 **Bearbeitung (automatisch, reproduzierbar mit `python3 tools/assets/process.py`):** dunkler Hintergrund freigestellt (Flutfüllung vom Bildrand, Kante geglättet), auf Inhalt zugeschnitten, zentriert, verkleinert. Die Symbole 0–7 wurden auf dieselbe Weise neu freigestellt (vorher mit dunklem Quadrat); der Explorer bleibt ein rundes Porträt. Hintergründe als JPEG.
 
 **Offene Gestaltungspunkte:** Das Sonnenemblem der Sonnenkammer zeigt ein Gesicht, das der Stationen nicht. Die Jademaske am Tor hat Reisszähne und wirkt bedrohlicher als das Jade-Mask-Symbol. Das Treasure-Medaillon und das Schatzbild sind nicht auf Ähnlichkeit mit bestehenden Spielen geprüft.
+
+## Publisher Readiness (2026-11-25)
+
+Werkzeug Higgsfield, Modell `gpt_image_2_6`, je 1 Variante; 8 Bilder (eines mehr als geplant, weil das Mondtor vom Vortag nicht mehr als Bildvorlage abrufbar war und neu erzeugt wurde), geschätzt 6 Credits. Rechtliche Punkte wie oben offen; keine menschliche Überarbeitung.
+
+| Asset | Rohdatei | Spieldatei | Job-ID | Hinweis |
+|---|---|---|---|---|
+| Rasterrahmen | `raw/frame.png` | `public/ui/frame.webp`, `frame.json` | 7969923e-fd5f-4d8f-9e42-04b86fc178b8 | Mitte ausgeschnitten; Öffnung wird auf das 6×5-Raster gelegt (Rahmen dabei um rund 10 % in der Breite gestaucht) |
+| Jadekammer v2 | `raw/door_jade_v2.png` | `ui/door_jade.webp` | 52deacc5-a9a2-489b-a005-c171652ca10e | ruhige Maske ohne Zähne, ersetzt die erste Fassung |
+| Sonnenkammer v2 | `raw/door_sun_v2.png` | `ui/door_sun.webp` | bf68a565-4a7d-40f5-820b-a3c3aceffe08 | Sonne ohne Gesicht, ersetzt die erste Fassung |
+| Mondkammer v2 | `raw/door_moon_v2.png` | `ui/door_moon.webp` | eca14508-0d80-4604-ba69-8531422bb30e | neu erzeugt |
+| Jadekammer offen | `raw/door_jade_open.png` | `ui/door_jade_open.webp` | c1a5901c-9cba-4c68-8a51-48edb0e004db | mit der geschlossenen Fassung als Bildvorlage erzeugt |
+| Sonnenkammer offen | `raw/door_sun_open.png` | `ui/door_sun_open.webp` | b41d8a6a-f8a6-4238-bc50-f1be29d9fbc3 | ebenso |
+| Mondkammer offen | `raw/door_moon_open.png` | `ui/door_moon_open.webp` | 75eb90c9-5b45-48d2-b952-5bd58d8350e8 | ebenso |
+| Tempeltor offen | `raw/gate_open.png` | `ui/gate.webp` | 3a89a48d-be6f-456b-bd72-365e99a06906 | Einstieg in die Free Spins |
+
+Die ersten Fassungen der drei Tore (`raw/door_sun.png`, `door_jade.png`, `door_moon.png`) sind VERWORFEN und bleiben nur zur Dokumentation erhalten.
+
+**Formate:** Grosse Bilder liegen im Spiel nur noch als WebP vor (Hintergründe, Tore, Rahmen, Tor, Schatz, Logo); Symbole, Medaillons, Kachel und Spin-Scheibe als PNG. Alle Schritte stehen in `tools/assets/process.py`.
+
+**Offene Gestaltungspunkte:** Die offenen Tore zeigen die Innenseiten der Torflügel mit einem gespiegelten Emblem (bei der Jadekammer zwei Maskenhälften); ob das als Fehler gelesen wird, ist nicht geprüft. Der Rahmen trägt an den Ecken Jade- und Türkis-Steine in einem etwas helleren Grün als die Symbole.
+
+### Ton (ElevenLabs) – erzeugt, noch nicht im Projekt
+
+Am 2026-11-25 wurden über das verbundene ElevenLabs-Konto 13 Soundeffekte (`eleven_text_to_sound_v2`, je rund 17 Credits) und 2 Musikstücke (`eleven_music_v2`, je 900 Credits) erzeugt, zusammen rund 2 020 Credits. **Die Dateien sind noch nicht heruntergeladen und nicht eingebunden**: Der Download vom Speicher-Host wurde in dieser Sitzung abgelehnt. Sie liegen im ElevenLabs-Konto (Flows `5u9GnUbCe94xmInirxam` und `pyncmsTd5EqAqJcZZohH`). Die Nutzungsbedingungen von ElevenLabs für kommerzielle Verwendung und Weiterlizenzierung sind nicht geprüft. Bis dahin nutzt das Spiel weiter die zur Laufzeit synthetisierten Platzhaltertöne.
