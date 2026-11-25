@@ -4,7 +4,7 @@ Stand: 25. November 2026 · keine Rechtsberatung · Grundlage: die übrigen Audi
 
 Ampel: **GRÜN** ausreichend dokumentiert · **GELB** grundsätzlich möglich, Nachweise fehlen ·
 **ROT** erkennbares Rechtehindernis oder keine ausreichende Nutzungsberechtigung.
-Die Bewertung ist **vorläufig**: Mehrere Anbieterbedingungen lagen nur als Suchauszug vor.
+Die Bewertung ist **vorläufig**: Die massgeblichen Klauseln sind am Originaltext gelesen, aber nicht juristisch ausgelegt und von keinem Anbieter bestätigt.
 
 ## 1. Rechte je Bestandteil
 
@@ -15,8 +15,8 @@ Die Bewertung ist **vorläufig**: Mehrere Anbieterbedingungen lagen nur als Such
 | Mathematik (Parameter, Simulator, Nachweise) | Know-how; Dateien als Teil des Codes | faktisch, solange vertraulich | vertraglich | als Know-how vertraglich | wie Code |
 | Quellcode | vertragliche Zuweisung durch Anthropic «(if any)», unter Vorbehalt der Vertragstreue; Urheberrecht unklar | ungeklärt | ungeklärt | «soweit vorhanden» | **Klausel «Non-commercial use only»** der Schweizer Consumer Terms; unklarer Urheberrechtsschutz; Trainingseinstellung unbekannt |
 | Dokumentation | wie Code | ungeklärt | ungeklärt | «soweit vorhanden» | wie Code |
-| Grafiken (31 Bilder inkl. Logo) | vertragliches Nutzungsrecht aus den Higgsfield-Bedingungen | **nein** (Lizenz an Higgsfield, ähnliche Ausgaben möglich) | ungeklärt | ungeklärt | **Glücksspiel-Vorbehalt** über die Richtlinien des Modellanbieters; kein gesicherter Urheberrechtsschutz |
-| Ton (17 Dateien) | vertragliches Nutzungsrecht aus den ElevenLabs-Bedingungen | **nein** (unbefristete Lizenz an ElevenLabs) | ungeklärt | ungeklärt | **Glücksspiel-Vorbehalt** der Nutzungsrichtlinie; **Musik in «Studio Games»** nur mit Enterprise-Vertrag |
+| Grafiken (31 Bilder inkl. Logo) | vertragliches Nutzungsrecht aus den Higgsfield-Bedingungen | **nein** (Lizenz und Trainingsrecht bei Higgsfield, keine Gewähr für Einzigartigkeit) | ja laut Higgsfield Ziff. 4.4 | ja laut Higgsfield Ziff. 4.4, «soweit vorhanden» | **Glücksspiel-Vorbehalt** über die Richtlinien des Modellanbieters; kein gesicherter Urheberrechtsschutz |
+| Ton (17 Dateien) | vertragliches Nutzungsrecht aus den ElevenLabs-Bedingungen | **nein** (unbefristete Lizenz an ElevenLabs) | einzeln nein; als Teil des Spiels ungeklärt | ungeklärt | **Glücksspiel-Vorbehalt** der Nutzungsrichtlinie; **Musik in «Studio Games»** nur mit Enterprise-Vertrag |
 | Phaser, Schriften | freie Lizenzen Dritter (MIT, OFL) | nein | durch die Lizenz selbst geregelt | nicht übertragbar; der Erwerber nutzt unter derselben Lizenz | Lizenztexte fehlen im Build |
 | Im Code gezeichnete Effekte | Teil des Codes | wie Code | wie Code | wie Code | wie Code |
 
@@ -33,8 +33,9 @@ Nutzungsrechte an allen Bestandteilen diese Verwendung decken. Erkennbare Hinder
    gambling» nennen.
 3. Code: Klausel «Non-commercial use only» im Schweizer Consumer-Vertrag.
 
-Keines der drei ist am Volltext bzw. durch Auskunft abschliessend geklärt; jedes ist aber konkret
-genug, dass eine Veröffentlichung **heute nicht als gedeckt gelten kann**.
+Alle drei Klauseln stehen so im Originaltext. Ob sie dieses Projekt erfassen, ist nicht durch
+einen Anwalt oder eine Auskunft geklärt; jede ist aber konkret genug, dass eine Veröffentlichung
+**heute nicht als gedeckt gelten kann**.
 
 **GELB wird erreicht**, wenn (a) Ton und Grafik durch den Provider oder durch Auftragswerke
 ersetzt werden – bei Publishing-Programmen nicht unüblich – oder die Anbieter die Nutzung
@@ -60,7 +61,7 @@ Hauptbestandteil zusichern.
 | Vollständig übertragbar (nach Eintragung) | Marke |
 | Übertragbar «soweit vorhanden» | Rechte an Code und Dokumentation |
 | Nicht exklusive Nutzungsrechte | Grafik, Ton |
-| Unterlizenzierbar | **ungeklärt** für Grafik und Ton; für Code abhängig von der Anthropic-Frage |
+| Unterlizenzierbar | Grafik: ja laut Higgsfield Ziff. 4.4 (unter Glücksspiel-Vorbehalt); Ton: ungeklärt; Code: abhängig von der Anthropic-Frage |
 | Nicht übertragbar | die Verträge mit Anthropic, ElevenLabs, Higgsfield selbst; Lizenzen an Phaser und Schriften (der Erwerber erhält eigene) |
 | Ungeklärt | Urheberrecht an Code, Grafik, Ton; Zulässigkeit der Nutzung für Echtgeld-Glücksspiel; Wirkung der Trainingseinstellungen |
 

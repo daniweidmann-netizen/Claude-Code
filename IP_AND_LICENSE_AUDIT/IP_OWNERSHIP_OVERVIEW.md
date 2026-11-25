@@ -15,7 +15,7 @@ KI-Diensten erzeugt**, Konzept und Entscheidungen stammen vom Projektinhaber.
 | Name, Claim, Grundkonzept, Feature-Vorgaben, Entscheidungen | Projektinhaber | – | Sitzungsprotokoll | Idee: nicht schutzfähig · Name: Marke möglich |
 | Quellcode, Tests, Werkzeuge, Dokumentation | KI-Assistent Claude Code nach Vorgaben | Anthropic, Tarif Max (Angabe des Inhabers), Consumer Terms Schweiz | Git-Verlauf (54 von 55 Commits), Sitzungsprotokoll | **ungeklärt** |
 | Mathematik (Parameter) | vom Assistenten durch Simulation abgestimmt, vom Inhaber freigegeben | wie oben | Konfiguration, Simulationsberichte | Know-how |
-| 37 Bilder (31 verwendet) | Plattform Higgsfield, ausführend ein OpenAI-Bildmodell; Aufträge vom Assistenten formuliert | Higgsfield, Tarif «basic» (Kontoabfrage) | Auftragskennung und Herkunftssignatur in jeder Rohdatei; Register; Protokoll | **vertraglich, nicht exklusiv, für Echtgeld-Glücksspiel ungeklärt** |
+| 37 Bilder (31 verwendet) | Plattform Higgsfield, ausführend ein OpenAI-Bildmodell; Aufträge vom Assistenten formuliert | Higgsfield, Tarif «basic» (Kontoabfrage) | Auftragskennung und Herkunftssignatur in jeder Rohdatei; Register; Protokoll | **vertraglich, nicht exklusiv, übertragbar laut Higgsfield; für Echtgeld-Glücksspiel ungeklärt** |
 | 17 Tondateien | ElevenLabs (Effekt- und Musikmodell); Aufträge vom Assistenten formuliert | ElevenLabs, Stufe «creator» (Kontoabfrage) | Herkunftssignatur in jeder Rohdatei; Register; Protokoll | **vertraglich, nicht exklusiv, für Echtgeld-Glücksspiel und Musik in Spielen ungeklärt** |
 | Phaser, eventemitter3 | Dritte | MIT | Lizenzdateien | frei nutzbar |
 | Schriften Cinzel, Source Sans 3 | Dritte | SIL OFL 1.1 | Lizenzdateien | frei nutzbar |
@@ -30,8 +30,8 @@ KI-Diensten erzeugt**, Konzept und Entscheidungen stammen vom Projektinhaber.
    Anbieter, nicht auf gesichertem Urheberrecht.
 3. **Drei Vertragswerke sprechen gegen die geplante Nutzung** oder lassen sie offen: die Klausel
    «Non-commercial use only» im Schweizer Consumer-Vertrag von Anthropic (am Original gelesen);
-   Glücksspiel- und Spiele-Einschränkungen bei ElevenLabs (Suchauszug); Glücksspiel-Vorbehalt bei
-   den Bildern über den Modellanbieter (Suchauszug).
+   Glücksspiel- und Spiele-Einschränkungen bei ElevenLabs; Glücksspiel-Vorbehalt bei den Bildern
+   über den Modellanbieter. Alle drei Klauseln sind am Originaltext gelesen.
 4. **Exklusivität an Grafik und Ton gibt es nicht.**
 5. **Es besteht kein eingetragenes Schutzrecht** (keine Marke).
 

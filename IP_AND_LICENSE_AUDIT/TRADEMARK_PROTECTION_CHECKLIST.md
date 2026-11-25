@@ -7,9 +7,9 @@ Stand: 25. November 2026 · keine Rechtsberatung
 > gefunden; ähnliche Titel wie «Temple of the Sun», «Lost Temple», «Solar Temple», «Aztec Sun»
 > existieren) – das ersetzt keine Recherche.
 >
-> **Quellenlage:** ige.ch und euipo.europa.eu waren nicht abrufbar. Gebühren und Verfahren sind
-> **Suchergebnis-Auszüge** der offiziellen Seiten («AUSZUG») und vor einer Anmeldung auf der
-> Originalseite zu prüfen.
+> **Quellenlage:** Die Gebührenseite des IGE wurde am 25.11.2026 **am Original gelesen**
+> («GELESEN»). Verfahren, Recherche, WIPO und EUIPO sind Suchergebnis-Auszüge («AUSZUG») und vor
+> einer Anmeldung auf der Originalseite zu prüfen.
 
 ## 1. Was angemeldet werden könnte
 
@@ -36,7 +36,7 @@ und gehört in die Hand eines Markenanwalts.
 |---|---|---|
 | Recherche vorab | Das IGE prüft **keine** älteren Rechte Dritter; das muss der Anmelder selbst tun oder beauftragen. Swissreg ist kostenlos, ersetzt aber keine Ähnlichkeitsrecherche. Das IGE bietet seit Ende Juni 2022 keine eigenen Markenrecherchen mehr an und verweist auf private Anbieter | ige.ch, Seiten «Kollisionsgefahr», «Markenrecherchen» |
 | Anmeldung | elektronisch über e-trademark | e-trademark.ige.ch |
-| Hinterlegungsgebühr | CHF 450 für bis zu drei Klassen, Schutzdauer zehn Jahre (Stand laut Auszug 1. Juli 2024). Ein elektronischer Rabatt von CHF 100 wird erwähnt; ob netto CHF 350 gelten: **nicht verifiziert** | ige.ch «Kosten und Gebühren» |
+| Hinterlegungsgebühr | «Hinterlegungsgebühr (Schutzdauer zehn Jahre, verlängerbar) CHF 450», «e-Rabatt CHF 100» (Stand 1. Juli 2024). Bei elektronischer Anmeldung also voraussichtlich CHF 350 netto – die Seite nennt den Nettobetrag nicht ausdrücklich. Drei Klassen inbegriffen (aus dem Klassenzuschlag «ab vierter Klasse» abgeleitet) | ige.ch «Kosten und Gebühren» – GELESEN |
 | Klassenzuschlag | CHF 100 je Klasse ab der vierten | wie oben |
 | Beschleunigte Prüfung | CHF 400 zusätzlich | wie oben |
 | Widerspruch Dritter | innerhalb von drei Monaten nach Veröffentlichung der Eintragung; Widerspruchsgebühr CHF 800 | ige.ch |

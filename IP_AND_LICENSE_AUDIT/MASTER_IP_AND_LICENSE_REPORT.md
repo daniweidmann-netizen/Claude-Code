@@ -7,10 +7,12 @@ Interne Rechte-, Herkunfts- und Lizenzprüfung für Publishing, exklusive Lizenz
 > Empfehlungen. Es ersetzt weder einen Schweizer IP-Anwalt noch schriftliche Auskünfte der
 > Anbieter.
 >
-> **Quellenqualität:** *Am Originaltext gelesen* wurden nur die Dokumente von Anthropic.
-> Die Seiten von ElevenLabs, Higgsfield, OpenAI, fedlex, IGE und EUIPO waren aus der
-> Arbeitsumgebung nicht abrufbar; dort beruhen die Aussagen auf **Suchergebnis-Auszügen** vom
-> 25.11.2026 und sind am Volltext zu wiederholen.
+> **Quellenqualität:** *Am Originaltext gelesen* (25.11.2026) wurden: Anthropic Consumer Terms
+> Schweiz, Commercial Terms, Usage Policy; ElevenLabs Prohibited Use Policy, Terms of Use EU,
+> Music Terms, ElevenCreative Terms; Higgsfield Terms of Use; OpenAI Usage Policies; die
+> Gebührenseite des IGE. Nur als **Suchergebnis-Auszug** liegen vor: Hilfe-Center-Artikel der
+> Anbieter, weitere OpenAI-Dokumente, IGE-Aussagen zu KI, Gesetzeswortlaute, WIPO und EUIPO.
+> «Gelesen» heisst nicht «juristisch ausgelegt».
 >
 > **Unverändert:** Spielmechanik, RNG, RTP, Parameter, Auszahlungslogik, Quellcode der
 > Spielfunktionen, Grafiken, Audio und Konfigurationen. Neu sind nur die Dokumente dieses Ordners;
@@ -24,13 +26,13 @@ Interne Rechte-, Herkunfts- und Lizenzprüfung für Publishing, exklusive Lizenz
 
 | Geschäftsmodell | Ampel | Kurzbegründung |
 |---|---|---|
-| **A. Publishing** | **ROT** (vorläufig, mit den heutigen Bestandteilen) | Drei Vertragswerke decken die Verwendung in einem kommerziellen Echtgeld-Slot nicht erkennbar ab: Anthropic Consumer Terms Schweiz («Non-commercial use only»), ElevenLabs (Glücksspiel; Musik in «Studio Games»), Bilder (Glücksspiel-Vorbehalt über den Modellanbieter). **GELB erreichbar**, wenn Grafik und Ton ersetzt oder bestätigt werden und die Code-Frage geklärt ist |
+| **A. Publishing** | **ROT** (vorläufig, mit den heutigen Bestandteilen) | Drei Vertragswerke decken die Verwendung in einem kommerziellen Echtgeld-Slot nicht erkennbar ab: Anthropic Consumer Terms Schweiz («Non-commercial use only»), ElevenLabs (Glücksspiel; Musik in «Studio Games»), Bilder (Glücksspiel-Vorbehalt über den Modellanbieter). Alle drei Klauseln sind am Originaltext bestätigt. **GELB erreichbar**, wenn Grafik und Ton ersetzt oder bestätigt werden und die Code-Frage geklärt ist |
 | **B. Exklusive Lizenz** | **ROT** | wie A; zusätzlich bestehen an Grafik und Ton nur nicht exklusive vertragliche Rechte, an Code und Texten ist der Schutz unklar |
 | **C. Vollständiger IP-Verkauf** | **ROT** | wie A und B; zusätzlich kann der Projektinhaber heute für keinen Hauptbestandteil Inhaberschaft und Lastenfreiheit zusichern; kein eingetragenes Schutzrecht |
 
 «ROT» heisst hier: **nicht ohne Klärung anbieten oder zusichern.** Es heisst nicht, dass eine
-Rechtsverletzung feststeht – zwei der drei Vorbehalte beruhen auf Auszügen und können sich am
-Volltext oder durch eine Auskunft entschärfen.
+Rechtsverletzung feststeht: Die Klauseln stehen so im Text, ihre Anwendung auf dieses Projekt
+ist Auslegung und kann sich durch anwaltliche Prüfung oder eine Auskunft der Anbieter entschärfen.
 
 Ein informelles Erstgespräch mit einem Provider bleibt möglich, **wenn diese Lage offen genannt
 wird** und nichts zugesichert wird.
@@ -53,9 +55,10 @@ Nachgewiesen ist damit Herkunft, **nicht** ein ausschliessliches Recht an Code, 
 
 - **Code und Dokumentation:** Zuweisung durch Anthropic «(if any)», ausdrücklich «subject to your
   compliance with our Terms».
-- **Bilder:** Higgsfield beansprucht nach Auszug kein Eigentum; eine ausdrückliche Abtretung
-  wurde nicht gesehen. Rechte von OpenAI erreichen den Projektinhaber nur über Higgsfield.
-- **Ton:** nach Auszug behält der Nutzer gegenüber ElevenLabs die Rechte am Output.
+- **Bilder:** Higgsfield beansprucht kein Eigentum und schränkt die kommerzielle Nutzung nicht
+  ein (Ziff. 4.4, gelesen); eine Abtretung enthält die Klausel nicht. Rechte von OpenAI erreichen
+  den Projektinhaber nur über Higgsfield.
+- **Ton:** der Nutzer behält gegenüber ElevenLabs die Rechte am Output (gelesen).
 
 ### 3. Welche Bestandteile sind möglicherweise urheberrechtlich geschützt?
 
@@ -88,17 +91,21 @@ für andere möglich), an **Ton** (unbefristete Lizenz bei ElevenLabs), an **Pha
 
 ### 7. Welche Rechte dürfen unterlizenziert werden?
 
-Gesichert: nichts aus den KI-Diensten – **keine** gelesene Klausel erlaubt oder verbietet die
-Unterlizenz ausdrücklich. Phaser und die Schriften bringen ihre eigene Lizenz für jeden
-Empfänger mit. Alles Übrige: OFFEN (Fragenlisten).
+- **Bilder:** ja nach den Bedingungen von Higgsfield («you may transfer or sublicense your rights
+  in Outputs to your clients or other third parties», Ziff. 4.4) – unter dem Glücksspiel-Vorbehalt
+  und ohne Gewähr, dass überhaupt ein ausschliessliches Recht besteht.
+- **Ton:** einzeln nicht; als Bestandteil des Spiels ist der Einbau vorgesehen, die Weitergabe
+  durch einen Dritten bleibt OFFEN.
+- **Code:** abhängig von der Anthropic-Frage.
+- Phaser und die Schriften bringen ihre eigene Lizenz für jeden Empfänger mit.
 
 ### 8. Welche Rechte dürfen vollständig übertragen werden?
 
 Heute sicher: der **Besitz** an Repository, Rohdateien, Dokumentation und Simulationsdaten sowie
 vertraglich das **Know-how**. Nach Eintragung: eine **Marke**. Rechte an Code und Dokumentation
-nur «soweit vorhanden». Die Verträge mit den Anbietern selbst sind nicht übertragbar; an Bild und
-Ton kann höchstens ein nicht exklusives Nutzungsrecht weitergegeben werden – ob das zulässig ist,
-ist offen.
+nur «soweit vorhanden». Die Verträge mit den Anbietern selbst sind nicht übertragbar (Higgsfield Ziff. 19.2). Rechte an
+den **Bildern** dürfen nach Higgsfield Ziff. 4.4 an Dritte übertragen werden – nicht exklusiv
+und «soweit vorhanden». Für den **Ton** ist die Übertragung offen.
 
 ### 9. Welche Anbieterbestätigungen fehlen?
 
