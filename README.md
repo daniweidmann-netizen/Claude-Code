@@ -33,6 +33,7 @@ npm run build:client && npx vite preview --port 4173   # danach: npm run e2e
 | 08 | [Geräte-Prüfliste](docs/08_DEVICE_TEST_CHECKLIST.md) | Was auf einem echten Smartphone zu prüfen ist |
 | 09 | [Abschlussbericht](docs/09_ULTIMATE_READINESS_REPORT.md) | Audit, Änderungen, Tests, Bewertung, was bis zur externen Prüfung fehlt |
 | 10 | [Tempo-Bericht](docs/10_PACING_REPORT.md) | Drei Geschwindigkeitsmodi, Free-Spin-Tempo, gemessene Zeiten |
+| 12 | [Bestätigung der Clusterregel](docs/12_CLUSTER_RULE_CONFIRMATION.md) | Mindestcluster 5: Prüfung von Logik, Simulation und Dokumentation |
 | 11 | [Final Polish: Abschlussbericht](docs/11_FINAL_REPORT.md) | Änderungen, Tests, ehrliche Bewertung, Start- und Testanleitung, Präsentationsmodus |
 | – | [Publisher-Paket](docs/publisher/README.md) | Elf englische Dokumente für Gespräche mit Anbietern |
 

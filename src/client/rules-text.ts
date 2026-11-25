@@ -75,7 +75,7 @@ export function rulesHtml(cfg: GameConfig, lang: Lang = 'en'): string {
   if (de) return `
 <h3>Grundspiel</h3>
 <ul>
-<li>Raster ${cfg.cols}×${cfg.rows}. Ein Cluster sind mindestens ${cfg.minClusterSize} gleiche Symbole, die waagerecht oder senkrecht verbunden sind. Wilds zählen für jedes Gewinnsymbol.</li>
+<li>Raster ${cfg.cols}×${cfg.rows}. Ein Cluster sind mindestens ${cfg.minClusterSize} gleiche Symbole, die waagerecht oder senkrecht verbunden sind. Diagonale Berührung zählt nicht. Wilds zählen für jedes Gewinnsymbol.</li>
 <li>Gewinncluster werden entfernt, Symbole rücken nach, neue fallen von oben. Das wiederholt sich, bis kein Cluster mehr entsteht (höchstens ${cfg.maxCascades} Kaskaden je Spin).</li>
 <li>Gewinn = Clusterwert × Multiplikator. Multiplikator = Grundmultiplikator + Sonnenbonus.</li>
 </ul>
@@ -119,7 +119,7 @@ ${langSwitch}`;
   return `
 <h3>Base game</h3>
 <ul>
-<li>Grid ${cfg.cols}×${cfg.rows}. A cluster is at least ${cfg.minClusterSize} matching symbols connected horizontally or vertically. Wilds count as any pay symbol.</li>
+<li>Grid ${cfg.cols}×${cfg.rows}. A cluster is at least ${cfg.minClusterSize} matching symbols connected horizontally or vertically. Diagonal contact does not count. Wilds count as any pay symbol.</li>
 <li>Winning clusters are removed, symbols drop down and new ones fall in from above. This repeats until no cluster forms (at most ${cfg.maxCascades} cascades per spin).</li>
 <li>Win = cluster value × multiplier. Multiplier = base multiplier + sun bonus.</li>
 </ul>

@@ -113,7 +113,7 @@ Die Anpassungen betrafen jeweils nur Schatzpreise des Temple Bonus der Basisrund
 
 | ID | Entscheidung | Begründung | Status |
 |---|---|---|---|
-| D-001 | Mindestcluster 5 statt 8 (CR-01) | Voruntersuchung: ~7 % Trefferfrequenz bei 8 | freigegeben |
+| D-001 | Mindestcluster 5 statt 8 (CR-01) | Voruntersuchung: ~7 % Trefferfrequenz bei 8 | freigegeben am 23.11.2026; am 25.11.2026 ausdrücklich als endgültige, beabsichtigte Spielregel bestätigt (siehe `12_CLUSTER_RULE_CONFIRMATION.md`). Eine Rückkehr zu 8 ist ausgeschlossen. |
 | D-002 | Track setzt je bezahltem Spin zurück (CR-02) | unabhängige Runden, kein gespeicherter Zustand | freigegeben |
 | D-003 | Explorer und Sun Relic nur über Stationen (CR-03) | Lesbarkeit, klare Rollen | freigegeben |
 | D-004 | Temple Bonus als echte Auswahl (CR-04) | keine irreführende Inszenierung | freigegeben |

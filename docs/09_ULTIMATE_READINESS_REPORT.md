@@ -14,7 +14,7 @@ Stand: 2026-11-25. Sicherungspunkte: Git-Tags `pre-polish`, `pre-readiness`, `pr
 
 | Punkt | Auftrag | Spiel | Folge einer Änderung |
 |---|---|---|---|
-| Clustergrösse | mindestens 8 | mindestens 5 (CR-01, freigegeben am 23.11.) | neue Abstimmung der Mathematik, neue Abnahmeläufe; alle Messwerte verfallen |
+| Clustergrösse | mindestens 8 (veralteter Wert im Auftragstext) | mindestens 5 (CR-01, freigegeben am 23.11.) | **Erledigt am 25.11.:** 5 ist als endgültige Regel bestätigt; keine Änderung. |
 | Sun Relic | eigenes Symbol | Effekt der Station Relic, wird zum Wild; kein eigenes Bild | ein Bild für das Erscheinen wäre rein gestalterisch möglich |
 
 **Technische Schwachstellen:** siehe Abschnitt 5.

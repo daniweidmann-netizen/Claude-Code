@@ -23,6 +23,24 @@ describe('findClusters', () => {
     expect(find(four)).toEqual([{ symbol: 0, size: 5, cells: [0, 1, 2, 3, 9] }]);
   });
 
+  it('pays nothing for five equal symbols that touch only diagonally', () => {
+    const g = Array.from({ length: 5 }, (_, r) => Array.from({ length: 6 }, (_, c) => 1 + ((c + 2 * r) % 4)));
+    for (let i = 0; i < 5; i++) g[i]![i] = 0; // a diagonal of five
+    expect(find(g)).toEqual([]);
+  });
+
+  it('pays for five in a column, five in a row and an L-shape, but never for four', () => {
+    const base = () => Array.from({ length: 5 }, (_, r) => Array.from({ length: 6 }, (_, c) => 1 + ((c + 2 * r) % 4)));
+    const col = base(); for (let r = 0; r < 5; r++) col[r]![2] = 0;
+    expect(find(col)).toEqual([{ symbol: 0, size: 5, cells: [2, 8, 14, 20, 26] }]);
+    const row = base(); for (let c = 0; c < 5; c++) row[3]![c] = 0;
+    expect(find(row)).toEqual([{ symbol: 0, size: 5, cells: [18, 19, 20, 21, 22] }]);
+    const ell = base(); for (const [r, c] of [[0, 0], [1, 0], [2, 0], [2, 1], [2, 2]]) ell[r!]![c!] = 0;
+    expect(find(ell)).toEqual([{ symbol: 0, size: 5, cells: [0, 6, 12, 13, 14] }]);
+    const four = base(); for (let r = 0; r < 4; r++) four[r]![2] = 0;
+    expect(find(four)).toEqual([]);
+  });
+
   it('counts wilds and the Explorer, and lets one wild serve two symbols', () => {
     const g = [
       [0, 0, W, 1, 1, 2],
