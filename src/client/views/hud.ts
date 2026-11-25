@@ -121,8 +121,10 @@ export class Hud {
     const freeLeft = this.demo.x, freeRight = this.muteBtn.x - btn / 2 - 8 * u;
     this.demo.setFontSize(px(10)).setWordWrapWidth(Math.max(40, freeRight - freeLeft)).setLineSpacing(-2);
     // In free spins the counter is the headline of the status bar: it takes the place of logo and demo note.
-    this.fs.setFontSize(px(17)).setPosition((s.x + freeRight) / 2, cy);
-    this.fsBox = { x: s.x, w: freeRight - s.x, y: s.y + 2 * u, h: s.h - 4 * u };
+    // In landscape the speed selector sits in the middle of the bar; the counter keeps to the left of it.
+    const fsRight = l.portrait ? freeRight : Math.min(freeRight, l.speed.x - 8 * u);
+    this.fs.setFontSize(px(17)).setPosition((s.x + fsRight) / 2, cy);
+    this.fsBox = { x: s.x, w: fsRight - s.x, y: s.y + 2 * u, h: s.h - 4 * u };
     this.demoBox = { x: this.demo.x - 6 * u, y: cy - 9 * u, h: 18 * u };
 
     // Multiplier medallion.

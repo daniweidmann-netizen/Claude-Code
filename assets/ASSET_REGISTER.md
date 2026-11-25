@@ -101,6 +101,7 @@ Werkzeug Higgsfield, Modell `gpt_image_2_6`, je 1 Variante. Kosten: 13 Bilder, g
 | Sonnenkammer | `raw/door_sun.png` | `ui/door_sun.png` | a4e5a37b-8164-47b0-92d6-cc7718f03a3f | geschlossenes Steintor, goldenes Sonnenemblem |
 | Jadekammer | `raw/door_jade.png` | `ui/door_jade.png` | 16c2b402-ce35-41b1-85f2-5ec387381a84 | geschlossenes Steintor, Jademaske, Ranken |
 | Mondkammer | `raw/door_moon.png` | `ui/door_moon.png` | a77d6f05-4fc8-445b-a51b-590bdc0a8014 | geschlossenes Steintor, Türkis-Mondsichel |
+| Sun Relic (Artefakt) | `raw/sun_relic.png` | `ui/relic.webp` | 3ae02554-04ef-424e-8a8a-636000cdb192 | freistehende goldene Sonnenscheibe mit zwölf Strahlen, Türkisstein, Jade-Einlagen; erzeugt am 25.11.2026, 1 Variante; reines Anzeigeelement, kein Walzensymbol |
 | Schatz | `raw/treasure.png` | `ui/treasure.png` | 49567760-9eea-4d3d-b65e-fb3579f93567 | Münzhaufen mit Edelsteinen und kleinem Idol |
 | Tempelinneres hoch | `raw/bgfs_portrait.png` | `public/bgfs_portrait.jpg` | e96a729c-8dc7-4c22-9301-ab661d52260c | Säulenhalle, Sonnenscheibe, Lichtstrahlen |
 | Tempelinneres quer | `raw/bgfs_landscape.png` | `public/bgfs_landscape.jpg` | f1fd6034-dda6-4ee3-879f-ab49487e0ee2 | wie oben, Querformat |

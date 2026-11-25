@@ -1,11 +1,12 @@
 import type Phaser from 'phaser';
 import type { GameConfig, GameEvent } from '../../engine/index.js';
-import { wait } from '../anim.js';
+import { tween, wait } from '../anim.js';
+import { REDUCED_MOTION } from '../env.js';
 import type { Sfx } from '../audio/sfx.js';
 import type { Fx } from '../fx.js';
 import { t } from '../i18n.js';
 import { WIN_TIERS, formatMoney, winTier } from '../layout.js';
-import { COLOR, STATION_COLOR, STATION_NAMES } from '../theme.js';
+import { COLOR, DEPTH, STATION_COLOR, STATION_NAMES } from '../theme.js';
 import { holdMs, type HoldName } from '../timing.js';
 import type { BonusView } from '../views/bonus-view.js';
 import type { GridView } from '../views/grid-view.js';
@@ -78,6 +79,25 @@ export class Presenter {
   }
 
   /** A pause from the central pacing table; it keeps its real-time minimum at any speed. */
+  /**
+   * The Sun Relic rises over the play field when the expedition reaches the temple:
+   * the artefact that opens the chambers. Display only; nothing is decided here.
+   */
+  private async relicRises(): Promise<void> {
+    const scene = this.scene;
+    if (!scene.textures.exists('relic')) { await wait(scene, 200); return; }
+    const { grid, fx } = this.v;
+    const m = grid.middle;
+    const size = Math.min(scene.scale.width, scene.scale.height) * 0.42;
+    const img = scene.add.image(m.x, m.y, 'relic').setDepth(DEPTH.celebrate - 1).setDisplaySize(size, size).setAlpha(0);
+    fx.raysBrief(m.x, m.y, size * 1.5, COLOR.goldBright, 1300);
+    if (!REDUCED_MOTION) { const s = img.scale; img.setScale(s * 0.55); scene.tweens.add({ targets: img, scale: s, duration: 520, ease: 'Back.easeOut' }); }
+    await tween(scene, { targets: img, alpha: 1, duration: 220 });
+    fx.ring(m.x, m.y, 0x39c6c0, size * 0.3, size * 1.1, 700);
+    await wait(scene, 620);
+    scene.tweens.add({ targets: img, alpha: 0, duration: 380, onComplete: () => img.destroy() });
+  }
+
   private hold(name: HoldName): Promise<void> { return wait(this.scene, holdMs(name, this.v.scale())); }
   private get lastSpins(): boolean { return this.freeMode && this.fsTotal > 0 && this.fsIndex >= this.fsTotal - 1; }
 
@@ -241,7 +261,8 @@ export class Presenter {
           sfx.play('bonus');
           this.picksInBonus = 0;
           // Into the temple: a wash of white-gold light, and the chamber scene stands behind it.
-          await wait(this.scene, 500);
+          await wait(this.scene, 300);
+          if (e.tier !== 'finale') await this.relicRises();
           await banner.wipe(0xfff1c4, () => bonus.show(
             e.tier === 'finale' ? `${t('finaleTitle')} · ${t(e.seals === 1 ? 'finaleSeals' : 'finaleSealsPl', { n: e.seals })}` : t('bonusTitle'),
             e.chambers, this.bet,

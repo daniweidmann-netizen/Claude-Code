@@ -18,7 +18,7 @@ Configuration 1.0.0 (frozen). This document states the rules as the engine imple
 
 **Note on the cluster size.** An early concept used 8 connected symbols. A preliminary simulation showed a hit frequency of about 7 % for that rule on a 6×5 grid, so the minimum was set to 5 (change request CR-01, approved 23 November 2026). All measured figures in this package belong to the 5-symbol rule.
 
-**Note on the Sun Relic.** The Sun Relic is not a separate symbol on the reels. It is the effect of the fourth station: it appears on a pay-symbol position, adds its value to the sun bonus and becomes a Wild.
+**Note on the Sun Relic.** The Sun Relic is not a separate symbol on the reels. It is the effect of the fourth station: it appears on a pay-symbol position, adds its value to the sun bonus and becomes a Wild. This was confirmed as the intended design on 25 November 2026. The Sun Relic is the central artefact of the game world and has its own artwork; it is shown at the Relic station effect, when the expedition reaches the temple, in the Temple Bonus (title emblems and the Relic Bonus prize) and in the rules. It has no paytable entry and creates no winning combinations.
 
 ## 2. A spin, in order
 

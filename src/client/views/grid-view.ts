@@ -317,8 +317,8 @@ export class GridView extends Phaser.GameObjects.Container {
    * cell turns into a Wild (the transformation itself follows with the next grid state).
    */
   async showRelic(cell: number, value: number): Promise<void> {
-    const key = this.scene.textures.exists('station4') ? 'station4' : symbolKey(5);
-    const size = this.cell * 0.98;
+    const key = this.scene.textures.exists('relic') ? 'relic' : this.scene.textures.exists('station4') ? 'station4' : symbolKey(5);
+    const size = this.cell * 1.12;
     const img = this.scene.add.image(this.cx(cell), this.cy(cell), key).setDisplaySize(size, size).setAlpha(0);
     const label = this.scene.add.text(this.cx(cell), this.cy(cell) + this.cell * 0.02, `+${value}`, {
       fontFamily: DISPLAY, fontSize: `${Math.round(this.cell * 0.4)}px`, color: '#fff6d6', stroke: '#05070c', strokeThickness: Math.round(this.cell * 0.1),

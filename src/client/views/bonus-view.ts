@@ -37,6 +37,7 @@ export class BonusView {
   private readonly dim: Phaser.GameObjects.Rectangle;
   private readonly title: Phaser.GameObjects.Text;
   private readonly hint: Phaser.GameObjects.Text;
+  private emblems: Phaser.GameObjects.Image[] = [];
   private chambers: Chamber[] = [];
   private onPick: ((i: number) => void) | null = null;
   private bet = 100;
@@ -49,6 +50,8 @@ export class BonusView {
     this.hint = scene.add.text(0, 0, '', { fontFamily: TEXT, color: COLOR.text, align: 'center' }).setOrigin(0.5, 0);
     if (this.bg) this.layer.add(this.bg);
     this.layer.add([this.dim, this.title, this.hint]);
+    // The Sun Relic flanks the title: the temple is its home.
+    if (scene.textures.exists('relic')) { this.emblems = [scene.add.image(0, 0, 'relic'), scene.add.image(0, 0, 'relic')]; this.layer.add(this.emblems); }
   }
 
   get open(): boolean { return this.layer.visible; }
@@ -67,6 +70,11 @@ export class BonusView {
     }
     this.dim.setSize(w, h);
     this.title.setText(title).setFontSize(`${Math.round(26 * u)}px`).setPosition(w / 2, h * (portrait ? 0.075 : 0.08));
+    {
+      const es = Math.min(34 * u, (w - this.title.width) / 2 - 10 * u);
+      this.emblems.forEach((e, i) => e.setVisible(es >= 18 * u).setDisplaySize(es, es).setPosition(w / 2 + (i ? 1 : -1) * (this.title.width / 2 + es * 0.75), this.title.y));
+      if (!REDUCED_MOTION) { this.scene.tweens.killTweensOf(this.emblems); this.emblems.forEach((e) => e.setAngle(0)); this.scene.tweens.add({ targets: this.emblems, angle: 360, duration: 40000, repeat: -1 }); }
+    }
     this.hint.setText(t('bonusHint')).setFontSize(`${Math.round(14.5 * u)}px`).setWordWrapWidth(Math.min(w * 0.86, 560 * u)).setColor(COLOR.text)
       .setPosition(w / 2, this.title.y + this.title.height / 2 + 8 * u);
     // Portrait: two chambers above, one below, so each door is large; landscape: a row of three.
@@ -127,7 +135,7 @@ export class BonusView {
     const money = formatMoney((p.value / 10) * (this.bet / 10));
     switch (p.kind) {
       case 'freeSpins': return { title: t('prizeFs'), value: '', money: '', image: 'sym6' };
-      case 'relic': return { title: t('prizeRelic'), value: formatMultiple(p.value), money: `${money}\n${t('prizeRelicMore')}`, image: 'station4' };
+      case 'relic': return { title: t('prizeRelic'), value: formatMultiple(p.value), money: `${money}\n${t('prizeRelicMore')}`, image: this.scene.textures.exists('relic') ? 'relic' : 'station4' };
       case 'grand': return { title: t('prizeGrand'), value: formatMultiple(p.value), money, image: 'treasure' };
       default: return { title: t('prizeTreasure'), value: formatMultiple(p.value), money, image: 'treasure' };
     }
@@ -183,6 +191,8 @@ export class BonusView {
       if (!chosen) c.prize.setTint(0x8a8f9c);
       this.layer.add(c.prize);
     }
+    // The Sun Relic is the special find of the temple: it gets its own light.
+    if (chosen && prize.kind === 'relic') { this.fx.raysBrief(c.x, restY, c.w * 1.1, COLOR.goldBright, 2200); this.fx.ring(c.x, restY, 0x39c6c0, c.w * 0.2, c.w * 0.8, 900); }
     this.layer.bringToTop(c.line1); this.layer.bringToTop(c.line2);
     c.line1.setText(tx.value ? `${tx.title}\n${tx.value}` : tx.title).setColor(chosen ? COLOR.win : COLOR.dim);
     c.line1.setPosition(c.x, c.y + c.h * 0.2);

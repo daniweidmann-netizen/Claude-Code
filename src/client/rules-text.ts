@@ -84,6 +84,7 @@ export function rulesHtml(cfg: GameConfig, lang: Lang = 'en'): string {
 <img src="${asset('symbols/sym4.png')}" alt=""><span><b>Gewinnsymbole</b> (hoch nach tief): Jade Mask, Ruby Crown, Golden Chalice, Golden Scarab, Sapphire Gem. Werte siehe Reiter «Auszahlungen».</span>
 <img src="${asset('symbols/sym5.png')}" alt=""><span><b>Wild</b>: zählt für jedes Gewinnsymbol und kann zu mehreren Clustern gleichzeitig gehören. Ein Cluster braucht mindestens ein Gewinnsymbol. Wilds fallen nicht von oben; sie entstehen durch die Stationen Discovery und Relic.</span>
 <img src="${asset('symbols/sym8.png')}" alt=""><span><b>Explorer</b>: ein Wild, das nach einem Gewinn stehen bleibt. Entsteht durch die Station Ancient Power.</span>
+<img src="${asset('ui/relic.webp')}" alt=""><span><b>Sun Relic</b>: das zentrale Artefakt des Tempels und <b>kein Walzensymbol</b>. Es fällt nicht auf das Raster und hat keine eigene Auszahlung. Es erscheint, wenn die Station Relic erreicht wird (erhöht den Sonnenbonus und wird zum Wild), wenn die Expedition den Tempel erreicht, und im Temple Bonus als Relic Bonus.</span>
 <img src="${asset('symbols/sym6.png')}" alt=""><span><b>Compass</b>: zahlt nicht. 3 oder mehr auf dem Raster am Ende eines Spins lösen Free Spins aus.</span>
 <img src="${asset('symbols/sym7.png')}" alt=""><span><b>Temple Key</b>: zahlt nicht. Jeder Key auf dem Raster zählt bei einer Gewinnkaskade als zusätzlicher Schritt und wird dann entfernt.</span>
 </div>
@@ -128,6 +129,7 @@ ${langSwitch}`;
 <img src="${asset('symbols/sym4.png')}" alt=""><span><b>Pay symbols</b> (high to low): Jade Mask, Ruby Crown, Golden Chalice, Golden Scarab, Sapphire Gem. Values are on the Paytable tab.</span>
 <img src="${asset('symbols/sym5.png')}" alt=""><span><b>Wild</b>: counts as any pay symbol and can belong to several clusters at once. A cluster needs at least one pay symbol. Wilds do not fall from above; they are created by the stations Discovery and Relic.</span>
 <img src="${asset('symbols/sym8.png')}" alt=""><span><b>Explorer</b>: a Wild that stays in place after a win. Created by the station Ancient Power.</span>
+<img src="${asset('ui/relic.webp')}" alt=""><span><b>Sun Relic</b>: the central artefact of the temple and <b>not a reel symbol</b>. It does not land on the grid and has no payout of its own. It appears when the station Relic is reached (adds to the sun bonus and turns into a Wild), when the expedition reaches the temple, and in the Temple Bonus as the Relic Bonus.</span>
 <img src="${asset('symbols/sym6.png')}" alt=""><span><b>Compass</b>: does not pay. 3 or more on the grid at the end of a spin trigger free spins.</span>
 <img src="${asset('symbols/sym7.png')}" alt=""><span><b>Temple Key</b>: does not pay. Every key on the grid counts as one extra step in a winning cascade and is then removed.</span>
 </div>

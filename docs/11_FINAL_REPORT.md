@@ -92,7 +92,7 @@ Messwerte (intern simuliert, **nicht** zertifiziert): RTP 95,995 % (2 Mrd. Runde
 
 | Punkt aus dem Auftrag | Stand |
 |---|---|
-| «Sun Relic» als eigenes Walzensymbol | Nicht umgesetzt: wäre eine Mathematikänderung. Das Relikt ist die Wirkung von Station 4; es hat jetzt einen eigenen sichtbaren Moment. Entscheidung liegt bei dir. |
+| «Sun Relic» als eigenes Walzensymbol | Entschieden am 25.11.: kein Walzensymbol. Das Relikt ist als zentrales Artefakt visuell eingebunden (`13_SUN_RELIC.md`), ohne Änderung der Mathematik. |
 | Mindestcluster 8 (so im Auftragstext) | Geklärt am 25.11.: 5 ist die beabsichtigte, endgültige Regel (`12_CLUSTER_RULE_CONFIRMATION.md`). Keine Abweichung mehr. |
 | Animierte Symbole (Einzelbild-Animationen) | Nicht vorhanden; Symbole sind Standbilder mit Licht- und Bewegungseffekten. |
 | Dschungel-Atmosphäre als Tonspur | Nicht ausgeliefert (der Generator lieferte nur 2 Sekunden). |

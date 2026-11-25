@@ -78,6 +78,8 @@ json.dump({'w': fr.width, 'h': fr.height, 'hole': [round((hb[0] - ob[0]) * scale
 fit_square(cutout(RAW + 'gate_open.png', 30), 512, 0.98).save('public/ui/gate.png', optimize=True)
 
 fit_square(cutout(RAW + 'treasure.png', 30), 320, 0.98).save('public/ui/treasure.png', optimize=True)
+# The Sun Relic: the central artefact of the game world (display only, not a reel symbol).
+fit_square(cutout(RAW + 'sun_relic.png', 30), 384, 0.98).save('public/ui/relic.png', optimize=True)
 fit_square(cutout(RAW + 'spin.png'), 256, 0.98).save('public/ui/spin.png', optimize=True)
 
 tile = Image.open(RAW + 'tile.png').convert('RGB')
@@ -93,7 +95,7 @@ import os
 for n in ['bg_portrait', 'bg_landscape', 'bgfs_portrait', 'bgfs_landscape']:
     Image.open(RAW + n + '.png').convert('RGB').save(f'public/{n}.webp', quality=80, method=6)
     if os.path.exists(f'public/{n}.jpg'): os.remove(f'public/{n}.jpg')
-for n in ['frame', 'gate', 'treasure', 'door_sun', 'door_jade', 'door_moon', 'door_sun_open', 'door_jade_open', 'door_moon_open']:
+for n in ['frame', 'gate', 'treasure', 'relic', 'door_sun', 'door_jade', 'door_moon', 'door_sun_open', 'door_jade_open', 'door_moon_open']:
     Image.open(f'public/ui/{n}.png').save(f'public/ui/{n}.webp', quality=86, method=6)
     os.remove(f'public/ui/{n}.png')
 

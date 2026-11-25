@@ -69,8 +69,8 @@ Volatilitätsklasse vergibt erst der Anbieter oder ein Prüflabor nach eigenem M
 
 Die Zahl 8 kommt sonst nur noch in anderem Zusammenhang vor (8 Free Spins, Auszahlungsstufe 8–9).
 
-## Offen
+## Sun Relic
 
-Die zweite frühere Abweichung bleibt unentschieden: «Sun Relic» ist kein Walzensymbol, sondern
-die Wirkung von Station 4. Ein eigenes Symbol wäre eine Mathematikänderung und braucht eine
-ausdrückliche Freigabe.
+Am 25.11.2026 entschieden: Das Sun Relic wird **kein** reguläres Walzensymbol. Es bleibt die
+Wirkung von Station 4 und erhält eine rein visuelle Rolle als zentrales Artefakt
+(siehe `13_SUN_RELIC.md`). Damit ist auch diese frühere Abweichung geklärt.

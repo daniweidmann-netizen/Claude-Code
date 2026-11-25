@@ -22,7 +22,7 @@ export function preloadReferenceArt(scene: Phaser.Scene): void {
   scene.load.image('logo', asset('logo.webp'));
   for (let i = 1; i <= 5; i++) scene.load.image(`station${i}`, asset(`ui/station${i}.png`));
   for (const k of ['tile', 'spin']) scene.load.image(k, asset(`ui/${k}.png`));
-  for (const k of ['treasure', 'frame', 'gate', 'door_sun', 'door_jade', 'door_moon', 'door_sun_open', 'door_jade_open', 'door_moon_open']) scene.load.image(k, asset(`ui/${k}.webp`));
+  for (const k of ['treasure', 'relic', 'frame', 'gate', 'door_sun', 'door_jade', 'door_moon', 'door_sun_open', 'door_jade_open', 'door_moon_open']) scene.load.image(k, asset(`ui/${k}.webp`));
   scene.load.json('frameMeta', asset('ui/frame.json'));
 }
 
